@@ -32,7 +32,8 @@ public sealed class MermaidParser : IDiagramParser
     /// <inheritdoc/>
     public Diagram Parse(string diagramText)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(diagramText);
+        if (string.IsNullOrWhiteSpace(diagramText))
+            throw new DiagramParseException("Diagram text cannot be null or empty.");
 
         var builder = new DiagramSemanticModelBuilder()
             .WithSourceSyntax(SyntaxId)

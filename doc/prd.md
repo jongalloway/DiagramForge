@@ -267,3 +267,42 @@ Example clients:
 - Mermaid subset renders correctly.
 - Conceptual DSL covers core SmartArt‑style diagrams.
 - Architecture supports future syntaxes without refactoring.
+
+---
+
+## 12. Engineering Standards
+
+### 12.1 Solution Format
+
+The repository uses the **`.slnx` solution file format** (XML‑based, introduced in .NET SDK tooling).  
+`DiagramForge.slnx` is the single entry point for building and testing the entire repo.
+
+### 12.2 Dependency Management — Central Package Management (CPM)
+
+All NuGet package versions are declared **once** in `Directory.Packages.props` at the repository root.  
+Individual `.csproj` files reference packages by name only — **no `Version` attributes** in project files.
+
+Rules:
+
+- Add new packages to `Directory.Packages.props` first, then reference them in `.csproj` files.
+- Only packages with **permissive OSS licenses** (MIT preferred; Apache‑2.0 acceptable) are allowed.
+- Shared MSBuild properties (e.g., `<TargetFramework>`, `<Nullable>`) live in `Directory.Build.props`.
+
+### 12.3 Testing — xUnit v3 + Microsoft Testing Platform (MTP)
+
+The test project (`tests/DiagramForge.Tests`) uses:
+
+- **xUnit v3** (`xunit.v3`, Apache‑2.0) — the test framework.  
+  xUnit v3 test projects compile to a **self‑contained executable** (`<OutputType>Exe</OutputType>`),
+  embedding the test runner directly in the output binary.
+- **Microsoft Testing Platform (MTP)** — enabled via  
+  `<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>`.  
+  This routes `dotnet test` through the MTP host instead of the legacy VSTest adapter.
+- **coverlet** (`coverlet.collector`, MIT) — code‑coverage data collection.
+
+Running tests:
+
+```
+dotnet test                          # MTP via dotnet test (CI-friendly)
+dotnet run --project tests/...       # run the test executable directly
+```

@@ -1,0 +1,15 @@
+<Project>
+  <PropertyGroup>
+    <!-- Enable NuGet Central Package Management (CPM) for this repo. -->
+    <!-- All package versions are declared here; .csproj files omit Version attributes. -->
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+
+  <!-- Test project packages -->
+  <ItemGroup>
+    <!-- xUnit v3 (Apache-2.0) — includes Microsoft Testing Platform (MTP) runner -->
+    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <!-- Code coverage (MIT) -->
+    <PackageVersion Include="coverlet.collector" Version="8.0.0" />
+  </ItemGroup>
+</Project>

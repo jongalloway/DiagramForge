@@ -1,0 +1,29 @@
+## Build artifacts
+bin/
+obj/
+out/
+
+## NuGet
+*.nupkg
+*.snupkg
+.nuget/
+packages/
+project.lock.json
+
+## .NET
+*.user
+*.suo
+.vs/
+.vscode/
+*.DotSettings.user
+
+## Test results
+TestResults/
+*.trx
+*.coverage
+*.coveragexml
+coverage*/
+
+## OS
+.DS_Store
+Thumbs.db
