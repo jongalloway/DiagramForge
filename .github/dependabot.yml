@@ -1,0 +1,32 @@
+# Dependabot configuration.
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+
+version: 2
+updates:
+
+  # NuGet packages — Central Package Management means Directory.Packages.props at
+  # the repo root is the single source of truth. One PR per bump, grouped by minor/patch
+  # so the Tuesday update is one PR not seven.
+  - package-ecosystem: nuget
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+    open-pull-requests-limit: 5
+    groups:
+      minor-and-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: deps
+    labels: [dependencies, nuget]
+
+  # GitHub Actions used in workflows. Keeps action SHAs/versions current —
+  # matters for supply-chain hygiene and deprecation warnings.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: tuesday
+    commit-message:
+      prefix: ci
+    labels: [dependencies, ci]
