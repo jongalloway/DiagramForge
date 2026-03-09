@@ -15,6 +15,15 @@ namespace DiagramForge.Layout;
 /// </remarks>
 public sealed class DefaultLayoutEngine : ILayoutEngine
 {
+    /// <summary>
+    /// Average glyph advance as a fraction of font size (em-units) for typical
+    /// Latin UI sans-serif stacks (Segoe UI, Inter, Arial). Derived empirically;
+    /// biased slightly high so shapes err on the side of too-wide rather than
+    /// clipping text. A proper font-metrics engine would replace this heuristic
+    /// when higher fidelity is needed.
+    /// </summary>
+    private const double AvgGlyphAdvanceEm = 0.6;
+
     /// <inheritdoc/>
     public void Layout(Diagram diagram, Theme theme)
     {
@@ -25,57 +34,122 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
 
         var hints = diagram.LayoutHints;
-        double nodeW = hints.MinNodeWidth;
+        double minW = hints.MinNodeWidth;
         double nodeH = hints.MinNodeHeight;
         double hGap = hints.HorizontalSpacing;
         double vGap = hints.VerticalSpacing;
         double pad = theme.DiagramPadding;
 
-        // Assign nodes to layers via BFS
+        // ── Sizing pass ───────────────────────────────────────────────────────
+        // Compute each node's width from its label so text does not overflow the
+        // shape. MinNodeWidth remains a floor so short labels ("A", "End") do not
+        // produce skinny boxes.
+
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
+            node.Height = nodeH;
+        }
+
+        // ── Positioning pass ──────────────────────────────────────────────────
+        // Assign nodes to layers via BFS, then place them. Because widths are now
+        // variable, we track running offsets rather than multiplying a fixed stride.
+        //
+        //   Horizontal (LR/RL): each layer is a vertical column. Columns advance
+        //   along X by the *widest* node in the previous column + hGap. Nodes within
+        //   a column stack by uniform height.
+        //
+        //   Vertical (TB/BT):   each layer is a horizontal row. Rows advance along
+        //   Y by uniform height. Within a row, nodes advance along X by each node's
+        //   own width + hGap.
+
         var layers = ComputeLayers(diagram);
 
         bool isHorizontal = hints.Direction is LayoutDirection.LeftToRight
                                                or LayoutDirection.RightToLeft;
 
-        for (int layerIdx = 0; layerIdx < layers.Count; layerIdx++)
+        if (isHorizontal)
         {
-            var layer = layers[layerIdx];
-            for (int nodeIdx = 0; nodeIdx < layer.Count; nodeIdx++)
+            double columnX = pad;
+            foreach (var layer in layers)
             {
-                var node = layer[nodeIdx];
+                // ComputeLayers can emit an empty layer when every node is in a cycle
+                // (no in-degree-zero roots → BFS never starts → fallback ranking leaves
+                // layer 0 unpopulated). The old fixed-stride loop tolerated this by
+                // running zero inner iterations; do the same here.
+                if (layer.Count == 0)
+                    continue;
 
-                if (isHorizontal)
+                double maxWidthInColumn = layer.Max(n => n.Width);
+                for (int i = 0; i < layer.Count; i++)
                 {
-                    node.X = pad + layerIdx * (nodeW + hGap);
-                    node.Y = pad + nodeIdx * (nodeH + vGap);
+                    var node = layer[i];
+                    node.X = columnX;
+                    node.Y = pad + i * (nodeH + vGap);
                 }
-                else
-                {
-                    node.X = pad + nodeIdx * (nodeW + hGap);
-                    node.Y = pad + layerIdx * (nodeH + vGap);
-                }
+                columnX += maxWidthInColumn + hGap;
+            }
+        }
+        else
+        {
+            double rowY = pad;
+            foreach (var layer in layers)
+            {
+                if (layer.Count == 0)
+                    continue; // see comment above
 
-                node.Width = nodeW;
-                node.Height = nodeH;
+                double runX = pad;
+                foreach (var node in layer)
+                {
+                    node.X = runX;
+                    node.Y = rowY;
+                    runX += node.Width + hGap;
+                }
+                rowY += nodeH + vGap;
             }
         }
 
-        // Reverse positions for RL / BT
+        // ── Reversal for RL / BT ──────────────────────────────────────────────
+        // Mirror coordinates along the major axis. Must use each node's own width
+        // (not a fixed constant) so variable-width nodes stay inside the frame.
+
         if (hints.Direction == LayoutDirection.RightToLeft
             || hints.Direction == LayoutDirection.BottomToTop)
         {
-            double maxCoord = isHorizontal
-                ? diagram.Nodes.Values.Max(n => n.X) + nodeW + pad
-                : diagram.Nodes.Values.Max(n => n.Y) + nodeH + pad;
-
-            foreach (var node in diagram.Nodes.Values)
+            if (isHorizontal)
             {
-                if (isHorizontal)
-                    node.X = maxCoord - node.X - nodeW;
-                else
-                    node.Y = maxCoord - node.Y - nodeH;
+                double frameW = diagram.Nodes.Values.Max(n => n.X + n.Width) + pad;
+                foreach (var node in diagram.Nodes.Values)
+                {
+                    node.X = frameW - node.X - node.Width;
+                }
+            }
+            else
+            {
+                double frameH = diagram.Nodes.Values.Max(n => n.Y + n.Height) + pad;
+                foreach (var node in diagram.Nodes.Values)
+                {
+                    node.Y = frameH - node.Y - node.Height;
+                }
             }
         }
+    }
+
+    // ── Text measurement ──────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Estimates the rendered width of <paramref name="text"/> using a char-count
+    /// heuristic: <c>length × fontSize × 0.6</c>. Server-side SVG has no DOM to
+    /// query for <c>getBBox()</c>; this gets us within ±10% for Latin text, which
+    /// is sufficient for layout (padding absorbs the slop).
+    /// </summary>
+    private static double EstimateTextWidth(string? text, double fontSize)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 0;
+        return text.Length * fontSize * AvgGlyphAdvanceEm;
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
