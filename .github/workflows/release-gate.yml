@@ -35,7 +35,7 @@ jobs:
           ref: ${{ inputs.ref || github.ref }}
 
       - name: Set up .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v5
         with:
           global-json-file: global.json
           cache: true
