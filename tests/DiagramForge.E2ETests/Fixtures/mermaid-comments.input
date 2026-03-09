@@ -1,0 +1,5 @@
+flowchart LR
+  %% Nodes
+  A[Input] --> B[Process]
+  %% Output
+  B --> C[Output]

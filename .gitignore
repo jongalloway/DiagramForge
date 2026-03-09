@@ -24,6 +24,9 @@ TestResults/
 *.coveragexml
 coverage*/
 
+## Build & test artifacts (snapshot .actual.svg, etc.) — upload this dir in CI
+artifacts/
+
 ## OS
 .DS_Store
 Thumbs.db

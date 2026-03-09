@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="348.00" height="168.00" viewBox="0 0 348.00 168.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="348.00" height="168.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <path d="M 144.00,44.00 C 168.00,44.00 180.00,44.00 204.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <text x="174.00" y="40.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">yes</text>
+  <path d="M 144.00,44.00 C 168.00,44.00 180.00,124.00 204.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <text x="174.00" y="80.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">no</text>
+  <g transform="translate(24.00,24.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">A</text>
+  </g>
+  <g transform="translate(204.00,24.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">B</text>
+  </g>
+  <g transform="translate(204.00,104.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">C</text>
+  </g>
+</svg>

@@ -1,0 +1,52 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <!--
+      xUnit v3 test projects compile to an executable that embeds the test runner.
+      This is required for xUnit v3 and for Microsoft Testing Platform (MTP) support.
+    -->
+    <OutputType>Exe</OutputType>
+    <!--
+      Route `dotnet test` through the Microsoft Testing Platform (MTP) host
+      instead of the legacy VSTest adapter.
+    -->
+    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+  </PropertyGroup>
+
+  <!-- Versions are managed centrally in Directory.Packages.props (CPM). -->
+  <ItemGroup>
+    <!-- xUnit v3 (Apache-2.0) — includes the embedded MTP runner -->
+    <PackageReference Include="xunit.v3" />
+    <!-- Code coverage via coverlet (MIT) -->
+    <PackageReference Include="coverlet.collector">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+  </ItemGroup>
+
+  <!-- Global usings for test projects -->
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DiagramForge\DiagramForge.csproj" />
+  </ItemGroup>
+
+  <!--
+    Fixtures: copy to the output directory so tests can read them via AppContext.BaseDirectory.
+    Each *.input   holds diagram source text.
+    Each *.expected.svg pairs with an *.input of the same base name and is the snapshot baseline.
+    Baselines are generated/refreshed by running tests with UPDATE_SNAPSHOTS=1 — never committed
+    without review, since a layout/render regression would silently overwrite them.
+  -->
+  <ItemGroup>
+    <None Include="Fixtures\**\*.input" CopyToOutputDirectory="PreserveNewest" />
+    <None Include="Fixtures\**\*.expected.svg" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+</Project>
