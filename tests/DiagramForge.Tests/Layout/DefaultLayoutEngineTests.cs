@@ -168,4 +168,109 @@ public class DefaultLayoutEngineTests
         Assert.Throws<ArgumentNullException>(() =>
             _engine.Layout(new Diagram(), null!));
     }
+
+    // ── Groups ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Layout_GroupBoundingBox_EnclosesAllMembers()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var group = new Group("G", "Group");
+        group.ChildNodeIds.AddRange(["A", "B"]);
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        // Every member node rect must lie strictly inside the group rect.
+        foreach (var n in diagram.Nodes.Values)
+        {
+            Assert.True(group.X < n.X,                        $"{n.Id}: group.X {group.X} should be < node.X {n.X}");
+            Assert.True(group.Y < n.Y,                        $"{n.Id}: group.Y {group.Y} should be < node.Y {n.Y}");
+            Assert.True(group.X + group.Width  > n.X + n.Width,  $"{n.Id}: group right edge should exceed node right edge");
+            Assert.True(group.Y + group.Height > n.Y + n.Height, $"{n.Id}: group bottom edge should exceed node bottom edge");
+        }
+    }
+
+    [Fact]
+    public void Layout_GroupWithLabel_HasExtraTopPadding()
+    {
+        // The group box must leave room above its members for the label,
+        // so a labeled group's top gap > its side gap.
+        var diagram = new Diagram().AddNode(new Node("A"));
+        var group = new Group("G", "Has A Label");
+        group.ChildNodeIds.Add("A");
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["A"];
+        double topGap  = a.Y - group.Y;
+        double leftGap = a.X - group.X;
+        Assert.True(topGap > leftGap, $"top gap ({topGap}) should exceed side gap ({leftGap}) for a labeled group");
+    }
+
+    [Fact]
+    public void Layout_GroupWithNoMembers_StaysZeroSized()
+    {
+        // A group whose child ids don't resolve should not throw and should not
+        // end up with nonsense dimensions from a Min()/Max() over an empty set.
+        var diagram = new Diagram().AddNode(new Node("A"));
+        var group = new Group("G");
+        group.ChildNodeIds.Add("missing");
+        diagram.AddGroup(group);
+
+        var ex = Record.Exception(() => _engine.Layout(diagram, _theme));
+        Assert.Null(ex);
+        Assert.Equal(0, group.Width);
+        Assert.Equal(0, group.Height);
+    }
+
+    [Fact]
+    public void Layout_GroupInFirstColumn_DoesNotGoNegative()
+    {
+        // Driving case: the group's top/left padding (especially the label-height
+        // top inset) can exceed DiagramPadding when a member sits in the very first
+        // layer. The engine must shift the whole diagram, not let the rect clip.
+        var diagram = new Diagram().AddNode(new Node("A"));
+        var group = new Group("G", "Label pushes the top up");
+        group.ChildNodeIds.Add("A");
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(group.X >= 0, $"group.X = {group.X}");
+        Assert.True(group.Y >= 0, $"group.Y = {group.Y}");
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.X >= 0, $"{n.Id}.X = {n.X}");
+            Assert.True(n.Y >= 0, $"{n.Id}.Y = {n.Y}");
+        });
+    }
+
+    [Fact]
+    public void Layout_GroupBox_ComputedAfterMirror_RightToLeft()
+    {
+        // Group bbox must be computed *after* the RL flip, not before — otherwise
+        // the rect lands where the nodes used to be.
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.RightToLeft;
+
+        var group = new Group("G");
+        group.ChildNodeIds.Add("B");
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        var b = diagram.Nodes["B"];
+        Assert.True(group.X <= b.X && group.X + group.Width >= b.X + b.Width,
+            $"group [{group.X}, {group.X + group.Width}] should enclose B [{b.X}, {b.X + b.Width}] after RL mirror");
+    }
 }

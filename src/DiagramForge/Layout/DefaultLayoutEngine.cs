@@ -135,6 +135,58 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 }
             }
         }
+
+        // ── Group bounding boxes ──────────────────────────────────────────────────
+        // Compute each group's frame from its member nodes' final positions. Must
+        // run after the RL/BT mirror so group rects don't end up on the wrong side.
+        // This is deliberately a post-hoc fit rather than group-aware positioning:
+        // members of different groups can interleave in the same BFS layer and the
+        // resulting rects may overlap. That's an accepted v1 limitation (tracked in
+        // #14) — real-world subgraphs tend to be naturally clustered in the source.
+
+        foreach (var group in diagram.Groups)
+        {
+            var members = group.ChildNodeIds
+                .Where(diagram.Nodes.ContainsKey)
+                .Select(id => diagram.Nodes[id])
+                .ToList();
+
+            if (members.Count == 0)
+                continue; // leave at zero-size; renderer emits an invisible <rect>
+
+            double minX = members.Min(n => n.X);
+            double minY = members.Min(n => n.Y);
+            double maxX = members.Max(n => n.X + n.Width);
+            double maxY = members.Max(n => n.Y + n.Height);
+
+            // Top padding reserves room for the group label (SvgRenderer draws it at
+            // group.Y + fontSize + 4). Unlabeled groups — anonymous `subgraph` blocks
+            // — use uniform padding so the rect is a snug frame.
+            double sidePad = theme.NodePadding;
+            bool labeled = !string.IsNullOrWhiteSpace(group.Label.Text);
+            double topPad = labeled ? sidePad + theme.FontSize + 8 : sidePad;
+
+            group.X = minX - sidePad;
+            group.Y = minY - topPad;
+            group.Width = (maxX - minX) + 2 * sidePad;
+            group.Height = (maxY - minY) + topPad + sidePad;
+        }
+
+        // Shift the whole diagram if any group extends into negative space. This
+        // happens when a group member sits in the first row/column and the group's
+        // own padding (especially the label-height top inset) exceeds DiagramPadding.
+        // Right/bottom are handled separately by SvgRenderer.ComputeWidth/Height
+        // including group extents.
+        if (diagram.Groups.Count > 0)
+        {
+            double shiftX = Math.Max(0, -diagram.Groups.Min(g => g.X));
+            double shiftY = Math.Max(0, -diagram.Groups.Min(g => g.Y));
+            if (shiftX > 0 || shiftY > 0)
+            {
+                foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }
+                foreach (var g in diagram.Groups)       { g.X += shiftX; g.Y += shiftY; }
+            }
+        }
     }
 
     // ── Text measurement ──────────────────────────────────────────────────────

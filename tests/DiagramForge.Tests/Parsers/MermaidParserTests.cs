@@ -188,4 +188,167 @@ public class MermaidParserTests
         Assert.Equal(2, diagram.Nodes.Count);
         Assert.Single(diagram.Edges);
     }
+
+    // ── Parse: subgraphs ──────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_Subgraph_ProducesGroup()
+    {
+        const string text = """
+            flowchart LR
+              subgraph backend
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal("backend", group.Id);
+        Assert.Equal("backend", group.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Subgraph_MembersFromBothSidesOfEdge()
+    {
+        // Mermaid semantics: referencing a node anywhere inside the block makes it
+        // a member — so the edge `A --> B` contributes both A and B.
+        const string text = """
+            flowchart LR
+              subgraph G
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Contains("A", group.ChildNodeIds);
+        Assert.Contains("B", group.ChildNodeIds);
+        Assert.Equal(2, group.ChildNodeIds.Count);
+    }
+
+    [Fact]
+    public void Parse_Subgraph_BracketedTitle_ExtractsIdAndTitle()
+    {
+        // Canonical explicit-id form: `subgraph ide1 [Backend Services]`
+        const string text = """
+            flowchart LR
+              subgraph ide1 [Backend Services]
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal("ide1", group.Id);
+        Assert.Equal("Backend Services", group.Label.Text);
+    }
+
+    [Theory]
+    // single token → id *and* title
+    [InlineData("subgraph One",               "One",   "One")]
+    [InlineData("subgraph a-b-c",             "a-b-c", "a-b-c")]
+    // explicit id + bracketed title (space optional, quotes inside brackets stripped)
+    [InlineData("subgraph ide1[One]",         "ide1",  "One")]
+    [InlineData("subgraph ide1 [One]",        "ide1",  "One")]
+    [InlineData("subgraph uid2[\"text\"]",    "uid2",  "text")]
+    public void Parse_Subgraph_HeaderVariants_SetIdAndTitle(string header, string expectedId, string expectedTitle)
+    {
+        var diagram = _parser.Parse($"flowchart LR\n  {header}\n    A\n  end");
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal(expectedId, group.Id);
+        Assert.Equal(expectedTitle, group.Label.Text);
+    }
+
+    [Theory]
+    // quoted → title-only, auto-id
+    [InlineData("subgraph \"Some Title\"",    "Some Title")]
+    // unquoted multi-word → title-only (mermaid drops id when id==title and has whitespace)
+    [InlineData("subgraph Some Title",        "Some Title")]
+    // bare → no label at all
+    [InlineData("subgraph",                   "")]
+    public void Parse_Subgraph_TitleOnlyHeaders_AutoAssignId(string header, string expectedTitle)
+    {
+        var diagram = _parser.Parse($"flowchart LR\n  {header}\n    A\n  end");
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.StartsWith("__subgraph", group.Id);
+        Assert.Equal(expectedTitle, group.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Subgraph_NodeOutsideBlock_NotInGroup()
+    {
+        const string text = """
+            flowchart LR
+              subgraph G
+                A --> B
+              end
+              B --> C
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.DoesNotContain("C", group.ChildNodeIds);
+        // and the boundary-crossing edge still parses
+        Assert.Contains(diagram.Edges, e => e.SourceId == "B" && e.TargetId == "C");
+    }
+
+    [Fact]
+    public void Parse_Subgraph_DirectionDirective_IsSkipped()
+    {
+        // `direction` inside a subgraph is valid Mermaid but out of scope (#14).
+        // Must not leak through as a spurious node declaration.
+        const string text = """
+            flowchart LR
+              subgraph G
+                direction TB
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Nodes.Count);
+        Assert.DoesNotContain(diagram.Nodes.Keys, id => id.Contains("direction"));
+    }
+
+    [Fact]
+    public void Parse_Subgraph_UnterminatedAtEof_IsClosedLeniently()
+    {
+        // Missing `end`: prefer a best-effort render over throwing.
+        const string text = """
+            flowchart LR
+              subgraph G
+                A --> B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal(2, group.ChildNodeIds.Count);
+    }
+
+    [Fact]
+    public void Parse_MultipleSubgraphs_ProduceMultipleGroups()
+    {
+        const string text = """
+            flowchart LR
+              subgraph one
+                A --> B
+              end
+              subgraph two
+                C --> D
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+        Assert.Equal(new[] { "one", "two" }, diagram.Groups.Select(g => g.Id));
+    }
 }

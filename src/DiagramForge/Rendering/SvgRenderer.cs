@@ -215,6 +215,10 @@ public sealed class SvgRenderer : ISvgRenderer
             return 200;
 
         double maxX = diagram.Nodes.Values.Max(n => n.X + n.Width);
+        // Group rects extend beyond their member nodes by their own padding;
+        // without this, the group's right edge is clipped at the canvas boundary.
+        if (diagram.Groups.Count > 0)
+            maxX = Math.Max(maxX, diagram.Groups.Max(g => g.X + g.Width));
         return maxX + theme.DiagramPadding;
     }
 
@@ -224,6 +228,8 @@ public sealed class SvgRenderer : ISvgRenderer
             return 100;
 
         double maxY = diagram.Nodes.Values.Max(n => n.Y + n.Height);
+        if (diagram.Groups.Count > 0)
+            maxY = Math.Max(maxY, diagram.Groups.Max(g => g.Y + g.Height));
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
         return maxY + theme.DiagramPadding + titleOffset;
     }
