@@ -175,6 +175,12 @@ public class ConceptualDslParserTests
     // ── Error cases ───────────────────────────────────────────────────────────
 
     [Fact]
+    public void Parse_EmptyText_ThrowsDiagramParseException()
+    {
+        Assert.Throws<DiagramParseException>(() => _parser.Parse("   "));
+    }
+
+    [Fact]
     public void Parse_MissingSectionKey_ThrowsDiagramParseException()
     {
         // Process diagram with no "steps:" section

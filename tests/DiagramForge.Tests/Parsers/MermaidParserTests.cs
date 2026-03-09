@@ -92,6 +92,27 @@ public class MermaidParserTests
         Assert.Equal(EdgeLineStyle.Dashed, diagram.Edges[0].LineStyle);
     }
 
+    [Fact]
+    public void Parse_LongArrowOperator_PreferredOverShortOperator()
+    {
+        // "--->": the longer operator must be matched, not the "-->"-prefix
+        var diagram = _parser.Parse("flowchart LR\n  A ---> B");
+
+        Assert.Single(diagram.Edges);
+        Assert.True(diagram.Nodes.ContainsKey("A"));
+        Assert.True(diagram.Nodes.ContainsKey("B"));
+    }
+
+    [Fact]
+    public void Parse_DoubleArrowOperator_PreferredOverSingleArrow()
+    {
+        // "-->>": the double-arrow operator must be matched, not just "-->"
+        var diagram = _parser.Parse("flowchart LR\n  A -->> B");
+
+        Assert.Single(diagram.Edges);
+        Assert.True(diagram.Nodes.ContainsKey("B"));
+    }
+
     // ── Parse: layout direction ───────────────────────────────────────────────
 
     [Theory]

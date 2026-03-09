@@ -135,19 +135,22 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             }
         }
 
-        // Assign any remaining nodes (cycles or disconnected) to the next available rank
+        // Assign any remaining nodes (cycles or disconnected) to the next available rank.
+        // Iterate in stable order so layout is fully deterministic regardless of Dictionary
+        // enumeration order.
         int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
-        foreach (var id in diagram.Nodes.Keys)
+        foreach (var id in diagram.Nodes.Keys.OrderBy(id => id, StringComparer.Ordinal))
         {
             if (!rank.ContainsKey(id))
                 rank[id] = ++maxRank;
         }
 
-        // Group nodes by rank
+        // Group nodes by rank — iterate in key-sorted order so nodes within each layer
+        // are positioned consistently across runtimes.
         int totalLayers = rank.Values.Max() + 1;
         var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
 
-        foreach (var (id, r) in rank)
+        foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
         {
             layers[r].Add(diagram.Nodes[id]);
         }

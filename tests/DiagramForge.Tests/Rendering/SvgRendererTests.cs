@@ -116,6 +116,75 @@ public class SvgRendererTests
         Assert.Matches(@"height=""\d+(\.\d+)?""", svg);
     }
 
+    [Fact]
+    public void Render_DimensionAttributes_UseInvariantCultureDot()
+    {
+        // Even under a comma-decimal locale the SVG root must use '.' as the decimal separator.
+        var diagram = BuildAndLayout(new Diagram().AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // width/height must not contain a comma as a decimal separator
+        Assert.DoesNotMatch(@"width=""\d+,\d+""", svg);
+        Assert.DoesNotMatch(@"height=""\d+,\d+""", svg);
+    }
+
+    // ── Direction-aware edge anchors ──────────────────────────────────────────
+
+    [Fact]
+    public void Render_HorizontalLayout_EdgePathStartsOnRightSideOfSource()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+        _layout.Layout(diagram, _theme);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // For LR layout A is to the left of B; the path should exist
+        Assert.Contains("<path ", svg);
+        // Source right-side x = A.X + A.Width = padding + nodeWidth
+        double expectedX1 = _theme.DiagramPadding + diagram.Nodes["A"].Width;
+        Assert.Contains($"M {F(expectedX1)}", svg);
+    }
+
+    [Fact]
+    public void Render_VerticalLayout_EdgePathStartsOnBottomOfSource()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        _layout.Layout(diagram, _theme);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Source bottom-center y = A.Y + A.Height
+        double expectedY1 = diagram.Nodes["A"].Y + diagram.Nodes["A"].Height;
+        Assert.Contains(F(expectedY1), svg);
+    }
+
+    // ── Attribute escaping ────────────────────────────────────────────────────
+
+    [Fact]
+    public void Render_ThemeColorWithQuote_IsEscapedInAttribute()
+    {
+        // A crafted color that embeds a double-quote to attempt attribute injection
+        var theme = new Theme { BackgroundColor = @"#fff"";fill:red;x=""" };
+        var diagram = BuildAndLayout(new Diagram().AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, theme);
+
+        // The injected quote must be escaped as &quot; so the attribute value is properly terminated.
+        Assert.Contains("&quot;", svg);
+        // The raw double-quote must not appear immediately after the BackgroundColor value
+        // (i.e., no unescaped attribute break-out like fill="#fff";fill:red)
+        Assert.DoesNotContain("fill=\"#fff\";fill:red", svg);
+    }
+
     // ── Null guards ───────────────────────────────────────────────────────────
 
     [Fact]
@@ -130,4 +199,9 @@ public class SvgRendererTests
         Assert.Throws<ArgumentNullException>(() =>
             _renderer.Render(new Diagram(), null!));
     }
+
+    // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
+
+    private static string F(double v) =>
+        v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
 }

@@ -14,13 +14,16 @@ if (args.Length == 0 || args[0] is "--help" or "-h")
 string inputPath = args[0];
 
 string? outputPath = null;
-for (int i = 1; i < args.Length - 1; i++)
+int outputIndex = Array.FindIndex(args, 1, arg => arg is "--output" or "-o");
+if (outputIndex >= 0)
 {
-    if (args[i] is "--output" or "-o")
+    if (outputIndex == args.Length - 1 || args[outputIndex + 1].StartsWith("-", StringComparison.Ordinal))
     {
-        outputPath = args[i + 1];
-        break;
+        Console.Error.WriteLine("Error: --output/-o requires a file path argument.");
+        PrintHelp();
+        return 1;
     }
+    outputPath = args[outputIndex + 1];
 }
 
 if (!File.Exists(inputPath))

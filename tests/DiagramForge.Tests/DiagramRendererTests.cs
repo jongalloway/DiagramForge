@@ -112,6 +112,54 @@ public class DiagramRendererTests
             _renderer.Render("this is not a diagram"));
     }
 
+    // ── Constructor null guards ───────────────────────────────────────────────
+
+    [Fact]
+    public void Constructor_NullParsers_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DiagramRenderer(
+            parsers: null!,
+            layoutEngine: new DiagramForge.Layout.DefaultLayoutEngine(),
+            svgRenderer: new DiagramForge.Rendering.SvgRenderer(),
+            defaultTheme: new Theme()));
+    }
+
+    [Fact]
+    public void Constructor_NullLayoutEngine_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DiagramRenderer(
+            parsers: [],
+            layoutEngine: null!,
+            svgRenderer: new DiagramForge.Rendering.SvgRenderer(),
+            defaultTheme: new Theme()));
+    }
+
+    [Fact]
+    public void Constructor_NullSvgRenderer_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DiagramRenderer(
+            parsers: [],
+            layoutEngine: new DiagramForge.Layout.DefaultLayoutEngine(),
+            svgRenderer: null!,
+            defaultTheme: new Theme()));
+    }
+
+    [Fact]
+    public void Constructor_NullDefaultTheme_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => new DiagramRenderer(
+            parsers: [],
+            layoutEngine: new DiagramForge.Layout.DefaultLayoutEngine(),
+            svgRenderer: new DiagramForge.Rendering.SvgRenderer(),
+            defaultTheme: null!));
+    }
+
+    [Fact]
+    public void RegisterParser_NullParser_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => _renderer.RegisterParser(null!));
+    }
+
     // ── Test double ───────────────────────────────────────────────────────────
 
     private sealed class FakeParser(Action? onParse = null) : IDiagramParser

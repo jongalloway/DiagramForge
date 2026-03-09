@@ -102,7 +102,9 @@ public sealed class MermaidParser : IDiagramParser
         // We use a simple regex-free tokenizer for robustness.
 
         // Detect edge operators: -->, ---, -.->, -.-, ==>, ===
-        string[] edgeOps = ["-->", "--->", "-->>", "-.->", "-.-", "==>", "===", "---"];
+        // Ordered longest-first so that when two operators match at the same
+        // position the longer (more specific) one wins.
+        string[] edgeOps = ["--->", "-->>", "-.->", "==>", "===", "-->", "-.-", "---"];
 
         string? matchedOp = null;
         int opIndex = -1;
@@ -110,7 +112,8 @@ public sealed class MermaidParser : IDiagramParser
         foreach (var op in edgeOps)
         {
             int idx = line.IndexOf(op, StringComparison.Ordinal);
-            if (idx >= 0 && (opIndex < 0 || idx < opIndex))
+            // Prefer the match that starts earliest; on a tie, prefer the longer operator.
+            if (idx >= 0 && (opIndex < 0 || idx < opIndex || (idx == opIndex && op.Length > matchedOp!.Length)))
             {
                 opIndex = idx;
                 matchedOp = op;

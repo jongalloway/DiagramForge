@@ -5,7 +5,7 @@ namespace DiagramForge.Models;
 /// </summary>
 public class Theme
 {
-    public static Theme Default { get; } = new Theme();
+    public static Theme Default => new();
 
     // ── Palette ──────────────────────────────────────────────────────────────
     public string PrimaryColor { get; set; } = "#4F81BD";

@@ -49,6 +49,10 @@ public sealed class DiagramRenderer
         ISvgRenderer svgRenderer,
         Theme defaultTheme)
     {
+        ArgumentNullException.ThrowIfNull(parsers);
+        ArgumentNullException.ThrowIfNull(layoutEngine);
+        ArgumentNullException.ThrowIfNull(svgRenderer);
+        ArgumentNullException.ThrowIfNull(defaultTheme);
         _parsers = [.. parsers];
         _layoutEngine = layoutEngine;
         _svgRenderer = svgRenderer;
@@ -89,6 +93,7 @@ public sealed class DiagramRenderer
     /// </summary>
     public DiagramRenderer RegisterParser(IDiagramParser parser)
     {
+        ArgumentNullException.ThrowIfNull(parser);
         _parsers.Insert(0, parser);
         return this;
     }
