@@ -138,7 +138,7 @@ jobs:
 
       - name: Upload Inkscape PNGs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: inkscape-exports
           path: inkscape-exports/
@@ -147,7 +147,7 @@ jobs:
 
       - name: Upload source SVGs
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: source-svgs
           path: artifacts/test-results/snapshots/
