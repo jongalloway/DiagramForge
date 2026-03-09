@@ -98,7 +98,7 @@ jobs:
       # that's when you most want to eyeball the rendered output.
       - name: Upload rendered snapshots
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: snapshots
           path: artifacts/test-results/snapshots/
@@ -107,7 +107,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: test-results
           path: TestResults/
