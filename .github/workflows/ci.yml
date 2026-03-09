@@ -82,7 +82,7 @@ jobs:
 
           failed=()
           for f in "${files[@]}"; do
-            if ! rsvg-convert "$f" -o /dev/null 2>&1; then
+            if ! rsvg-convert "$f" > /dev/null 2>&1; then
               failed+=("$f")
               echo "::error file=$f::librsvg failed to render"
             fi
