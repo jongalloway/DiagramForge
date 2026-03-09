@@ -1,0 +1,75 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+# Cancel superseded runs on the same PR/branch — saves minutes when pushing fixups.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      # Belt-and-braces: the snapshot suite already refuses UPDATE_SNAPSHOTS when
+      # CI is detected, but pin it off explicitly so a stray env var on the agent
+      # can't auto-accept baselines.
+      UPDATE_SNAPSHOTS: '0'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          # Reads global.json for the resolved version; cache keys off the CPM lock.
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: Directory.Packages.props
+
+      - name: Restore
+        run: dotnet restore DiagramForge.slnx
+
+      - name: Build
+        run: dotnet build DiagramForge.slnx --no-restore --configuration Release
+
+      - name: Test
+        run: >
+          dotnet test DiagramForge.slnx
+          --no-build
+          --configuration Release
+          --logger "trx;LogFilePrefix=results"
+          --results-directory TestResults
+
+      # Upload the snapshot .actual.svg gallery even (especially) when tests fail —
+      # that's when you most want to eyeball the rendered output.
+      - name: Upload rendered snapshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: snapshots
+          path: artifacts/test-results/snapshots/
+          if-no-files-found: ignore
+          retention-days: 7
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults/
+          if-no-files-found: warn
+          retention-days: 7
