@@ -85,11 +85,31 @@ public class MermaidParserTests
     }
 
     [Fact]
-    public void Parse_DashedEdge_SetsLineStyleToDashed()
+    public void Parse_DottedEdge_SetsLineStyleToDotted()
     {
         var diagram = _parser.Parse("flowchart LR\n  A -.-> B");
 
-        Assert.Equal(EdgeLineStyle.Dashed, diagram.Edges[0].LineStyle);
+        Assert.Equal(EdgeLineStyle.Dotted, diagram.Edges[0].LineStyle);
+    }
+
+    [Fact]
+    public void Parse_ThickEdge_SetsLineStyleToThick()
+    {
+        var diagram = _parser.Parse("flowchart LR\n  A ==> B");
+
+        Assert.Equal(EdgeLineStyle.Thick, diagram.Edges[0].LineStyle);
+    }
+
+    [Theory]
+    [InlineData("flowchart LR\n  A[Rect] --> B", "A", Shape.Rectangle)]
+    [InlineData("flowchart LR\n  A(Round) --> B", "A", Shape.RoundedRectangle)]
+    [InlineData("flowchart LR\n  A{Diamond} --> B", "A", Shape.Diamond)]
+    [InlineData("flowchart LR\n  A((Circle)) --> B", "A", Shape.Circle)]
+    public void Parse_NodeShape_IsSetFromBracketSyntax(string text, string nodeId, Shape expectedShape)
+    {
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(expectedShape, diagram.Nodes[nodeId].Shape);
     }
 
     [Fact]

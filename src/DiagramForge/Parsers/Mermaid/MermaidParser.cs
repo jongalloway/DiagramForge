@@ -145,17 +145,22 @@ public sealed class MermaidParser : IDiagramParser
                 }
             }
 
-            var (srcId, srcLabel) = ParseNodeDeclaration(left);
-            var (tgtId, tgtLabel) = ParseNodeDeclaration(right);
+            var (srcId, srcLabel, srcShape) = ParseNodeDeclaration(left);
+            var (tgtId, tgtLabel, tgtShape) = ParseNodeDeclaration(right);
 
-            getOrCreate(srcId, srcLabel);
-            getOrCreate(tgtId, tgtLabel);
+            var srcNode = getOrCreate(srcId, srcLabel);
+            if (srcShape.HasValue) srcNode.Shape = srcShape.Value;
+
+            var tgtNode = getOrCreate(tgtId, tgtLabel);
+            if (tgtShape.HasValue) tgtNode.Shape = tgtShape.Value;
 
             var edge = new Edge(srcId, tgtId);
             if (edgeLabel is not null)
                 edge.Label = new Label(edgeLabel);
 
-            edge.LineStyle = matchedOp.Contains('.') ? EdgeLineStyle.Dashed : EdgeLineStyle.Solid;
+            edge.LineStyle = matchedOp.Contains('=') ? EdgeLineStyle.Thick
+                           : matchedOp.Contains('.') ? EdgeLineStyle.Dotted
+                           : EdgeLineStyle.Solid;
             edge.ArrowHead = matchedOp.Contains('>') ? ArrowHeadStyle.Arrow : ArrowHeadStyle.None;
 
             builder.AddEdge(edge);
@@ -163,9 +168,12 @@ public sealed class MermaidParser : IDiagramParser
         else
         {
             // Standalone node declaration
-            var (id, label) = ParseNodeDeclaration(line);
+            var (id, label, shape) = ParseNodeDeclaration(line);
             if (!string.IsNullOrEmpty(id))
-                getOrCreate(id, label);
+            {
+                var node = getOrCreate(id, label);
+                if (shape.HasValue) node.Shape = shape.Value;
+            }
         }
     }
 
@@ -173,11 +181,12 @@ public sealed class MermaidParser : IDiagramParser
     /// Parses a Mermaid node declaration such as:
     /// <c>A</c>, <c>A[Label]</c>, <c>A(Label)</c>, <c>A{Label}</c>, <c>A((Label))</c>
     /// </summary>
-    private static (string id, string label) ParseNodeDeclaration(string token)
+    /// <returns>The node ID, display label, and shape inferred from bracket syntax (null if no brackets).</returns>
+    private static (string id, string label, Shape? shape) ParseNodeDeclaration(string token)
     {
         token = token.Trim();
         if (string.IsNullOrEmpty(token))
-            return (string.Empty, string.Empty);
+            return (string.Empty, string.Empty, null);
 
         // Identify the node id (alphanumeric prefix before any bracket)
         int bracketStart = -1;
@@ -192,10 +201,17 @@ public sealed class MermaidParser : IDiagramParser
         }
 
         if (bracketStart < 0)
-            return (token, token);
+            return (token, token, null);
 
         var id = token[..bracketStart].Trim();
         var rest = token[bracketStart..].Trim();
+
+        // Infer shape from opening bracket — check "((" before "(" so the circle case wins.
+        Shape? shape = rest.StartsWith("((", StringComparison.Ordinal) ? Shape.Circle
+                     : rest[0] == '[' ? Shape.Rectangle
+                     : rest[0] == '(' ? Shape.RoundedRectangle
+                     : rest[0] == '{' ? Shape.Diamond
+                     : (Shape?)null;
 
         // Strip surrounding brackets/parens/braces
         var label = rest
@@ -203,7 +219,6 @@ public sealed class MermaidParser : IDiagramParser
             .TrimEnd(']', ')', '}', '<')
             .Trim('"');
 
-        // Determine shape from bracket style
-        return (id, string.IsNullOrEmpty(label) ? id : label);
+        return (id, string.IsNullOrEmpty(label) ? id : label, shape);
     }
 }

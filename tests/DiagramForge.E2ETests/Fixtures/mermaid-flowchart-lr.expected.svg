@@ -8,15 +8,15 @@
   <path d="M 144.00,44.00 C 168.00,44.00 180.00,44.00 204.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
   <path d="M 324.00,44.00 C 348.00,44.00 360.00,44.00 384.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Start</text>
   </g>
   <g transform="translate(204.00,24.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Process</text>
   </g>
   <g transform="translate(384.00,24.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">End</text>
   </g>
 </svg>

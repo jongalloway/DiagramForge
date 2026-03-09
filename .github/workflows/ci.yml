@@ -75,8 +75,8 @@ jobs:
           shopt -s nullglob
           files=(artifacts/test-results/snapshots/*.actual.svg)
           if (( ${#files[@]} == 0 )); then
-            echo "::warning::No .actual.svg artifacts found — tests may not have produced output"
-            exit 0
+            echo "::error::No .actual.svg artifacts found — the test step must produce rendered output before this gate can verify it"
+            exit 1
           fi
           echo "Checking ${#files[@]} rendered SVG(s)"
 

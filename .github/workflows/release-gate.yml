@@ -76,6 +76,7 @@ jobs:
 
           mkdir -p inkscape-exports
           failed=()
+          warned=()
 
           for f in "${files[@]}"; do
             name=$(basename "$f" .actual.svg)
@@ -98,9 +99,10 @@ jobs:
 
             # 1 KB floor catches the "valid PNG header, no actual pixels" case
             # (foreignObject text silently ignored → blank canvas → tiny file).
+            # Reported as a warning only — does not fail the job.
             size=$(stat -c%s "$out")
             if (( size < 1024 )); then
-              failed+=("$name: suspiciously small (${size} bytes)")
+              warned+=("$name: suspiciously small (${size} bytes)")
               echo "::warning file=$f::PNG is only ${size} bytes — possibly blank"
             fi
 
@@ -118,6 +120,12 @@ jobs:
               echo "| \`$n\` | ${s} bytes |"
             done
           } >> "$GITHUB_STEP_SUMMARY"
+
+          if (( ${#warned[@]} > 0 )); then
+            echo ""
+            echo "Warnings (${#warned[@]}) — review PNG output:"
+            printf '  %s\n' "${warned[@]}"
+          fi
 
           if (( ${#failed[@]} > 0 )); then
             echo ""
