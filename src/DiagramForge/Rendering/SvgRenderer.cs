@@ -98,7 +98,11 @@ public sealed class SvgRenderer : ISvgRenderer
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(node.Height / 2)}" ry="{F(node.Height / 2)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
 
-            default: // Rectangle / RoundedRectangle
+            case Shape.Rectangle:
+                sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+                break;
+
+            default: // RoundedRectangle and anything else
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(rx)}" ry="{F(rx)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
         }
@@ -176,9 +180,10 @@ public sealed class SvgRenderer : ISvgRenderer
         string strokeColor = Escape(edge.Color ?? theme.EdgeColor);
         string strokeDash = edge.LineStyle == EdgeLineStyle.Dashed ? """ stroke-dasharray="6,3" """ :
                             edge.LineStyle == EdgeLineStyle.Dotted ? """ stroke-dasharray="2,3" """ : " ";
+        double strokeWidth = edge.LineStyle == EdgeLineStyle.Thick ? theme.StrokeWidth * 2 : theme.StrokeWidth;
         string markerEnd = edge.ArrowHead != ArrowHeadStyle.None ? """ marker-end="url(#arrowhead)" """ : " ";
 
-        sb.AppendLine($"""  <path d="M {F(x1)},{F(y1)} C {cp1} {cp2} {F(x2)},{F(y2)}" fill="none" stroke="{strokeColor}" stroke-width="{F(theme.StrokeWidth)}"{strokeDash}{markerEnd}/>""");
+        sb.AppendLine($"""  <path d="M {F(x1)},{F(y1)} C {cp1} {cp2} {F(x2)},{F(y2)}" fill="none" stroke="{strokeColor}" stroke-width="{F(strokeWidth)}"{strokeDash}{markerEnd}/>""");
 
         // Edge label
         if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))

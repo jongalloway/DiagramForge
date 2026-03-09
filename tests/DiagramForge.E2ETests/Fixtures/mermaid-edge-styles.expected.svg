@@ -6,9 +6,9 @@
   </defs>
   <rect width="888.00" height="88.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
   <path d="M 144.00,44.00 C 168.00,44.00 180.00,44.00 204.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 324.00,44.00 C 348.00,44.00 360.00,44.00 384.00,44.00" fill="none" stroke="#555555" stroke-width="1.50" stroke-dasharray="6,3"  marker-end="url(#arrowhead)" />
+  <path d="M 324.00,44.00 C 348.00,44.00 360.00,44.00 384.00,44.00" fill="none" stroke="#555555" stroke-width="1.50" stroke-dasharray="2,3"  marker-end="url(#arrowhead)" />
   <path d="M 504.00,44.00 C 528.00,44.00 540.00,44.00 564.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  />
-  <path d="M 684.00,44.00 C 708.00,44.00 720.00,44.00 744.00,44.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 684.00,44.00 C 708.00,44.00 720.00,44.00 744.00,44.00" fill="none" stroke="#555555" stroke-width="3.00"  marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
     <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">A</text>

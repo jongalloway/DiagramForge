@@ -54,6 +54,46 @@ jobs:
           --logger "trx;LogFilePrefix=results"
           --results-directory TestResults
 
+      # Gate the "Real SVG" claim: every rendered fixture must pass through
+      # a non-browser renderer. librsvg has no HTML engine — <foreignObject>
+      # with XHTML guts becomes an empty box, and anything relying on CSS
+      # cascade or <style> blocks falls apart. If this step is green, the
+      # output renders in GNOME thumbnails, GIMP import, and ImageMagick's
+      # SVG delegate.
+      #
+      # Runs even when the snapshot-diff step above fails: artifacts are
+      # written before assertions, and "the new output differs" and "the new
+      # output is unrenderable" are independent facts worth knowing separately.
+      - name: Verify SVGs render in librsvg
+        if: always()
+        run: |
+          set -euo pipefail
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends librsvg2-bin
+          rsvg-convert --version
+
+          shopt -s nullglob
+          files=(artifacts/test-results/snapshots/*.actual.svg)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::No .actual.svg artifacts found — the test step must produce rendered output before this gate can verify it"
+            exit 1
+          fi
+          echo "Checking ${#files[@]} rendered SVG(s)"
+
+          failed=()
+          for f in "${files[@]}"; do
+            if ! rsvg-convert "$f" > /dev/null 2>&1; then
+              failed+=("$f")
+              echo "::error file=$f::librsvg failed to render"
+            fi
+          done
+
+          if (( ${#failed[@]} > 0 )); then
+            echo "${#failed[@]} file(s) failed librsvg rendering"
+            exit 1
+          fi
+          echo "All ${#files[@]} files rendered cleanly"
+
       # Upload the snapshot .actual.svg gallery even (especially) when tests fail —
       # that's when you most want to eyeball the rendered output.
       - name: Upload rendered snapshots

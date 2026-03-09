@@ -38,6 +38,7 @@ public enum EdgeLineStyle
     Solid,
     Dashed,
     Dotted,
+    Thick,
 }
 
 public enum ArrowHeadStyle

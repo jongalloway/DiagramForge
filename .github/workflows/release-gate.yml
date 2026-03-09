@@ -1,0 +1,155 @@
+name: Release Gate
+
+# Manual-dispatch verification of the "opens in Inkscape" claim in README.md.
+#
+# Not in the per-PR path because Inkscape + GTK deps is ~300 MB and cold start
+# is ~2 s per file. librsvg (in ci.yml) catches the same classes of failure at
+# a fraction of the cost — this workflow exists to verify the specific marketing
+# claim before a release, and to produce a PNG gallery a human can eyeball.
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch, tag, or SHA to gate'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  inkscape:
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+      UPDATE_SNAPSHOTS: '0'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || github.ref }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          global-json-file: global.json
+          cache: true
+          cache-dependency-path: Directory.Packages.props
+
+      - name: Restore
+        run: dotnet restore DiagramForge.slnx
+
+      - name: Build
+        run: dotnet build DiagramForge.slnx --no-restore --configuration Release
+
+      # Only need the E2E project — it writes artifacts/test-results/snapshots/
+      # as a side effect before any assertions fire.
+      - name: Render fixtures
+        run: >
+          dotnet test tests/DiagramForge.E2ETests
+          --no-build
+          --configuration Release
+        continue-on-error: true   # snapshot diff failures are ci.yml's problem, not this workflow's
+
+      - name: Install Inkscape
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y --no-install-recommends inkscape
+          inkscape --version
+
+      - name: Export via Inkscape headless
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+
+          files=(artifacts/test-results/snapshots/*.actual.svg)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::No .actual.svg artifacts found — build or test step failed to produce output"
+            exit 1
+          fi
+          echo "Exporting ${#files[@]} SVG(s) through Inkscape"
+
+          mkdir -p inkscape-exports
+          failed=()
+          warned=()
+
+          for f in "${files[@]}"; do
+            name=$(basename "$f" .actual.svg)
+            out="inkscape-exports/${name}.png"
+
+            # --export-area-page keeps the canvas bounds the SVG declares,
+            # rather than cropping to drawn content. Empty/zero-size output
+            # would indicate Inkscape silently dropped everything.
+            if ! inkscape "$f" --export-type=png --export-area-page --export-filename="$out" 2>&1; then
+              failed+=("$name: inkscape exited non-zero")
+              echo "::error file=$f::Inkscape export failed"
+              continue
+            fi
+
+            if [[ ! -s "$out" ]]; then
+              failed+=("$name: produced empty file")
+              echo "::error file=$f::Inkscape produced a zero-byte PNG"
+              continue
+            fi
+
+            # 1 KB floor catches the "valid PNG header, no actual pixels" case
+            # (foreignObject text silently ignored → blank canvas → tiny file).
+            # Reported as a warning only — does not fail the job.
+            size=$(stat -c%s "$out")
+            if (( size < 1024 )); then
+              warned+=("$name: suspiciously small (${size} bytes)")
+              echo "::warning file=$f::PNG is only ${size} bytes — possibly blank"
+            fi
+
+            echo "  ✓ ${name} → ${size} bytes"
+          done
+
+          {
+            echo "## Inkscape Release Gate"
+            echo ""
+            echo "| Fixture | PNG size |"
+            echo "| --- | --- |"
+            for p in inkscape-exports/*.png; do
+              n=$(basename "$p" .png)
+              s=$(stat -c%s "$p")
+              echo "| \`$n\` | ${s} bytes |"
+            done
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if (( ${#warned[@]} > 0 )); then
+            echo ""
+            echo "Warnings (${#warned[@]}) — review PNG output:"
+            printf '  %s\n' "${warned[@]}"
+          fi
+
+          if (( ${#failed[@]} > 0 )); then
+            echo ""
+            echo "Failures:"
+            printf '  %s\n' "${failed[@]}"
+            exit 1
+          fi
+          echo ""
+          echo "All ${#files[@]} fixtures exported cleanly"
+
+      - name: Upload Inkscape PNGs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: inkscape-exports
+          path: inkscape-exports/
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload source SVGs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-svgs
+          path: artifacts/test-results/snapshots/
+          if-no-files-found: warn
+          retention-days: 30
