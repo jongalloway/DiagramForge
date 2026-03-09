@@ -1,0 +1,4 @@
+diagram: hierarchy
+  CEO:
+    - CTO
+    - CFO

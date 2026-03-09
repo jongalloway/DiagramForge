@@ -4,6 +4,7 @@
     <Project Path="src/DiagramForge/DiagramForge.csproj" />
   </Folder>
   <Folder Name="/tests/">
+    <Project Path="tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj" />
     <Project Path="tests/DiagramForge.Tests/DiagramForge.Tests.csproj" />
   </Folder>
 </Solution>
