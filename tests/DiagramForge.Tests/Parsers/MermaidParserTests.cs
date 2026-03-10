@@ -17,6 +17,7 @@ public class MermaidParserTests
     [InlineData("graph TD\n  A --> B")]
     [InlineData("block-beta\n  A B C")]
     [InlineData("block\n  A B C")]
+    [InlineData("sequenceDiagram\n    A->>B: Hello")]
     public void CanParse_ReturnsTrue_ForMermaidDiagrams(string diagramText)
     {
         Assert.True(_parser.CanParse(diagramText));
@@ -40,7 +41,6 @@ public class MermaidParserTests
     [InlineData("diagram: process\nsteps:\n  - A")]
     [InlineData("")]
     [InlineData("   ")]
-    [InlineData("sequenceDiagram\nA->>B: hello")]
     public void CanParse_ReturnsFalse_ForNonMermaidInput(string text)
     {
         Assert.False(_parser.CanParse(text));
@@ -327,7 +327,7 @@ public class MermaidParserTests
     public void Parse_UnsupportedMermaidDiagramType_ThrowsDiagramParseException()
     {
         var ex = Assert.Throws<DiagramParseException>(() =>
-            _parser.Parse("sequenceDiagram\n  A->>B: hello"));
+            _parser.Parse("classDiagram\n  A --> B"));
 
         Assert.Contains("unsupported Mermaid diagram type", ex.Message, StringComparison.OrdinalIgnoreCase);
     }

@@ -56,6 +56,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (string.Equals(diagram.DiagramType, "sequencediagram", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutSequenceDiagram(diagram, theme, minW, nodeH, hGap, pad);
+            return;
+        }
+
         // ── Sizing pass ───────────────────────────────────────────────────────
         // Compute each node's width from its label so text does not overflow the
         // shape. MinNodeWidth remains a floor so short labels ("A", "End") do not
@@ -210,6 +216,40 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }
                 foreach (var g in diagram.Groups) { g.X += shiftX; g.Y += shiftY; }
             }
+        }
+    }
+
+    private static void LayoutSequenceDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double hGap,
+        double pad)
+    {
+        // Size each participant node from its label.
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
+            node.Height = nodeH;
+        }
+
+        // Order participants by their declared index (stored during parsing).
+        var ordered = diagram.Nodes.Values
+            .OrderBy(n => n.Metadata.TryGetValue("sequence:participantIndex", out var v)
+                ? Convert.ToInt32(v, System.Globalization.CultureInfo.InvariantCulture)
+                : int.MaxValue)
+            .ToList();
+
+        // Place participants in a single row across the top of the diagram.
+        double runX = pad;
+        foreach (var node in ordered)
+        {
+            node.X = runX;
+            node.Y = pad;
+            runX += node.Width + hGap;
         }
     }
 

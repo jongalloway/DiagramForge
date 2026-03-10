@@ -55,7 +55,6 @@ internal sealed class MermaidDocument
     // MermaidParser emit a specific "unsupported type" error instead of a generic one.
     private static readonly HashSet<string> KnownUnsupportedMermaidKeywords = new(StringComparer.Ordinal)
     {
-        "sequencediagram",
         "classdiagram",
         "erdiagram",
         "journey",
@@ -121,6 +120,12 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("block-beta", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.BlockDiagram;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("sequencediagram", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.SequenceDiagram;
             return true;
         }
 
