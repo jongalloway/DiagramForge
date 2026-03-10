@@ -17,9 +17,9 @@ public class MermaidParserTests
     [InlineData("graph TD\n  A --> B")]
     [InlineData("block-beta\n  A B C")]
     [InlineData("block\n  A B C")]
-    public void CanParse_ReturnsTrue_ForMermaidFlowcharts(string text)
+    public void CanParse_ReturnsTrue_ForMermaidDiagrams(string diagramText)
     {
-        Assert.True(_parser.CanParse(text));
+        Assert.True(_parser.CanParse(diagramText));
     }
 
     [Fact]

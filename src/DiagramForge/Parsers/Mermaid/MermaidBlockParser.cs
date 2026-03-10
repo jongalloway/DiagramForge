@@ -59,9 +59,14 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
             if (line.StartsWith("columns ", StringComparison.OrdinalIgnoreCase))
             {
                 var value = line[8..].Trim();
-                configuredColumns = value.Equals("auto", StringComparison.OrdinalIgnoreCase)
-                    ? -1
-                    : int.Parse(value, CultureInfo.InvariantCulture);
+                if (value.Equals("auto", StringComparison.OrdinalIgnoreCase))
+                {
+                    configuredColumns = -1;
+                }
+                else if (!int.TryParse(value, CultureInfo.InvariantCulture, out configuredColumns) || configuredColumns < 1)
+                {
+                    throw new DiagramParseException($"Invalid column count '{value}': must be a positive integer or 'auto'.");
+                }
                 AdvanceToNextRow();
                 continue;
             }
@@ -205,7 +210,9 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
 
         if (token.StartsWith("space:", StringComparison.OrdinalIgnoreCase))
         {
-            int spaceSpan = int.Parse(token[6..], CultureInfo.InvariantCulture);
+            var spaceSpanStr = token[6..];
+            if (!int.TryParse(spaceSpanStr, CultureInfo.InvariantCulture, out int spaceSpan) || spaceSpan < 1)
+                throw new DiagramParseException($"Invalid space span '{spaceSpanStr}': must be a positive integer.");
             return new BlockToken("", "", Shape.Rectangle, spaceSpan, IsSpace: true, ArrowDirection: null);
         }
 
@@ -213,7 +220,9 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
         int spanSeparator = FindTrailingSpanSeparator(token);
         if (spanSeparator >= 0)
         {
-            span = int.Parse(token[(spanSeparator + 1)..], CultureInfo.InvariantCulture);
+            var spanStr = token[(spanSeparator + 1)..];
+            if (!int.TryParse(spanStr, CultureInfo.InvariantCulture, out span) || span < 1)
+                throw new DiagramParseException($"Invalid span value '{spanStr}': must be a positive integer.");
             token = token[..spanSeparator];
         }
 

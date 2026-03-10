@@ -224,10 +224,6 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             node.Height = isArrow ? nodeH + 8 : nodeH;
         }
 
-        int columnCount = diagram.Metadata.TryGetValue(BlockColumnCountKey, out var columnValue)
-            ? Convert.ToInt32(columnValue, System.Globalization.CultureInfo.InvariantCulture)
-            : 1;
-
         var placedNodes = diagram.Nodes.Values
             .Where(node => node.Metadata.ContainsKey("block:row") && node.Metadata.ContainsKey("block:column"))
             .ToList();
