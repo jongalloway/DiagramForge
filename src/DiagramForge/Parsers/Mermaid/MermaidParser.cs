@@ -26,7 +26,10 @@ public sealed class MermaidParser : IDiagramParser
     /// <inheritdoc/>
     public bool CanParse(string diagramText)
     {
-        return MermaidDocument.TryParse(diagramText, out _);
+        if (!MermaidDocument.TryParse(diagramText, out var document))
+            return false;
+
+        return _diagramParsers.Any(p => p.CanParse(document.Kind));
     }
 
     /// <inheritdoc/>
@@ -36,8 +39,10 @@ public sealed class MermaidParser : IDiagramParser
         var parser = _diagramParsers.FirstOrDefault(candidate => candidate.CanParse(document.Kind));
         if (parser is null)
         {
+            var spaceIndex = document.HeaderLine.IndexOf(' ');
+            var diagramTypeToken = spaceIndex >= 0 ? document.HeaderLine[..spaceIndex] : document.HeaderLine;
             throw new DiagramParseException(
-                $"Mermaid diagram type '{document.Kind}' is not supported. " +
+                $"Unsupported Mermaid diagram type '{diagramTypeToken}'. " +
                 $"Supported Mermaid types: {string.Join(", ", SupportedDiagramTypes)}");
         }
 

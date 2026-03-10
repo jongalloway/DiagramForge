@@ -17,7 +17,7 @@ internal sealed class MermaidDocument
 
     public string[] Lines { get; }
 
-    public static bool TryParse(string diagramText, out MermaidDocument? document)
+    public static bool TryParse(string diagramText, [System.Diagnostics.CodeAnalysis.NotNullWhen(true)] out MermaidDocument? document)
     {
         document = null;
         if (string.IsNullOrWhiteSpace(diagramText))
@@ -40,12 +40,50 @@ internal sealed class MermaidDocument
         return true;
     }
 
+    // Known Mermaid diagram-type keywords (lowercased) that are recognized but not yet
+    // supported by any registered IMermaidDiagramParser. Detecting them as Unknown lets
+    // MermaidParser emit a specific "unsupported type" error instead of a generic one.
+    private static readonly HashSet<string> KnownUnsupportedMermaidKeywords = new(StringComparer.Ordinal)
+    {
+        "sequencediagram",
+        "classdiagram",
+        "statediagram",
+        "statediagram-v2",
+        "erdiagram",
+        "journey",
+        "gantt",
+        "pie",
+        "gitgraph",
+        "mindmap",
+        "timeline",
+        "quadrantchart",
+        "requirementdiagram",
+        "block-beta",
+        "packet-beta",
+        "architecture-beta",
+        "kanban",
+        "sankey-beta",
+        "xychart-beta",
+        "zenuml",
+    };
+
     public static MermaidDocument Parse(string diagramText)
     {
-        if (TryParse(diagramText, out var document) && document is not null)
+        if (TryParse(diagramText, out var document))
             return document;
 
-        throw new DiagramParseException("Diagram text cannot be null, empty, or an unsupported Mermaid diagram type.");
+        if (string.IsNullOrWhiteSpace(diagramText))
+            throw new DiagramParseException("Diagram text cannot be null or whitespace.");
+
+        var firstContentLine = diagramText
+            .Split('\n')
+            .Select(line => line.Trim())
+            .FirstOrDefault(line => !string.IsNullOrEmpty(line) && !line.StartsWith("%%", StringComparison.Ordinal));
+
+        if (firstContentLine is null)
+            throw new DiagramParseException("Diagram text cannot be empty or contain only comments.");
+
+        throw new DiagramParseException($"Unsupported Mermaid diagram type '{firstContentLine}'.");
     }
 
     private static bool TryDetectKind(string headerLine, out MermaidDiagramKind kind)
@@ -57,6 +95,14 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("flowchart", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.Flowchart;
+            return true;
+        }
+
+        var spaceIndex = normalizedHeader.IndexOf(' ');
+        var keyword = spaceIndex >= 0 ? normalizedHeader[..spaceIndex] : normalizedHeader;
+        if (KnownUnsupportedMermaidKeywords.Contains(keyword))
+        {
+            kind = MermaidDiagramKind.Unknown;
             return true;
         }
 
