@@ -43,6 +43,10 @@ public sealed class SvgRenderer : ISvgRenderer
         foreach (var group in diagram.Groups)
             AppendGroup(sb, group, theme);
 
+        // Sequence-diagram lifelines: dashed vertical lines below each participant box.
+        if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
+            AppendLifelines(sb, diagram, theme, height);
+
         // Edges (render behind nodes)
         foreach (var edge in diagram.Edges)
         {
@@ -239,6 +243,19 @@ public sealed class SvgRenderer : ISvgRenderer
         if (!string.IsNullOrWhiteSpace(group.Label.Text))
         {
             sb.AppendLine($"""  <text x="{F(group.X + 8)}" y="{F(group.Y + theme.FontSize + 4)}" font-family="{Escape(theme.FontFamily)}" font-size="{F(theme.FontSize * 0.9)}" fill="{Escape(theme.SubtleTextColor)}" font-weight="bold">{Escape(group.Label.Text)}</text>""");
+        }
+    }
+
+    private static void AppendLifelines(StringBuilder sb, Diagram diagram, Theme theme, double canvasHeight)
+    {
+        string stroke = Escape(theme.EdgeColor);
+        double bottomY = canvasHeight - theme.DiagramPadding;
+
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double cx = node.X + node.Width / 2;
+            double topY = node.Y + node.Height;
+            sb.AppendLine($"""  <line x1="{F(cx)}" y1="{F(topY)}" x2="{F(cx)}" y2="{F(bottomY)}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}" stroke-dasharray="6,3"/>""");
         }
     }
 
