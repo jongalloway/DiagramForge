@@ -56,6 +56,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (string.Equals(diagram.DiagramType, "timeline", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutTimelineDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
+            return;
+        }
+
         if (string.Equals(diagram.DiagramType, "architecture", StringComparison.OrdinalIgnoreCase))
         {
             LayoutArchitectureDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
@@ -478,6 +484,78 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             node.X = slotX;
             node.Y = rowStarts[row] + (rowHeights[row] - node.Height) / 2;
             node.Width = Math.Max(node.Width, slotWidth);
+        }
+    }
+
+    private static void LayoutTimelineDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double hGap,
+        double vGap,
+        double pad)
+    {
+        // Size all nodes from their labels.
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
+            node.Height = nodeH;
+        }
+
+        // Collect period nodes in declaration order.
+        var periodNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("timeline:kind", out var k) && "period".Equals(k as string, StringComparison.Ordinal))
+            .OrderBy(n => Convert.ToInt32(n.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture))
+            .ToList();
+
+        if (periodNodes.Count == 0)
+            return;
+
+        // Collect event nodes grouped by period index.
+        var eventNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("timeline:kind", out var k) && "event".Equals(k as string, StringComparison.Ordinal))
+            .ToList();
+
+        // Use a uniform column width so all period columns are evenly spaced.
+        // The column must be wide enough for the widest node in any column.
+        double colWidth = periodNodes.Max(n => n.Width);
+        if (eventNodes.Count > 0)
+            colWidth = Math.Max(colWidth, eventNodes.Max(n => n.Width));
+
+        // When a title is present, shift the first row down to clear it. The title
+        // is rendered by SvgRenderer at y=(DiagramPadding - 4); it needs
+        // (TitleFontSize + 8) of vertical room, matching the identical offset that
+        // SvgRenderer.ComputeHeight already reserves at the canvas bottom.
+        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+
+        // Place period nodes in a single horizontal row.
+        double periodY = pad + titleOffset;
+        for (int i = 0; i < periodNodes.Count; i++)
+        {
+            var pn = periodNodes[i];
+            pn.X = pad + i * (colWidth + hGap);
+            pn.Y = periodY;
+            pn.Width = colWidth;
+        }
+
+        // Place event nodes in columns below their owning period.
+        foreach (var eventNode in eventNodes)
+        {
+            int pIdx = Convert.ToInt32(eventNode.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture);
+            int eIdx = Convert.ToInt32(eventNode.Metadata["timeline:eventIndex"], System.Globalization.CultureInfo.InvariantCulture);
+
+            var periodNode = periodNodes.Find(n =>
+                Convert.ToInt32(n.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture) == pIdx);
+
+            if (periodNode is null)
+                continue;
+
+            eventNode.X = periodNode.X;
+            eventNode.Y = periodY + nodeH + vGap + eIdx * (nodeH + vGap);
+            eventNode.Width = colWidth;
         }
     }
 
