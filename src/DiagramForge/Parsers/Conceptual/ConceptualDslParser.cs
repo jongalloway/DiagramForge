@@ -9,13 +9,13 @@ namespace DiagramForge.Parsers.Conceptual;
 /// <remarks>
 /// <para>The DSL is a lightweight YAML-inspired text format. Example:</para>
 /// <code>
-/// diagram: process
-/// steps:
-///   - Discover
-///   - Plan
-///   - Build
+/// diagram: venn
+/// sets:
+///   - Engineering
+///   - Product
+///   - Design
 /// </code>
-/// <para>Supported diagram types: process, cycle, hierarchy, venn, list, matrix, pyramid.</para>
+/// <para>Supported diagram types: venn, matrix, pyramid.</para>
 /// </remarks>
 public sealed class ConceptualDslParser : IDiagramParser
 {
@@ -23,7 +23,7 @@ public sealed class ConceptualDslParser : IDiagramParser
 
     private static readonly HashSet<string> KnownTypes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "process", "cycle", "hierarchy", "venn", "list", "matrix", "pyramid",
+        "venn", "matrix", "pyramid",
     };
 
     /// <inheritdoc/>
@@ -66,15 +66,6 @@ public sealed class ConceptualDslParser : IDiagramParser
 
         switch (diagramType)
         {
-            case "process":
-                ParseListDiagram(lines, builder, "steps", diagramType);
-                break;
-            case "cycle":
-                ParseListDiagram(lines, builder, "items", diagramType);
-                break;
-            case "list":
-                ParseListDiagram(lines, builder, "items", diagramType);
-                break;
             case "venn":
                 ParseListDiagram(lines, builder, "sets", diagramType);
                 break;
@@ -83,9 +74,6 @@ public sealed class ConceptualDslParser : IDiagramParser
                 break;
             case "matrix":
                 ParseMatrixDiagram(lines, builder);
-                break;
-            case "hierarchy":
-                ParseHierarchyDiagram(lines, builder);
                 break;
             default:
                 throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'.");
@@ -102,7 +90,6 @@ public sealed class ConceptualDslParser : IDiagramParser
         string sectionKey,
         string diagramType)
     {
-        // Find the section (e.g., "steps:", "items:")
         int sectionLine = FindSectionLine(lines, sectionKey);
         if (sectionLine < 0)
             throw new DiagramParseException($"Missing required section '{sectionKey}:' in {diagramType} diagram.");
@@ -111,25 +98,11 @@ public sealed class ConceptualDslParser : IDiagramParser
         if (items.Count == 0)
             throw new DiagramParseException($"Section '{sectionKey}' contains no items.");
 
-        // Build nodes; for process/list add edges to form a chain
-        Node? previous = null;
-        bool isChained = diagramType is "process" or "cycle";
-
         for (int i = 0; i < items.Count; i++)
         {
             var nodeId = $"node_{i}";
-            var node = new Node(nodeId, items[i]);
-            builder.AddNode(node);
-
-            if (isChained && previous is not null)
-                builder.AddEdge(new Edge(previous.Id, nodeId));
-
-            previous = node;
+            builder.AddNode(new Node(nodeId, items[i]));
         }
-
-        // For cycle: connect the last node back to the first
-        if (diagramType == "cycle" && items.Count > 1)
-            builder.AddEdge(new Edge($"node_{items.Count - 1}", "node_0"));
 
         builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
     }
@@ -164,39 +137,6 @@ public sealed class ConceptualDslParser : IDiagramParser
         }
 
         builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
-    }
-
-    private static void ParseHierarchyDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
-    {
-        // Simple indentation-based hierarchy; each entry becomes a node.
-        // Lines with greater indentation are children of the nearest less-indented node.
-
-        var stack = new Stack<(int indent, string nodeId)>();
-        int nodeCounter = 0;
-
-        for (int i = 1; i < lines.Length; i++)
-        {
-            var raw = lines[i];
-            if (string.IsNullOrWhiteSpace(raw)) continue;
-
-            int indent = raw.Length - raw.TrimStart().Length;
-            var text = raw.Trim().TrimStart('-').Trim().TrimEnd(':');
-            if (string.IsNullOrEmpty(text)) continue;
-
-            var nodeId = $"node_{nodeCounter++}";
-            builder.AddNode(new Node(nodeId, text));
-
-            // Pop stack until we find a parent with smaller indent
-            while (stack.Count > 0 && stack.Peek().indent >= indent)
-                stack.Pop();
-
-            if (stack.Count > 0)
-                builder.AddEdge(new Edge(stack.Peek().nodeId, nodeId));
-
-            stack.Push((indent, nodeId));
-        }
-
-        builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.TopToBottom });
     }
 
     // ── Utilities ─────────────────────────────────────────────────────────────

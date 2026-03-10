@@ -62,7 +62,7 @@ The root container. One `Diagram` instance represents one rendered image.
 |----------|------|--------|-------------|
 | `Title` | `string?` | Parser | Optional human-readable title displayed above the diagram. |
 | `SourceSyntax` | `string?` | Parser | Identifies the parser that produced this model (e.g., `"mermaid"`, `"conceptual"`). |
-| `DiagramType` | `string?` | Parser | Specific diagram variant (e.g., `"flowchart"`, `"process"`, `"mindmap"`). |
+| `DiagramType` | `string?` | Parser | Specific diagram variant (e.g., `"flowchart"`, `"venn"`, `"mindmap"`). |
 | `Nodes` | `Dictionary<string, Node>` | Parser | All nodes, keyed by unique ID. |
 | `Edges` | `List<Edge>` | Parser | Directed connections between nodes. |
 | `Groups` | `List<Group>` | Parser | Subgraphs / containers that visually group nodes. |
