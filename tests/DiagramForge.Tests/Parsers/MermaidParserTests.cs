@@ -15,9 +15,11 @@ public class MermaidParserTests
     [InlineData("flowchart TB\n  A --> B")]
     [InlineData("flowchart LR\n  A --> B")]
     [InlineData("graph TD\n  A --> B")]
-    public void CanParse_ReturnsTrue_ForMermaidFlowcharts(string text)
+    [InlineData("block-beta\n  A B C")]
+    [InlineData("block\n  A B C")]
+    public void CanParse_ReturnsTrue_ForMermaidDiagrams(string diagramText)
     {
-        Assert.True(_parser.CanParse(text));
+        Assert.True(_parser.CanParse(diagramText));
     }
 
     [Fact]
@@ -178,6 +180,105 @@ public class MermaidParserTests
         var diagram = _parser.Parse("flowchart LR\n  A --> B");
 
         Assert.Equal("flowchart", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_SetsDiagramType()
+    {
+        var diagram = _parser.Parse("block-beta\n  A B C");
+
+        Assert.Equal("block", diagram.DiagramType);
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_AssignsGridCoordinatesAndSpan()
+    {
+        const string text = """
+            block-beta
+              columns 3
+              A B:2
+              C
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+        Assert.Equal(3, diagram.Metadata["block:columnCount"]);
+        Assert.Equal(0, diagram.Nodes["A"].Metadata["block:row"]);
+        Assert.Equal(0, diagram.Nodes["A"].Metadata["block:column"]);
+        Assert.Equal(1, diagram.Nodes["A"].Metadata["block:span"]);
+        Assert.Equal(0, diagram.Nodes["B"].Metadata["block:row"]);
+        Assert.Equal(1, diagram.Nodes["B"].Metadata["block:column"]);
+        Assert.Equal(2, diagram.Nodes["B"].Metadata["block:span"]);
+        Assert.Equal(1, diagram.Nodes["C"].Metadata["block:row"]);
+        Assert.Equal(0, diagram.Nodes["C"].Metadata["block:column"]);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_SpaceLeavesColumnGap()
+    {
+        const string text = """
+            block-beta
+              columns 3
+              A space B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(0, diagram.Nodes["A"].Metadata["block:column"]);
+        Assert.Equal(2, diagram.Nodes["B"].Metadata["block:column"]);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_ArrowBlockCapturesDirection()
+    {
+        const string text = """
+            block-beta
+              columns 3
+              A go<["Go"]>(right) B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(Shape.ArrowRight, diagram.Nodes["go"].Shape);
+        Assert.Equal("right", diagram.Nodes["go"].Metadata["block:arrowDirection"]);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_EdgeWithLabel_IsAttachedToEdge()
+    {
+        const string text = """
+            block-beta
+              columns 2
+              A B
+              A -- "sync" --> B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("A", edge.SourceId);
+        Assert.Equal("B", edge.TargetId);
+        Assert.Equal("sync", edge.Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_PlainEdge_DoesNotCreateOperatorNode()
+    {
+        const string text = """
+            block-beta
+              columns 2
+              A B
+              A --> B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("A", edge.SourceId);
+        Assert.Equal("B", edge.TargetId);
+        Assert.DoesNotContain("--", diagram.Nodes.Keys);
     }
 
     // ── Parse: error cases ────────────────────────────────────────────────────

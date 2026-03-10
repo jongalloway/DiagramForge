@@ -6,4 +6,5 @@ internal enum MermaidDiagramKind
     Flowchart,
     Mindmap,
     StateDiagram,
+    BlockDiagram,
 }

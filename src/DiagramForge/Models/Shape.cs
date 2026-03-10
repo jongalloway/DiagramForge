@@ -15,4 +15,8 @@ public enum Shape
     Parallelogram,
     Cylinder,
     Stadium,
+    ArrowRight,
+    ArrowLeft,
+    ArrowUp,
+    ArrowDown,
 }

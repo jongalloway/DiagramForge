@@ -1,0 +1,7 @@
+block-beta
+  columns 3
+  Frontend api<["HTTP"]>(right) Backend
+  space queue<["async"]>(down) space
+  Storage:3
+  Frontend --> Backend
+  Storage -- "events" --> Backend

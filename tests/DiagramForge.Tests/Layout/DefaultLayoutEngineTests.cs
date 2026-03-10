@@ -273,4 +273,58 @@ public class DefaultLayoutEngineTests
         Assert.True(group.X <= b.X && group.X + group.Width >= b.X + b.Width,
             $"group [{group.X}, {group.X + group.Width}] should enclose B [{b.X}, {b.X + b.Width}] after RL mirror");
     }
+
+    [Fact]
+    public void Layout_BlockDiagram_UsesGridColumnsAndSpans()
+    {
+        var diagram = new Diagram { DiagramType = "block" };
+        diagram.Metadata["block:columnCount"] = 3;
+
+        var a = new Node("A");
+        a.Metadata["block:row"] = 0;
+        a.Metadata["block:column"] = 0;
+        a.Metadata["block:span"] = 1;
+
+        var b = new Node("B");
+        b.Metadata["block:row"] = 0;
+        b.Metadata["block:column"] = 1;
+        b.Metadata["block:span"] = 2;
+
+        var c = new Node("C");
+        c.Metadata["block:row"] = 1;
+        c.Metadata["block:column"] = 0;
+        c.Metadata["block:span"] = 1;
+
+        diagram.AddNode(a).AddNode(b).AddNode(c);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.Equal(a.Y, b.Y);
+        Assert.True(c.Y > a.Y, $"Expected row 1 node Y {c.Y} to be greater than row 0 node Y {a.Y}");
+        Assert.True(b.Width > a.Width, $"Expected spanning node width {b.Width} to exceed single-slot node width {a.Width}");
+    }
+
+    [Fact]
+    public void Layout_BlockDiagram_SpaceGapMovesNodeToLaterColumn()
+    {
+        var diagram = new Diagram { DiagramType = "block" };
+        diagram.Metadata["block:columnCount"] = 3;
+
+        var left = new Node("left");
+        left.Metadata["block:row"] = 0;
+        left.Metadata["block:column"] = 0;
+        left.Metadata["block:span"] = 1;
+
+        var right = new Node("right");
+        right.Metadata["block:row"] = 0;
+        right.Metadata["block:column"] = 2;
+        right.Metadata["block:span"] = 1;
+
+        diagram.AddNode(left).AddNode(right);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(right.X > left.X + left.Width + diagram.LayoutHints.HorizontalSpacing,
+            $"Expected right node X {right.X} to reflect a skipped middle column after left node right edge {left.X + left.Width}");
+    }
 }
