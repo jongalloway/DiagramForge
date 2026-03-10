@@ -1,31 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="424.00" height="200.00" viewBox="0 0 424.00 200.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="508.00" height="264.00" viewBox="0 0 508.00 264.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
     </marker>
   </defs>
-  <rect width="424.00" height="200.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
-  <path d="M 144.00,48.00 C 198.40,48.00 225.60,48.00 280.00,48.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 400.00,156.00 C 464.58,156.00 328.00,91.20 280.00,48.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <text x="340.00" y="98.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">events</text>
+  <rect width="508.00" height="264.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <path d="M 144.00,48.00 C 232.00,48.00 276.00,48.00 364.00,48.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 254.00,200.00 C 254.00,113.91 356.00,120.80 424.00,68.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <text x="339.00" y="130.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">events</text>
   <g transform="translate(24.00,28.00)">
     <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Frontend</text>
   </g>
-  <g transform="translate(152.00,24.00)">
+  <g transform="translate(194.00,24.00)">
     <polygon points="0,9.60 100.80,9.60 100.80,0 120.00,24.00 100.80,48.00 100.80,38.40 0,38.40" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="28.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">HTTP</text>
   </g>
-  <g transform="translate(280.00,28.00)">
+  <g transform="translate(364.00,28.00)">
     <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Backend</text>
   </g>
-  <g transform="translate(152.00,80.00)">
+  <g transform="translate(194.00,112.00)">
     <polygon points="24.00,0 24.00,28.80 0,28.80 60.00,48.00 120.00,28.80 96.00,28.80 96.00,0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="28.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">async</text>
   </g>
-  <g transform="translate(24.00,136.00)">
-    <rect width="376.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="188.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Storage</text>
+  <g transform="translate(24.00,200.00)">
+    <rect width="460.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="230.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Storage</text>
   </g>
 </svg>

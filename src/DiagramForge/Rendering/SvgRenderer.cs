@@ -156,7 +156,25 @@ public sealed class SvgRenderer : ISvgRenderer
         double x1, y1, x2, y2;
         string cp1, cp2;
 
-        if (Math.Abs(dx) >= Math.Abs(dy))
+        // Determine whether horizontal anchor points would overshoot — i.e.
+        // the source's connecting edge is past the target's connecting edge.
+        // This happens when nodes overlap horizontally (e.g., a wide Storage bar
+        // connecting to a narrower Backend above it): the "right-to-left" anchors
+        // would create a looping path.
+        bool horizontalOverlap = (dx >= 0 && source.X + source.Width > target.X)
+                              || (dx < 0 && source.X < target.X + target.Width);
+        bool verticalOverlap = (dy >= 0 && source.Y + source.Height > target.Y)
+                             || (dy < 0 && source.Y < target.Y + target.Height);
+
+        bool preferHorizontal = Math.Abs(dx) >= Math.Abs(dy);
+        // If the preferred axis overshoots, try the other axis; if both
+        // overshoot, keep the original preference (degenerate/overlapping case).
+        if (preferHorizontal && horizontalOverlap && !verticalOverlap)
+            preferHorizontal = false;
+        else if (!preferHorizontal && verticalOverlap && !horizontalOverlap)
+            preferHorizontal = true;
+
+        if (preferHorizontal)
         {
             // Predominantly horizontal: connect right side → left side (or left → right for reversed)
             if (dx >= 0)
@@ -212,7 +230,7 @@ public sealed class SvgRenderer : ISvgRenderer
 
             // cp1: axis-aligned departure (horizontal or vertical depending on
             // which node edge the anchor sits on).
-            if (Math.Abs(dx) >= Math.Abs(dy))
+            if (preferHorizontal)
                 cp1 = $"{F(x1 + (dx >= 0 ? cpDist : -cpDist))},{F(y1)}";
             else
                 cp1 = $"{F(x1)},{F(y1 + (dy >= 0 ? cpDist : -cpDist))}";
