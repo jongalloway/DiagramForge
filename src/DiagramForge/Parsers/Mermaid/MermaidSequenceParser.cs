@@ -26,6 +26,7 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
 
         var participants = new Dictionary<string, Node>(StringComparer.Ordinal);
         int participantIndex = 0;
+        int messageIndex = 0;
 
         Node GetOrCreateParticipant(string id)
         {
@@ -82,6 +83,7 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                     LineStyle = lineStyle,
                     ArrowHead = arrowHead,
                 };
+                edge.Metadata["sequence:messageIndex"] = messageIndex++;
 
                 if (!string.IsNullOrEmpty(msgLabel))
                     edge.Label = new Label(msgLabel!);

@@ -31,6 +31,9 @@ public class Edge
 
     /// <summary>Override stroke color (null = inherit from theme).</summary>
     public string? Color { get; set; }
+
+    /// <summary>Arbitrary parser-specific metadata shared with layout and rendering.</summary>
+    public Dictionary<string, object> Metadata { get; } = new();
 }
 
 public enum EdgeLineStyle

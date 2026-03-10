@@ -113,7 +113,7 @@ public class MermaidSequenceParserTests
     [Fact]
     public void Parse_LongerOperatorPreferred_DashedArrow()
     {
-        // "-->>‌" must win over "-->‌" on the same position
+        // "-->>" must win over "-->" on the same position
         var diagram = _parser.Parse("sequenceDiagram\n    A-->>B: hi");
 
         var edge = Assert.Single(diagram.Edges);
@@ -187,5 +187,39 @@ public class MermaidSequenceParserTests
         var diagram = _parser.Parse("sequenceDiagram\n    A->>B: Hello");
 
         Assert.Equal(LayoutDirection.LeftToRight, diagram.LayoutHints.Direction);
+    }
+
+    // ── Message index metadata ────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_MessageIndex_StoredOnEdge()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>B: First");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.True(edge.Metadata.ContainsKey("sequence:messageIndex"));
+        Assert.Equal(0, Convert.ToInt32(edge.Metadata["sequence:messageIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_MultipleMessages_IndexesAreSequential()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: First
+                B-->>A: Second
+                A->>B: Third
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Edges.Count);
+        for (int i = 0; i < diagram.Edges.Count; i++)
+        {
+            int idx = Convert.ToInt32(diagram.Edges[i].Metadata["sequence:messageIndex"],
+                System.Globalization.CultureInfo.InvariantCulture);
+            Assert.Equal(i, idx);
+        }
     }
 }

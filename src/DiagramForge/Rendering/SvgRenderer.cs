@@ -193,6 +193,21 @@ public sealed class SvgRenderer : ISvgRenderer
             cp2 = $"{F(x2)},{F(y2 - (dy >= 0 ? cpOffset : -cpOffset))}";
         }
 
+        // Per-message Y override: sequence diagrams store an explicit Y position for each
+        // message arrow so that multiple messages between the same participants are stacked
+        // vertically rather than all drawn on top of each other at the node center.
+        if (edge.Metadata.TryGetValue("sequence:messageY", out var msgYObj))
+        {
+            double msgY = Convert.ToDouble(msgYObj, System.Globalization.CultureInfo.InvariantCulture);
+            x1 = sourceCenterX;
+            y1 = msgY;
+            x2 = targetCenterX;
+            y2 = msgY;
+            cpOffset = Math.Abs(x2 - x1) * 0.4;
+            cp1 = $"{F(x1 + (x2 >= x1 ? cpOffset : -cpOffset))},{F(y1)}";
+            cp2 = $"{F(x2 - (x2 >= x1 ? cpOffset : -cpOffset))},{F(y2)}";
+        }
+
         string strokeColor = Escape(edge.Color ?? theme.EdgeColor);
         string strokeDash = edge.LineStyle == EdgeLineStyle.Dashed ? """ stroke-dasharray="6,3" """ :
                             edge.LineStyle == EdgeLineStyle.Dotted ? """ stroke-dasharray="2,3" """ : " ";
@@ -256,6 +271,11 @@ public sealed class SvgRenderer : ISvgRenderer
     {
         if (diagram.Nodes.Count == 0)
             return 100;
+
+        // Sequence diagrams extend below the participant nodes with per-message rows;
+        // the layout engine stores the required height so node extents don't clip messages.
+        if (diagram.Metadata.TryGetValue("sequence:canvasHeight", out var seqH))
+            return Convert.ToDouble(seqH, System.Globalization.CultureInfo.InvariantCulture);
 
         double maxY = diagram.Nodes.Values.Max(n => n.Y + n.Height);
         if (diagram.Groups.Count > 0)
