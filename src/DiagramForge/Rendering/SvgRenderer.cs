@@ -153,7 +153,7 @@ public sealed class SvgRenderer : ISvgRenderer
         double dx = targetCenterX - sourceCenterX;
         double dy = targetCenterY - sourceCenterY;
 
-        double x1, y1, x2, y2, cpOffset;
+        double x1, y1, x2, y2;
         string cp1, cp2;
 
         if (Math.Abs(dx) >= Math.Abs(dy))
@@ -173,10 +173,6 @@ public sealed class SvgRenderer : ISvgRenderer
                 x2 = target.X + target.Width;
                 y2 = targetCenterY;
             }
-
-            cpOffset = Math.Abs(x2 - x1) * 0.4;
-            cp1 = $"{F(x1 + (dx >= 0 ? cpOffset : -cpOffset))},{F(y1)}";
-            cp2 = $"{F(x2 - (dx >= 0 ? cpOffset : -cpOffset))},{F(y2)}";
         }
         else
         {
@@ -195,10 +191,39 @@ public sealed class SvgRenderer : ISvgRenderer
                 x2 = targetCenterX;
                 y2 = target.Y + target.Height;
             }
+        }
 
-            cpOffset = Math.Abs(y2 - y1) * 0.4;
-            cp1 = $"{F(x1)},{F(y1 + (dy >= 0 ? cpOffset : -cpOffset))}";
-            cp2 = $"{F(x2)},{F(y2 - (dy >= 0 ? cpOffset : -cpOffset))}";
+        // Build control points:
+        //  cp1 — axis-aligned from the source anchor so the path departs with a
+        //         smooth curve perpendicular to the node edge.
+        //  cp2 — along the actual source→target direction so that the curve's
+        //         tangent at the endpoint (and therefore the orient="auto"
+        //         arrowhead) matches the visual angle of approach.
+        // For axis-aligned edges both strategies coincide, so curves and arrows
+        // look the same as before.
+        double edgeDx = x2 - x1;
+        double edgeDy = y2 - y1;
+        double edgeLen = Math.Sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
+        double cpDist = edgeLen * 0.4;
+        if (edgeLen > 0)
+        {
+            double ux = edgeDx / edgeLen;
+            double uy = edgeDy / edgeLen;
+
+            // cp1: axis-aligned departure (horizontal or vertical depending on
+            // which node edge the anchor sits on).
+            if (Math.Abs(dx) >= Math.Abs(dy))
+                cp1 = $"{F(x1 + (dx >= 0 ? cpDist : -cpDist))},{F(y1)}";
+            else
+                cp1 = $"{F(x1)},{F(y1 + (dy >= 0 ? cpDist : -cpDist))}";
+
+            // cp2: follows the real edge vector so the arrowhead angles correctly.
+            cp2 = $"{F(x2 - ux * cpDist)},{F(y2 - uy * cpDist)}";
+        }
+        else
+        {
+            cp1 = $"{F(x1)},{F(y1)}";
+            cp2 = $"{F(x2)},{F(y2)}";
         }
 
         // Per-message Y override: sequence diagrams store an explicit Y position for each
@@ -211,9 +236,9 @@ public sealed class SvgRenderer : ISvgRenderer
             y1 = msgY;
             x2 = targetCenterX;
             y2 = msgY;
-            cpOffset = Math.Abs(x2 - x1) * 0.4;
-            cp1 = $"{F(x1 + (x2 >= x1 ? cpOffset : -cpOffset))},{F(y1)}";
-            cp2 = $"{F(x2 - (x2 >= x1 ? cpOffset : -cpOffset))},{F(y2)}";
+            double seqOffset = Math.Abs(x2 - x1) * 0.4;
+            cp1 = $"{F(x1 + (x2 >= x1 ? seqOffset : -seqOffset))},{F(y1)}";
+            cp2 = $"{F(x2 - (x2 >= x1 ? seqOffset : -seqOffset))},{F(y2)}";
         }
 
         string strokeColor = Escape(edge.Color ?? theme.EdgeColor);

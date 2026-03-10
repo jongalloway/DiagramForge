@@ -7,9 +7,9 @@
   <rect width="528.00" height="248.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
   <path d="M 84.00,64.00 C 84.00,80.00 84.00,88.00 84.00,104.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
   <path d="M 84.00,144.00 C 84.00,160.00 84.00,168.00 84.00,184.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 144.00,124.00 C 168.00,124.00 180.00,204.00 204.00,204.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 144.00,44.00 C 168.00,44.00 180.00,124.00 204.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 144.00,44.00 C 240.00,44.00 288.00,124.00 384.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,124.00 C 184.00,124.00 180.00,172.00 204.00,204.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 C 184.00,44.00 180.00,92.00 204.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 C 245.19,44.00 288.00,92.00 384.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
     <ellipse cx="60.00" cy="20.00" rx="60.00" ry="20.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
     <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Product</text>
