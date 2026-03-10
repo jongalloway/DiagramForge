@@ -121,11 +121,7 @@ Core primitives:
 
 SmartArt‑inspired conceptual diagrams:
 
-- Process (linear, segmented, vertical, horizontal)
-- Hierarchy (org‑chart style)
-- Cycle (radial, segmented)
 - Relationship (venn, overlapping sets, arrows between concepts)
-- List (bulleted, stacked, picture‑accent)
 - Matrix (2×2, 3×3)
 - Pyramid (segmented, labeled)
 
@@ -141,35 +137,7 @@ SmartArt‑inspired conceptual diagrams:
 
 ## 6. Conceptual Diagram DSL (Draft)
 
-### 6.1 Example: Process
-
-    diagram: process
-    steps:
-      - Discover
-      - Plan
-      - Build
-      - Test
-      - Deploy
-
-### 6.2 Example: Cycle
-
-    diagram: cycle
-    items:
-      - Plan
-      - Build
-      - Test
-      - Deploy
-
-### 6.3 Example: Hierarchy
-
-    diagram: hierarchy
-    CEO:
-      - CTO:
-          - Engineering
-      - CFO:
-          - Finance
-
-### 6.4 Example: Relationship (Venn)
+### 6.1 Example: Relationship (Venn)
 
     diagram: venn
     sets:

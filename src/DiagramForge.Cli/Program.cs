@@ -78,7 +78,7 @@ static void PrintHelp()
 
         Supported syntaxes:
           mermaid               Flowchart LR/TB (Mermaid subset)
-          conceptual            Process, Cycle, Hierarchy, Venn, List, Matrix, Pyramid
+          conceptual            Venn, Matrix, Pyramid
 
         Examples:
           diagramforge diagram.mmd --output diagram.svg

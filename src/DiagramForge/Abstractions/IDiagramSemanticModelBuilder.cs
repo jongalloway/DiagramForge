@@ -15,7 +15,7 @@ public interface IDiagramSemanticModelBuilder
     /// <summary>Specifies the source syntax identifier (e.g., "mermaid").</summary>
     IDiagramSemanticModelBuilder WithSourceSyntax(string syntaxId);
 
-    /// <summary>Specifies the diagram type (e.g., "flowchart", "process", "cycle").</summary>
+    /// <summary>Specifies the diagram type identifier (for example a Mermaid diagram kind such as "flowchart", "mindmap", "sequencediagram", or a Conceptual kind such as "venn", "matrix", "pyramid").</summary>
     IDiagramSemanticModelBuilder WithDiagramType(string diagramType);
 
     /// <summary>Adds a node to the diagram.</summary>

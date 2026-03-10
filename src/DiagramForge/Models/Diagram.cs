@@ -12,7 +12,7 @@ public class Diagram
     /// <summary>Identifies the source syntax that produced this model (e.g., "mermaid", "conceptual").</summary>
     public string? SourceSyntax { get; set; }
 
-    /// <summary>Type of diagram (e.g., flowchart, process, cycle, hierarchy).</summary>
+    /// <summary>Type of diagram (e.g., flowchart, mindmap, sequence diagram, timeline, venn, matrix, pyramid).</summary>
     public string? DiagramType { get; set; }
 
     /// <summary>All nodes in the diagram, keyed by their ID.</summary>

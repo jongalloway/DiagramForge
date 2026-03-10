@@ -195,18 +195,17 @@ A single-class parser (`ConceptualDslParser`) for the YAML-inspired Conceptual
 DSL:
 
 ```
-diagram: process
-steps:
-  - Discover
-  - Plan
-  - Build
+diagram: venn
+sets:
+  - Engineering
+  - Product
+  - Design
 ```
 
 ### 5.1 Detection
 
 `CanParse` checks whether the first content line matches
-`diagram: <known-type>`. Known types: `process`, `cycle`, `hierarchy`, `venn`,
-`list`, `matrix`, `pyramid`.
+`diagram: <known-type>`. Known types: `venn`, `matrix`, `pyramid`.
 
 ### 5.2 Parsing Strategy
 
@@ -215,16 +214,11 @@ directly on trimmed lines:
 
 | Diagram type | Section key | Structure |
 |-------------|------------|-----------|
-| `process` | `steps:` | Linear chain with edges |
-| `cycle` | `items:` | Chain + back-edge from last to first |
-| `list` | `items:` | Nodes only, no edges |
 | `venn` | `sets:` | Nodes only |
 | `pyramid` | `levels:` | Nodes only |
 | `matrix` | `rows:` + `columns:` | Grid of `cell_{r}_{c}` nodes |
-| `hierarchy` | (indentation-based) | Tree via indent stack (like mindmap) |
 
-The parser sets `LayoutDirection` per type: `LeftToRight` for most types,
-`TopToBottom` for hierarchy.
+The parser sets `LayoutDirection` to `LeftToRight` for all types.
 
 ---
 

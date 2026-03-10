@@ -19,11 +19,7 @@ public class ConceptualDslParserTests
     // ── CanParse ──────────────────────────────────────────────────────────────
 
     [Theory]
-    [InlineData("diagram: process\nsteps:\n  - A")]
-    [InlineData("diagram: cycle\nitems:\n  - A")]
-    [InlineData("diagram: hierarchy\n  CEO:\n    - CTO")]
     [InlineData("diagram: venn\nsets:\n  - A")]
-    [InlineData("diagram: list\nitems:\n  - A")]
     [InlineData("diagram: matrix\nrows:\n  - R1\ncolumns:\n  - C1")]
     [InlineData("diagram: pyramid\nlevels:\n  - L1")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
@@ -38,84 +34,6 @@ public class ConceptualDslParserTests
     public void CanParse_ReturnsFalse_ForUnknownInput(string text)
     {
         Assert.False(_parser.CanParse(text));
-    }
-
-    // ── Process ───────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Parse_Process_ProducesChainedEdges()
-    {
-        const string text = """
-            diagram: process
-            steps:
-              - Discover
-              - Plan
-              - Build
-              - Test
-              - Deploy
-            """;
-
-        var diagram = _parser.Parse(text);
-
-        Assert.Equal(5, diagram.Nodes.Count);
-        // 4 edges for a 5-step linear chain
-        Assert.Equal(4, diagram.Edges.Count);
-        Assert.Equal("process", diagram.DiagramType);
-    }
-
-    [Fact]
-    public void Parse_Process_NodeLabelsMatchStepNames()
-    {
-        const string text = "diagram: process\nsteps:\n  - Alpha\n  - Beta";
-
-        var diagram = _parser.Parse(text);
-
-        var labels = diagram.Nodes.Values.Select(n => n.Label.Text).ToList();
-        Assert.Contains("Alpha", labels);
-        Assert.Contains("Beta", labels);
-    }
-
-    // ── Cycle ─────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Parse_Cycle_AddsReturnEdgeFromLastToFirst()
-    {
-        const string text = """
-            diagram: cycle
-            items:
-              - Plan
-              - Build
-              - Test
-              - Deploy
-            """;
-
-        var diagram = _parser.Parse(text);
-
-        // 4 items → 3 forward edges + 1 back edge = 4 total
-        Assert.Equal(4, diagram.Edges.Count);
-        // Last node ID points back to first
-        Assert.Contains(diagram.Edges, e => e.SourceId == "node_3" && e.TargetId == "node_0");
-    }
-
-    // ── Hierarchy ─────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Parse_Hierarchy_ProducesParentChildEdges()
-    {
-        const string text = """
-            diagram: hierarchy
-            CEO:
-              - CTO:
-                  - Engineering
-              - CFO:
-                  - Finance
-            """;
-
-        var diagram = _parser.Parse(text);
-
-        Assert.True(diagram.Nodes.Count >= 5, $"Expected ≥5 nodes, got {diagram.Nodes.Count}");
-        Assert.True(diagram.Edges.Count >= 4, $"Expected ≥4 edges, got {diagram.Edges.Count}");
-        Assert.Equal("hierarchy", diagram.DiagramType);
     }
 
     // ── Venn ──────────────────────────────────────────────────────────────────
@@ -167,7 +85,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_SourceSyntax_IsConceptual()
     {
-        var diagram = _parser.Parse("diagram: list\nitems:\n  - X");
+        var diagram = _parser.Parse("diagram: venn\nsets:\n  - X");
 
         Assert.Equal("conceptual", diagram.SourceSyntax);
     }
@@ -183,9 +101,9 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_MissingSectionKey_ThrowsDiagramParseException()
     {
-        // Process diagram with no "steps:" section
+        // Venn diagram with no "sets:" section
         Assert.Throws<DiagramParseException>(() =>
-            _parser.Parse("diagram: process\n"));
+            _parser.Parse("diagram: venn\n"));
     }
 
     [Fact]

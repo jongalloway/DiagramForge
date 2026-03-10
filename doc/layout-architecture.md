@@ -283,8 +283,8 @@ directional flow.
 #### 3c. Tree Layout Engine
 
 Add a **Reingold-Tilford** implementation for strict tree structures (mindmaps,
-org charts, hierarchies). The conceptual DSL's `hierarchy` and `mindmap`
-diagram types would benefit from this over the BFS grid.
+org charts, hierarchies). Mermaid `mindmap` diagrams would benefit from this
+over the BFS grid.
 
 ### Phase 4 — External Integration (Optional)
 
@@ -310,7 +310,7 @@ When choosing which improvements to prioritise, consider:
 |--------|----------|
 | **Diagram complexity ceiling** | If target users rarely exceed 10–15 nodes, Phase 1 alone may be sufficient. |
 | **Subgraph usage** | If Mermaid subgraph support is a key feature, Phase 1b + 2b are high priority. |
-| **Non-flowchart diagrams** | Conceptual diagrams (cycle, pyramid, matrix) use specialised layout logic in their parsers, so the general engine matters less for those. |
+| **Non-flowchart diagrams** | Conceptual diagrams (pyramid, matrix) use specialised layout logic in their parsers, so the general engine matters less for those. |
 | **Dependency tolerance** | MSAGL (Phase 4) gives the most layout quality per line of code, but adds a large dependency. |
 | **Rendering fidelity** | If output is used in slides / print, text measurement accuracy (Phase 2c) matters more than in web previews. |
 

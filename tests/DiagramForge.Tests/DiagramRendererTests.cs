@@ -29,38 +29,6 @@ public class DiagramRendererTests
 
     // ── Conceptual DSL ────────────────────────────────────────────────────────
 
-    [Fact]
-    public void Render_ConceptualProcess_ReturnsSvg()
-    {
-        const string text = """
-            diagram: process
-            steps:
-              - Plan
-              - Build
-              - Ship
-            """;
-
-        string svg = _renderer.Render(text);
-
-        Assert.StartsWith("<svg ", svg);
-    }
-
-    [Fact]
-    public void Render_ConceptualCycle_ReturnsSvg()
-    {
-        const string text = """
-            diagram: cycle
-            items:
-              - Plan
-              - Build
-              - Test
-            """;
-
-        string svg = _renderer.Render(text);
-
-        Assert.StartsWith("<svg ", svg);
-    }
-
     // ── Theme override ────────────────────────────────────────────────────────
 
     [Fact]

@@ -180,37 +180,6 @@ Not yet supported: sequence diagrams, class diagrams, gantt, `click` directives,
 
 A small YAML-ish format for SmartArt-style diagrams. First line is always `diagram: <type>`.
 
-#### process
-
-```text
-diagram: process
-steps:
-  - Discover
-  - Plan
-  - Build
-  - Ship
-```
-
-#### cycle
-
-```text
-diagram: cycle
-items:
-  - Plan
-  - Do
-  - Check
-  - Act
-```
-
-#### hierarchy
-
-```text
-diagram: hierarchy
-  CEO:
-    - CTO
-    - CFO
-```
-
 #### venn
 
 ```text
@@ -231,16 +200,6 @@ rows:
 columns:
   - Urgent
   - Not Urgent
-```
-
-#### list
-
-```text
-diagram: list
-items:
-  - First
-  - Second
-  - Third
 ```
 
 #### pyramid
