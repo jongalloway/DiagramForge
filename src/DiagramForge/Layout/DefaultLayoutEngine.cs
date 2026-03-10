@@ -15,6 +15,8 @@ namespace DiagramForge.Layout;
 /// </remarks>
 public sealed class DefaultLayoutEngine : ILayoutEngine
 {
+    private const string BlockColumnCountKey = "block:columnCount";
+
     /// <summary>
     /// Average glyph advance as a fraction of font size (em-units) for typical
     /// Latin UI sans-serif stacks (Segoe UI, Inter, Arial). Derived empirically;
@@ -39,6 +41,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double hGap = hints.HorizontalSpacing;
         double vGap = hints.VerticalSpacing;
         double pad = theme.DiagramPadding;
+
+        if (string.Equals(diagram.DiagramType, "block", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutBlockDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
+            return;
+        }
 
         // ── Sizing pass ───────────────────────────────────────────────────────
         // Compute each node's width from its label so text does not overflow the
@@ -194,6 +202,78 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }
                 foreach (var g in diagram.Groups)       { g.X += shiftX; g.Y += shiftY; }
             }
+        }
+    }
+
+    private static void LayoutBlockDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double hGap,
+        double vGap,
+        double pad)
+    {
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            bool isArrow = node.Shape is Shape.ArrowRight or Shape.ArrowLeft or Shape.ArrowUp or Shape.ArrowDown;
+
+            node.Width = Math.Max(isArrow ? minW * 0.75 : minW, textW + 2 * theme.NodePadding);
+            node.Height = isArrow ? nodeH + 8 : nodeH;
+        }
+
+        int columnCount = diagram.Metadata.TryGetValue(BlockColumnCountKey, out var columnValue)
+            ? Convert.ToInt32(columnValue, System.Globalization.CultureInfo.InvariantCulture)
+            : 1;
+
+        var placedNodes = diagram.Nodes.Values
+            .Where(node => node.Metadata.ContainsKey("block:row") && node.Metadata.ContainsKey("block:column"))
+            .ToList();
+
+        if (placedNodes.Count == 0)
+            return;
+
+        int rowCount = placedNodes.Max(node => Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture)) + 1;
+        double baseColumnWidth = Math.Max(
+            minW,
+            placedNodes.Max(node =>
+            {
+                int span = node.Metadata.TryGetValue("block:span", out var spanValue)
+                    ? Convert.ToInt32(spanValue, System.Globalization.CultureInfo.InvariantCulture)
+                    : 1;
+                return node.Width / Math.Max(1, span);
+            }));
+
+        var rowHeights = Enumerable.Repeat(nodeH, rowCount).ToArray();
+        foreach (var node in placedNodes)
+        {
+            int row = Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture);
+            rowHeights[row] = Math.Max(rowHeights[row], node.Height);
+        }
+
+        var rowStarts = new double[rowCount];
+        double currentY = pad;
+        for (int row = 0; row < rowCount; row++)
+        {
+            rowStarts[row] = currentY;
+            currentY += rowHeights[row] + vGap;
+        }
+
+        foreach (var node in placedNodes)
+        {
+            int row = Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture);
+            int column = Convert.ToInt32(node.Metadata["block:column"], System.Globalization.CultureInfo.InvariantCulture);
+            int span = node.Metadata.TryGetValue("block:span", out var spanValue)
+                ? Convert.ToInt32(spanValue, System.Globalization.CultureInfo.InvariantCulture)
+                : 1;
+
+            double slotX = pad + column * (baseColumnWidth + hGap);
+            double slotWidth = baseColumnWidth * span + hGap * Math.Max(0, span - 1);
+            node.X = slotX;
+            node.Y = rowStarts[row] + (rowHeights[row] - node.Height) / 2;
+            node.Width = Math.Max(node.Width, slotWidth);
         }
     }
 

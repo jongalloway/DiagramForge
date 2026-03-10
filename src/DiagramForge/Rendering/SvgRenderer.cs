@@ -98,6 +98,22 @@ public sealed class SvgRenderer : ISvgRenderer
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(node.Height / 2)}" ry="{F(node.Height / 2)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
 
+            case Shape.ArrowRight:
+                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
+                break;
+
+            case Shape.ArrowLeft:
+                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
+                break;
+
+            case Shape.ArrowUp:
+                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
+                break;
+
+            case Shape.ArrowDown:
+                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
+                break;
+
             case Shape.Rectangle:
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
@@ -205,6 +221,20 @@ public sealed class SvgRenderer : ISvgRenderer
         {
             sb.AppendLine($"""  <text x="{F(group.X + 8)}" y="{F(group.Y + theme.FontSize + 4)}" font-family="{Escape(theme.FontFamily)}" font-size="{F(theme.FontSize * 0.9)}" fill="{Escape(theme.SubtleTextColor)}" font-weight="bold">{Escape(group.Label.Text)}</text>""");
         }
+    }
+
+    private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction)
+    {
+        double head = Math.Min(width, height) * 0.4;
+        string points = direction switch
+        {
+            "left" => $"{F(width)},{F(height * 0.2)} {F(head)},{F(height * 0.2)} {F(head)},{F(0)} 0,{F(height / 2)} {F(head)},{F(height)} {F(head)},{F(height * 0.8)} {F(width)},{F(height * 0.8)}",
+            "up" => $"{F(width * 0.2)},{F(height)} {F(width * 0.2)},{F(head)} 0,{F(head)} {F(width / 2)},0 {F(width)},{F(head)} {F(width * 0.8)},{F(head)} {F(width * 0.8)},{F(height)}",
+            "down" => $"{F(width * 0.2)},0 {F(width * 0.2)},{F(height - head)} 0,{F(height - head)} {F(width / 2)},{F(height)} {F(width)},{F(height - head)} {F(width * 0.8)},{F(height - head)} {F(width * 0.8)},0",
+            _ => $"0,{F(height * 0.2)} {F(width - head)},{F(height * 0.2)} {F(width - head)},0 {F(width)},{F(height / 2)} {F(width - head)},{F(height)} {F(width - head)},{F(height * 0.8)} 0,{F(height * 0.8)}",
+        };
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
     }
 
     // ── Dimension helpers ─────────────────────────────────────────────────────

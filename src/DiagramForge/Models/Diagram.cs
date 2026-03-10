@@ -30,6 +30,9 @@ public class Diagram
     /// <summary>Theme override for this diagram (null = use renderer default).</summary>
     public Theme? Theme { get; set; }
 
+    /// <summary>Arbitrary parser-specific metadata shared with layout and rendering.</summary>
+    public Dictionary<string, object> Metadata { get; } = new();
+
     // ── Convenience helpers ───────────────────────────────────────────────────
 
     /// <summary>Adds a node and returns the diagram (fluent).</summary>
