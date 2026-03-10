@@ -155,7 +155,7 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
         }
     }
 
-    private static (string id, string label, Shape? shape) ParseNodeDeclaration(string token)
+    internal static (string id, string label, Shape? shape) ParseNodeDeclaration(string token)
     {
         token = token.Trim();
         if (string.IsNullOrEmpty(token))

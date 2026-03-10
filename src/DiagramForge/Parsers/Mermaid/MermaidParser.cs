@@ -10,6 +10,7 @@ namespace DiagramForge.Parsers.Mermaid;
 /// Supported Mermaid diagram types (v1 subset):
 /// <list type="bullet">
 ///   <item>Flowchart (LR, RL, TB, BT, TD)</item>
+///   <item>Mindmap</item>
 /// </list>
 /// </remarks>
 public sealed class MermaidParser : IDiagramParser
@@ -17,9 +18,10 @@ public sealed class MermaidParser : IDiagramParser
     private readonly IReadOnlyList<IMermaidDiagramParser> _diagramParsers =
     [
         new MermaidFlowchartParser(),
+        new MermaidMindmapParser(),
     ];
 
-    private static readonly string[] SupportedDiagramTypes = ["flowchart"];
+    private static readonly string[] SupportedDiagramTypes = ["flowchart", "mindmap"];
 
     public string SyntaxId => "mermaid";
 

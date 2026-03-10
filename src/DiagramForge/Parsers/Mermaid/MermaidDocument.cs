@@ -4,16 +4,20 @@ namespace DiagramForge.Parsers.Mermaid;
 
 internal sealed class MermaidDocument
 {
-    private MermaidDocument(MermaidDiagramKind kind, string headerLine, string[] lines)
+    private MermaidDocument(MermaidDiagramKind kind, string headerLine, string[] lines, string[] rawLines)
     {
         Kind = kind;
         HeaderLine = headerLine;
         Lines = lines;
+        RawLines = rawLines;
     }
 
     public MermaidDiagramKind Kind { get; }
 
     public string HeaderLine { get; }
+
+    /// <summary>Content lines with leading whitespace preserved (comments and blank lines filtered).</summary>
+    public string[] RawLines { get; }
 
     public string[] Lines { get; }
 
@@ -29,6 +33,12 @@ internal sealed class MermaidDocument
             .Where(line => !string.IsNullOrEmpty(line) && !line.StartsWith("%%", StringComparison.Ordinal))
             .ToArray();
 
+        var rawLines = diagramText
+            .Split('\n')
+            .Select(line => line.TrimEnd())
+            .Where(line => !string.IsNullOrWhiteSpace(line) && !line.TrimStart().StartsWith("%%", StringComparison.Ordinal))
+            .ToArray();
+
         if (lines.Length == 0)
             return false;
 
@@ -36,7 +46,7 @@ internal sealed class MermaidDocument
         if (!TryDetectKind(headerLine, out var kind))
             return false;
 
-        document = new MermaidDocument(kind, headerLine, lines);
+        document = new MermaidDocument(kind, headerLine, lines, rawLines);
         return true;
     }
 
@@ -54,7 +64,6 @@ internal sealed class MermaidDocument
         "gantt",
         "pie",
         "gitgraph",
-        "mindmap",
         "timeline",
         "quadrantchart",
         "requirementdiagram",
@@ -95,6 +104,12 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("flowchart", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.Flowchart;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("mindmap", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.Mindmap;
             return true;
         }
 
