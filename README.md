@@ -19,7 +19,7 @@ That's the whole API.
 
 Most diagram-as-code tools assume a browser. Mermaid.js needs a JavaScript engine to run at all — and even once you've stood up headless Chrome and extracted the SVG, you find that it renders text via `<foreignObject>` wrapping HTML `<div>`s instead of native `<text>` elements. That's fine in a web page. It's a blank box in Inkscape, a parse error in Illustrator, and a mess when you try to drop it into a PowerPoint slide. See mermaid-js/mermaid [#2688](https://github.com/mermaid-js/mermaid/issues/2688), [#1845](https://github.com/mermaid-js/mermaid/issues/1845), [#1923](https://github.com/mermaid-js/mermaid/issues/1923), [#2169](https://github.com/mermaid-js/mermaid/issues/2169).
 
-DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts for now, but the output opens anywhere.
+DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts, block diagrams, state diagrams, and mindmaps — the output opens anywhere.
 
 - **Real SVG.** Native `<text>` elements. No `<foreignObject>`, no embedded HTML, no CSS-in-SVG. Opens in Inkscape, imports into PowerPoint and Keynote, renders with librsvg.
 - **Pure .NET.** `net10.0`, zero native dependencies, zero runtime package dependencies. No headless browser, no Node, no shelling out.
@@ -107,12 +107,17 @@ diagramforge diagram.txt | rsvg-convert -o diagram.png
 
 ### Mermaid (subset)
 
-Flowcharts only, for now. First line must start with `flowchart` or `graph`.
+First line must start with one of the supported keywords below.
+
+#### Flowchart
+
+Keywords: `flowchart` or `graph` (+ optional direction suffix).
 
 - **Directions** — `LR`, `RL`, `TB`, `BT`, `TD`
 - **Node shapes** — `A[rect]`, `B(rounded)`, `C{diamond}`, `D((circle))`
 - **Edges** — `-->` arrow, `---` line, `-.->` dotted, `==>` thick
 - **Edge labels** — `A -->|label| B`
+- **Subgraphs** — `subgraph title` / `end`
 - **Comments** — `%% ignored`
 
 ```mermaid
@@ -123,7 +128,53 @@ flowchart LR
   C -.->|no| A
 ```
 
-Not yet supported: sequence diagrams, class diagrams, state diagrams, gantt, subgraphs, `click` directives, styling directives.
+#### Block diagram
+
+Keywords: `block` or `block-beta`.
+
+- **Columns** — `columns 3` (or `columns auto`)
+- **Column spans** — `b:2` makes a block span 2 columns
+- **Space gaps** — `space` or `space:N`
+- **Arrow blocks** — `api<["HTTP"]>(right)`
+- **Edges** — `A --> B`, `A -- "label" --> B`
+
+```mermaid
+block-beta
+  columns 3
+  Frontend api<["HTTP"]>(right) Backend
+  space queue<["async"]>(down) space
+  Storage:3
+  Frontend --> Backend
+  Storage -- "events" --> Backend
+```
+
+#### State diagram
+
+Keywords: `stateDiagram` or `stateDiagram-v2`.
+
+```mermaid
+stateDiagram-v2
+  [*] --> Idle
+  Idle --> Processing
+  Processing --> Done
+  Done --> [*]
+```
+
+#### Mindmap
+
+Keyword: `mindmap`. Uses indentation for hierarchy.
+
+```mermaid
+mindmap
+  root(Project)
+    Planning
+    Development
+      Frontend
+      Backend
+    Testing
+```
+
+Not yet supported: sequence diagrams, class diagrams, gantt, `click` directives, styling directives.
 
 ### Conceptual DSL
 
