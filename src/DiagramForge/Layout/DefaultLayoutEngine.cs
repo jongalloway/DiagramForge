@@ -17,12 +17,13 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 {
     private const string BlockColumnCountKey = "block:columnCount";
 
-    // Block diagrams use tighter spacing than flowcharts.  Mermaid renders
-    // blocks with minimal gaps; these values approximate that look while still
-    // leaving enough room for edge labels when they exist.
+    // Block diagrams use tighter node-to-node spacing than flowcharts.  Mermaid
+    // renders blocks with minimal gaps; these values approximate that look while
+    // still leaving enough room for edge labels when they exist.
+    // The outer diagram padding (left/top/right/bottom) deliberately reuses
+    // theme.DiagramPadding so all four sides are symmetric.
     private const double BlockHGap = 8;
     private const double BlockVGap = 8;
-    private const double BlockPad = 8;
 
     /// <summary>
     /// Average glyph advance as a fraction of font size (em-units) for typical
@@ -51,7 +52,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         if (string.Equals(diagram.DiagramType, "block", StringComparison.OrdinalIgnoreCase))
         {
-            LayoutBlockDiagram(diagram, theme, minW, nodeH, BlockHGap, BlockVGap, BlockPad);
+            LayoutBlockDiagram(diagram, theme, minW, nodeH, BlockHGap, BlockVGap, pad);
             return;
         }
 
