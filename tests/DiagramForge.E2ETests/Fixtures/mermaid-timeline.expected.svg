@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="528.00" height="271.00" viewBox="0 0 528.00 271.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="528.00" height="271.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <text x="264.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#1F2937">Product Roadmap</text>
+  <path d="M 84.00,64.00 C 84.00,80.00 84.00,88.00 84.00,104.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 84.00,64.00 C 84.00,112.00 84.00,136.00 84.00,184.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 264.00,64.00 C 264.00,80.00 264.00,88.00 264.00,104.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 444.00,64.00 C 444.00,80.00 444.00,88.00 444.00,104.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 444.00,64.00 C 444.00,112.00 444.00,136.00 444.00,184.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <g transform="translate(24.00,24.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Q1</text>
+  </g>
+  <g transform="translate(24.00,104.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Research</text>
+  </g>
+  <g transform="translate(24.00,184.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Prototype</text>
+  </g>
+  <g transform="translate(204.00,24.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Q2</text>
+  </g>
+  <g transform="translate(204.00,104.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Beta</text>
+  </g>
+  <g transform="translate(384.00,24.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Q3</text>
+  </g>
+  <g transform="translate(384.00,104.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">GA</text>
+  </g>
+  <g transform="translate(384.00,184.00)">
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Scale</text>
+  </g>
+</svg>

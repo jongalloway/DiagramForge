@@ -62,7 +62,6 @@ internal sealed class MermaidDocument
         "gantt",
         "pie",
         "gitgraph",
-        "timeline",
         "quadrantchart",
         "requirementdiagram",
         "packet-beta",
@@ -121,6 +120,12 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("block-beta", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.BlockDiagram;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("timeline", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.Timeline;
             return true;
         }
 
