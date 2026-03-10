@@ -272,6 +272,45 @@ public class MermaidTimelineParserTests
         Assert.All(periods, p => Assert.Equal(firstWidth, p.Width));
     }
 
+    [Fact]
+    public void Layout_WithTitle_PeriodRowStartsBelowTitle()
+    {
+        // With a title the period row must be pushed down enough to clear the title
+        // text. Without the offset the title (at y≈DiagramPadding-4) visually
+        // overlaps the first node row (at y=DiagramPadding).
+        const string withTitle = """
+            timeline
+                title Product Roadmap
+                Q1 : Research
+            """;
+
+        const string withoutTitle = """
+            timeline
+                Q1 : Research
+            """;
+
+        var diagramWithTitle = _parser.Parse(withTitle);
+        var diagramWithoutTitle = _parser.Parse(withoutTitle);
+
+        _layout.Layout(diagramWithTitle, _theme);
+        _layout.Layout(diagramWithoutTitle, _theme);
+
+        double periodYWithTitle = diagramWithTitle.Nodes.Values
+            .Single(n => n.Metadata.TryGetValue("timeline:kind", out var k) && k is "period").Y;
+
+        double periodYWithoutTitle = diagramWithoutTitle.Nodes.Values
+            .Single(n => n.Metadata.TryGetValue("timeline:kind", out var k) && k is "period").Y;
+
+        // The titled diagram's period row must start strictly below the un-titled one.
+        Assert.True(periodYWithTitle > periodYWithoutTitle,
+            $"Period row with title ({periodYWithTitle}) should be below period row without title ({periodYWithoutTitle})");
+
+        // And the gap must be at least the title font size + a small margin.
+        double gap = periodYWithTitle - periodYWithoutTitle;
+        Assert.True(gap >= _theme.TitleFontSize,
+            $"Gap ({gap}) should be >= TitleFontSize ({_theme.TitleFontSize}) to avoid title/node overlap");
+    }
+
     // ── DiagramType ───────────────────────────────────────────────────────────
 
     [Fact]

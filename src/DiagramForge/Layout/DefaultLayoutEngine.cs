@@ -325,8 +325,14 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         if (eventNodes.Count > 0)
             colWidth = Math.Max(colWidth, eventNodes.Max(n => n.Width));
 
+        // When a title is present, shift the first row down to clear it. The title
+        // is rendered by SvgRenderer at y=(DiagramPadding - 4); it needs
+        // (TitleFontSize + 8) of vertical room, matching the identical offset that
+        // SvgRenderer.ComputeHeight already reserves at the canvas bottom.
+        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+
         // Place period nodes in a single horizontal row.
-        double periodY = pad;
+        double periodY = pad + titleOffset;
         for (int i = 0; i < periodNodes.Count; i++)
         {
             var pn = periodNodes[i];
