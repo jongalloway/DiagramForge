@@ -152,7 +152,15 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 .ToList();
 
             if (members.Count == 0)
+            {
+                // Reset to zero so that a Diagram that is laid out more than once
+                // does not carry stale bounds from a previous pass.
+                group.X = 0;
+                group.Y = 0;
+                group.Width = 0;
+                group.Height = 0;
                 continue; // leave at zero-size; renderer emits an invisible <rect>
+            }
 
             double minX = members.Min(n => n.X);
             double minY = members.Min(n => n.Y);

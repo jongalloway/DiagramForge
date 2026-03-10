@@ -351,4 +351,33 @@ public class MermaidParserTests
         Assert.Equal(2, diagram.Groups.Count);
         Assert.Equal(new[] { "one", "two" }, diagram.Groups.Select(g => g.Id));
     }
+
+    [Fact]
+    public void Parse_NestedSubgraphs_OuterGroupIncludesInnerNodes()
+    {
+        // Nodes referenced inside an inner subgraph must also be added to the outer
+        // subgraph, mirroring Mermaid's flowDb.addSubGraph semantics.
+        const string text = """
+            flowchart LR
+              subgraph outer
+                subgraph inner
+                  A --> B
+                end
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+        var outer = diagram.Groups.Single(g => g.Id == "outer");
+        var inner = diagram.Groups.Single(g => g.Id == "inner");
+
+        // Inner group contains the two directly-referenced nodes
+        Assert.Contains("A", inner.ChildNodeIds);
+        Assert.Contains("B", inner.ChildNodeIds);
+
+        // Outer group must also include them (ancestry propagation)
+        Assert.Contains("A", outer.ChildNodeIds);
+        Assert.Contains("B", outer.ChildNodeIds);
+    }
 }

@@ -70,11 +70,13 @@ public sealed class MermaidParser : IDiagramParser
                 nodesSeen[id] = node;
                 builder.AddNode(node);
             }
-            // Register with the innermost active group. This fires for every reference,
-            // not just first-seen, so a node re-used on a later edge inside the block
-            // is still captured. HashSet keeps membership idempotent.
-            if (groupStack.Count > 0)
-                groupStack.Peek().members.Add(id);
+            // Register with every open group on the stack so that nested subgraphs
+            // correctly propagate membership to their ancestors, mirroring Mermaid's
+            // flowDb.addSubGraph semantics (all enclosing groups include the node).
+            // HashSet keeps membership idempotent if the node is referenced more
+            // than once inside the same block.
+            foreach (var frame in groupStack)
+                frame.members.Add(id);
             return node;
         }
 
@@ -100,8 +102,9 @@ public sealed class MermaidParser : IDiagramParser
             {
                 var (id, title) = ParseSubgraphHeader(line.Length > 8 ? line[8..] : string.Empty);
                 id ??= $"__subgraph{autoSubgraphId++}";
-                // Anonymous or auto-id groups get an empty label so the renderer's
+                // A bare `subgraph` with no title results in an empty label so the renderer's
                 // "skip blank labels" check suppresses the synthetic id from showing.
+                // Named subgraphs (e.g., `subgraph myId[My Title]`) always use the parsed title.
                 var group = new Group(id, title);
                 groupStack.Push((group, new HashSet<string>(StringComparer.Ordinal)));
                 continue;
