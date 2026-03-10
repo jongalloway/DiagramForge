@@ -7,4 +7,5 @@ internal enum MermaidDiagramKind
     Mindmap,
     StateDiagram,
     BlockDiagram,
+    ArchitectureDiagram,
 }
