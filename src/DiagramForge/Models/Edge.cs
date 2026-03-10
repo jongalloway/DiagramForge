@@ -32,7 +32,7 @@ public class Edge
     /// <summary>Override stroke color (null = inherit from theme).</summary>
     public string? Color { get; set; }
 
-    /// <summary>Arbitrary parser-specific metadata shared with layout and rendering.</summary>
+    /// <summary>Arbitrary metadata from the parser (e.g., port directions for architecture diagrams).</summary>
     public Dictionary<string, object> Metadata { get; } = new();
 }
 
