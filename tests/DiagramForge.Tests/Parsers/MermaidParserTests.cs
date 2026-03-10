@@ -422,4 +422,130 @@ public class MermaidParserTests
         Assert.Contains("A", outer.ChildNodeIds);
         Assert.Contains("B", outer.ChildNodeIds);
     }
+
+    // ── Mindmap: CanParse ─────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForMindmap()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+            """;
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    // ── Mindmap: Parse ────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_Mindmap_DiagramTypeIsMindmap()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("mindmap", diagram.DiagramType);
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+    }
+
+    [Fact]
+    public void Parse_Mindmap_RootHasNoParent()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // The root node (node_0) must have no incoming edges.
+        var rootNode = diagram.Nodes.Values.First(n => n.Label.Text == "Product");
+        Assert.DoesNotContain(diagram.Edges, e => e.TargetId == rootNode.Id);
+    }
+
+    [Fact]
+    public void Parse_Mindmap_ChildrenLinkedToParent()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+                Design
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // root → Engineering, root → Design
+        Assert.Equal(2, diagram.Edges.Count);
+        var rootId = diagram.Nodes.Values.First(n => n.Label.Text == "Product").Id;
+        Assert.All(diagram.Edges, e => Assert.Equal(rootId, e.SourceId));
+    }
+
+    [Fact]
+    public void Parse_Mindmap_GrandchildLinkedToChild()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+                  Backend
+                  Frontend
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var engineeringId = diagram.Nodes.Values.First(n => n.Label.Text == "Engineering").Id;
+        var backendId = diagram.Nodes.Values.First(n => n.Label.Text == "Backend").Id;
+        var frontendId = diagram.Nodes.Values.First(n => n.Label.Text == "Frontend").Id;
+
+        Assert.Contains(diagram.Edges, e => e.SourceId == engineeringId && e.TargetId == backendId);
+        Assert.Contains(diagram.Edges, e => e.SourceId == engineeringId && e.TargetId == frontendId);
+    }
+
+    [Fact]
+    public void Parse_Mindmap_NodeShapes_AreRecognized()
+    {
+        const string text = """
+            mindmap
+              root((Circle))
+                square[Square]
+                rounded(Rounded)
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var circle = diagram.Nodes.Values.First(n => n.Label.Text == "Circle");
+        var square = diagram.Nodes.Values.First(n => n.Label.Text == "Square");
+        var rounded = diagram.Nodes.Values.First(n => n.Label.Text == "Rounded");
+
+        Assert.Equal(Shape.Circle, circle.Shape);
+        Assert.Equal(Shape.Rectangle, square.Shape);
+        Assert.Equal(Shape.RoundedRectangle, rounded.Shape);
+    }
+
+    [Fact]
+    public void Parse_Mindmap_NodeCount_MatchesTreeSize()
+    {
+        const string text = """
+            mindmap
+              root((Product))
+                Engineering
+                  Backend
+                  Frontend
+                Design
+                Product
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(6, diagram.Nodes.Count);
+        Assert.Equal(5, diagram.Edges.Count);
+    }
 }

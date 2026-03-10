@@ -4,4 +4,5 @@ internal enum MermaidDiagramKind
 {
     Unknown,
     Flowchart,
+    Mindmap,
 }

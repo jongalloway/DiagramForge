@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="528.00" height="248.00" viewBox="0 0 528.00 248.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="528.00" height="248.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <path d="M 84.00,64.00 C 84.00,80.00 84.00,88.00 84.00,104.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 84.00,144.00 C 84.00,160.00 84.00,168.00 84.00,184.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,124.00 C 168.00,124.00 180.00,204.00 204.00,204.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 C 168.00,44.00 180.00,124.00 204.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 C 240.00,44.00 288.00,124.00 384.00,124.00" fill="none" stroke="#555555" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <g transform="translate(24.00,24.00)">
+    <ellipse cx="60.00" cy="20.00" rx="60.00" ry="20.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Product</text>
+  </g>
+  <g transform="translate(24.00,104.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Engineering</text>
+  </g>
+  <g transform="translate(24.00,184.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Backend</text>
+  </g>
+  <g transform="translate(204.00,184.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Frontend</text>
+  </g>
+  <g transform="translate(204.00,104.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Design</text>
+  </g>
+  <g transform="translate(384.00,104.00)">
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Product</text>
+  </g>
+</svg>
