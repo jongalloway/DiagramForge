@@ -8,4 +8,5 @@ internal enum MermaidDiagramKind
     StateDiagram,
     BlockDiagram,
     Timeline,
+    ArchitectureDiagram,
 }
