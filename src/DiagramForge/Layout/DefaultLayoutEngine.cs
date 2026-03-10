@@ -56,6 +56,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (string.Equals(diagram.DiagramType, "sequencediagram", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutSequenceDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
+            return;
+        }
+
         if (string.Equals(diagram.DiagramType, "timeline", StringComparison.OrdinalIgnoreCase))
         {
             LayoutTimelineDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
@@ -417,6 +423,63 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         // Shift whole diagram if any group extends into negative space.
         ShiftDiagramForGroupPadding(diagram);
+    }
+
+    private static void LayoutSequenceDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double hGap,
+        double vGap,
+        double pad)
+    {
+        // Size each participant node from its label.
+        foreach (var node in diagram.Nodes.Values)
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
+            node.Height = nodeH;
+        }
+
+        // Order participants by their declared index (stored during parsing).
+        // ThenBy ensures deterministic output when the index is missing or two
+        // participants share the same value (e.g., programmatically-built diagrams).
+        var ordered = diagram.Nodes.Values
+            .OrderBy(n => n.Metadata.TryGetValue("sequence:participantIndex", out var v)
+                ? Convert.ToInt32(v, System.Globalization.CultureInfo.InvariantCulture)
+                : int.MaxValue)
+            .ThenBy(n => n.Id, StringComparer.Ordinal)
+            .ToList();
+
+        // Place participants in a single row across the top of the diagram.
+        double runX = pad;
+        foreach (var node in ordered)
+        {
+            node.X = runX;
+            node.Y = pad;
+            runX += node.Width + hGap;
+        }
+
+        // Assign each message edge its own Y row below the participant strip.
+        // Each row is vGap tall, giving space for the arrow line and any label above it.
+        double firstMessageY = pad + nodeH + vGap / 2;
+        double messageRowHeight = vGap;
+
+        foreach (var edge in diagram.Edges)
+        {
+            int msgIdx = edge.Metadata.TryGetValue("sequence:messageIndex", out var idxObj)
+                ? Convert.ToInt32(idxObj, System.Globalization.CultureInfo.InvariantCulture)
+                : 0;
+            edge.Metadata["sequence:messageY"] = firstMessageY + msgIdx * messageRowHeight;
+        }
+
+        // Store the canvas height needed to fit all message rows so the renderer
+        // can size the SVG correctly (node Y extents alone would clip the messages).
+        int edgeCount = diagram.Edges.Count;
+        double canvasHeight = firstMessageY + Math.Max(0, edgeCount) * messageRowHeight + pad;
+        diagram.Metadata["sequence:canvasHeight"] = canvasHeight;
     }
 
     private static void LayoutBlockDiagram(
