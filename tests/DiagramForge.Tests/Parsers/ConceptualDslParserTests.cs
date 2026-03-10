@@ -101,9 +101,9 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_MissingSectionKey_ThrowsDiagramParseException()
     {
-        // Process diagram with no "steps:" section
+        // Venn diagram with no "sets:" section
         Assert.Throws<DiagramParseException>(() =>
-            _parser.Parse("diagram: process\n"));
+            _parser.Parse("diagram: venn\n"));
     }
 
     [Fact]
