@@ -55,6 +55,13 @@ public sealed class MermaidParser : IDiagramParser
         // Track nodes encountered so far (implicit node creation is allowed in Mermaid)
         var nodesSeen = new Dictionary<string, Node>(StringComparer.Ordinal);
 
+        // Subgraph stack. Each frame tracks the Group under construction and the set of
+        // node ids referenced between its `subgraph` and `end` markers. In Mermaid, every
+        // node touched inside the block — both sides of an edge — becomes a member, so
+        // membership is captured inside GetOrCreateNode rather than from statement shape.
+        var groupStack = new Stack<(Group group, HashSet<string> members)>();
+        int autoSubgraphId = 0;
+
         Node GetOrCreateNode(string id, string label)
         {
             if (!nodesSeen.TryGetValue(id, out var node))
@@ -63,7 +70,23 @@ public sealed class MermaidParser : IDiagramParser
                 nodesSeen[id] = node;
                 builder.AddNode(node);
             }
+            // Register with every open group on the stack so that nested subgraphs
+            // correctly propagate membership to their ancestors, mirroring Mermaid's
+            // flowDb.addSubGraph semantics (all enclosing groups include the node).
+            // HashSet keeps membership idempotent if the node is referenced more
+            // than once inside the same block.
+            foreach (var frame in groupStack)
+                frame.members.Add(id);
             return node;
+        }
+
+        void CloseGroup()
+        {
+            var (group, members) = groupStack.Pop();
+            // Sort for determinism — HashSet enumeration order is undefined and
+            // group membership flows into SVG output via layout.
+            group.ChildNodeIds.AddRange(members.OrderBy(m => m, StringComparer.Ordinal));
+            builder.AddGroup(group);
         }
 
         // Parse body lines (skip the header)
@@ -71,13 +94,47 @@ public sealed class MermaidParser : IDiagramParser
         {
             var line = lines[i];
 
-            // Skip subgraph declarations (not yet fully supported)
+            // subgraph [<id>] [[<title>]] — open a new group frame.
+            // Guard the keyword with a word-boundary check so a hypothetical node id
+            // like `subgraphNode` does not accidentally open a group.
             if (line.StartsWith("subgraph", StringComparison.OrdinalIgnoreCase)
-                || line.Equals("end", StringComparison.OrdinalIgnoreCase))
+                && (line.Length == 8 || char.IsWhiteSpace(line[8])))
+            {
+                var (id, title) = ParseSubgraphHeader(line.Length > 8 ? line[8..] : string.Empty);
+                id ??= $"__subgraph{autoSubgraphId++}";
+                // A bare `subgraph` with no title results in an empty label so the renderer's
+                // "skip blank labels" check suppresses the synthetic id from showing.
+                // Named subgraphs (e.g., `subgraph myId[My Title]`) always use the parsed title.
+                var group = new Group(id, title);
+                groupStack.Push((group, new HashSet<string>(StringComparer.Ordinal)));
+                continue;
+            }
+
+            // end — close the innermost group. Stray `end` with no open group is
+            // tolerated (mermaid's jison grammar treats `end` as a keyword, but a
+            // lone one is a no-op here rather than a hard error, consistent with
+            // this parser's generally lenient posture).
+            if (line.Equals("end", StringComparison.OrdinalIgnoreCase))
+            {
+                if (groupStack.Count > 0)
+                    CloseGroup();
+                continue;
+            }
+
+            // direction inside a subgraph is part of the Mermaid grammar but out of
+            // scope for this pass (#14). Skip it so it is not misread as a standalone
+            // node declaration named "direction TB".
+            if (groupStack.Count > 0
+                && line.StartsWith("direction ", StringComparison.OrdinalIgnoreCase))
                 continue;
 
             ParseLine(line, builder, GetOrCreateNode);
         }
+
+        // Lenient EOF: close any groups left open (missing `end`). Mermaid proper
+        // would error; here we prefer a best-effort render.
+        while (groupStack.Count > 0)
+            CloseGroup();
 
         return builder.Build();
     }
@@ -220,5 +277,51 @@ public sealed class MermaidParser : IDiagramParser
             .Trim('"');
 
         return (id, string.IsNullOrEmpty(label) ? id : label, shape);
+    }
+
+    /// <summary>
+    /// Parses the remainder of a <c>subgraph</c> header line into an id and display title.
+    /// </summary>
+    /// <remarks>
+    /// Behaviour mirrors mermaid-js <c>flowDb.addSubGraph</c> + <c>subgraph.spec.js</c>:
+    /// <list type="bullet">
+    ///   <item><c>subgraph One</c>              → id <c>One</c>,   title <c>One</c></item>
+    ///   <item><c>subgraph "Some Title"</c>     → id <i>auto</i>,  title <c>Some Title</c></item>
+    ///   <item><c>subgraph Some Title</c>       → id <i>auto</i>,  title <c>Some Title</c> (unquoted multi-word → title-only)</item>
+    ///   <item><c>subgraph ide1[One]</c>        → id <c>ide1</c>,  title <c>One</c></item>
+    ///   <item><c>subgraph uid2["text"]</c>     → id <c>uid2</c>,  title <c>text</c> (quotes inside brackets stripped)</item>
+    ///   <item><c>subgraph</c> (bare)           → id <i>auto</i>,  empty title (no label rendered)</item>
+    /// </list>
+    /// A <c>null</c> id means "caller should auto-generate one".
+    /// </remarks>
+    private static (string? id, string title) ParseSubgraphHeader(string remainder)
+    {
+        remainder = remainder.Trim();
+        if (remainder.Length == 0)
+            return (null, string.Empty);
+
+        // id[Title]  /  id [Title]  /  [Title]
+        int sqStart = remainder.IndexOf('[');
+        if (sqStart >= 0)
+        {
+            int sqEnd = remainder.LastIndexOf(']');
+            if (sqEnd > sqStart)
+            {
+                string idPart = remainder[..sqStart].Trim();
+                string title = remainder[(sqStart + 1)..sqEnd].Trim().Trim('"');
+                return (idPart.Length > 0 ? idPart : null, title);
+            }
+        }
+
+        // "Quoted Title" — title-only, id auto-assigned
+        if (remainder.Length >= 2 && remainder[0] == '"' && remainder[^1] == '"')
+            return (null, remainder[1..^1]);
+
+        // Single token (no whitespace) → serves as both id and title
+        if (!remainder.Any(char.IsWhiteSpace))
+            return (remainder, remainder);
+
+        // Unquoted multi-word → mermaid drops the id and treats the whole thing as the title
+        return (null, remainder);
     }
 }
