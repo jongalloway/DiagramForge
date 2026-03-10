@@ -20,6 +20,20 @@ public class MermaidParserTests
         Assert.True(_parser.CanParse(text));
     }
 
+    [Fact]
+    public void CanParse_ReturnsTrue_WhenFlowchartHeaderFollowsCommentsAndWhitespace()
+    {
+        const string text = """
+
+            %% leading comment
+            %% another comment
+            flowchart LR
+              A --> B
+            """;
+
+        Assert.True(_parser.CanParse(text));
+    }
+
     [Theory]
     [InlineData("diagram: process\nsteps:\n  - A")]
     [InlineData("")]
@@ -187,6 +201,34 @@ public class MermaidParserTests
 
         Assert.Equal(2, diagram.Nodes.Count);
         Assert.Single(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_LeadingComments_DispatchesToFlowchartParser()
+    {
+        // Parser selection is based on the normalized Mermaid document, not the
+        // literal first line of raw input. Leading comments must not block dispatch.
+        const string text = """
+            %% comment before header
+            %% another comment
+            flowchart LR
+              A --> B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("flowchart", diagram.DiagramType);
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+        Assert.Single(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_UnsupportedMermaidDiagramType_ThrowsDiagramParseException()
+    {
+        var ex = Assert.Throws<DiagramParseException>(() =>
+            _parser.Parse("sequenceDiagram\n  A->>B: hello"));
+
+        Assert.Contains("unsupported Mermaid diagram type", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
 
     // ── Parse: subgraphs ──────────────────────────────────────────────────────
