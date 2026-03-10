@@ -5,4 +5,5 @@ internal enum MermaidDiagramKind
     Unknown,
     Flowchart,
     Mindmap,
+    StateDiagram,
 }

@@ -548,4 +548,116 @@ public class MermaidParserTests
         Assert.Equal(6, diagram.Nodes.Count);
         Assert.Equal(5, diagram.Edges.Count);
     }
+
+    // ── State diagram: CanParse ───────────────────────────────────────────────
+
+    [Theory]
+    [InlineData("stateDiagram-v2\n    [*] --> Idle")]
+    [InlineData("stateDiagram\n    [*] --> Idle")]
+    public void CanParse_ReturnsTrue_ForStateDiagram(string text)
+    {
+        Assert.True(_parser.CanParse(text));
+    }
+
+    // ── State diagram: Parse ──────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_StateDiagram_DiagramTypeIsStateDiagram()
+    {
+        var diagram = _parser.Parse("stateDiagram-v2\n    [*] --> Idle");
+
+        Assert.Equal("statediagram", diagram.DiagramType);
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_SimpleTransition_ProducesNodesAndEdge()
+    {
+        var diagram = _parser.Parse("stateDiagram-v2\n    Idle --> Running");
+
+        Assert.True(diagram.Nodes.ContainsKey("Idle"));
+        Assert.True(diagram.Nodes.ContainsKey("Running"));
+        Assert.Single(diagram.Edges);
+        Assert.Equal("Idle", diagram.Edges[0].SourceId);
+        Assert.Equal("Running", diagram.Edges[0].TargetId);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_TransitionLabel_IsAttachedToEdge()
+    {
+        var diagram = _parser.Parse("stateDiagram-v2\n    Idle --> Running : start");
+
+        Assert.Single(diagram.Edges);
+        Assert.Equal("start", diagram.Edges[0].Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_StartTerminal_ProducesDistinctStartNode()
+    {
+        var diagram = _parser.Parse("stateDiagram-v2\n    [*] --> Idle\n    Idle --> [*]");
+
+        // [*] on the left → __start__, [*] on the right → __end__
+        Assert.True(diagram.Nodes.ContainsKey("__start__"));
+        Assert.True(diagram.Nodes.ContainsKey("__end__"));
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_StartAndEndTerminals_AreDistinctNodes()
+    {
+        // [*] on both sides of the diagram must produce two distinct terminal nodes.
+        const string text = """
+            stateDiagram-v2
+                [*] --> Idle
+                Idle --> Running : start
+                Running --> Idle : stop
+                Running --> [*]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.True(diagram.Nodes.ContainsKey("__start__"));
+        Assert.True(diagram.Nodes.ContainsKey("__end__"));
+        Assert.False(diagram.Nodes.ContainsKey("[*]"));
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_TerminalNodes_HaveCircleShape()
+    {
+        var diagram = _parser.Parse("stateDiagram-v2\n    [*] --> Idle\n    Idle --> [*]");
+
+        Assert.Equal(Shape.Circle, diagram.Nodes["__start__"].Shape);
+        Assert.Equal(Shape.Circle, diagram.Nodes["__end__"].Shape);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_StateDefinition_SetsLabel()
+    {
+        const string text = """
+            stateDiagram-v2
+                s1 : My State
+                s1 --> s2
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("My State", diagram.Nodes["s1"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_FullExample_ProducesCorrectNodeAndEdgeCount()
+    {
+        const string text = """
+            stateDiagram-v2
+                [*] --> Idle
+                Idle --> Running : start
+                Running --> Idle : stop
+                Running --> [*]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // __start__, Idle, Running, __end__
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal(4, diagram.Edges.Count);
+    }
 }

@@ -57,8 +57,6 @@ internal sealed class MermaidDocument
     {
         "sequencediagram",
         "classdiagram",
-        "statediagram",
-        "statediagram-v2",
         "erdiagram",
         "journey",
         "gantt",
@@ -110,6 +108,13 @@ internal sealed class MermaidDocument
         if (normalizedHeader.Equals("mindmap", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.Mindmap;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("statediagram", StringComparison.Ordinal)
+            || normalizedHeader.Equals("statediagram-v2", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.StateDiagram;
             return true;
         }
 
