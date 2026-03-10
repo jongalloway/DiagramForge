@@ -28,7 +28,7 @@ internal sealed partial class MermaidArchitectureParser : IMermaidDiagramParser
     // The {group} suffix is optional and stripped from the node ID.
     // Arrow may be --> (directed) or -- (undirected).
     [GeneratedRegex(
-        @"^(?<src>\w+)(?:\{group\})?:(?<srcPort>[LRTB])\s*(?<arrow>--?>?)\s*(?<dstPort>[LRTB]):(?<dst>\w+)(?:\{group\})?$",
+        @"^(?<src>\w+)(?:\{group\})?:(?<srcPort>[LRTB])\s*(?<arrow>-->|--)\s*(?<dstPort>[LRTB]):(?<dst>\w+)(?:\{group\})?$",
         RegexOptions.CultureInvariant)]
     private static partial Regex EdgePattern();
 
@@ -42,28 +42,42 @@ internal sealed partial class MermaidArchitectureParser : IMermaidDiagramParser
 
         var diagram = builder.Build();
 
-        var groups = new Dictionary<string, DiagramGroup>(StringComparer.Ordinal);
+        // ── Pass 1: register all groups and collect parent relationships ──────────
+        // Pre-registering every group ID allows forward references in `in parentId`
+        // declarations to resolve correctly in pass 2.
+        var groupParents = new Dictionary<string, string>(StringComparer.Ordinal);
+        for (int i = 1; i < document.Lines.Length; i++)
+        {
+            var groupMatch = GroupPattern().Match(document.Lines[i]);
+            if (!groupMatch.Success)
+                continue;
 
+            var id = groupMatch.Groups["id"].Value;
+            var label = groupMatch.Groups["label"].Value;
+            var parent = groupMatch.Groups["parent"].Value;
+
+            diagram.AddGroup(new DiagramGroup(id, label));
+            if (!string.IsNullOrEmpty(parent))
+                groupParents[id] = parent;
+        }
+
+        var groups = diagram.Groups.ToDictionary(g => g.Id, StringComparer.Ordinal);
+
+        // Apply group nesting now that all group IDs are registered.
+        foreach (var (childId, parentId) in groupParents)
+        {
+            if (groups.TryGetValue(parentId, out var parentGroup))
+                parentGroup.ChildGroupIds.Add(childId);
+        }
+
+        // ── Pass 2: services, junctions, and edges ────────────────────────────────
         for (int i = 1; i < document.Lines.Length; i++)
         {
             var line = document.Lines[i];
 
-            var groupMatch = GroupPattern().Match(line);
-            if (groupMatch.Success)
-            {
-                var id = groupMatch.Groups["id"].Value;
-                var label = groupMatch.Groups["label"].Value;
-                var parent = groupMatch.Groups["parent"].Value;
-
-                var group = new DiagramGroup(id, label);
-                groups[id] = group;
-                diagram.AddGroup(group);
-
-                if (!string.IsNullOrEmpty(parent) && groups.TryGetValue(parent, out var parentGroup))
-                    parentGroup.ChildGroupIds.Add(id);
-
+            // Skip group lines — already handled in pass 1.
+            if (GroupPattern().IsMatch(line))
                 continue;
-            }
 
             var serviceMatch = ServicePattern().Match(line);
             if (serviceMatch.Success)
@@ -106,7 +120,7 @@ internal sealed partial class MermaidArchitectureParser : IMermaidDiagramParser
 
                 var edge = new Edge(srcId, dstId)
                 {
-                    ArrowHead = arrow.Contains('>') ? ArrowHeadStyle.Arrow : ArrowHeadStyle.None,
+                    ArrowHead = arrow == "-->" ? ArrowHeadStyle.Arrow : ArrowHeadStyle.None,
                     LineStyle = EdgeLineStyle.Solid,
                 };
                 edge.Metadata["source:port"] = srcPort;

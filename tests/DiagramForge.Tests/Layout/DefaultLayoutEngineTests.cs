@@ -327,4 +327,123 @@ public class DefaultLayoutEngineTests
         Assert.True(right.X > left.X + left.Width + diagram.LayoutHints.HorizontalSpacing,
             $"Expected right node X {right.X} to reflect a skipped middle column after left node right edge {left.X + left.Width}");
     }
+
+    // ── Architecture diagram layout ───────────────────────────────────────────
+
+    private static Diagram BuildArchitectureDiagram(Action<Diagram> configure)
+    {
+        var diagram = new Diagram { DiagramType = "architecture" };
+        configure(diagram);
+        return diagram;
+    }
+
+    private static Edge ArchEdge(string srcId, string srcPort, string dstPort, string dstId, bool directed = false)
+    {
+        var edge = new Edge(srcId, dstId)
+        {
+            ArrowHead = directed ? ArrowHeadStyle.Arrow : ArrowHeadStyle.None,
+        };
+        edge.Metadata["source:port"] = srcPort;
+        edge.Metadata["target:port"] = dstPort;
+        return edge;
+    }
+
+    [Fact]
+    public void Layout_Architecture_LREdge_PlacesSourceLeftOfTarget()
+    {
+        // db:R -- L:server → db is left of server (same row)
+        var diagram = BuildArchitectureDiagram(d =>
+            d.AddNode(new Node("db", "Database"))
+             .AddNode(new Node("server", "Server"))
+             .AddEdge(ArchEdge("db", "R", "L", "server")));
+
+        _engine.Layout(diagram, _theme);
+
+        var db = diagram.Nodes["db"];
+        var srv = diagram.Nodes["server"];
+
+        Assert.True(db.X < srv.X, $"db.X ({db.X}) should be left of server.X ({srv.X}) for R--L edge");
+        // Same row: Y coordinates should be equal
+        Assert.Equal(db.Y, srv.Y);
+    }
+
+    [Fact]
+    public void Layout_Architecture_TBEdge_PlacesSourceAboveTarget()
+    {
+        // disk:B -- T:server → disk is above server (same column)
+        var diagram = BuildArchitectureDiagram(d =>
+            d.AddNode(new Node("disk", "Storage"))
+             .AddNode(new Node("server", "Server"))
+             .AddEdge(ArchEdge("disk", "B", "T", "server")));
+
+        _engine.Layout(diagram, _theme);
+
+        var disk = diagram.Nodes["disk"];
+        var srv = diagram.Nodes["server"];
+
+        Assert.True(disk.Y < srv.Y, $"disk.Y ({disk.Y}) should be above server.Y ({srv.Y}) for B--T edge");
+        // Same column: X coordinates should be equal
+        Assert.Equal(disk.X, srv.X);
+    }
+
+    [Fact]
+    public void Layout_Architecture_DisconnectedNode_PlacedInSeparateRow()
+    {
+        // 'loner' has no port edges; it should end up in a different row from the connected pair
+        var diagram = BuildArchitectureDiagram(d =>
+            d.AddNode(new Node("a", "A"))
+             .AddNode(new Node("b", "B"))
+             .AddNode(new Node("loner", "Loner"))
+             .AddEdge(ArchEdge("a", "R", "L", "b")));
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["a"];
+        var loner = diagram.Nodes["loner"];
+
+        // The disconnected node must be placed in a distinct row (different Y)
+        Assert.NotEqual(a.Y, loner.Y);
+    }
+
+    [Fact]
+    public void Layout_Architecture_AllPositionsNonNegative()
+    {
+        var diagram = BuildArchitectureDiagram(d =>
+            d.AddNode(new Node("db", "Database"))
+             .AddNode(new Node("server", "Server"))
+             .AddEdge(ArchEdge("db", "R", "L", "server")));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.X >= 0, $"{n.Id}.X = {n.X}");
+            Assert.True(n.Y >= 0, $"{n.Id}.Y = {n.Y}");
+        });
+    }
+
+    [Fact]
+    public void Layout_Architecture_WithGroup_GroupEnclosesMembers()
+    {
+        var diagram = BuildArchitectureDiagram(d =>
+        {
+            d.AddNode(new Node("db", "Database"));
+            d.AddNode(new Node("server", "Server"));
+            d.AddEdge(ArchEdge("db", "R", "L", "server"));
+            var group = new Group("api", "API");
+            group.ChildNodeIds.AddRange(["db", "server"]);
+            d.AddGroup(group);
+        });
+
+        _engine.Layout(diagram, _theme);
+
+        var group = diagram.Groups[0];
+        foreach (var n in diagram.Nodes.Values)
+        {
+            Assert.True(group.X <= n.X, $"group.X ({group.X}) should be <= {n.Id}.X ({n.X})");
+            Assert.True(group.Y <= n.Y, $"group.Y ({group.Y}) should be <= {n.Id}.Y ({n.Y})");
+            Assert.True(group.X + group.Width >= n.X + n.Width, "group right edge should cover node right edge");
+            Assert.True(group.Y + group.Height >= n.Y + n.Height, "group bottom edge should cover node bottom edge");
+        }
+    }
 }

@@ -216,6 +216,57 @@ public class MermaidArchitectureParserTests
         Assert.Equal(ArrowHeadStyle.Arrow, edge.ArrowHead);
     }
 
+    [Fact]
+    public void Parse_InvalidArrowSyntax_IsNotTreatedAsEdge()
+    {
+        // "->"-style (single dash + >) is not valid architecture-beta edge syntax.
+        // The parser should not create an edge for it.
+        const string text = """
+            architecture-beta
+              service db(database)[Database]
+              service server(server)[Server]
+              db:L -> R:server
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // No edges should be created from the malformed line
+        Assert.Empty(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_ServiceBeforeGroup_ForwardRefResolvesCorrectly()
+    {
+        // Service declared before its parent group: forward reference must still resolve.
+        const string text = """
+            architecture-beta
+              service db(database)[Database] in api
+              group api(cloud)[API]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Contains("db", group.ChildNodeIds);
+    }
+
+    [Fact]
+    public void Parse_NestedGroupForwardRef_ResolvesCorrectly()
+    {
+        // Child group declared before parent group.
+        const string text = """
+            architecture-beta
+              group private_api(cloud)[Private API] in public_api
+              group public_api(cloud)[Public API]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+        var parent = diagram.Groups.Single(g => g.Id == "public_api");
+        Assert.Contains("private_api", parent.ChildGroupIds);
+    }
+
     // ── Comments ──────────────────────────────────────────────────────────────
 
     [Fact]

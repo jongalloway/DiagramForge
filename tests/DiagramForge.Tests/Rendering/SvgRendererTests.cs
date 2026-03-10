@@ -200,6 +200,21 @@ public class SvgRendererTests
             _renderer.Render(new Diagram(), null!));
     }
 
+    // ── Shape rendering ───────────────────────────────────────────────────────
+
+    [Fact]
+    public void Render_CloudShape_ProducesPathElement()
+    {
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Cloud Service") { Shape = Shape.Cloud }));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Cloud is rendered as a <path d="..." />, not a <rect> or <polygon>.
+        Assert.Contains("<path d=", svg);
+        Assert.Contains("Cloud Service", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>
