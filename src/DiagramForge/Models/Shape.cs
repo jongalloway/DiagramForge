@@ -19,4 +19,5 @@ public enum Shape
     ArrowLeft,
     ArrowUp,
     ArrowDown,
+    Cloud,
 }

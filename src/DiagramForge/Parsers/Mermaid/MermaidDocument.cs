@@ -66,7 +66,6 @@ internal sealed class MermaidDocument
         "quadrantchart",
         "requirementdiagram",
         "packet-beta",
-        "architecture-beta",
         "kanban",
         "sankey-beta",
         "xychart-beta",
@@ -121,6 +120,12 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("block-beta", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.BlockDiagram;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("architecture-beta", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.ArchitectureDiagram;
             return true;
         }
 

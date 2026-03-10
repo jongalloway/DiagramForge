@@ -118,6 +118,10 @@ public sealed class SvgRenderer : ISvgRenderer
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
 
+            case Shape.Cloud:
+                AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
+                break;
+
             default: // RoundedRectangle and anything else
                 sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(rx)}" ry="{F(rx)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
                 break;
@@ -235,6 +239,31 @@ public sealed class SvgRenderer : ISvgRenderer
         };
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+    }
+
+    private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme)
+    {
+        // Approximate a cloud shape using a path with arc segments.
+        // The cloud is built from 5 overlapping arcs across the top and a flat bottom.
+        double w = width;
+        double h = height;
+        double r1 = h * 0.28; // large left bump
+        double r2 = h * 0.22; // small left bump
+        double r3 = h * 0.30; // large top bump
+        double r4 = h * 0.24; // small right bump
+        double r5 = h * 0.20; // small far-right bump
+        double flatBottomY = h * 0.72; // y-level of flat bottom
+
+        // Approximate arc path: start bottom-left, trace arc bumps across the top, back to bottom-right, then flat bottom.
+        string d =
+            $"M {F(w * 0.10)},{F(flatBottomY)} " +
+            $"A {F(r1)},{F(r1)} 0 0,1 {F(w * 0.20)},{F(flatBottomY - r1 * 1.1)} " +
+            $"A {F(r2)},{F(r2)} 0 0,1 {F(w * 0.37)},{F(flatBottomY - r2 * 1.5)} " +
+            $"A {F(r3)},{F(r3)} 0 0,1 {F(w * 0.60)},{F(flatBottomY - r3 * 1.0)} " +
+            $"A {F(r4)},{F(r4)} 0 0,1 {F(w * 0.80)},{F(flatBottomY - r4 * 0.9)} " +
+            $"A {F(r5)},{F(r5)} 0 0,1 {F(w * 0.92)},{F(flatBottomY)} " +
+            $"Z";
+        sb.AppendLine($"""    <path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
     }
 
     // ── Dimension helpers ─────────────────────────────────────────────────────

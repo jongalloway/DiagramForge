@@ -56,6 +56,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (string.Equals(diagram.DiagramType, "architecture", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutArchitectureDiagram(diagram, theme, minW, nodeH, hGap, vGap, pad);
+            return;
+        }
+
         // ── Sizing pass ───────────────────────────────────────────────────────
         // Compute each node's width from its label so text does not overflow the
         // shape. MinNodeWidth remains a floor so short labels ("A", "End") do not
@@ -201,16 +207,210 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // own padding (especially the label-height top inset) exceeds DiagramPadding.
         // Right/bottom are handled separately by SvgRenderer.ComputeWidth/Height
         // including group extents.
-        if (diagram.Groups.Count > 0)
+        ShiftDiagramForGroupPadding(diagram);
+    }
+
+    private static void LayoutArchitectureDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double hGap,
+        double vGap,
+        double pad)
+    {
+        // ── Sizing pass ───────────────────────────────────────────────────────
+        foreach (var node in diagram.Nodes.Values)
         {
-            double shiftX = Math.Max(0, -diagram.Groups.Min(g => g.X));
-            double shiftY = Math.Max(0, -diagram.Groups.Min(g => g.Y));
-            if (shiftX > 0 || shiftY > 0)
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textW = EstimateTextWidth(node.Label.Text, fontSize);
+            // Junctions (Shape.Circle, no label) get a small fixed size.
+            if (node.Shape == Models.Shape.Circle && string.IsNullOrEmpty(node.Label.Text))
             {
-                foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }
-                foreach (var g in diagram.Groups) { g.X += shiftX; g.Y += shiftY; }
+                node.Width = 20;
+                node.Height = 20;
+            }
+            else
+            {
+                node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
+                node.Height = nodeH;
             }
         }
+
+        // ── Constraint-based grid positioning ────────────────────────────────
+        // Build a grid position map using edge port directions as spatial constraints.
+        // L/R implies horizontal adjacency; T/B implies vertical adjacency.
+        // We assign (gridCol, gridRow) to each node, then convert to pixel coordinates.
+
+        var gridCol = new Dictionary<string, int>(StringComparer.Ordinal);
+        var gridRow = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        // Seed the first node (alphabetically for determinism) at (0, 0).
+        if (diagram.Nodes.Count > 0)
+        {
+            var firstId = diagram.Nodes.Keys.OrderBy(k => k, StringComparer.Ordinal).First();
+            gridCol[firstId] = 0;
+            gridRow[firstId] = 0;
+        }
+
+        // Process edges iteratively; multiple passes handle chains.
+        bool changed = true;
+        int maxPasses = diagram.Edges.Count + 1;
+        for (int pass = 0; pass < maxPasses && changed; pass++)
+        {
+            changed = false;
+            foreach (var edge in diagram.Edges)
+            {
+                if (!edge.Metadata.TryGetValue("source:port", out var srcPortObj)
+                    || !edge.Metadata.TryGetValue("target:port", out var dstPortObj))
+                    continue;
+
+                var srcPort = srcPortObj is string s1 ? s1 : srcPortObj?.ToString() ?? string.Empty;
+                var dstPort = dstPortObj is string s2 ? s2 : dstPortObj?.ToString() ?? string.Empty;
+                var srcId = edge.SourceId;
+                var dstId = edge.TargetId;
+
+                bool hasSrc = gridCol.ContainsKey(srcId);
+                bool hasDst = gridCol.ContainsKey(dstId);
+
+                if (!hasSrc && !hasDst)
+                    continue;
+
+                // Determine the relative offset implied by the port pair.
+                // srcPort is the port on the source side; dstPort is the port on the target side.
+                // Example: src:R -- L:dst → src is to the left of dst → dst.col = src.col + 1
+                int dColOffset = 0, dRowOffset = 0;
+                if ((srcPort == "R" && dstPort == "L") || (srcPort == "L" && dstPort == "R"))
+                    dColOffset = srcPort == "R" ? 1 : -1;
+                else if ((srcPort == "B" && dstPort == "T") || (srcPort == "T" && dstPort == "B"))
+                    dRowOffset = srcPort == "B" ? 1 : -1;
+
+                if (dColOffset == 0 && dRowOffset == 0)
+                    continue; // 90° edge or unrecognised ports — skip for now
+
+                if (hasSrc && !hasDst)
+                {
+                    gridCol[dstId] = gridCol[srcId] + dColOffset;
+                    gridRow[dstId] = gridRow[srcId] + dRowOffset;
+                    changed = true;
+                }
+                else if (hasDst && !hasSrc)
+                {
+                    gridCol[srcId] = gridCol[dstId] - dColOffset;
+                    gridRow[srcId] = gridRow[dstId] - dRowOffset;
+                    changed = true;
+                }
+            }
+        }
+
+        // Assign any still-unpositioned nodes using BFS from already-positioned nodes,
+        // or to a new row at the bottom if completely disconnected.
+        int nextFallbackRow = gridRow.Count > 0 ? gridRow.Values.Max() + 2 : 0;
+        int fallbackCol = 0;
+        foreach (var id in diagram.Nodes.Keys.OrderBy(k => k, StringComparer.Ordinal))
+        {
+            if (!gridCol.ContainsKey(id))
+            {
+                gridCol[id] = fallbackCol++;
+                gridRow[id] = nextFallbackRow;
+            }
+        }
+
+        // ── Shift grid so minimum col/row is 0 ───────────────────────────────
+        int minCol = gridCol.Values.Min();
+        int minRow = gridRow.Values.Min();
+        foreach (var id in gridCol.Keys.ToList())
+        {
+            gridCol[id] -= minCol;
+            gridRow[id] -= minRow;
+        }
+
+        // ── Compute per-column widths and per-row heights ─────────────────────
+        int totalCols = gridCol.Values.Max() + 1;
+        int totalRows = gridRow.Values.Max() + 1;
+
+        var colWidths = new double[totalCols];
+        var rowHeights = new double[totalRows];
+
+        foreach (var (id, node) in diagram.Nodes)
+        {
+            int col = gridCol[id];
+            int row = gridRow[id];
+            colWidths[col] = Math.Max(colWidths[col], node.Width);
+            rowHeights[row] = Math.Max(rowHeights[row], node.Height);
+        }
+
+        // ── Pixel positions ───────────────────────────────────────────────────
+        var colX = new double[totalCols];
+        double runX = pad;
+        for (int c = 0; c < totalCols; c++)
+        {
+            colX[c] = runX;
+            runX += colWidths[c] + hGap;
+        }
+
+        var rowY = new double[totalRows];
+        double runY = pad;
+        for (int r = 0; r < totalRows; r++)
+        {
+            rowY[r] = runY;
+            runY += rowHeights[r] + vGap;
+        }
+
+        foreach (var (id, node) in diagram.Nodes)
+        {
+            int col = gridCol[id];
+            int row = gridRow[id];
+            node.X = colX[col] + (colWidths[col] - node.Width) / 2;
+            node.Y = rowY[row] + (rowHeights[row] - node.Height) / 2;
+        }
+
+        // ── Group bounding boxes ──────────────────────────────────────────────
+        // Recursively collect all descendant node IDs for a group (including nested groups).
+        IEnumerable<string> AllNodeIds(Group g)
+        {
+            foreach (var nid in g.ChildNodeIds)
+                yield return nid;
+
+            foreach (var cgid in g.ChildGroupIds)
+            {
+                var cg = diagram.Groups.FirstOrDefault(x => x.Id == cgid);
+                if (cg is not null)
+                    foreach (var nid in AllNodeIds(cg))
+                        yield return nid;
+            }
+        }
+
+        foreach (var group in diagram.Groups)
+        {
+            var members = AllNodeIds(group)
+                .Where(diagram.Nodes.ContainsKey)
+                .Select(id => diagram.Nodes[id])
+                .ToList();
+
+            if (members.Count == 0)
+            {
+                group.X = 0; group.Y = 0; group.Width = 0; group.Height = 0;
+                continue;
+            }
+
+            double minX = members.Min(n => n.X);
+            double minY = members.Min(n => n.Y);
+            double maxX = members.Max(n => n.X + n.Width);
+            double maxY = members.Max(n => n.Y + n.Height);
+
+            double sidePad = theme.NodePadding;
+            bool labeled = !string.IsNullOrWhiteSpace(group.Label.Text);
+            double topPad = labeled ? sidePad + theme.FontSize + 8 : sidePad;
+
+            group.X = minX - sidePad;
+            group.Y = minY - topPad;
+            group.Width = (maxX - minX) + 2 * sidePad;
+            group.Height = (maxY - minY) + topPad + sidePad;
+        }
+
+        // Shift whole diagram if any group extends into negative space.
+        ShiftDiagramForGroupPadding(diagram);
     }
 
     private static void LayoutBlockDiagram(
@@ -294,6 +494,24 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         if (string.IsNullOrEmpty(text))
             return 0;
         return text.Length * fontSize * AvgGlyphAdvanceEm;
+    }
+
+    /// <summary>
+    /// Shifts all nodes and groups so that no group extends into negative coordinate space.
+    /// Call this after group bounding boxes have been computed.
+    /// </summary>
+    private static void ShiftDiagramForGroupPadding(Diagram diagram)
+    {
+        if (diagram.Groups.Count == 0)
+            return;
+
+        double shiftX = Math.Max(0, -diagram.Groups.Min(g => g.X));
+        double shiftY = Math.Max(0, -diagram.Groups.Min(g => g.Y));
+        if (shiftX > 0 || shiftY > 0)
+        {
+            foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }
+            foreach (var g in diagram.Groups) { g.X += shiftX; g.Y += shiftY; }
+        }
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
