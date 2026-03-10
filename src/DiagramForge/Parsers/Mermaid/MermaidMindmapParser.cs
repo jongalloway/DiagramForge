@@ -32,7 +32,7 @@ internal sealed class MermaidMindmapParser : IMermaidDiagramParser
 
             // ParseNodeDeclaration returns a source-text ID (e.g. "root" from "root((Product))"),
             // but mindmap nodes are identified by generated IDs — the parsed ID is intentionally unused.
-            var (_, label, shape) = MermaidFlowchartParser.ParseNodeDeclaration(text);
+            var (_, label, shape) = MermaidNodeSyntax.ParseNodeDeclaration(text);
 
             var nodeId = $"node_{nodeCounter++}";
             var node = new Node(nodeId, label);

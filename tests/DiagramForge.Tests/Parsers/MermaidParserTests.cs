@@ -466,7 +466,7 @@ public class MermaidParserTests
         var diagram = _parser.Parse(text);
 
         // The root node (node_0) must have no incoming edges.
-        var rootNode = diagram.Nodes.Values.First();
+        var rootNode = diagram.Nodes.Values.First(n => n.Label.Text == "Product");
         Assert.DoesNotContain(diagram.Edges, e => e.TargetId == rootNode.Id);
     }
 
