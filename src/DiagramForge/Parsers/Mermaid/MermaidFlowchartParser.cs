@@ -88,20 +88,7 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
         IDiagramSemanticModelBuilder builder,
         Func<string, string, Node> getOrCreate)
     {
-        string[] edgeOps = ["--->", "-->>", "-.->", "==>", "===", "-->", "-.-", "---"];
-
-        string? matchedOp = null;
-        int opIndex = -1;
-
-        foreach (var op in edgeOps)
-        {
-            int idx = line.IndexOf(op, StringComparison.Ordinal);
-            if (idx >= 0 && (opIndex < 0 || idx < opIndex || (idx == opIndex && op.Length > matchedOp!.Length)))
-            {
-                opIndex = idx;
-                matchedOp = op;
-            }
-        }
+        var (matchedOp, opIndex) = MermaidEdgeSyntax.FindOperator(line);
 
         if (matchedOp is not null)
         {
@@ -138,10 +125,8 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
             if (edgeLabel is not null)
                 edge.Label = new Label(edgeLabel);
 
-            edge.LineStyle = matchedOp.Contains('=') ? EdgeLineStyle.Thick
-                           : matchedOp.Contains('.') ? EdgeLineStyle.Dotted
-                           : EdgeLineStyle.Solid;
-            edge.ArrowHead = matchedOp.Contains('>') ? ArrowHeadStyle.Arrow : ArrowHeadStyle.None;
+            edge.LineStyle = MermaidEdgeSyntax.LineStyleFor(matchedOp);
+            edge.ArrowHead = MermaidEdgeSyntax.ArrowHeadFor(matchedOp);
 
             builder.AddEdge(edge);
             return;

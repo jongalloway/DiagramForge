@@ -660,4 +660,33 @@ public class MermaidParserTests
         Assert.Equal(4, diagram.Nodes.Count);
         Assert.Equal(4, diagram.Edges.Count);
     }
+
+    [Theory]
+    [InlineData("stateDiagram-v2\n    Idle --> Running : start")]   // spaced  " : "
+    [InlineData("stateDiagram-v2\n    Idle --> Running: start")]    // tight   ": "
+    [InlineData("stateDiagram-v2\n    Idle --> Running :start")]    // leading " :"
+    [InlineData("stateDiagram-v2\n    Idle --> Running:start")]     // no spaces ":"
+    public void Parse_StateDiagram_TransitionLabel_FlexibleColonStyles(string text)
+    {
+        var diagram = _parser.Parse(text);
+
+        Assert.Single(diagram.Edges);
+        Assert.Equal("start", diagram.Edges[0].Label?.Text);
+        Assert.Equal("Running", diagram.Edges[0].TargetId);
+    }
+
+    [Fact]
+    public void Parse_StateDiagram_StateDefinitionAfterTransition_UpdatesLabel()
+    {
+        // Node created by transition first (label == id), then definition overrides the label.
+        const string text = """
+            stateDiagram-v2
+                s1 --> s2
+                s1 : Initial State
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Initial State", diagram.Nodes["s1"].Label.Text);
+    }
 }
