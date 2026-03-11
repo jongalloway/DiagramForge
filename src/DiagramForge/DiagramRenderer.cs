@@ -129,7 +129,7 @@ public sealed class DiagramRenderer
     /// Returns all registered parser syntax IDs.
     /// </summary>
     public IReadOnlyList<string> RegisteredSyntaxes =>
-        [.. _parsers.Select(p => p.SyntaxId)];
+        _parsers.Select(p => p.SyntaxId).ToList().AsReadOnly();
 
     // ── Private helpers ───────────────────────────────────────────────────────
 

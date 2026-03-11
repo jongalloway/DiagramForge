@@ -123,21 +123,41 @@ public sealed class SvgRenderer : ISvgRenderer
 
         if (!textOnly)
         {
-            Action appendShape = node.Shape switch
+            switch (node.Shape)
             {
-                Shape.Circle or Shape.Ellipse => () => AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute),
-                Shape.Diamond => () => AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute),
-                Shape.Pill or Shape.Stadium => () => AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2),
-                Shape.ArrowRight => () => AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right"),
-                Shape.ArrowLeft => () => AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left"),
-                Shape.ArrowUp => () => AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up"),
-                Shape.ArrowDown => () => AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down"),
-                Shape.Rectangle => () => AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0),
-                Shape.Cloud => () => AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme),
-                _ => () => AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx),
-            };
-
-            appendShape();
+                case Shape.Circle:
+                case Shape.Ellipse:
+                    AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
+                    break;
+                case Shape.Diamond:
+                    AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
+                    break;
+                case Shape.Pill:
+                case Shape.Stadium:
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2);
+                    break;
+                case Shape.ArrowRight:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
+                    break;
+                case Shape.ArrowLeft:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
+                    break;
+                case Shape.ArrowUp:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
+                    break;
+                case Shape.ArrowDown:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
+                    break;
+                case Shape.Rectangle:
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0);
+                    break;
+                case Shape.Cloud:
+                    AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
+                    break;
+                default:
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx);
+                    break;
+            }
         }
         else if (HasTextOnlyBackdrop(node, fillOpacity))
         {
