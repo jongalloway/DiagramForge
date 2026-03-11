@@ -63,9 +63,10 @@ public sealed class SvgRenderer : ISvgRenderer
             AppendEdge(sb, edge, source, target, theme);
         }
 
-        // Nodes
+        // Nodes (pass index for palette cycling)
+        int nodeIndex = 0;
         foreach (var node in diagram.Nodes.Values)
-            AppendNode(sb, node, theme);
+            AppendNode(sb, node, theme, nodeIndex++);
 
         sb.AppendLine("</svg>");
         return sb.ToString();
@@ -82,10 +83,33 @@ public sealed class SvgRenderer : ISvgRenderer
         sb.AppendLine("  </defs>");
     }
 
-    private static void AppendNode(StringBuilder sb, Node node, Theme theme)
+    private static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
     {
-        string fill = Escape(node.FillColor ?? theme.NodeFillColor);
-        string stroke = Escape(node.StrokeColor ?? theme.NodeStrokeColor);
+        string fill;
+        string stroke;
+
+        if (node.FillColor is not null)
+        {
+            // Explicit per-node color takes priority
+            fill   = Escape(node.FillColor);
+            stroke = Escape(node.StrokeColor ?? ColorUtils.Darken(node.FillColor, 0.20));
+        }
+        else if (theme.NodePalette is { Count: > 0 })
+        {
+            // Cycle through the palette
+            string paletteFill = theme.NodePalette[nodeIndex % theme.NodePalette.Count];
+            fill = Escape(paletteFill);
+            stroke = Escape(
+                node.StrokeColor
+                ?? (theme.NodeStrokePalette is { Count: > 0 }
+                    ? theme.NodeStrokePalette[nodeIndex % theme.NodeStrokePalette.Count]
+                    : ColorUtils.Darken(paletteFill, 0.20)));
+        }
+        else
+        {
+            fill   = Escape(theme.NodeFillColor);
+            stroke = Escape(node.StrokeColor ?? theme.NodeStrokeColor);
+        }
         double? fillOpacity = GetMetadataDouble(node, "render:fillOpacity");
         string fillOpacityAttribute = fillOpacity.HasValue
             ? $" fill-opacity=\"{F(fillOpacity.Value)}\""

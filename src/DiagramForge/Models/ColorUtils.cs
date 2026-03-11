@@ -1,0 +1,134 @@
+namespace DiagramForge.Models;
+
+/// <summary>
+/// Utility methods for basic hex-color manipulation used by <see cref="Theme"/> and the renderer.
+/// </summary>
+/// <remarks>
+/// Supported hex formats:
+/// <list type="bullet">
+///   <item><c>#RGB</c> — 3-digit shorthand (e.g. <c>#F80</c>)</item>
+///   <item><c>#RGBA</c> — 4-digit shorthand with alpha (e.g. <c>#F80C</c>)</item>
+///   <item><c>#RRGGBB</c> — 6-digit full (e.g. <c>#FF8800</c>)</item>
+///   <item><c>#RRGGBBAA</c> — 8-digit full with alpha (e.g. <c>#FF8800CC</c>)</item>
+/// </list>
+/// </remarks>
+public static class ColorUtils
+{
+    /// <summary>
+    /// Returns a lighter version of the given hex color by blending toward white.
+    /// The alpha channel (if present) is preserved in the output.
+    /// </summary>
+    /// <param name="hex">Hex color string.</param>
+    /// <param name="amount">Blend factor 0–1 (0 = unchanged, 1 = white).</param>
+    public static string Lighten(string hex, double amount)
+    {
+        var (r, g, b, a) = ParseHexWithAlpha(hex);
+        return ToHex(
+            Clamp((int)(r + (255 - r) * amount)),
+            Clamp((int)(g + (255 - g) * amount)),
+            Clamp((int)(b + (255 - b) * amount)),
+            a);
+    }
+
+    /// <summary>
+    /// Returns a darker version of the given hex color by blending toward black.
+    /// The alpha channel (if present) is preserved in the output.
+    /// </summary>
+    /// <param name="hex">Hex color string.</param>
+    /// <param name="amount">Blend factor 0–1 (0 = unchanged, 1 = black).</param>
+    public static string Darken(string hex, double amount)
+    {
+        var (r, g, b, a) = ParseHexWithAlpha(hex);
+        return ToHex(
+            Clamp((int)(r * (1 - amount))),
+            Clamp((int)(g * (1 - amount))),
+            Clamp((int)(b * (1 - amount))),
+            a);
+    }
+
+    /// <summary>
+    /// Returns a desaturated (muted) version of the given hex color.
+    /// The alpha channel (if present) is preserved in the output.
+    /// </summary>
+    /// <param name="hex">Hex color string.</param>
+    /// <param name="amount">Desaturation factor 0–1 (0 = unchanged, 1 = full grayscale).</param>
+    public static string Desaturate(string hex, double amount)
+    {
+        var (r, g, b, a) = ParseHexWithAlpha(hex);
+        // Perceived luminance weights (BT.601)
+        double luminance = r * 0.299 + g * 0.587 + b * 0.114;
+        return ToHex(
+            Clamp((int)(r + (luminance - r) * amount)),
+            Clamp((int)(g + (luminance - g) * amount)),
+            Clamp((int)(b + (luminance - b) * amount)),
+            a);
+    }
+
+    // ── Parsing ───────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Parses a hex color string and returns the RGB channels (alpha is discarded).
+    /// Supports <c>#RGB</c>, <c>#RGBA</c>, <c>#RRGGBB</c>, and <c>#RRGGBBAA</c> formats.
+    /// </summary>
+    /// <exception cref="ArgumentException">The string is not a valid hex color.</exception>
+    public static (int r, int g, int b) ParseHex(string hex)
+    {
+        var (r, g, b, _) = ParseHexWithAlpha(hex);
+        return (r, g, b);
+    }
+
+    /// <summary>
+    /// Parses a hex color string and returns the RGBA channels.
+    /// Supports <c>#RGB</c>, <c>#RGBA</c>, <c>#RRGGBB</c>, and <c>#RRGGBBAA</c> formats.
+    /// Colors without an explicit alpha channel return <c>a = 255</c> (fully opaque).
+    /// </summary>
+    /// <exception cref="ArgumentException">The string is not a valid hex color.</exception>
+    public static (int r, int g, int b, int a) ParseHexWithAlpha(string hex)
+    {
+        string cleaned = ExpandShorthand(hex);
+
+        if (!cleaned.All(Uri.IsHexDigit))
+            throw new ArgumentException($"Invalid hex color: '{hex}'", nameof(hex));
+
+        int r = Convert.ToInt32(cleaned[..2], 16);
+        int g = Convert.ToInt32(cleaned[2..4], 16);
+        int b = Convert.ToInt32(cleaned[4..6], 16);
+        int a = cleaned.Length == 8 ? Convert.ToInt32(cleaned[6..8], 16) : 255;
+        return (r, g, b, a);
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Strips the leading <c>#</c> (required) and expands shorthand to canonical length (6 or 8 digits).
+    /// </summary>
+    /// <exception cref="ArgumentException">The string does not start with <c>#</c> or has an unsupported length.</exception>
+    private static string ExpandShorthand(string hex)
+    {
+        if (string.IsNullOrEmpty(hex) || hex[0] != '#')
+            throw new ArgumentException($"Invalid hex color: '{hex}' (must start with '#')", nameof(hex));
+
+        string cleaned = hex[1..];
+        return cleaned.Length switch
+        {
+            // #RGB  →  #RRGGBB
+            3 => string.Concat(cleaned[0], cleaned[0], cleaned[1], cleaned[1], cleaned[2], cleaned[2]),
+            // #RGBA →  #RRGGBBAA
+            4 => string.Concat(cleaned[0], cleaned[0], cleaned[1], cleaned[1], cleaned[2], cleaned[2], cleaned[3], cleaned[3]),
+            6 or 8 => cleaned,
+            _ => throw new ArgumentException($"Invalid hex color: '{hex}'", nameof(hex)),
+        };
+    }
+
+    private static int Clamp(int value) => Math.Max(0, Math.Min(255, value));
+
+    /// <summary>
+    /// Formats RGB(A) channels back to a hex color string.
+    /// Omits the alpha byte when <paramref name="a"/> is 255 (fully opaque).
+    /// </summary>
+    private static string ToHex(int r, int g, int b, int a = 255) =>
+        a == 255
+            ? $"#{r:X2}{g:X2}{b:X2}"
+            : $"#{r:X2}{g:X2}{b:X2}{a:X2}";
+}
+
