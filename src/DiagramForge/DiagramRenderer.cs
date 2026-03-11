@@ -179,7 +179,7 @@ public sealed class DiagramRenderer
         if (string.IsNullOrEmpty(value) || value[0] != '#')
             return false;
         string hex = value[1..];
-        return (hex.Length == 3 || hex.Length == 6)
+        return (hex.Length == 3 || hex.Length == 4 || hex.Length == 6 || hex.Length == 8)
             && hex.All(c => Uri.IsHexDigit(c));
     }
 

@@ -113,6 +113,24 @@ public class DiagramRendererPaletteJsonTests
             _renderer.Render(SimpleDiagram, theme: null, paletteJson: """["FF0000"]"""));
     }
 
+    // ── RGBA / RRGGBBAA palette colors ────────────────────────────────────────
+
+    [Fact]
+    public void Render_WithFourCharRgbaColors_IsAccepted()
+    {
+        // #F80C = #FF8800CC (shorthand with alpha)
+        string svg = _renderer.Render(SimpleDiagram, theme: null, paletteJson: """["#F80C","#0F0C"]""");
+        Assert.Contains("<svg ", svg);
+    }
+
+    [Fact]
+    public void Render_WithEightCharRrggbbaaColors_IsAccepted()
+    {
+        // Semi-transparent colors
+        string svg = _renderer.Render(SimpleDiagram, theme: null, paletteJson: """["#FF000080","#00FF0080"]""");
+        Assert.Contains("<svg ", svg);
+    }
+
     // ── Null palette JSON leaves behavior unchanged ───────────────────────────
 
     [Fact]
