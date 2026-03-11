@@ -31,9 +31,10 @@ public sealed class MermaidParser : IDiagramParser
         new MermaidSequenceParser(),
         new MermaidTimelineParser(),
         new MermaidArchitectureParser(),
+        new MermaidXyChartParser(),
     ];
 
-    private static readonly string[] SupportedDiagramTypes = ["flowchart", "mindmap", "venn-beta", "statediagram", "block", "sequencediagram", "timeline", "architecture"];
+\    private static readonly string[] SupportedDiagramTypes = ["flowchart", "mindmap", "venn-beta", "statediagram", "block", "sequencediagram", "timeline", "architecture", "xychart-beta"];
 
     public string SyntaxId => "mermaid";
 
