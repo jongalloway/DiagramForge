@@ -100,7 +100,7 @@ public class Theme
     /// for an unrecognised name.
     /// </summary>
     /// <param name="name">One of: <c>default</c>, <c>dark</c>, <c>neutral</c>, <c>forest</c>, <c>presentation</c>.</param>
-    public static Theme? GetByName(string name) =>
+    public static Theme? GetByName(string? name) =>
         name?.Trim().ToLowerInvariant() switch
         {
             "default"      => Default,

@@ -161,6 +161,13 @@ public class ColorUtilsTests
         Assert.Throws<ArgumentException>(() => ColorUtils.ParseHex("notacolor"));
     }
 
+    [Fact]
+    public void ParseHex_BareHexWithoutHash_ThrowsArgumentException()
+    {
+        // Bare hex strings (no leading '#') must be rejected
+        Assert.Throws<ArgumentException>(() => ColorUtils.ParseHex("4F81BD"));
+    }
+
     // ── ParseHexWithAlpha ─────────────────────────────────────────────────────
 
     [Fact]

@@ -99,9 +99,11 @@ public sealed class SvgRenderer : ISvgRenderer
             // Cycle through the palette
             string paletteFill = theme.NodePalette[nodeIndex % theme.NodePalette.Count];
             fill = Escape(paletteFill);
-            stroke = theme.NodeStrokePalette is { Count: > 0 }
-                ? Escape(theme.NodeStrokePalette[nodeIndex % theme.NodeStrokePalette.Count])
-                : Escape(node.StrokeColor ?? ColorUtils.Darken(paletteFill, 0.20));
+            stroke = Escape(
+                node.StrokeColor
+                ?? (theme.NodeStrokePalette is { Count: > 0 }
+                    ? theme.NodeStrokePalette[nodeIndex % theme.NodeStrokePalette.Count]
+                    : ColorUtils.Darken(paletteFill, 0.20)));
         }
         else
         {

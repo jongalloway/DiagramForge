@@ -26,6 +26,28 @@ if (outputPath is null)
         outputPath = args[outputIndex + 1];
 }
 
+// Validate value-required flags are not present without a value
+if (RequiresFlagValue(args, "--output", "-o") && outputPath is null)
+{
+    Console.Error.WriteLine("Error: --output/-o flag requires a value.");
+    return 1;
+}
+if (RequiresFlagValue(args, "--theme") && themeName is null)
+{
+    Console.Error.WriteLine("Error: --theme flag requires a value.");
+    return 1;
+}
+if (RequiresFlagValue(args, "--palette") && paletteJson is null)
+{
+    Console.Error.WriteLine("Error: --palette flag requires a value.");
+    return 1;
+}
+if (RequiresFlagValue(args, "--theme-file") && themeFile is null)
+{
+    Console.Error.WriteLine("Error: --theme-file flag requires a value.");
+    return 1;
+}
+
 if (!File.Exists(inputPath))
 {
     Console.Error.WriteLine($"Error: Input file not found: {inputPath}");
@@ -113,6 +135,24 @@ static string? ParseFlagValue(string[] args, params string[] flags)
             return args[idx + 1];
     }
     return null;
+}
+
+/// <summary>
+/// Returns true when any of the <paramref name="flags"/> are present in <paramref name="args"/>
+/// but are not followed by a non-flag value — i.e. the flag is present but its value is missing.
+/// </summary>
+static bool RequiresFlagValue(string[] args, params string[] flags)
+{
+    foreach (string flag in flags)
+    {
+        int idx = Array.FindIndex(args, 1, arg => string.Equals(arg, flag, StringComparison.Ordinal));
+        if (idx < 0)
+            continue;
+        // Flag is present; check whether a value follows it
+        if (idx >= args.Length - 1 || args[idx + 1].StartsWith("-", StringComparison.Ordinal))
+            return true;
+    }
+    return false;
 }
 
 static void PrintHelp()

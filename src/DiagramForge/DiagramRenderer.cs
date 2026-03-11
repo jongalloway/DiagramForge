@@ -166,7 +166,7 @@ public sealed class DiagramRenderer
             string color = colors[i]?.Trim() ?? string.Empty;
             if (!IsHexColor(color))
                 throw new ArgumentException(
-                    $"paletteJson entry [{i}] \"{colors[i]}\" is not a valid hex color string (expected #RGB or #RRGGBB).",
+                    $"paletteJson entry [{i}] \"{colors[i]}\" is not a valid hex color string (expected #RGB, #RGBA, #RRGGBB, or #RRGGBBAA).",
                     nameof(paletteJson));
             colors[i] = color;
         }

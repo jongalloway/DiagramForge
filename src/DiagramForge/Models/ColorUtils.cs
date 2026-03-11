@@ -100,11 +100,15 @@ public static class ColorUtils
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>
-    /// Strips the leading <c>#</c> and expands shorthand to canonical length (6 or 8 digits).
+    /// Strips the leading <c>#</c> (required) and expands shorthand to canonical length (6 or 8 digits).
     /// </summary>
+    /// <exception cref="ArgumentException">The string does not start with <c>#</c> or has an unsupported length.</exception>
     private static string ExpandShorthand(string hex)
     {
-        string cleaned = hex.TrimStart('#');
+        if (string.IsNullOrEmpty(hex) || hex[0] != '#')
+            throw new ArgumentException($"Invalid hex color: '{hex}' (must start with '#')", nameof(hex));
+
+        string cleaned = hex[1..];
         return cleaned.Length switch
         {
             // #RGB  →  #RRGGBB
