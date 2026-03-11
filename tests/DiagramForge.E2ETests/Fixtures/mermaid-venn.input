@@ -1,0 +1,17 @@
+venn-beta
+  title "Brunch Geometry"
+  set "Breakfast Club"["Breakfast"]
+    text Eggs["Eggs"]
+  set "Handheld Society"["Handheld"]
+    text Wrap["Wrap"]
+  set Cheese["Cheesy"]
+  union "Breakfast Club","Handheld Society"["Burrito"]
+    text Salsa["Sauce"]
+  union "Breakfast Club",Cheese["Omelet"]
+  union "Handheld Society",Cheese["Melt"]
+  union "Breakfast Club","Handheld Society",Cheese["Quesadilla"]
+    text HotSauce["Heat"]
+  style "Breakfast Club" fill:#ff6b6b, stroke:#9f1239, color:#5f0f1f, fill-opacity:0.40
+  style "Breakfast Club","Handheld Society" color:#7c2d12
+  style Eggs color:#b91c1c
+  style HotSauce fill:#fde68a, stroke:#92400e, fill-opacity:0.55

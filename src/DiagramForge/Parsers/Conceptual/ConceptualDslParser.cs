@@ -9,13 +9,15 @@ namespace DiagramForge.Parsers.Conceptual;
 /// <remarks>
 /// <para>The DSL is a lightweight YAML-inspired text format. Example:</para>
 /// <code>
-/// diagram: venn
-/// sets:
-///   - Engineering
+/// diagram: matrix
+/// rows:
 ///   - Product
-///   - Design
+///   - Engineering
+/// columns:
+///   - Now
+///   - Next
 /// </code>
-/// <para>Supported diagram types: venn, matrix, pyramid.</para>
+/// <para>Supported diagram types: matrix, pyramid.</para>
 /// </remarks>
 public sealed class ConceptualDslParser : IDiagramParser
 {
@@ -23,7 +25,7 @@ public sealed class ConceptualDslParser : IDiagramParser
 
     private static readonly HashSet<string> KnownTypes = new(StringComparer.OrdinalIgnoreCase)
     {
-        "venn", "matrix", "pyramid",
+        "matrix", "pyramid",
     };
 
     /// <inheritdoc/>
@@ -66,9 +68,6 @@ public sealed class ConceptualDslParser : IDiagramParser
 
         switch (diagramType)
         {
-            case "venn":
-                ParseListDiagram(lines, builder, "sets", diagramType);
-                break;
             case "pyramid":
                 ParseListDiagram(lines, builder, "levels", diagramType);
                 break;

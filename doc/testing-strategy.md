@@ -32,7 +32,7 @@ Tests individual components in isolation:
 |-----------|---------------------|-----------------|
 | `DiagramRendererTests` | `DiagramRenderer` (full pipeline) | End-to-end SVG output contains expected elements; parser selection works |
 | `MermaidParserTests` | `MermaidParser` + sub-parsers | `CanParse` true/false, node counts, edge counts, labels, shapes, directions, subgraph membership, edge styles, error messages |
-| `ConceptualDslParserTests` | `ConceptualDslParser` | `CanParse` true/false, process/cycle/hierarchy/venn/list/matrix/pyramid node/edge counts and labels |
+| `ConceptualDslParserTests` | `ConceptualDslParser` | `CanParse` true/false, matrix/pyramid node counts and labels |
 | `DefaultLayoutEngineTests` | `DefaultLayoutEngine` | Position ordering (A.Y < B.Y in TB), non-negative coordinates, width > 0, direction-dependent axis, group bounding boxes |
 | `SvgRendererTests` | `SvgRenderer` | SVG root element, node labels present, title, arrowhead markers, edge labels, theme colors in output |
 | `DiagramModelTests` | `Diagram`, `Node`, `Edge`, `Group` | Fluent API chaining, add/retrieve by ID, collection population |
@@ -229,7 +229,6 @@ dotnet test --collect:"XPlat Code Coverage"
 | `conceptual-matrix` | Conceptual | matrix | Row × column grid |
 | `conceptual-process` | Conceptual | process | Linear chain with edges |
 | `conceptual-pyramid` | Conceptual | pyramid | Nodes only |
-| `conceptual-venn` | Conceptual | venn | Nodes only |
 | `mermaid-comments` | Mermaid | flowchart | `%%` comment stripping |
 | `mermaid-edge-labels` | Mermaid | flowchart | `\|label\|` syntax on edges |
 | `mermaid-edge-styles` | Mermaid | flowchart | Dashed, dotted, thick edges |

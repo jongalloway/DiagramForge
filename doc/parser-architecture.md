@@ -195,17 +195,17 @@ A single-class parser (`ConceptualDslParser`) for the YAML-inspired Conceptual
 DSL:
 
 ```
-diagram: venn
-sets:
+diagram: matrix
+rows:
   - Engineering
+columns:
   - Product
-  - Design
 ```
 
 ### 5.1 Detection
 
 `CanParse` checks whether the first content line matches
-`diagram: <known-type>`. Known types: `venn`, `matrix`, `pyramid`.
+`diagram: <known-type>`. Known types: `matrix`, `pyramid`.
 
 ### 5.2 Parsing Strategy
 
@@ -214,7 +214,6 @@ directly on trimmed lines:
 
 | Diagram type | Section key | Structure |
 |-------------|------------|-----------|
-| `venn` | `sets:` | Nodes only |
 | `pyramid` | `levels:` | Nodes only |
 | `matrix` | `rows:` + `columns:` | Grid of `cell_{r}_{c}` nodes |
 

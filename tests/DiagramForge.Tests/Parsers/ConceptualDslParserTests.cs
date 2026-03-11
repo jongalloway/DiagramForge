@@ -19,7 +19,6 @@ public class ConceptualDslParserTests
     // ── CanParse ──────────────────────────────────────────────────────────────
 
     [Theory]
-    [InlineData("diagram: venn\nsets:\n  - A")]
     [InlineData("diagram: matrix\nrows:\n  - R1\ncolumns:\n  - C1")]
     [InlineData("diagram: pyramid\nlevels:\n  - L1")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
@@ -29,23 +28,12 @@ public class ConceptualDslParserTests
 
     [Theory]
     [InlineData("flowchart LR\n  A --> B")]
+    [InlineData("diagram: venn\nsets:\n  - A")]
     [InlineData("diagram: sequenceDiagram")]
     [InlineData("")]
     public void CanParse_ReturnsFalse_ForUnknownInput(string text)
     {
         Assert.False(_parser.CanParse(text));
-    }
-
-    // ── Venn ──────────────────────────────────────────────────────────────────
-
-    [Fact]
-    public void Parse_Venn_ProducesOneNodePerSet()
-    {
-        const string text = "diagram: venn\nsets:\n  - Engineering\n  - Product\n  - Design";
-
-        var diagram = _parser.Parse(text);
-
-        Assert.Equal(3, diagram.Nodes.Count);
     }
 
     // ── Matrix ────────────────────────────────────────────────────────────────
@@ -85,7 +73,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_SourceSyntax_IsConceptual()
     {
-        var diagram = _parser.Parse("diagram: venn\nsets:\n  - X");
+        var diagram = _parser.Parse("diagram: matrix\nrows:\n  - X\ncolumns:\n  - Y");
 
         Assert.Equal("conceptual", diagram.SourceSyntax);
     }
@@ -101,9 +89,8 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_MissingSectionKey_ThrowsDiagramParseException()
     {
-        // Venn diagram with no "sets:" section
         Assert.Throws<DiagramParseException>(() =>
-            _parser.Parse("diagram: venn\n"));
+            _parser.Parse("diagram: matrix\nrows:\n  - A\n"));
     }
 
     [Fact]

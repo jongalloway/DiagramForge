@@ -215,6 +215,45 @@ public class SvgRendererTests
         Assert.Contains("Cloud Service", svg);
     }
 
+    [Fact]
+    public void Render_UsesCustomLabelCenterMetadata_WhenPresent()
+    {
+        var node = new Node("A", "Shifted")
+        {
+            Shape = Shape.Circle,
+            Width = 120,
+            Height = 120,
+        };
+        node.Metadata["label:centerX"] = 30d;
+        node.Metadata["label:centerY"] = 40d;
+
+        var diagram = new Diagram().AddNode(node);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("x=\"30.00\"", svg);
+        Assert.Contains("y=\"44.55\"", svg);
+    }
+
+    [Fact]
+    public void Render_TextOnlyNode_RendersOnlyText()
+    {
+        var textOnly = new Node("overlap", "a+b")
+        {
+            X = 40,
+            Y = 20,
+        };
+        textOnly.Metadata["render:textOnly"] = true;
+
+        var diagram = new Diagram().AddNode(textOnly);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains(">a+b</text>", svg);
+        Assert.DoesNotContain("<ellipse", svg);
+        Assert.DoesNotContain("<rect width=\"0.00\" height=\"0.00\"", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>

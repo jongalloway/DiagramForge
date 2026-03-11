@@ -137,13 +137,15 @@ SmartArt‑inspired conceptual diagrams:
 
 ## 6. Conceptual Diagram DSL (Draft)
 
-### 6.1 Example: Relationship (Venn)
+### 6.1 Example: Matrix
 
-    diagram: venn
-    sets:
-      - Engineering
-      - Product
-      - Design
+      diagram: matrix
+      rows:
+         - Engineering
+         - Product
+      columns:
+         - Discovery
+         - Delivery
 
 ---
 
