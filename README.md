@@ -3,7 +3,7 @@
 **Text in, SVG out.** A .NET library and CLI that turns plain-text diagram descriptions into clean, self-contained SVG — no browser, no JavaScript runtime, no headless Chrome.
 
 <p align="center">
-  <img src="docs/gallery.svg" alt="DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more" width="100%">
+  <img src="docs/gallery.svg" alt="DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more" style="width: 100%;">
 </p>
 
 ```csharp

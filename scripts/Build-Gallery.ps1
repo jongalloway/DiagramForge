@@ -5,7 +5,7 @@
 .DESCRIPTION
     Reads every .expected.svg file in the E2E Fixtures directory, scales each to
     fit a uniform cell in a responsive grid, and writes a single self-contained
-    SVG to the repository root.
+    SVG to docs/gallery.svg under the repository root by default.
 
     Because the output is pure SVG composition (nested <svg> elements with viewBox),
     no image manipulation libraries or rasterisation tools are needed.
@@ -77,7 +77,7 @@ foreach ($file in $svgFiles) {
     $label = $file.BaseName -replace '\.expected$', ''
     $label = $label -replace '^mermaid-', '' -replace '^conceptual-', 'Conceptual '
     $label = ($label -split '-' | ForEach-Object {
-        if ($_.Length -le 2) { $_.ToUpper() } else { (Get-Culture).TextInfo.ToTitleCase($_) }
+        if ($_.Length -le 2) { $_.ToUpperInvariant() } else { [System.Globalization.CultureInfo]::InvariantCulture.TextInfo.ToTitleCase($_) }
     }) -join ' '
 
     $entries += [PSCustomObject]@{
