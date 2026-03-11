@@ -5,6 +5,11 @@
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
   </PropertyGroup>
 
+  <!-- Versioning -->
+  <ItemGroup>
+    <PackageVersion Include="MinVer" Version="7.0.0" />
+  </ItemGroup>
+
   <!-- Test project packages -->
   <ItemGroup>
     <!-- xUnit v3 (Apache-2.0) — includes Microsoft Testing Platform (MTP) runner -->
