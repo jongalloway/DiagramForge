@@ -157,6 +157,137 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_VennDiagram_UsesOverlappingCirclePlacement()
+    {
+        var diagram = new Diagram { DiagramType = "venn" };
+        diagram.AddNode(new Node("node_0", "Fast") { Shape = Shape.Circle })
+               .AddNode(new Node("node_1", "Cheap") { Shape = Shape.Circle })
+               .AddNode(new Node("node_2", "Good") { Shape = Shape.Circle });
+
+        _engine.Layout(diagram, _theme);
+
+        var fast = diagram.Nodes["node_0"];
+        var cheap = diagram.Nodes["node_1"];
+        var good = diagram.Nodes["node_2"];
+
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.Equal(node.Width, node.Height);
+            Assert.Equal(Shape.Circle, node.Shape);
+        });
+
+        Assert.True(fast.Y < cheap.Y, $"Expected top node Y ({fast.Y}) to be above left node Y ({cheap.Y}).");
+        Assert.Equal(cheap.Y, good.Y);
+        Assert.True(fast.X > cheap.X && fast.X < good.X,
+            $"Expected top node X ({fast.X}) to sit between left ({cheap.X}) and right ({good.X}) nodes.");
+        Assert.True(fast.X < cheap.X + cheap.Width,
+            $"Expected top and left circles to overlap, but fast.X ({fast.X}) was not inside cheap's right edge ({cheap.X + cheap.Width}).");
+        Assert.True(good.X < fast.X + fast.Width,
+            $"Expected top and right circles to overlap, but right.X ({good.X}) was not inside top's right edge ({fast.X + fast.Width}).");
+        Assert.True(good.X < cheap.X + cheap.Width,
+            $"Expected left and right circles to overlap, but right.X ({good.X}) started beyond left's right edge ({cheap.X + cheap.Width}).");
+
+        Assert.Equal(fast.Width * 0.50, Convert.ToDouble(fast.Metadata["label:centerX"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(fast.Height * 0.24, Convert.ToDouble(fast.Metadata["label:centerY"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(cheap.Width * 0.26, Convert.ToDouble(cheap.Metadata["label:centerX"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(good.Width * 0.74, Convert.ToDouble(good.Metadata["label:centerX"], System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Layout_VennDiagram_PositionsOverlapTextNodes()
+    {
+        var diagram = new Diagram { DiagramType = "venn" };
+
+        var top = new Node("node_0", "A") { Shape = Shape.Circle };
+        var left = new Node("node_1", "B") { Shape = Shape.Circle };
+        var right = new Node("node_2", "C") { Shape = Shape.Circle };
+        var overlap = new Node("overlap_abc", "a+b+c");
+        overlap.Metadata["venn:kind"] = "overlap";
+        overlap.Metadata["venn:region"] = "abc";
+        overlap.Metadata["render:textOnly"] = true;
+
+        diagram.AddNode(top)
+               .AddNode(left)
+               .AddNode(right)
+               .AddNode(overlap);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.Equal(0, overlap.Width);
+        Assert.Equal(0, overlap.Height);
+        Assert.True(overlap.X > left.X && overlap.X < right.X + right.Width,
+            $"Expected overlap text X ({overlap.X}) to fall between the lower circles.");
+        Assert.True(overlap.Y > top.Y && overlap.Y < left.Y + left.Height,
+            $"Expected overlap text Y ({overlap.Y}) to fall inside the shared center region.");
+    }
+
+    [Fact]
+    public void Layout_VennDiagram_PositionsTwoSetOverlapLabels()
+    {
+        var diagram = new Diagram { DiagramType = "venn" };
+
+        var left = new Node("node_0", "A") { Shape = Shape.Circle };
+        var right = new Node("node_1", "B") { Shape = Shape.Circle };
+        var overlap = new Node("overlap_ab", "Shared");
+        overlap.Metadata["venn:kind"] = "overlap";
+        overlap.Metadata["venn:region"] = "ab";
+        overlap.Metadata["render:textOnly"] = true;
+
+        diagram.AddNode(left)
+               .AddNode(right)
+               .AddNode(overlap);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(overlap.X > left.X && overlap.X < right.X + right.Width,
+            $"Expected two-set overlap label X ({overlap.X}) to fall between the circles.");
+        Assert.True(overlap.Y > left.Y && overlap.Y < left.Y + left.Height,
+            $"Expected two-set overlap label Y ({overlap.Y}) to remain inside the overlapping band.");
+    }
+
+    [Fact]
+    public void Layout_VennDiagram_PositionsNestedTextNodesUnderSetsAndUnion()
+    {
+        var diagram = new Diagram { DiagramType = "venn" };
+
+        var left = new Node("node_0", "Frontend") { Shape = Shape.Circle };
+        var right = new Node("node_1", "Backend") { Shape = Shape.Circle };
+        var overlap = new Node("overlap_ab", "Shared");
+        overlap.Metadata["venn:kind"] = "overlap";
+        overlap.Metadata["venn:region"] = "ab";
+        overlap.Metadata["render:textOnly"] = true;
+
+        var setText = new Node("A1", "React");
+        setText.Metadata["venn:kind"] = "text";
+        setText.Metadata["venn:parentSet"] = "node_0";
+        setText.Metadata["venn:textIndex"] = 0;
+        setText.Metadata["render:textOnly"] = true;
+
+        var unionText = new Node("AB1", "OpenAPI");
+        unionText.Metadata["venn:kind"] = "text";
+        unionText.Metadata["venn:region"] = "ab";
+        unionText.Metadata["venn:textIndex"] = 0;
+        unionText.Metadata["render:textOnly"] = true;
+
+        diagram.AddNode(left)
+               .AddNode(right)
+               .AddNode(overlap)
+               .AddNode(setText)
+               .AddNode(unionText);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(setText.Y > left.Y,
+            $"Expected set text Y ({setText.Y}) to sit below the left set label area.");
+        Assert.True(setText.Y < left.Y + left.Height,
+            $"Expected set text Y ({setText.Y}) to remain inside the left set circle.");
+        Assert.True(unionText.Y > overlap.Y,
+            $"Expected union text Y ({unionText.Y}) to sit below the overlap label.");
+        Assert.True(unionText.X > left.X && unionText.X < right.X + right.Width,
+            $"Expected union text X ({unionText.X}) to remain inside the shared overlap band.");
+    }
+
+    [Fact]
     public void Layout_NullDiagram_ThrowsArgumentNullException()
     {
         Assert.Throws<ArgumentNullException>(() => _engine.Layout(null!, _theme));

@@ -13,6 +13,8 @@ namespace DiagramForge.Rendering;
 /// </remarks>
 public sealed class SvgRenderer : ISvgRenderer
 {
+    private const double AvgGlyphAdvanceEm = 0.6;
+
     /// <inheritdoc/>
     public string Render(Diagram diagram, Theme theme)
     {
@@ -84,64 +86,88 @@ public sealed class SvgRenderer : ISvgRenderer
     {
         string fill = Escape(node.FillColor ?? theme.NodeFillColor);
         string stroke = Escape(node.StrokeColor ?? theme.NodeStrokeColor);
+        double? fillOpacity = GetMetadataDouble(node, "render:fillOpacity");
+        string fillOpacityAttribute = fillOpacity.HasValue
+            ? $" fill-opacity=\"{F(fillOpacity.Value)}\""
+            : string.Empty;
         double rx = theme.BorderRadius;
+        bool textOnly = node.Metadata.TryGetValue("render:textOnly", out var textOnlyObj)
+            && textOnlyObj is bool isTextOnly
+            && isTextOnly;
 
         sb.AppendLine($"""  <g transform="translate({F(node.X)},{F(node.Y)})">""");
 
-        switch (node.Shape)
+        if (!textOnly)
         {
-            case Shape.Circle:
-            case Shape.Ellipse:
-                double cx = node.Width / 2, cy = node.Height / 2;
-                sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
-                break;
+            switch (node.Shape)
+            {
+                case Shape.Circle:
+                case Shape.Ellipse:
+                    double cx = node.Width / 2, cy = node.Height / 2;
+                    sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    break;
 
-            case Shape.Diamond:
-                double mx = node.Width / 2, my = node.Height / 2;
-                sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
-                break;
+                case Shape.Diamond:
+                    double mx = node.Width / 2, my = node.Height / 2;
+                    sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    break;
 
-            case Shape.Pill:
-            case Shape.Stadium:
-                sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(node.Height / 2)}" ry="{F(node.Height / 2)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
-                break;
+                case Shape.Pill:
+                case Shape.Stadium:
+                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(node.Height / 2)}" ry="{F(node.Height / 2)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    break;
 
-            case Shape.ArrowRight:
-                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
-                break;
+                case Shape.ArrowRight:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
+                    break;
 
-            case Shape.ArrowLeft:
-                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
-                break;
+                case Shape.ArrowLeft:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
+                    break;
 
-            case Shape.ArrowUp:
-                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
-                break;
+                case Shape.ArrowUp:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
+                    break;
 
-            case Shape.ArrowDown:
-                AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
-                break;
+                case Shape.ArrowDown:
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
+                    break;
 
-            case Shape.Rectangle:
-                sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
-                break;
+                case Shape.Rectangle:
+                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    break;
 
-            case Shape.Cloud:
-                AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
-                break;
+                case Shape.Cloud:
+                    AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
+                    break;
 
-            default: // RoundedRectangle and anything else
-                sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(rx)}" ry="{F(rx)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
-                break;
+                default: // RoundedRectangle and anything else
+                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(rx)}" ry="{F(rx)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    break;
+            }
+        }
+        else if (HasTextOnlyBackdrop(node, fillOpacity))
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textWidth = EstimateTextWidth(node.Label.Text, fontSize);
+            double horizontalPadding = theme.NodePadding * 0.4;
+            double top = -fontSize * 0.80;
+            double height = fontSize * 1.25;
+            double width = textWidth + horizontalPadding * 2;
+            sb.AppendLine($"""    <rect x="{F(-width / 2)}" y="{F(top)}" width="{F(width)}" height="{F(height)}" rx="{F(fontSize * 0.35)}" ry="{F(fontSize * 0.35)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
         }
 
         // Label
-        double textX = node.Width / 2;
-        double textY = node.Height / 2 + theme.FontSize * 0.35;
-        string textColor = Escape(node.Label.Color ?? theme.TextColor);
-        double fontSize = node.Label.FontSize ?? theme.FontSize;
+        if (!string.IsNullOrWhiteSpace(node.Label.Text))
+        {
+            string textColor = Escape(node.Label.Color ?? theme.TextColor);
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textX = GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
+            double textBaselineY = GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
+            double textY = textBaselineY + fontSize * 0.35;
 
-        sb.AppendLine($"""    <text x="{F(textX)}" y="{F(textY)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{F(textX)}" y="{F(textY)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(node.Label.Text)}</text>""");
+        }
         sb.AppendLine("  </g>");
     }
 
@@ -478,6 +504,35 @@ public sealed class SvgRenderer : ISvgRenderer
     // ── Utilities ─────────────────────────────────────────────────────────────
 
     private static string F(double v) => v.ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+
+    private static double EstimateTextWidth(string? text, double fontSize)
+    {
+        if (string.IsNullOrEmpty(text))
+            return 0;
+
+        return text.Length * fontSize * AvgGlyphAdvanceEm;
+    }
+
+    private static bool HasTextOnlyBackdrop(Node node, double? fillOpacity) =>
+        !string.IsNullOrWhiteSpace(node.Label.Text)
+        && (node.FillColor is not null || node.StrokeColor is not null || fillOpacity.HasValue);
+
+    private static double? GetMetadataDouble(Node node, string key)
+    {
+        if (!node.Metadata.TryGetValue(key, out var value) || value is null)
+            return null;
+
+        if (value is string s)
+            return double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? parsed : null;
+
+        if (value is IConvertible convertible)
+        {
+            try { return convertible.ToDouble(System.Globalization.CultureInfo.InvariantCulture); }
+            catch { return null; }
+        }
+
+        return null;
+    }
 
     private static string Escape(string? text) =>
         text is null ? string.Empty

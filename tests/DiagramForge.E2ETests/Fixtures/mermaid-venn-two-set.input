@@ -1,0 +1,11 @@
+venn-beta
+  title "Product Pairing"
+  set A["Design"]
+    text Sketches["Sketches"]
+  set B["Engineering"]
+    text Build["Build"]
+  union A,B["Shared"]
+    text Specs["Specs"]
+  style A fill:#93c5fd, stroke:#1d4ed8, fill-opacity:0.35
+  style B fill:#86efac, stroke:#15803d, fill-opacity:0.35
+  style A,B color:#1f2937

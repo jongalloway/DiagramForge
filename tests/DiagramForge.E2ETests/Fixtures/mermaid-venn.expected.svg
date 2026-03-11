@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="298.19" height="331.52" viewBox="0 0 298.19 331.52">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+    </marker>
+  </defs>
+  <rect width="298.19" height="331.52" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <text x="149.10" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#1F2937">Brunch Geometry</text>
+  <g transform="translate(69.92,47.00)">
+    <ellipse cx="79.17" cy="79.17" rx="79.17" ry="79.17" fill="#ff6b6b" stroke="#9f1239" stroke-width="1.50" fill-opacity="0.40"/>
+    <text x="79.17" y="42.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#5f0f1f">Breakfast</text>
+  </g>
+  <g transform="translate(149.10,115.29)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#b91c1c">Eggs</text>
+  </g>
+  <g transform="translate(24.00,126.17)">
+    <ellipse cx="79.17" cy="79.17" rx="79.17" ry="79.17" fill="#70AD47" stroke="#70AD47" stroke-width="1.50" fill-opacity="0.40"/>
+    <text x="41.17" y="93.23" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Handheld</text>
+  </g>
+  <g transform="translate(52.50,229.30)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Wrap</text>
+  </g>
+  <g transform="translate(115.84,126.17)">
+    <ellipse cx="79.17" cy="79.17" rx="79.17" ry="79.17" fill="#ED7D31" stroke="#ED7D31" stroke-width="1.50" fill-opacity="0.40"/>
+    <text x="117.18" y="93.23" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Cheesy</text>
+  </g>
+  <g transform="translate(122.18,140.63)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#7c2d12">Burrito</text>
+  </g>
+  <g transform="translate(122.18,155.58)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Sauce</text>
+  </g>
+  <g transform="translate(176.02,140.63)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Omelet</text>
+  </g>
+  <g transform="translate(149.10,226.14)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Melt</text>
+  </g>
+  <g transform="translate(149.10,165.96)">
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Quesadilla</text>
+  </g>
+  <g transform="translate(149.10,180.91)">
+    <rect x="-20.40" y="-10.40" width="40.80" height="16.25" rx="4.55" ry="4.55" fill="#fde68a" stroke="#92400e" stroke-width="1.50" fill-opacity="0.55"/>
+    <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Heat</text>
+  </g>
+</svg>

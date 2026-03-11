@@ -18,6 +18,7 @@ public class MermaidParserTests
     [InlineData("block-beta\n  A B C")]
     [InlineData("block\n  A B C")]
     [InlineData("sequenceDiagram\n    A->>B: Hello")]
+    [InlineData("venn-beta\n  set A\n  set B\n  union A,B[AB]")]
     public void CanParse_ReturnsTrue_ForMermaidDiagrams(string diagramText)
     {
         Assert.True(_parser.CanParse(diagramText));
@@ -261,6 +262,118 @@ public class MermaidParserTests
         Assert.Equal("A", edge.SourceId);
         Assert.Equal("B", edge.TargetId);
         Assert.Equal("sync", edge.Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_SetsSourceSyntaxAndType()
+    {
+        var diagram = _parser.Parse("venn-beta\n  set A\n  set B");
+
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+        Assert.Equal("venn", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_ParsesSetLabelsAndUnionLabels()
+    {
+        const string text = """
+            venn-beta
+              title "Team overlap"
+              set A["Alpha"]:20
+              set B["Beta"]:12
+              set C["Gamma"]
+              union A,B["AB"]:3
+              union A,C["AC"]
+              union B,C["BC"]
+              union A,B,C["ABC"]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Team overlap", diagram.Title);
+        Assert.Equal("Alpha", diagram.Nodes["A"].Label.Text);
+        Assert.Equal("Beta", diagram.Nodes["B"].Label.Text);
+        Assert.Equal("Gamma", diagram.Nodes["C"].Label.Text);
+        Assert.Equal("AB", diagram.Nodes["overlap_ab"].Label.Text);
+        Assert.Equal("ABC", diagram.Nodes["overlap_abc"].Label.Text);
+        Assert.Equal(true, diagram.Nodes["overlap_ab"].Metadata["render:textOnly"]);
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_ParsesNestedTextStylesAndQuotedIdentifiers()
+    {
+        const string text = """
+                venn-beta
+                    set "Frontend Team"["Frontend"]
+                        text "React UI"
+                        text FrontendA["Design Systems"]
+                    set "Backend Team"["Backend"]
+                        text BackendA["API"]
+                    union "Frontend Team","Backend Team"["Shared"]
+                        text SharedA["OpenAPI"]
+                    style "Frontend Team" fill:#ff6b6b, stroke:#222222, color:#101010, fill-opacity:0.40
+                    style "Frontend Team","Backend Team" color:#333333
+                    style FrontendA color:red
+                    style SharedA fill:#ffe66d, stroke:#444444, fill-opacity:0.50
+                """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Frontend", diagram.Nodes["Frontend Team"].Label.Text);
+        Assert.Equal("React UI", diagram.Nodes["React UI"].Label.Text);
+        Assert.Equal("Design Systems", diagram.Nodes["FrontendA"].Label.Text);
+        Assert.Equal("Shared", diagram.Nodes["overlap_ab"].Label.Text);
+        Assert.Equal("OpenAPI", diagram.Nodes["SharedA"].Label.Text);
+
+        Assert.Equal("Frontend Team", diagram.Nodes["React UI"].Metadata["venn:parentSet"]);
+        Assert.Equal("ab", diagram.Nodes["SharedA"].Metadata["venn:region"]);
+        Assert.Equal(true, diagram.Nodes["SharedA"].Metadata["render:textOnly"]);
+
+        Assert.Equal("#ff6b6b", diagram.Nodes["Frontend Team"].FillColor);
+        Assert.Equal("#222222", diagram.Nodes["Frontend Team"].StrokeColor);
+        Assert.Equal("#101010", diagram.Nodes["Frontend Team"].Label.Color);
+        Assert.Equal(0.40, Convert.ToDouble(diagram.Nodes["Frontend Team"].Metadata["render:fillOpacity"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal("#333333", diagram.Nodes["overlap_ab"].Label.Color);
+        Assert.Equal("red", diagram.Nodes["FrontendA"].Label.Color);
+        Assert.Equal("#ffe66d", diagram.Nodes["SharedA"].FillColor);
+        Assert.Equal("#444444", diagram.Nodes["SharedA"].StrokeColor);
+        Assert.Equal(0.50, Convert.ToDouble(diagram.Nodes["SharedA"].Metadata["render:fillOpacity"], System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_RejectsUnknownUnionMembers()
+    {
+        const string text = """
+            venn-beta
+              set A
+              set B
+              union A,C["AC"]
+            """;
+
+        Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_RejectsUnsupportedStatements()
+    {
+        const string text = """
+            venn-beta
+              set A
+                note A1["Nested"]
+            """;
+
+        Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+    }
+
+    [Fact]
+    public void Parse_VennDiagram_RejectsMultipleIdentifiersInSetDeclaration()
+    {
+        const string text = """
+            venn-beta
+              set A,B
+            """;
+
+        Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
     }
 
     [Fact]

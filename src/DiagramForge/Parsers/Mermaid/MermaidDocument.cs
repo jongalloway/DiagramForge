@@ -67,6 +67,8 @@ internal sealed class MermaidDocument
         "kanban",
         "sankey-beta",
         "zenuml",
+        "radar-beta",
+        "treemap-beta",
     };
 
     public static MermaidDocument Parse(string diagramText)
@@ -103,6 +105,12 @@ internal sealed class MermaidDocument
         if (normalizedHeader.Equals("mindmap", StringComparison.Ordinal))
         {
             kind = MermaidDiagramKind.Mindmap;
+            return true;
+        }
+
+        if (normalizedHeader.Equals("venn-beta", StringComparison.Ordinal))
+        {
+            kind = MermaidDiagramKind.VennDiagram;
             return true;
         }
 

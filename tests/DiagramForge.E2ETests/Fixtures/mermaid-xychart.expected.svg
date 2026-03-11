@@ -34,50 +34,38 @@
   <polyline points="115.67,287.00 199.00,275.00 282.33,293.00 365.67,77.00 449.00,263.00 532.33,107.00" fill="none" stroke="#70AD47" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>
   <g transform="translate(86.50,299.00)">
     <rect width="58.33" height="48.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="28.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(169.83,257.00)">
     <rect width="58.33" height="90.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="49.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(253.17,305.00)">
     <rect width="58.33" height="42.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="25.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(336.50,95.00)">
     <rect width="58.33" height="252.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="130.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(419.83,275.00)">
     <rect width="58.33" height="72.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="40.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(503.17,119.00)">
     <rect width="58.33" height="228.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="29.17" y="118.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(112.67,284.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(196.00,272.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(279.33,290.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(362.67,74.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(446.00,260.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
   <g transform="translate(529.33,104.00)">
     <ellipse cx="3.00" cy="3.00" rx="3.00" ry="3.00" fill="#70AD47" stroke="#70AD47" stroke-width="1.50"/>
-    <text x="3.00" y="7.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937"></text>
   </g>
 </svg>

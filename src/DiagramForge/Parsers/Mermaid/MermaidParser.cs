@@ -11,6 +11,7 @@ namespace DiagramForge.Parsers.Mermaid;
 /// <list type="bullet">
 ///   <item>Flowchart (LR, RL, TB, BT, TD)</item>
 ///   <item>Mindmap</item>
+///   <item>Venn diagram (venn-beta)</item>
 ///   <item>State diagram (stateDiagram / stateDiagram-v2)</item>
 ///   <item>Block diagram (block / block-beta)</item>
 ///   <item>Sequence diagram (sequenceDiagram)</item>
@@ -24,6 +25,7 @@ public sealed class MermaidParser : IDiagramParser
     [
         new MermaidFlowchartParser(),
         new MermaidMindmapParser(),
+        new MermaidVennParser(),
         new MermaidStateParser(),
         new MermaidBlockParser(),
         new MermaidSequenceParser(),
@@ -32,7 +34,7 @@ public sealed class MermaidParser : IDiagramParser
         new MermaidXyChartParser(),
     ];
 
-    private static readonly string[] SupportedDiagramTypes = ["flowchart", "mindmap", "statediagram", "block", "sequencediagram", "timeline", "architecture", "xychart-beta"];
+    private static readonly string[] SupportedDiagramTypes = ["flowchart", "mindmap", "venn-beta", "statediagram", "block", "sequencediagram", "timeline", "architecture", "xychart-beta"];
 
     public string SyntaxId => "mermaid";
 
