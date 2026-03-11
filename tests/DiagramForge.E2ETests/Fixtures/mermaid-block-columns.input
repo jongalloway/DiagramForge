@@ -1,3 +1,6 @@
+---
+palette: ["#E8D5B7", "#B8D4E3", "#D4E6B5", "#E8B5C5", "#D5C5E8", "#B5E3D4"]
+---
 block
   columns 3
   a["A label"] b:2 c:2 d

@@ -1,3 +1,6 @@
+---
+palette: ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEAA7", "#DDA0DD"]
+---
 flowchart LR
   A[Rectangle] --> B(Rounded)
   B --> C{Decision}

@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using DiagramForge;
+using DiagramForge.Models;
 
 namespace DiagramForge.E2ETests;
 
@@ -97,8 +98,9 @@ public class SnapshotTests
         var inputPath = Path.Combine(RuntimeFixturesDir, fixtureName + ".input");
         var expectedPath = Path.Combine(RuntimeFixturesDir, fixtureName + ".expected.svg");
 
-        var source = await File.ReadAllTextAsync(inputPath, TestContext.Current.CancellationToken);
-        var actualSvg = Renderer.Render(source);
+        var rawSource = await File.ReadAllTextAsync(inputPath, TestContext.Current.CancellationToken);
+        var (source, theme, paletteJson) = ParseFrontmatter(rawSource);
+        var actualSvg = Renderer.Render(source, theme, paletteJson);
 
         // Persist the rendered output unconditionally — *before* any assertions — so it
         // survives test failure and lands in the CI artifact upload either way.
@@ -218,5 +220,45 @@ public class SnapshotTests
         throw new DirectoryNotFoundException(
             "Could not locate the repo root (no .slnx or .git found) walking up from " +
             AppContext.BaseDirectory);
+    }
+
+    // ── Frontmatter parsing ──────────────────────────────────────────────────
+
+    /// <summary>
+    /// Extracts an optional YAML-like frontmatter block from the fixture source.
+    /// Supported keys: <c>theme</c> (named theme) and <c>palette</c> (JSON color array).
+    /// Returns the diagram text with frontmatter stripped, plus the resolved theme and palette.
+    /// </summary>
+    private static (string diagramText, Theme? theme, string? paletteJson) ParseFrontmatter(string raw)
+    {
+        if (!raw.StartsWith("---", StringComparison.Ordinal))
+            return (raw, null, null);
+
+        int endIndex = raw.IndexOf("\n---", 3, StringComparison.Ordinal);
+        if (endIndex < 0)
+            return (raw, null, null);
+
+        string frontmatter = raw[3..endIndex].Trim();
+        string diagramText = raw[(endIndex + 4)..].TrimStart('\r', '\n');
+
+        Theme? theme = null;
+        string? paletteJson = null;
+
+        foreach (string rawLine in frontmatter.Split('\n'))
+        {
+            string line = rawLine.Trim();
+            if (line.StartsWith("theme:", StringComparison.OrdinalIgnoreCase))
+            {
+                string name = line["theme:".Length..].Trim();
+                theme = Theme.GetByName(name)
+                    ?? throw new InvalidOperationException($"Unknown theme name in fixture frontmatter: '{name}'");
+            }
+            else if (line.StartsWith("palette:", StringComparison.OrdinalIgnoreCase))
+            {
+                paletteJson = line["palette:".Length..].Trim();
+            }
+        }
+
+        return (diagramText, theme, paletteJson);
     }
 }

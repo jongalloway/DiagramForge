@@ -1,24 +1,24 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="168.00" height="328.00" viewBox="0 0 168.00 328.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34713F"/>
     </marker>
   </defs>
-  <rect width="168.00" height="328.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <rect width="168.00" height="328.00" fill="#F9FFF9" rx="8.00" ry="8.00"/>
   <g transform="translate(24.00,24.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Vision</text>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#C8E6C9" stroke="#A0B8A0" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1B3A20">Vision</text>
   </g>
   <g transform="translate(24.00,104.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Strategy</text>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#A5D6A7" stroke="#84AB85" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1B3A20">Strategy</text>
   </g>
   <g transform="translate(24.00,184.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Tactics</text>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#81C784" stroke="#679F69" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1B3A20">Tactics</text>
   </g>
   <g transform="translate(24.00,264.00)">
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#DAE8FC" stroke="#4F81BD" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2937">Execution</text>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="#66BB6A" stroke="#519554" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1B3A20">Execution</text>
   </g>
 </svg>

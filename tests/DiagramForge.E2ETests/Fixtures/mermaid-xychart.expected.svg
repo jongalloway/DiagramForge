@@ -1,36 +1,36 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="598.00" height="401.00" viewBox="0 0 598.00 401.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#555555"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#A0AEC0"/>
     </marker>
   </defs>
-  <rect width="598.00" height="401.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
-  <text x="299.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#1F2937">Tacos Per Swashbuckler (🌮/🏴‍☠️)</text>
-  <line x1="74.00" y1="47.00" x2="74.00" y2="347.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="74.00" y1="347.00" x2="574.00" y2="347.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="70.00" y1="347.00" x2="74.00" y2="347.00" stroke="#555555" stroke-width="1.50"/>
-  <text x="66.00" y="350.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">0</text>
-  <line x1="70.00" y1="287.00" x2="74.00" y2="287.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="74.00" y1="287.00" x2="574.00" y2="287.00" stroke="#555555" stroke-width="0.5" opacity="0.2"/>
-  <text x="66.00" y="290.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">10</text>
-  <line x1="70.00" y1="227.00" x2="74.00" y2="227.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="74.00" y1="227.00" x2="574.00" y2="227.00" stroke="#555555" stroke-width="0.5" opacity="0.2"/>
-  <text x="66.00" y="230.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">20</text>
-  <line x1="70.00" y1="167.00" x2="74.00" y2="167.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="74.00" y1="167.00" x2="574.00" y2="167.00" stroke="#555555" stroke-width="0.5" opacity="0.2"/>
-  <text x="66.00" y="170.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">30</text>
-  <line x1="70.00" y1="107.00" x2="74.00" y2="107.00" stroke="#555555" stroke-width="1.50"/>
-  <line x1="74.00" y1="107.00" x2="574.00" y2="107.00" stroke="#555555" stroke-width="0.5" opacity="0.2"/>
-  <text x="66.00" y="110.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">40</text>
-  <line x1="70.00" y1="47.00" x2="74.00" y2="47.00" stroke="#555555" stroke-width="1.50"/>
-  <text x="66.00" y="50.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">50</text>
-  <text x="115.67" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Mon</text>
-  <text x="199.00" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Tue</text>
-  <text x="282.33" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Wed</text>
-  <text x="365.67" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Thu</text>
-  <text x="449.00" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Fri</text>
-  <text x="532.33" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280">Sat</text>
-  <text x="34.00" y="197.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" transform="rotate(-90,34.00,197.00)">TPS Reports Filed</text>
+  <rect width="598.00" height="401.00" fill="#1E1E1E" rx="8.00" ry="8.00"/>
+  <text x="299.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#E2E8F0">Tacos Per Swashbuckler (🌮/🏴‍☠️)</text>
+  <line x1="74.00" y1="47.00" x2="74.00" y2="347.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="74.00" y1="347.00" x2="574.00" y2="347.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="70.00" y1="347.00" x2="74.00" y2="347.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <text x="66.00" y="350.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">0</text>
+  <line x1="70.00" y1="287.00" x2="74.00" y2="287.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="74.00" y1="287.00" x2="574.00" y2="287.00" stroke="#A0AEC0" stroke-width="0.5" opacity="0.2"/>
+  <text x="66.00" y="290.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">10</text>
+  <line x1="70.00" y1="227.00" x2="74.00" y2="227.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="74.00" y1="227.00" x2="574.00" y2="227.00" stroke="#A0AEC0" stroke-width="0.5" opacity="0.2"/>
+  <text x="66.00" y="230.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">20</text>
+  <line x1="70.00" y1="167.00" x2="74.00" y2="167.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="74.00" y1="167.00" x2="574.00" y2="167.00" stroke="#A0AEC0" stroke-width="0.5" opacity="0.2"/>
+  <text x="66.00" y="170.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">30</text>
+  <line x1="70.00" y1="107.00" x2="74.00" y2="107.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <line x1="74.00" y1="107.00" x2="574.00" y2="107.00" stroke="#A0AEC0" stroke-width="0.5" opacity="0.2"/>
+  <text x="66.00" y="110.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">40</text>
+  <line x1="70.00" y1="47.00" x2="74.00" y2="47.00" stroke="#A0AEC0" stroke-width="1.50"/>
+  <text x="66.00" y="50.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">50</text>
+  <text x="115.67" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Mon</text>
+  <text x="199.00" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Tue</text>
+  <text x="282.33" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Wed</text>
+  <text x="365.67" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Thu</text>
+  <text x="449.00" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Fri</text>
+  <text x="532.33" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0">Sat</text>
+  <text x="34.00" y="197.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0" transform="rotate(-90,34.00,197.00)">TPS Reports Filed</text>
   <polyline points="115.67,287.00 199.00,275.00 282.33,293.00 365.67,77.00 449.00,263.00 532.33,107.00" fill="none" stroke="#70AD47" stroke-width="2.25" stroke-linejoin="round" stroke-linecap="round"/>
   <g transform="translate(86.50,299.00)">
     <rect width="58.33" height="48.00" rx="0" ry="0" fill="#4F81BD" stroke="#4F81BD" stroke-width="1.50"/>
