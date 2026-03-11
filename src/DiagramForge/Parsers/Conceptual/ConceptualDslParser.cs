@@ -66,17 +66,14 @@ public sealed class ConceptualDslParser : IDiagramParser
             .WithSourceSyntax(SyntaxId)
             .WithDiagramType(diagramType);
 
-        switch (diagramType)
+        Action parse = diagramType switch
         {
-            case "pyramid":
-                ParseListDiagram(lines, builder, "levels", diagramType);
-                break;
-            case "matrix":
-                ParseMatrixDiagram(lines, builder);
-                break;
-            default:
-                throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'.");
-        }
+            "pyramid" => () => ParseListDiagram(lines, builder, "levels", diagramType),
+            "matrix" => () => ParseMatrixDiagram(lines, builder),
+            _ => throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'."),
+        };
+
+        parse();
 
         return builder.Build();
     }
@@ -119,8 +116,8 @@ public sealed class ConceptualDslParser : IDiagramParser
         int rowsLine = FindSectionLine(lines, "rows");
         int colsLine = FindSectionLine(lines, "columns");
 
-        var rows = rowsLine >= 0 ? ReadListItems(lines, rowsLine + 1) : new List<string>();
-        var cols = colsLine >= 0 ? ReadListItems(lines, colsLine + 1) : new List<string>();
+        var rows = rowsLine >= 0 ? ReadListItems(lines, rowsLine + 1) : [];
+        var cols = colsLine >= 0 ? ReadListItems(lines, colsLine + 1) : [];
 
         if (rows.Count == 0 || cols.Count == 0)
             throw new DiagramParseException("Matrix diagram requires non-empty 'rows' and 'columns' sections.");
@@ -153,20 +150,23 @@ public sealed class ConceptualDslParser : IDiagramParser
     }
 
     private static List<string> ReadListItems(string[] lines, int startIndex)
+        => [.. EnumerateListItems(lines, startIndex)];
+
+    private static IEnumerable<string> EnumerateListItems(string[] lines, int startIndex)
     {
-        var items = new List<string>();
         for (int i = startIndex; i < lines.Length; i++)
         {
-            var trimmed = lines[i].Trim();
-            if (string.IsNullOrEmpty(trimmed)) continue;
+            var line = lines[i];
+            var trimmed = line.Trim();
+            if (string.IsNullOrEmpty(trimmed))
+                continue;
 
             // Stop when we hit the next top-level key (no leading spaces, ends with ':')
-            if (!lines[i].StartsWith(' ') && !lines[i].StartsWith('\t') && trimmed.EndsWith(':'))
-                break;
+            if (!line.StartsWith(' ') && !line.StartsWith('\t') && trimmed.EndsWith(':'))
+                yield break;
 
             if (trimmed.StartsWith('-'))
-                items.Add(trimmed[1..].Trim());
+                yield return trimmed[1..].Trim();
         }
-        return items;
     }
 }

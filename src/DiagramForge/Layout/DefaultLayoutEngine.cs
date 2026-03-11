@@ -294,8 +294,18 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                     || !edge.Metadata.TryGetValue("target:port", out var dstPortObj))
                     continue;
 
-                var srcPort = srcPortObj is string s1 ? s1 : srcPortObj?.ToString() ?? string.Empty;
-                var dstPort = dstPortObj is string s2 ? s2 : dstPortObj?.ToString() ?? string.Empty;
+                var srcPort = srcPortObj switch
+                {
+                    string s => s,
+                    not null => srcPortObj.ToString() ?? string.Empty,
+                    _ => string.Empty,
+                };
+                var dstPort = dstPortObj switch
+                {
+                    string s => s,
+                    not null => dstPortObj.ToString() ?? string.Empty,
+                    _ => string.Empty,
+                };
                 var srcId = edge.SourceId;
                 var dstId = edge.TargetId;
 
@@ -464,8 +474,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // ThenBy ensures deterministic output when the index is missing or two
         // participants share the same value (e.g., programmatically-built diagrams).
         var ordered = diagram.Nodes.Values
-            .OrderBy(n => n.Metadata.TryGetValue("sequence:participantIndex", out var v)
-                ? Convert.ToInt32(v, System.Globalization.CultureInfo.InvariantCulture)
+            .OrderBy(n => TryGetMetadataInt(n.Metadata, "sequence:participantIndex", out var participantIndex)
+                ? participantIndex
                 : int.MaxValue)
             .ThenBy(n => n.Id, StringComparer.Ordinal)
             .ToList();
@@ -486,8 +496,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         foreach (var edge in diagram.Edges)
         {
-            int msgIdx = edge.Metadata.TryGetValue("sequence:messageIndex", out var idxObj)
-                ? Convert.ToInt32(idxObj, System.Globalization.CultureInfo.InvariantCulture)
+            int msgIdx = TryGetMetadataInt(edge.Metadata, "sequence:messageIndex", out var messageIndex)
+                ? messageIndex
                 : 0;
             edge.Metadata["sequence:messageY"] = firstMessageY + msgIdx * messageRowHeight;
         }
@@ -525,13 +535,13 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         if (placedNodes.Count == 0)
             return;
 
-        int rowCount = placedNodes.Max(node => Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture)) + 1;
+        int rowCount = placedNodes.Max(node => GetMetadataInt(node.Metadata, "block:row")) + 1;
         double baseColumnWidth = Math.Max(
             minW,
             placedNodes.Max(node =>
             {
-                int span = node.Metadata.TryGetValue("block:span", out var spanValue)
-                    ? Convert.ToInt32(spanValue, System.Globalization.CultureInfo.InvariantCulture)
+                int span = TryGetMetadataInt(node.Metadata, "block:span", out var spanValue)
+                    ? spanValue
                     : 1;
                 return node.Width / Math.Max(1, span);
             }));
@@ -539,7 +549,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         var rowHeights = Enumerable.Repeat(nodeH, rowCount).ToArray();
         foreach (var node in placedNodes)
         {
-            int row = Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture);
+            int row = GetMetadataInt(node.Metadata, "block:row");
             rowHeights[row] = Math.Max(rowHeights[row], node.Height);
         }
 
@@ -553,10 +563,10 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         foreach (var node in placedNodes)
         {
-            int row = Convert.ToInt32(node.Metadata["block:row"], System.Globalization.CultureInfo.InvariantCulture);
-            int column = Convert.ToInt32(node.Metadata["block:column"], System.Globalization.CultureInfo.InvariantCulture);
-            int span = node.Metadata.TryGetValue("block:span", out var spanValue)
-                ? Convert.ToInt32(spanValue, System.Globalization.CultureInfo.InvariantCulture)
+            int row = GetMetadataInt(node.Metadata, "block:row");
+            int column = GetMetadataInt(node.Metadata, "block:column");
+            int span = TryGetMetadataInt(node.Metadata, "block:span", out var spanValue)
+                ? spanValue
                 : 1;
 
             double slotX = pad + column * (baseColumnWidth + hGap);
@@ -587,8 +597,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         // Collect period nodes in declaration order.
         var periodNodes = diagram.Nodes.Values
-            .Where(n => n.Metadata.TryGetValue("timeline:kind", out var k) && "period".Equals(k as string, StringComparison.Ordinal))
-            .OrderBy(n => Convert.ToInt32(n.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture))
+            .Where(n => MetadataEquals(n, "timeline:kind", "period"))
+            .OrderBy(n => GetMetadataInt(n.Metadata, "timeline:periodIndex"))
             .ToList();
 
         if (periodNodes.Count == 0)
@@ -596,7 +606,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         // Collect event nodes grouped by period index.
         var eventNodes = diagram.Nodes.Values
-            .Where(n => n.Metadata.TryGetValue("timeline:kind", out var k) && "event".Equals(k as string, StringComparison.Ordinal))
+            .Where(n => MetadataEquals(n, "timeline:kind", "event"))
             .ToList();
 
         // Use a uniform column width so all period columns are evenly spaced.
@@ -624,11 +634,11 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // Place event nodes in columns below their owning period.
         foreach (var eventNode in eventNodes)
         {
-            int pIdx = Convert.ToInt32(eventNode.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture);
-            int eIdx = Convert.ToInt32(eventNode.Metadata["timeline:eventIndex"], System.Globalization.CultureInfo.InvariantCulture);
+            int pIdx = GetMetadataInt(eventNode.Metadata, "timeline:periodIndex");
+            int eIdx = GetMetadataInt(eventNode.Metadata, "timeline:eventIndex");
 
             var periodNode = periodNodes.Find(n =>
-                Convert.ToInt32(n.Metadata["timeline:periodIndex"], System.Globalization.CultureInfo.InvariantCulture) == pIdx);
+                GetMetadataInt(n.Metadata, "timeline:periodIndex") == pIdx);
 
             if (periodNode is null)
                 continue;
@@ -639,6 +649,25 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         }
     }
 
+    private static bool MetadataEquals(Node node, string key, string expected) =>
+        node.Metadata.GetValueOrDefault(key) is string actual
+        && string.Equals(actual, expected, StringComparison.Ordinal);
+
+    private static int GetMetadataInt(Dictionary<string, object> metadata, string key) =>
+        Convert.ToInt32(metadata[key], System.Globalization.CultureInfo.InvariantCulture);
+
+    private static bool TryGetMetadataInt(Dictionary<string, object> metadata, string key, out int value)
+    {
+        if (metadata.TryGetValue(key, out var rawValue))
+        {
+            value = Convert.ToInt32(rawValue, System.Globalization.CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        value = default;
+        return false;
+    }
+
     private static void LayoutVennDiagram(
         Diagram diagram,
         Theme theme,
@@ -646,10 +675,10 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double pad)
     {
         static string? GetVennKind(Node node) => node.Metadata.GetValueOrDefault("venn:kind") as string;
+        static bool IsVennKind(Node node, string kind) => string.Equals(GetVennKind(node), kind, StringComparison.Ordinal);
 
         var setNodes = diagram.Nodes.Values
-            .Where(n => !string.Equals(GetVennKind(n), "overlap", StringComparison.Ordinal)
-                && !string.Equals(GetVennKind(n), "text", StringComparison.Ordinal))
+            .Where(n => !IsVennKind(n, "overlap") && !IsVennKind(n, "text"))
             .OrderBy(n => n.Metadata.TryGetValue("venn:index", out var indexObj)
                 ? Convert.ToInt32(indexObj, System.Globalization.CultureInfo.InvariantCulture)
                 : int.MaxValue)
@@ -657,12 +686,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             .ToList();
 
         var overlapNodes = diagram.Nodes.Values
-            .Where(n => string.Equals(GetVennKind(n), "overlap", StringComparison.Ordinal))
+            .Where(n => IsVennKind(n, "overlap"))
             .OrderBy(n => n.Id, StringComparer.Ordinal)
             .ToList();
 
         var textNodes = diagram.Nodes.Values
-            .Where(n => string.Equals(GetVennKind(n), "text", StringComparison.Ordinal))
+            .Where(n => IsVennKind(n, "text"))
             .OrderBy(n => n.Metadata.TryGetValue("venn:textIndex", out var indexObj)
                 ? Convert.ToInt32(indexObj, System.Globalization.CultureInfo.InvariantCulture)
                 : int.MaxValue)
