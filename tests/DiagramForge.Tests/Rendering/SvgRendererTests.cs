@@ -232,7 +232,8 @@ public class SvgRendererTests
         string svg = _renderer.Render(diagram, _theme);
 
         Assert.Contains("x=\"30.00\"", svg);
-        Assert.Contains("y=\"44.55\"", svg);
+        var expectedY = (40d + _theme.FontSize * 0.35).ToString("F2", System.Globalization.CultureInfo.InvariantCulture);
+        Assert.Contains($"y=\"{expectedY}\"", svg);
     }
 
     [Fact]

@@ -417,10 +417,19 @@ public sealed class SvgRenderer : ISvgRenderer
 
     private static double? GetMetadataDouble(Node node, string key)
     {
-        if (!node.Metadata.TryGetValue(key, out var value))
+        if (!node.Metadata.TryGetValue(key, out var value) || value is null)
             return null;
 
-        return Convert.ToDouble(value, System.Globalization.CultureInfo.InvariantCulture);
+        if (value is string s)
+            return double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out var parsed) ? parsed : null;
+
+        if (value is IConvertible convertible)
+        {
+            try { return convertible.ToDouble(System.Globalization.CultureInfo.InvariantCulture); }
+            catch { return null; }
+        }
+
+        return null;
     }
 
     private static string Escape(string? text) =>
