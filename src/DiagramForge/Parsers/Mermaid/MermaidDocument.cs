@@ -66,7 +66,6 @@ internal sealed class MermaidDocument
         "packet-beta",
         "kanban",
         "sankey-beta",
-        "xychart-beta",
         "zenuml",
     };
 
@@ -138,7 +137,11 @@ internal sealed class MermaidDocument
             kind = MermaidDiagramKind.ArchitectureDiagram;
             return true;
         }
-
+        if (normalizedHeader.Equals("xychart-beta", StringComparison.OrdinalIgnoreCase))
+        {
+            kind = MermaidDiagramKind.XyChart;
+            return true;
+        }
         var spaceIndex = normalizedHeader.IndexOf(' ');
         var keyword = spaceIndex >= 0 ? normalizedHeader[..spaceIndex] : normalizedHeader;
         if (KnownUnsupportedMermaidKeywords.Contains(keyword))
