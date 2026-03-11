@@ -2,6 +2,10 @@
 
 **Text in, SVG out.** A .NET library and CLI that turns plain-text diagram descriptions into clean, self-contained SVG — no browser, no JavaScript runtime, no headless Chrome.
 
+<p align="center">
+  <img src="docs/gallery.svg" alt="DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more" width="100%">
+</p>
+
 ```csharp
 var renderer = new DiagramRenderer();
 string svg = renderer.Render("""
@@ -214,9 +218,18 @@ levels:
 
 ## Architecture
 
-```text
-text ──► IDiagramParser ──► Diagram model ──► ILayoutEngine ──► ISvgRenderer ──► SVG
-         (pluggable)        (unified)         (positions)       (drawing)
+```mermaid
+flowchart LR
+  A[Text Input] --> B[IDiagramParser]
+  B --> C[Diagram Model]
+  C --> D[ILayoutEngine]
+  D --> E[ISvgRenderer]
+  E --> F[SVG Output]
+
+  B -.- B1(pluggable)
+  C -.- C1(unified)
+  D -.- D1(positions)
+  E -.- E1(drawing)
 ```
 
 Parsers produce a syntax-independent `Diagram` (nodes, edges, groups, labels, layout hints). The layout engine assigns coordinates. The SVG renderer draws. Every stage is replaceable via the DI constructor on `DiagramRenderer`.
