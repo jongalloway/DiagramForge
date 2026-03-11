@@ -108,7 +108,7 @@ static string? ParseFlagValue(string[] args, params string[] flags)
 {
     foreach (string flag in flags)
     {
-        int idx = Array.FindIndex(args, 1, arg => string.Equals(arg, flag, StringComparison.OrdinalIgnoreCase));
+        int idx = Array.FindIndex(args, 1, arg => string.Equals(arg, flag, StringComparison.Ordinal));
         if (idx >= 0 && idx < args.Length - 1 && !args[idx + 1].StartsWith("-", StringComparison.Ordinal))
             return args[idx + 1];
     }
