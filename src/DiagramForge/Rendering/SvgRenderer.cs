@@ -127,46 +127,35 @@ public sealed class SvgRenderer : ISvgRenderer
             {
                 case Shape.Circle:
                 case Shape.Ellipse:
-                    double cx = node.Width / 2, cy = node.Height / 2;
-                    sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
                     break;
-
                 case Shape.Diamond:
-                    double mx = node.Width / 2, my = node.Height / 2;
-                    sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
                     break;
-
                 case Shape.Pill:
                 case Shape.Stadium:
-                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(node.Height / 2)}" ry="{F(node.Height / 2)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2);
                     break;
-
                 case Shape.ArrowRight:
                     AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
                     break;
-
                 case Shape.ArrowLeft:
                     AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
                     break;
-
                 case Shape.ArrowUp:
                     AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
                     break;
-
                 case Shape.ArrowDown:
                     AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
                     break;
-
                 case Shape.Rectangle:
-                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="0" ry="0" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0);
                     break;
-
                 case Shape.Cloud:
                     AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
                     break;
-
-                default: // RoundedRectangle and anything else
-                    sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{F(rx)}" ry="{F(rx)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+                default:
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx);
                     break;
             }
         }
@@ -314,8 +303,12 @@ public sealed class SvgRenderer : ISvgRenderer
         }
 
         string strokeColor = Escape(edge.Color ?? theme.EdgeColor);
-        string strokeDash = edge.LineStyle == EdgeLineStyle.Dashed ? """ stroke-dasharray="6,3" """ :
-                            edge.LineStyle == EdgeLineStyle.Dotted ? """ stroke-dasharray="2,3" """ : " ";
+        string strokeDash = edge.LineStyle switch
+        {
+            EdgeLineStyle.Dashed => """ stroke-dasharray="6,3" """,
+            EdgeLineStyle.Dotted => """ stroke-dasharray="2,3" """,
+            _ => " ",
+        };
         double strokeWidth = edge.LineStyle == EdgeLineStyle.Thick ? theme.StrokeWidth * 2 : theme.StrokeWidth;
         string markerEnd = edge.ArrowHead != ArrowHeadStyle.None ? """ marker-end="url(#arrowhead)" """ : " ";
 
@@ -460,6 +453,26 @@ public sealed class SvgRenderer : ISvgRenderer
         };
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+    }
+
+    private static void AppendEllipseNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute)
+    {
+        double cx = node.Width / 2;
+        double cy = node.Height / 2;
+        sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+    }
+
+    private static void AppendDiamondNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute)
+    {
+        double mx = node.Width / 2;
+        double my = node.Height / 2;
+        sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+    }
+
+    private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius)
+    {
+        string formattedRadius = radius == 0 ? "0" : F(radius);
+        sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
     }
 
     private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme)

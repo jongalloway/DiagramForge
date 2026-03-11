@@ -27,26 +27,33 @@ internal sealed class MermaidDocument
         if (string.IsNullOrWhiteSpace(diagramText))
             return false;
 
-        var lines = diagramText
-            .Split('\n')
-            .Select(line => line.Trim())
-            .Where(line => !string.IsNullOrEmpty(line) && !line.StartsWith("%%", StringComparison.Ordinal))
-            .ToArray();
+        var lines = new List<string>();
+        var rawLines = new List<string>();
 
-        var rawLines = diagramText
-            .Split('\n')
-            .Select(line => line.TrimEnd())
-            .Where(line => !string.IsNullOrWhiteSpace(line) && !line.TrimStart().StartsWith("%%", StringComparison.Ordinal))
-            .ToArray();
+        foreach (var line in diagramText.Split('\n'))
+        {
+            var trimmedStart = line.TrimStart();
+            if (string.IsNullOrWhiteSpace(line) || trimmedStart.StartsWith("%%", StringComparison.Ordinal))
+                continue;
 
-        if (lines.Length == 0)
+            rawLines.Add(line.TrimEnd());
+            lines.Add(line.Trim());
+        }
+
+        if (lines.Count == 0)
             return false;
 
-        var headerLine = lines[0];
+        var normalizedLines = lines.ToArray();
+        var preservedLines = rawLines.ToArray();
+
+        if (normalizedLines.Length == 0)
+            return false;
+
+        var headerLine = normalizedLines[0];
         if (!TryDetectKind(headerLine, out var kind))
             return false;
 
-        document = new MermaidDocument(kind, headerLine, lines, rawLines);
+        document = new MermaidDocument(kind, headerLine, normalizedLines, preservedLines);
         return true;
     }
 
