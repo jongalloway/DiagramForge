@@ -1,0 +1,6 @@
+xychart-beta
+    title "Tacos Per Swashbuckler (🌮/🏴‍☠️)"
+    x-axis [Mon, Tue, Wed, Thu, Fri, Sat]
+    y-axis "TPS Reports Filed" 0 --> 50
+    bar [8, 15, 7, 42, 12, 38]
+    line [10, 12, 9, 45, 14, 40]

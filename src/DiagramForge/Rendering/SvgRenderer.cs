@@ -47,6 +47,10 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
             AppendLifelines(sb, diagram, theme, height);
 
+        // XY chart axes, grid lines, and line series.
+        if (diagram.Metadata.ContainsKey("xychart:chartX"))
+            AppendXyChartAxes(sb, diagram, theme);
+
         // Edges (render behind nodes)
         foreach (var edge in diagram.Edges)
         {
@@ -302,6 +306,98 @@ public sealed class SvgRenderer : ISvgRenderer
         }
     }
 
+    // Palette for XY chart series (bars and lines cycle through these).
+    private static readonly string[] SeriesPalette =
+    [
+        "#4F81BD", "#70AD47", "#ED7D31", "#FFC000", "#5B9BD5",
+        "#A5A5A5", "#264478", "#9B57A0", "#636363", "#255E91",
+    ];
+
+    private static void AppendXyChartAxes(StringBuilder sb, Diagram diagram, Theme theme)
+    {
+        double chartX = Convert.ToDouble(diagram.Metadata["xychart:chartX"], System.Globalization.CultureInfo.InvariantCulture);
+        double chartY = Convert.ToDouble(diagram.Metadata["xychart:chartY"], System.Globalization.CultureInfo.InvariantCulture);
+        double plotWidth = Convert.ToDouble(diagram.Metadata["xychart:plotWidth"], System.Globalization.CultureInfo.InvariantCulture);
+        double plotHeight = Convert.ToDouble(diagram.Metadata["xychart:plotHeight"], System.Globalization.CultureInfo.InvariantCulture);
+        double yMin = Convert.ToDouble(diagram.Metadata["xychart:yMin"], System.Globalization.CultureInfo.InvariantCulture);
+        double yMax = Convert.ToDouble(diagram.Metadata["xychart:yMax"], System.Globalization.CultureInfo.InvariantCulture);
+        int categoryCount = Convert.ToInt32(diagram.Metadata["xychart:categoryCount"], System.Globalization.CultureInfo.InvariantCulture);
+        var categories = diagram.Metadata["xychart:categories"] as string[] ?? [];
+        int lineSeriesCount = diagram.Metadata.TryGetValue("xychart:lineSeriesCount", out var lscObj)
+            ? Convert.ToInt32(lscObj, System.Globalization.CultureInfo.InvariantCulture) : 0;
+
+        string axisColor = Escape(theme.EdgeColor);
+        string textColor = Escape(theme.SubtleTextColor);
+        double fontSize = theme.FontSize * 0.85;
+        string fontFamily = Escape(theme.FontFamily);
+        double categoryWidth = categoryCount > 0 ? plotWidth / categoryCount : plotWidth;
+
+        // Y-axis line
+        sb.AppendLine($"""  <line x1="{F(chartX)}" y1="{F(chartY)}" x2="{F(chartX)}" y2="{F(chartY + plotHeight)}" stroke="{axisColor}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+
+        // X-axis line
+        sb.AppendLine($"""  <line x1="{F(chartX)}" y1="{F(chartY + plotHeight)}" x2="{F(chartX + plotWidth)}" y2="{F(chartY + plotHeight)}" stroke="{axisColor}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+
+        // Y-axis ticks and labels (5 evenly spaced)
+        int yTickCount = 5;
+        double yRange = yMax - yMin;
+        for (int t = 0; t <= yTickCount; t++)
+        {
+            double frac = (double)t / yTickCount;
+            double yPos = chartY + plotHeight - frac * plotHeight;
+            double yVal = yMin + frac * yRange;
+            string label = yVal.ToString("N0", System.Globalization.CultureInfo.InvariantCulture);
+
+            // Tick mark
+            sb.AppendLine($"""  <line x1="{F(chartX - 4)}" y1="{F(yPos)}" x2="{F(chartX)}" y2="{F(yPos)}" stroke="{axisColor}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+
+            // Grid line (light)
+            if (t > 0 && t < yTickCount)
+                sb.AppendLine($"""  <line x1="{F(chartX)}" y1="{F(yPos)}" x2="{F(chartX + plotWidth)}" y2="{F(yPos)}" stroke="{axisColor}" stroke-width="0.5" opacity="0.2"/>""");
+
+            // Label
+            sb.AppendLine($"""  <text x="{F(chartX - 8)}" y="{F(yPos + fontSize * 0.35)}" text-anchor="end" font-family="{fontFamily}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(label)}</text>""");
+        }
+
+        // X-axis category labels
+        for (int ci = 0; ci < categoryCount && ci < categories.Length; ci++)
+        {
+            double labelX = chartX + ci * categoryWidth + categoryWidth / 2;
+            double labelY = chartY + plotHeight + fontSize + 4;
+            sb.AppendLine($"""  <text x="{F(labelX)}" y="{F(labelY)}" text-anchor="middle" font-family="{fontFamily}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(categories[ci])}</text>""");
+        }
+
+        // Y-axis label (rotated)
+        if (diagram.Metadata.TryGetValue("xychart:yLabel", out var yLabelObj) && yLabelObj is string yLabel)
+        {
+            double labelX = chartX - 40;
+            double labelY = chartY + plotHeight / 2;
+            sb.AppendLine($"""  <text x="{F(labelX)}" y="{F(labelY)}" text-anchor="middle" font-family="{fontFamily}" font-size="{F(fontSize)}" fill="{textColor}" transform="rotate(-90,{F(labelX)},{F(labelY)})">{Escape(yLabel)}</text>""");
+        }
+
+        // Line series polylines
+        for (int si = 0; si < lineSeriesCount; si++)
+        {
+            var points = diagram.Nodes.Values
+                .Where(n => n.Metadata.TryGetValue("xychart:kind", out var k) && k is "linePoint"
+                         && n.Metadata.TryGetValue("xychart:seriesIndex", out var siObj)
+                         && Convert.ToInt32(siObj, System.Globalization.CultureInfo.InvariantCulture) == si)
+                .OrderBy(n => Convert.ToInt32(n.Metadata["xychart:categoryIndex"], System.Globalization.CultureInfo.InvariantCulture))
+                .Select(n => $"{F(n.X + n.Width / 2)},{F(n.Y + n.Height / 2)}")
+                .ToList();
+
+            if (points.Count < 2)
+                continue;
+
+            // Bar series get lower palette indices; line series start after them.
+            int barSeriesCount = diagram.Metadata.TryGetValue("xychart:barSeriesCount", out var bscObj)
+                ? Convert.ToInt32(bscObj, System.Globalization.CultureInfo.InvariantCulture) : 0;
+            string lineColor = Escape(SeriesPalette[(barSeriesCount + si) % SeriesPalette.Length]);
+
+            sb.AppendLine($"""  <polyline points="{string.Join(" ", points)}" fill="none" stroke="{lineColor}" stroke-width="{F(theme.StrokeWidth * 1.5)}" stroke-linejoin="round" stroke-linecap="round"/>""");
+        }
+    }
+
     private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction)
     {
         double head = Math.Min(width, height) * 0.4;
@@ -348,6 +444,9 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Nodes.Count == 0)
             return 200;
 
+        if (diagram.Metadata.TryGetValue("xychart:canvasWidth", out var xcW))
+            return Convert.ToDouble(xcW, System.Globalization.CultureInfo.InvariantCulture);
+
         double maxX = diagram.Nodes.Values.Max(n => n.X + n.Width);
         // Group rects extend beyond their member nodes by their own padding;
         // without this, the group's right edge is clipped at the canvas boundary.
@@ -365,6 +464,9 @@ public sealed class SvgRenderer : ISvgRenderer
         // the layout engine stores the required height so node extents don't clip messages.
         if (diagram.Metadata.TryGetValue("sequence:canvasHeight", out var seqH))
             return Convert.ToDouble(seqH, System.Globalization.CultureInfo.InvariantCulture);
+
+        if (diagram.Metadata.TryGetValue("xychart:canvasHeight", out var xcH))
+            return Convert.ToDouble(xcH, System.Globalization.CultureInfo.InvariantCulture);
 
         double maxY = diagram.Nodes.Values.Max(n => n.Y + n.Height);
         if (diagram.Groups.Count > 0)
