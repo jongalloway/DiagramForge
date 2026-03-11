@@ -4,11 +4,34 @@
     <ProjectReference Include="..\DiagramForge\DiagramForge.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" Link="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+
+    <PackageId>DiagramForge.Tool</PackageId>
+    <Title>DiagramForge Tool</Title>
+    <Description>CLI and .NET tool wrapper for rendering diagrams to SVG with DiagramForge.</Description>
+    <Authors>Jon Galloway</Authors>
+    <PackageTags>diagram svg mermaid cli dotnet-tool</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/jongalloway/DiagramForge</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/jongalloway/DiagramForge</PackageProjectUrl>
+    <PackAsTool>true</PackAsTool>
+    <ToolCommandName>diagramforge</ToolCommandName>
   </PropertyGroup>
 
 </Project>

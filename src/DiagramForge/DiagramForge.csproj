@@ -1,9 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
+  <ItemGroup>
+    <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" Link="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+
+    <PackageId>DiagramForge</PackageId>
+    <Title>DiagramForge</Title>
+    <Description>Text-to-SVG diagram renderer for Mermaid subsets and conceptual diagrams.</Description>
+    <Authors>Jon Galloway</Authors>
+    <PackageTags>diagram svg mermaid rendering powerpoint</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/jongalloway/DiagramForge</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/jongalloway/DiagramForge</PackageProjectUrl>
   </PropertyGroup>
 
 </Project>
