@@ -1,10 +1,13 @@
 # DiagramForge
 
+[![CI](https://github.com/jongalloway/DiagramForge/actions/workflows/ci.yml/badge.svg)](https://github.com/jongalloway/DiagramForge/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/DiagramForge.svg)](https://www.nuget.org/packages/DiagramForge)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/DiagramForge.svg)](https://www.nuget.org/packages/DiagramForge)
+[![Mermaid Fan](https://img.shields.io/badge/Mermaid-supported-ff69b4?logo=mermaid)](https://mermaid.js.org)
+
 **Text in, SVG out.** A .NET library and CLI that turns plain-text diagram descriptions into clean, self-contained SVG — no browser, no JavaScript runtime, no headless Chrome.
 
-<p align="center">
-  <img src="docs/gallery.svg" alt="DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more" style="width: 100%;">
-</p>
+![DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/docs/gallery.svg)
 
 ```csharp
 var renderer = new DiagramRenderer();
@@ -33,7 +36,17 @@ DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **
 
 ## Install
 
-> **Pre-release.** Not yet published to NuGet. For now, clone and reference the project directly, or build and consume the DLL. See [CONTRIBUTING.md](CONTRIBUTING.md) for build instructions.
+### Library
+
+```sh
+dotnet add package DiagramForge
+```
+
+### CLI (.NET tool)
+
+```sh
+dotnet tool install -g DiagramForge.Tool
+```
 
 ## Library usage
 
