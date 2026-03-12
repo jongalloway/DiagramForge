@@ -6,6 +6,7 @@
 
   <ItemGroup>
     <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
+    <None Include="..\..\doc\PackageReadme.md" Pack="true" PackagePath="" Link="PackageReadme.md" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" Link="LICENSE" />
   </ItemGroup>
 
@@ -25,7 +26,7 @@
     <Description>CLI and .NET tool wrapper for rendering diagrams to SVG with DiagramForge.</Description>
     <Authors>Jon Galloway</Authors>
     <PackageTags>diagram svg mermaid cli dotnet-tool</PackageTags>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/jongalloway/DiagramForge</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
