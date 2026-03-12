@@ -356,11 +356,12 @@ public sealed class ConceptualDslParser : IDiagramParser
 
     private static int GetIndent(string line)
     {
+        const int SpacesPerTab = 2;
         int count = 0;
         foreach (char c in line)
         {
             if (c == ' ') count++;
-            else if (c == '\t') count += 2;
+            else if (c == '\t') count += SpacesPerTab;
             else break;
         }
         return count;
