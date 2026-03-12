@@ -160,34 +160,37 @@ static void PrintHelp()
 {
     string builtInThemes = string.Join(", ", Theme.BuiltInThemeNames);
 
-    Console.WriteLine($$"""
-        DiagramForge — Diagram text to SVG renderer
+    string[] lines =
+    [
+        "DiagramForge — Diagram text to SVG renderer",
+        string.Empty,
+        "Usage:",
+        "  diagramforge <input-file> [options]",
+        "  diagramforge --help",
+        string.Empty,
+        "Arguments:",
+        "  <input-file>                  Path to the diagram source file (Mermaid or Conceptual DSL)",
+        string.Empty,
+        "Options:",
+        "  --output, -o <path>           Write SVG to a file instead of stdout",
+        "  --theme <name>                Use a built-in named theme:",
+        $"                                {builtInThemes}",
+        "  --palette <json>              JSON array of hex colors for node palette, e.g. '[\"#FF0000\",\"#00FF00\"]'",
+        "                                Overrides the node palette of the selected theme.",
+        "  --theme-file <path.json>      Load a complete theme from a JSON file.",
+        "  --transparent                 Omit the SVG background rect for embedding on an existing surface.",
+        string.Empty,
+        "Supported syntaxes:",
+        "  mermaid                       Flowchart LR/TB (Mermaid subset)",
+        "  conceptual                    Matrix, Pyramid",
+        string.Empty,
+        "Examples:",
+        "  diagramforge diagram.mmd --output diagram.svg",
+        "  diagramforge diagram.mmd --theme dark --output diagram.svg",
+        "  diagramforge diagram.mmd --theme dark --palette '[\"#FF6B6B\",\"#4ECDC4\",\"#45B7D1\"]' -o out.svg",
+        "  diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg",
+        "  diagramforge diagram.mmd --theme-file mytheme.json -o out.svg"
+    ];
 
-        Usage:
-          diagramforge <input-file> [options]
-          diagramforge --help
-
-        Arguments:
-          <input-file>                  Path to the diagram source file (Mermaid or Conceptual DSL)
-
-        Options:
-          --output, -o <path>           Write SVG to a file instead of stdout
-          --theme <name>                Use a built-in named theme:
-                                                                                    {{builtInThemes}}
-          --palette <json>              JSON array of hex colors for node palette, e.g. '["#FF0000","#00FF00"]'
-                                        Overrides the node palette of the selected theme.
-          --theme-file <path.json>      Load a complete theme from a JSON file.
-          --transparent                 Omit the SVG background rect for embedding on an existing surface.
-
-        Supported syntaxes:
-          mermaid                       Flowchart LR/TB (Mermaid subset)
-          conceptual                    Matrix, Pyramid
-
-        Examples:
-          diagramforge diagram.mmd --output diagram.svg
-          diagramforge diagram.mmd --theme dark --output diagram.svg
-          diagramforge diagram.mmd --theme dark --palette '["#FF6B6B","#4ECDC4","#45B7D1"]' -o out.svg
-            diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg
-          diagramforge diagram.mmd --theme-file mytheme.json -o out.svg
-                """);
+    Console.WriteLine(string.Join(Environment.NewLine, lines));
 }
