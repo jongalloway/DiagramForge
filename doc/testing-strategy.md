@@ -226,7 +226,7 @@ dotnet test --collect:"XPlat Code Coverage"
 | `conceptual-cycle` | Conceptual | cycle | Back-edge from last to first |
 | `conceptual-hierarchy` | Conceptual | hierarchy | Indent-based tree |
 | `conceptual-list` | Conceptual | list | Nodes only, no edges |
-| `conceptual-matrix` | Conceptual | matrix | Row × column grid |
+| `conceptual-matrix` | Conceptual | matrix | Specialized 2×2 quadrant layout |
 | `conceptual-process` | Conceptual | process | Linear chain with edges |
 | `conceptual-pyramid` | Conceptual | pyramid | Nodes only |
 | `mermaid-comments` | Mermaid | flowchart | `%%` comment stripping |

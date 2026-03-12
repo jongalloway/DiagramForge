@@ -256,6 +256,19 @@ public class SvgRendererTests
     }
 
     [Fact]
+    public void Render_MultilineLabel_UsesTspans()
+    {
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Urgent\nImportant")));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("<tspan", svg);
+        Assert.Contains(">Urgent</tspan>", svg);
+        Assert.Contains(">Important</tspan>", svg);
+    }
+
+    [Fact]
     public void Render_PyramidSegmentNode_UsesPolygon()
     {
         var node = new Node("node_0", "Vision")

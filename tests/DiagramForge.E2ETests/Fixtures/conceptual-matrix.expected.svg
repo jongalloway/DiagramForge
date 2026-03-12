@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="345.60" height="344.00" viewBox="0 0 345.60 344.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="411.60" height="238.80" viewBox="0 0 411.60 238.80">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
   </defs>
-  <rect width="345.60" height="344.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <rect width="411.60" height="238.80" fill="#FFFDF8" rx="12.00" ry="12.00"/>
   <g transform="translate(32.00,32.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -24,10 +24,13 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="204.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <text x="102.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Important / Urgent</text>
+    <rect width="164.80" height="78.40" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="82.40" y="35.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="82.40" y="35.60">Urgent</tspan>
+      <tspan x="82.40" dy="18.40">Important</tspan>
+    </text>
   </g>
-  <g transform="translate(32.00,112.00)">
+  <g transform="translate(214.80,32.00)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFE8DC"/>
@@ -46,10 +49,13 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="243.20" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
-    <text x="121.60" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Important / Not Urgent</text>
+    <rect width="164.80" height="78.40" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="82.40" y="35.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="82.40" y="35.60">Not Urgent</tspan>
+      <tspan x="82.40" dy="18.40">Important</tspan>
+    </text>
   </g>
-  <g transform="translate(32.00,192.00)">
+  <g transform="translate(32.00,128.40)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFF1CD"/>
@@ -68,10 +74,13 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="243.20" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="121.60" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Not Important / Urgent</text>
+    <rect width="164.80" height="78.40" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="82.40" y="35.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="82.40" y="35.60">Urgent</tspan>
+      <tspan x="82.40" dy="18.40">Not Important</tspan>
+    </text>
   </g>
-  <g transform="translate(32.00,272.00)">
+  <g transform="translate(214.80,128.40)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#DFF6EA"/>
@@ -90,7 +99,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="281.60" height="40.00" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
-    <text x="140.80" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Not Important / Not Urgent</text>
+    <rect width="164.80" height="78.40" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="82.40" y="35.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="82.40" y="35.60">Not Urgent</tspan>
+      <tspan x="82.40" dy="18.40">Not Important</tspan>
+    </text>
   </g>
 </svg>

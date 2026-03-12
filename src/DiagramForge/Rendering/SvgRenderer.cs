@@ -211,9 +211,8 @@ public sealed class SvgRenderer : ISvgRenderer
             double fontSize = node.Label.FontSize ?? theme.FontSize;
             double textX = GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
             double textBaselineY = GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
-            double textY = textBaselineY + fontSize * 0.35;
 
-            sb.AppendLine($"""    <text x="{F(textX)}" y="{F(textY)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(node.Label.Text)}</text>""");
+            AppendNodeLabel(sb, node.Label.Text, theme, textX, textBaselineY, fontSize, textColor);
         }
         sb.AppendLine("  </g>");
     }
@@ -602,7 +601,40 @@ public sealed class SvgRenderer : ISvgRenderer
         if (string.IsNullOrEmpty(text))
             return 0;
 
-        return text.Length * fontSize * AvgGlyphAdvanceEm;
+        return text
+            .Replace("\r", string.Empty, StringComparison.Ordinal)
+            .Split('\n')
+            .Max(line => line.Length) * fontSize * AvgGlyphAdvanceEm;
+    }
+
+    private static void AppendNodeLabel(
+        StringBuilder sb,
+        string labelText,
+        Theme theme,
+        double centerX,
+        double centerY,
+        double fontSize,
+        string textColor)
+    {
+        var lines = labelText.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
+        double lineHeight = fontSize * 1.15;
+        double firstBaselineY = centerY + fontSize * 0.35 - ((lines.Length - 1) * lineHeight / 2);
+
+        if (lines.Length == 1)
+        {
+            sb.AppendLine($"""    <text x="{F(centerX)}" y="{F(firstBaselineY)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(lines[0])}</text>""");
+            return;
+        }
+
+        sb.AppendLine($"""    <text x="{F(centerX)}" y="{F(firstBaselineY)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(fontSize)}" fill="{textColor}">""");
+        sb.AppendLine($"""      <tspan x="{F(centerX)}" y="{F(firstBaselineY)}">{Escape(lines[0])}</tspan>""");
+
+        for (int i = 1; i < lines.Length; i++)
+        {
+            sb.AppendLine($"""      <tspan x="{F(centerX)}" dy="{F(lineHeight)}">{Escape(lines[i])}</tspan>""");
+        }
+
+        sb.AppendLine("    </text>");
     }
 
     private static bool TryResolveXyChartColors(Node node, Theme theme, out string fillColor, out string strokeColor)
