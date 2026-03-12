@@ -336,6 +336,104 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_PillarsDiagram_PlacesTitleNodesInConsistentColumns()
+    {
+        var diagram = new Diagram { DiagramType = "pillars" };
+
+        diagram.AddNode(PillarTitle("pillar_0", "People", 0))
+               .AddNode(PillarTitle("pillar_1", "Process", 1))
+               .AddNode(PillarTitle("pillar_2", "Technology", 2));
+
+        _engine.Layout(diagram, _theme);
+
+        var p0 = diagram.Nodes["pillar_0"];
+        var p1 = diagram.Nodes["pillar_1"];
+        var p2 = diagram.Nodes["pillar_2"];
+
+        // All title nodes should have equal width
+        Assert.Equal(p0.Width, p1.Width);
+        Assert.Equal(p1.Width, p2.Width);
+
+        // Columns increase left-to-right
+        Assert.True(p0.X < p1.X, $"Expected p0.X ({p0.X}) < p1.X ({p1.X})");
+        Assert.True(p1.X < p2.X, $"Expected p1.X ({p1.X}) < p2.X ({p2.X})");
+
+        // Column spacing is consistent
+        double gap01 = p1.X - (p0.X + p0.Width);
+        double gap12 = p2.X - (p1.X + p1.Width);
+        Assert.Equal(gap01, gap12, precision: 2);
+
+        // Label centers are set
+        Assert.True(p0.Metadata.ContainsKey("label:centerX"));
+        Assert.True(p0.Metadata.ContainsKey("label:centerY"));
+    }
+
+    [Fact]
+    public void Layout_PillarsDiagram_StacksSegmentsBelowTitle()
+    {
+        var diagram = new Diagram { DiagramType = "pillars" };
+
+        diagram.AddNode(PillarTitle("pillar_0", "People", 0))
+               .AddNode(PillarSegment("pillar_0_segment_0", "Skills", 0, 0))
+               .AddNode(PillarSegment("pillar_0_segment_1", "Roles", 0, 1))
+               .AddNode(PillarTitle("pillar_1", "Process", 1))
+               .AddNode(PillarSegment("pillar_1_segment_0", "Intake", 1, 0));
+
+        _engine.Layout(diagram, _theme);
+
+        var title0 = diagram.Nodes["pillar_0"];
+        var seg0 = diagram.Nodes["pillar_0_segment_0"];
+        var seg1 = diagram.Nodes["pillar_0_segment_1"];
+
+        // Segments start below the title
+        Assert.True(seg0.Y > title0.Y, $"Expected seg0.Y ({seg0.Y}) > title0.Y ({title0.Y})");
+        Assert.True(seg0.Y >= title0.Y + title0.Height, $"Expected seg0 to start at or after the bottom of title0");
+
+        // Segments stack in order
+        Assert.True(seg1.Y > seg0.Y, $"Expected seg1.Y ({seg1.Y}) > seg0.Y ({seg0.Y})");
+
+        // Segments align with their pillar column
+        Assert.Equal(title0.X, seg0.X);
+        Assert.Equal(title0.Width, seg0.Width);
+    }
+
+    [Fact]
+    public void Layout_PillarsDiagram_AllNodesHavePositiveSize()
+    {
+        var diagram = new Diagram { DiagramType = "pillars" };
+
+        diagram.AddNode(PillarTitle("pillar_0", "People", 0))
+               .AddNode(PillarSegment("pillar_0_segment_0", "Skills", 0, 0))
+               .AddNode(PillarTitle("pillar_1", "Process", 1))
+               .AddNode(PillarSegment("pillar_1_segment_0", "Intake", 1, 0));
+
+        _engine.Layout(diagram, _theme);
+
+        foreach (var node in diagram.Nodes.Values)
+        {
+            Assert.True(node.Width > 0, $"Node '{node.Id}' Width should be positive");
+            Assert.True(node.Height > 0, $"Node '{node.Id}' Height should be positive");
+        }
+    }
+
+    private static Node PillarTitle(string id, string label, int pillarIndex)
+    {
+        var node = new Node(id, label);
+        node.Metadata["pillars:pillarIndex"] = pillarIndex;
+        node.Metadata["pillars:kind"] = "title";
+        return node;
+    }
+
+    private static Node PillarSegment(string id, string label, int pillarIndex, int segmentIndex)
+    {
+        var node = new Node(id, label);
+        node.Metadata["pillars:pillarIndex"] = pillarIndex;
+        node.Metadata["pillars:segmentIndex"] = segmentIndex;
+        node.Metadata["pillars:kind"] = "segment";
+        return node;
+    }
+
+    [Fact]
     public void Layout_VennDiagram_PositionsNestedTextNodesUnderSetsAndUnion()
     {
         var diagram = new Diagram { DiagramType = "venn" };

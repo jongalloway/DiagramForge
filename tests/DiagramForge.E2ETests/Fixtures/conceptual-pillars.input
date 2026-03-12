@@ -1,0 +1,17 @@
+---
+theme: presentation
+---
+diagram: pillars
+pillars:
+  - title: People
+    segments:
+      - Skills
+      - Roles
+  - title: Process
+    segments:
+      - Intake
+      - Delivery
+  - title: Technology
+    segments:
+      - Platform
+      - Tooling

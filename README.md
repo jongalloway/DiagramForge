@@ -312,10 +312,10 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Timeline / phased milestones | Mermaid timeline | `timeline\n  title Launch\n  Q1 : Plan\n  Q2 : Build\n  Q3 : Release` |
 | 2x2 quadrant / prioritization matrix | Conceptual DSL | `diagram: matrix\nrows:\n  - Important\n  - Not Important\ncolumns:\n  - Urgent\n  - Not Urgent` |
 | Layered strategy / capability stack | Conceptual DSL | `diagram: pyramid\nlevels:\n  - Vision\n  - Strategy\n  - Tactics` |
+| Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 
-Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, radial / hub-and-spoke, and pillars.
-
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, and radial / hub-and-spoke.
 #### matrix
 
 ```text
@@ -350,6 +350,27 @@ steps:
   - Measure
   - Learn
 ```
+
+#### pillars
+
+```text
+diagram: pillars
+pillars:
+  - title: People
+    segments:
+      - Skills
+      - Roles
+  - title: Process
+    segments:
+      - Intake
+      - Delivery
+  - title: Technology
+    segments:
+      - Platform
+      - Tooling
+```
+
+Supported: 2-5 pillars, optional stacked `segments` per pillar. Segments are optional; a pillar with no `segments:` block renders as a single title block.
 
 ## Architecture
 

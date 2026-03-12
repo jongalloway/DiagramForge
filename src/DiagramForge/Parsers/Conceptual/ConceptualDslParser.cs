@@ -18,13 +18,13 @@ namespace DiagramForge.Parsers.Conceptual;
 ///   - Now
 ///   - Next
 /// </code>
-/// <para>Supported diagram types: matrix, pyramid, cycle.</para>
+/// <para>Supported diagram types: matrix, pyramid, cycle, pillars.</para>
 /// </remarks>
 public sealed class ConceptualDslParser : IDiagramParser
 {
     public string SyntaxId => "conceptual";
 
-    private static readonly FrozenSet<string> KnownTypes = new[] { "matrix", "pyramid", "cycle" }
+    private static readonly FrozenSet<string> KnownTypes = new[] { "matrix", "pyramid", "cycle", "pillars" }
         .ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc/>
@@ -68,6 +68,7 @@ public sealed class ConceptualDslParser : IDiagramParser
         {
             "pyramid" => () => ParseListDiagram(lines, builder, "levels", diagramType),
             "matrix" => () => ParseMatrixDiagram(lines, builder),
+            "pillars" => () => ParsePillarsDiagram(lines, builder),
             "cycle" => () => ParseCycleDiagram(lines, builder),
             _ => throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'."),
         };
@@ -166,6 +167,42 @@ public sealed class ConceptualDslParser : IDiagramParser
         builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
     }
 
+    private static void ParsePillarsDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
+    {
+        int pillarsLine = FindSectionLine(lines, "pillars");
+        if (pillarsLine < 0)
+            throw new DiagramParseException("Missing required section 'pillars:' in pillars diagram.");
+
+        var pillars = ReadPillars(lines, pillarsLine + 1);
+
+        if (pillars.Count == 0)
+            throw new DiagramParseException("Section 'pillars' contains no pillar entries.");
+
+        if (pillars.Count < 2 || pillars.Count > 5)
+            throw new DiagramParseException("Pillars diagram requires between 2 and 5 pillars.");
+
+        for (int i = 0; i < pillars.Count; i++)
+        {
+            var (title, segments) = pillars[i];
+
+            var titleNode = new Node($"pillar_{i}", title);
+            titleNode.Metadata["pillars:pillarIndex"] = i;
+            titleNode.Metadata["pillars:kind"] = "title";
+            builder.AddNode(titleNode);
+
+            for (int j = 0; j < segments.Count; j++)
+            {
+                var segNode = new Node($"pillar_{i}_segment_{j}", segments[j]);
+                segNode.Metadata["pillars:pillarIndex"] = i;
+                segNode.Metadata["pillars:segmentIndex"] = j;
+                segNode.Metadata["pillars:kind"] = "segment";
+                builder.AddNode(segNode);
+            }
+        }
+
+        builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
+    }
+
     // ── Utilities ─────────────────────────────────────────────────────────────
 
     private static int FindSectionLine(string[] lines, string key)
@@ -259,5 +296,108 @@ public sealed class ConceptualDslParser : IDiagramParser
             if (trimmed.StartsWith('-'))
                 yield return trimmed[1..].Trim();
         }
+    }
+
+    /// <summary>
+    /// Parses the nested pillar/segment structure from the lines starting at
+    /// <paramref name="startIndex"/>. Each pillar begins with <c>- title: X</c>
+    /// and optionally contains a <c>segments:</c> sub-list.
+    /// </summary>
+    private static List<(string Title, List<string> Segments)> ReadPillars(string[] lines, int startIndex)
+    {
+        var result = new List<(string Title, List<string> Segments)>();
+        int pillarEntryIndent = -1;
+        int i = startIndex;
+
+        while (i < lines.Length)
+        {
+            var line = lines[i];
+            var trimmed = line.Trim();
+
+            if (string.IsNullOrEmpty(trimmed)) { i++; continue; }
+
+            // Stop at a new zero-indent section header (e.g. "title:" or "options:")
+            if (GetIndent(line) == 0 && !trimmed.StartsWith('-') && trimmed.EndsWith(':'))
+                break;
+
+            // Each pillar starts with "- title: <name>"
+            if (!trimmed.StartsWith("- title:", StringComparison.OrdinalIgnoreCase)) { i++; continue; }
+
+            int thisIndent = GetIndent(line);
+            if (pillarEntryIndent < 0)
+                pillarEntryIndent = thisIndent;
+
+            // Only process entries at the same indent level as the first one
+            if (thisIndent != pillarEntryIndent) { i++; continue; }
+
+            string title = trimmed["- title:".Length..].Trim();
+            var segments = new List<string>();
+            i++;
+
+            // Parse body of this pillar (lines indented deeper than the pillar marker)
+            while (i < lines.Length)
+            {
+                var bodyLine = lines[i];
+                var bodyTrimmed = bodyLine.Trim();
+
+                if (string.IsNullOrEmpty(bodyTrimmed)) { i++; continue; }
+
+                int bodyIndent = GetIndent(bodyLine);
+
+                // A line at or above the pillar marker indent ends this pillar's body
+                if (bodyIndent <= pillarEntryIndent)
+                    break;
+
+                if (bodyTrimmed.Equals("segments:", StringComparison.OrdinalIgnoreCase))
+                {
+                    int segSectionIndent = bodyIndent;
+                    i++;
+
+                    // Read segment items (lines deeper than "segments:")
+                    while (i < lines.Length)
+                    {
+                        var segLine = lines[i];
+                        var segTrimmed = segLine.Trim();
+
+                        if (string.IsNullOrEmpty(segTrimmed)) { i++; continue; }
+
+                        int segIndent = GetIndent(segLine);
+
+                        // Returning to or above "segments:" indent ends the segment list
+                        if (segIndent <= segSectionIndent)
+                            break;
+
+                        if (segTrimmed.StartsWith('-'))
+                            segments.Add(segTrimmed[1..].Trim());
+
+                        i++;
+                    }
+
+                    // i now sits at the first line at or above segSectionIndent;
+                    // continue the body loop to re-evaluate that line
+                }
+                else
+                {
+                    i++; // Unknown pillar body content – skip
+                }
+            }
+
+            result.Add((title, segments));
+        }
+
+        return result;
+    }
+
+    private static int GetIndent(string line)
+    {
+        const int SpacesPerTab = 2;
+        int count = 0;
+        foreach (char c in line)
+        {
+            if (c == ' ') count++;
+            else if (c == '\t') count += SpacesPerTab;
+            else break;
+        }
+        return count;
     }
 }
