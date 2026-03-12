@@ -28,7 +28,7 @@ That's the whole API.
 
 Most diagram-as-code tools assume a browser. Mermaid.js needs a JavaScript engine to run at all — and even once you've stood up headless Chrome and extracted the SVG, you find that it renders text via `<foreignObject>` wrapping HTML `<div>`s instead of native `<text>` elements. That's fine in a web page. It's a blank box in Inkscape, a parse error in Illustrator, and a mess when you try to drop it into a PowerPoint slide. See mermaid-js/mermaid [#2688](https://github.com/mermaid-js/mermaid/issues/2688), [#1845](https://github.com/mermaid-js/mermaid/issues/1845), [#1923](https://github.com/mermaid-js/mermaid/issues/1923), [#2169](https://github.com/mermaid-js/mermaid/issues/2169).
 
-DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts, block diagrams, state diagrams, and mindmaps — the output opens anywhere.
+DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts, block diagrams, sequence diagrams, state diagrams, mindmaps, timelines, Venn diagrams, architecture diagrams, and XY charts — the output opens anywhere.
 
 - **Real SVG.** Native `<text>` elements. No `<foreignObject>`, no embedded HTML, no CSS-in-SVG. Opens in Inkscape, imports into PowerPoint and Keynote, renders with librsvg.
 - **Pure .NET.** `net10.0`, zero native dependencies, zero runtime package dependencies. No headless browser, no Node, no shelling out.
@@ -133,6 +133,18 @@ diagramforge diagram.txt | rsvg-convert -o diagram.png
 
 First line must start with one of the supported keywords below.
 
+| Diagram family | Keywords | Current support |
+| --- | --- | --- |
+| Flowchart | `flowchart`, `graph` | Direction, shapes, edges, labels, subgraphs |
+| Block diagram | `block`, `block-beta` | Columns, spans, arrow blocks, labeled edges |
+| Sequence diagram | `sequenceDiagram` | Participants, aliases, messages, auto-created participants |
+| State diagram | `stateDiagram`, `stateDiagram-v2` | Terminals, transitions, transition labels |
+| Mindmap | `mindmap` | Indentation-based hierarchy |
+| Timeline | `timeline` | Title, periods, multiple entries per period |
+| Venn diagram | `venn-beta` | Sets, unions, nested text, basic styles |
+| Architecture diagram | `architecture-beta` | Groups, services, junctions, port-aware edges |
+| XY chart | `xychart-beta` | Title, x/y axes, bar series, line series |
+
 #### Flowchart
 
 Keywords: `flowchart` or `graph` (+ optional direction suffix).
@@ -172,6 +184,23 @@ block-beta
   Storage -- "events" --> Backend
 ```
 
+#### Sequence diagram
+
+Keyword: `sequenceDiagram`.
+
+- **Participants** — `participant A`, `participant A as Alice`
+- **Messages** — `A->>B: Hello`, `B-->>A: Hi back`
+- **Auto-created participants** — undeclared participants are created on first use
+
+```mermaid
+sequenceDiagram
+  participant A as Alice
+  participant B as Bob
+  A->>B: Hello
+  B-->>A: Hi back
+  A->>B: Done
+```
+
 #### State diagram
 
 Keywords: `stateDiagram` or `stateDiagram-v2`.
@@ -198,21 +227,93 @@ mindmap
     Testing
 ```
 
-Not yet supported: sequence diagrams, class diagrams, gantt, `click` directives, styling directives.
+#### Timeline
+
+Keyword: `timeline`.
+
+- **Title** — `title Product Roadmap`
+- **Periods and entries** — `Q1 : Research`
+
+```mermaid
+timeline
+  title Product Roadmap
+  Q1 : Research
+     : Prototype
+  Q2 : Beta
+  Q3 : GA
+     : Scale
+```
+
+#### Venn diagram
+
+Keyword: `venn-beta`.
+
+- **Sets** — `set A["Alpha"]`
+- **Unions** — `union A,B[Shared]`
+- **Nested text** — `text Label["Detail"]`
+
+```mermaid
+venn-beta
+  set A["Alpha"]
+  set B["Beta"]
+  union A,B["Shared"]
+```
+
+#### Architecture diagram
+
+Keyword: `architecture-beta`.
+
+- **Groups** — `group api(cloud)[API]`
+- **Services** — `service db(database)[Database] in api`
+- **Junctions** — `junction center`
+- **Port-aware edges** — `db:L -- R:server`
+
+```mermaid
+architecture-beta
+  group api(cloud)[API]
+  service db(database)[Database] in api
+  service server(server)[Server] in api
+  db:L -- R:server
+```
+
+#### XY chart
+
+Keyword: `xychart-beta`.
+
+- **Title** — `title "Revenue"`
+- **X axis** — `x-axis [Q1, Q2, Q3]`
+- **Y axis** — `y-axis "USD" 0 --> 100`
+- **Series** — `bar [...]`, `line [...]`
+
+```mermaid
+xychart-beta
+  title "Revenue"
+  x-axis [Q1, Q2, Q3]
+  y-axis "USD" 0 --> 100
+  bar [25, 50, 75]
+  line [20, 55, 80]
+```
+
+Not yet supported: class diagrams, gantt, `click` directives, and full Mermaid feature parity within every supported diagram family.
 
 ### Conceptual DSL
 
-A small YAML-ish format for SmartArt-style diagrams. First line is always `diagram: <type>`.
+A small YAML-ish format for presentation-native layouts that are awkward to express cleanly in Mermaid. First line is always `diagram: <type>`.
 
-#### venn
+Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix or segmented pyramid.
 
-```text
-diagram: venn
-sets:
-  - Engineering
-  - Product
-  - Design
-```
+#### If You Want This, Use This
+
+| If you want... | Use... | Example |
+| --- | --- | --- |
+| Overlapping sets / Venn | Mermaid | `venn-beta\n  set A\n  set B\n  union A,B[Shared]` |
+| Generic relationship diagram | Mermaid flowchart | `flowchart LR\n  Strategy --> Execution\n  Execution --> Results` |
+| Hierarchy / org-style tree | Mermaid mindmap or flowchart | `mindmap\n  root(Company)\n    Product\n    Engineering\n    Sales` |
+| Timeline / phased milestones | Mermaid timeline | `timeline\n  title Launch\n  Q1 : Plan\n  Q2 : Build\n  Q3 : Release` |
+| 2x2 quadrant / prioritization matrix | Conceptual DSL | `diagram: matrix\nrows:\n  - Important\n  - Not Important\ncolumns:\n  - Urgent\n  - Not Urgent` |
+| Layered strategy / capability stack | Conceptual DSL | `diagram: pyramid\nlevels:\n  - Vision\n  - Strategy\n  - Tactics` |
+
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, cycle, radial / hub-and-spoke, and pillars.
 
 #### matrix
 
