@@ -7,9 +7,207 @@
 
 **Text in, SVG out.** A .NET library and CLI that turns plain-text diagram descriptions into clean, self-contained SVG — no browser, no JavaScript runtime, no headless Chrome.
 
-![DiagramForge diagram gallery — representative diagram types rendered as clean SVG](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/doc/diagram-gallery.svg)
+Representative snapshot fixtures from the E2E suite. Click any thumbnail to open the full-size SVG.
 
-![DiagramForge theme gallery — the same flowchart rendered across every built-in theme](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/doc/theme-gallery.svg)
+<!-- markdownlint-disable MD033 -->
+<h3>Diagram Types</h3>
+
+<table cellpadding="12">
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-edge-labels.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-edge-labels.expected.svg" alt="Flowchart" height="96" />
+      </a>
+      <br />
+      <sub>Flowchart</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-block.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-block.expected.svg" alt="Block diagram" height="96" />
+      </a>
+      <br />
+      <sub>Block</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-sequence.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-sequence.expected.svg" alt="Sequence" height="96" />
+      </a>
+      <br />
+      <sub>Sequence</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture.expected.svg" alt="Architecture" height="96" />
+      </a>
+      <br />
+      <sub>Architecture</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-mindmap.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-mindmap.expected.svg" alt="Mindmap" height="96" />
+      </a>
+      <br />
+      <sub>Mindmap</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-timeline.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-timeline.expected.svg" alt="Timeline" height="96" />
+      </a>
+      <br />
+      <sub>Timeline</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-venn-two-set.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-venn-two-set.expected.svg" alt="Venn diagram" height="96" />
+      </a>
+      <br />
+      <sub>Venn</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-xychart.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-xychart.expected.svg" alt="XY chart" height="96" />
+      </a>
+      <br />
+      <sub>XY Chart</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle.expected.svg" alt="Conceptual cycle" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Cycle</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix.expected.svg" alt="Conceptual matrix" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Matrix</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars.expected.svg" alt="Conceptual pillars" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Pillars</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pyramid.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pyramid.expected.svg" alt="Conceptual pyramid" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Pyramid</sub>
+    </td>
+  </tr>
+</table>
+
+<h3>Built-in Themes</h3>
+
+<table cellpadding="16">
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-default.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-default.expected.svg" alt="Default theme" width="400" />
+      </a>
+      <br />
+      <sub>Default</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-forest.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-forest.expected.svg" alt="Forest theme" width="400" />
+      </a>
+      <br />
+      <sub>Forest</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-neutral.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-neutral.expected.svg" alt="Neutral theme" width="400" />
+      </a>
+      <br />
+      <sub>Neutral</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-dracula.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-dracula.expected.svg" alt="Dracula theme" width="400" />
+      </a>
+      <br />
+      <sub>Dracula</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-github-dark.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-github-dark.expected.svg" alt="GitHub Dark theme" width="400" />
+      </a>
+      <br />
+      <sub>GitHub Dark</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-github-light.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-github-light.expected.svg" alt="GitHub Light theme" width="400" />
+      </a>
+      <br />
+      <sub>GitHub Light</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-catppuccin-latte.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-catppuccin-latte.expected.svg" alt="Catppuccin Latte theme" width="400" />
+      </a>
+      <br />
+      <sub>Catppuccin Latte</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-catppuccin-mocha.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-catppuccin-mocha.expected.svg" alt="Catppuccin Mocha theme" width="400" />
+      </a>
+      <br />
+      <sub>Catppuccin Mocha</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-presentation.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-presentation.expected.svg" alt="Presentation theme" width="400" />
+      </a>
+      <br />
+      <sub>Presentation</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-tokyo-night.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-tokyo-night.expected.svg" alt="Tokyo Night theme" width="400" />
+      </a>
+      <br />
+      <sub>Tokyo Night</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-one-dark.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-one-dark.expected.svg" alt="One Dark theme" width="400" />
+      </a>
+      <br />
+      <sub>One Dark</sub>
+    </td>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-zinc-light.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-zinc-light.expected.svg" alt="Zinc Light theme" width="400" />
+      </a>
+      <br />
+      <sub>Zinc Light</sub>
+    </td>
+  </tr>
+</table>
+<!-- markdownlint-enable MD033 -->
 
 ```csharp
 var renderer = new DiagramRenderer();
@@ -316,6 +514,7 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 
 Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, and radial / hub-and-spoke.
+
 #### matrix
 
 ```text
