@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using DiagramForge.Abstractions;
 
 namespace DiagramForge.Parsers.Mermaid;
@@ -30,14 +31,33 @@ internal sealed class MermaidDocument
         var lines = new List<string>();
         var rawLines = new List<string>();
 
-        foreach (var line in diagramText.Split('\n'))
+        var text = diagramText.AsSpan();
+        int start = 0;
+        while (start <= text.Length)
         {
-            var trimmedStart = line.TrimStart();
-            if (string.IsNullOrWhiteSpace(line) || trimmedStart.StartsWith("%%", StringComparison.Ordinal))
-                continue;
+            int length = 0;
+            while (start + length < text.Length && text[start + length] != '\n')
+                length++;
 
-            rawLines.Add(line.TrimEnd());
-            lines.Add(line.Trim());
+            var line = text.Slice(start, length);
+            if (!line.IsEmpty && line[^1] == '\r')
+                line = line[..^1];
+
+            var trimmedStart = line.TrimStart();
+            if (trimmedStart.IsEmpty || trimmedStart.StartsWith("%%", StringComparison.Ordinal))
+            {
+                start += length + 1;
+                if (start > text.Length)
+                    break;
+                continue;
+            }
+
+            rawLines.Add(TrimLineEnd(line).ToString());
+            lines.Add(trimmedStart.TrimEnd().ToString());
+
+            start += length + 1;
+            if (start > text.Length)
+                break;
         }
 
         if (lines.Count == 0)
@@ -60,7 +80,7 @@ internal sealed class MermaidDocument
     // Known Mermaid diagram-type keywords (lowercased) that are recognized but not yet
     // supported by any registered IMermaidDiagramParser. Detecting them as Unknown lets
     // MermaidParser emit a specific "unsupported type" error instead of a generic one.
-    private static readonly HashSet<string> KnownUnsupportedMermaidKeywords = new(StringComparer.Ordinal)
+    private static readonly FrozenSet<string> KnownUnsupportedMermaidKeywords = new[]
     {
         "classdiagram",
         "erdiagram",
@@ -76,7 +96,7 @@ internal sealed class MermaidDocument
         "zenuml",
         "radar-beta",
         "treemap-beta",
-    };
+    }.ToFrozenSet(StringComparer.Ordinal);
 
     public static MermaidDocument Parse(string diagramText)
     {
@@ -86,10 +106,30 @@ internal sealed class MermaidDocument
         if (string.IsNullOrWhiteSpace(diagramText))
             throw new DiagramParseException("Diagram text cannot be null or whitespace.");
 
-        var firstContentLine = diagramText
-            .Split('\n')
-            .Select(line => line.Trim())
-            .FirstOrDefault(line => !string.IsNullOrEmpty(line) && !line.StartsWith("%%", StringComparison.Ordinal));
+        string? firstContentLine = null;
+        var text = diagramText.AsSpan();
+        int start = 0;
+        while (start <= text.Length)
+        {
+            int length = 0;
+            while (start + length < text.Length && text[start + length] != '\n')
+                length++;
+
+            var line = text.Slice(start, length);
+            if (!line.IsEmpty && line[^1] == '\r')
+                line = line[..^1];
+
+            var trimmed = line.Trim();
+            if (!trimmed.IsEmpty && !trimmed.StartsWith("%%", StringComparison.Ordinal))
+            {
+                firstContentLine = trimmed.ToString();
+                break;
+            }
+
+            start += length + 1;
+            if (start > text.Length)
+                break;
+        }
 
         if (firstContentLine is null)
             throw new DiagramParseException("Diagram text cannot be empty or contain only comments.");
@@ -167,5 +207,14 @@ internal sealed class MermaidDocument
 
         kind = default;
         return false;
+    }
+
+    private static ReadOnlySpan<char> TrimLineEnd(ReadOnlySpan<char> line)
+    {
+        int end = line.Length;
+        while (end > 0 && char.IsWhiteSpace(line[end - 1]) && line[end - 1] != '\n' && line[end - 1] != '\r')
+            end--;
+
+        return line[..end];
     }
 }

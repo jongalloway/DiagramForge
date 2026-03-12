@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/benchmarks/">
+    <Project Path="benchmarks/DiagramForge.Benchmarks/DiagramForge.Benchmarks.csproj" />
+  </Folder>
   <Folder Name="/src/">
     <Project Path="src/DiagramForge.Cli/DiagramForge.Cli.csproj" />
     <Project Path="src/DiagramForge/DiagramForge.csproj" />

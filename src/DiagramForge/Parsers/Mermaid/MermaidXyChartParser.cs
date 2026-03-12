@@ -18,22 +18,16 @@ namespace DiagramForge.Parsers.Mermaid;
 ///   <item><c>line [v1, v2, …]</c> data series (multiple allowed)</item>
 /// </list>
 /// </remarks>
-internal sealed class MermaidXyChartParser : IMermaidDiagramParser
+internal sealed partial class MermaidXyChartParser : IMermaidDiagramParser
 {
-    // Matches a bracketed list of values: [a, b, c] or [100, 200, 300]
-    private static readonly Regex BracketListRegex = new(
-        @"\[([^\]]*)\]",
-        RegexOptions.Compiled);
+    [GeneratedRegex(@"\[([^\]]*)\]", RegexOptions.CultureInvariant)]
+    private static partial Regex BracketListRegex();
 
-    // Matches a numeric range: 4000 --> 11000
-    private static readonly Regex NumericRangeRegex = new(
-        @"([\d.]+)\s*-->\s*([\d.]+)",
-        RegexOptions.Compiled);
+    [GeneratedRegex(@"([\d.]+)\s*-->\s*([\d.]+)", RegexOptions.CultureInvariant)]
+    private static partial Regex NumericRangeRegex();
 
-    // Matches a quoted string: "Sales Revenue"
-    private static readonly Regex QuotedStringRegex = new(
-        @"""([^""]*)""",
-        RegexOptions.Compiled);
+    [GeneratedRegex(@"""([^""]*)""", RegexOptions.CultureInvariant)]
+    private static partial Regex QuotedStringRegex();
 
     public bool CanParse(MermaidDiagramKind kind) => kind == MermaidDiagramKind.XyChart;
 
@@ -59,7 +53,7 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             if (line.StartsWith("title ", StringComparison.OrdinalIgnoreCase))
             {
                 var titleText = line["title ".Length..].Trim();
-                var quoted = QuotedStringRegex.Match(titleText);
+                var quoted = QuotedStringRegex().Match(titleText);
                 builder.WithTitle(quoted.Success ? quoted.Groups[1].Value : titleText);
                 continue;
             }
@@ -68,14 +62,14 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             if (line.StartsWith("x-axis", StringComparison.OrdinalIgnoreCase))
             {
                 var rest = line["x-axis".Length..].Trim();
-                var bracketMatch = BracketListRegex.Match(rest);
+                var bracketMatch = BracketListRegex().Match(rest);
                 if (bracketMatch.Success)
                 {
                     xCategories = ParseStringList(bracketMatch.Groups[1].Value);
                 }
                 else
                 {
-                    var rangeMatch = NumericRangeRegex.Match(rest);
+                    var rangeMatch = NumericRangeRegex().Match(rest);
                     if (rangeMatch.Success)
                     {
                         xMin = ParseDouble(rangeMatch.Groups[1].Value);
@@ -89,13 +83,13 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             if (line.StartsWith("y-axis", StringComparison.OrdinalIgnoreCase))
             {
                 var rest = line["y-axis".Length..].Trim();
-                var quotedMatch = QuotedStringRegex.Match(rest);
+                var quotedMatch = QuotedStringRegex().Match(rest);
                 if (quotedMatch.Success)
                 {
                     yLabel = quotedMatch.Groups[1].Value;
                     rest = rest[(quotedMatch.Index + quotedMatch.Length)..].Trim();
                 }
-                var rangeMatch = NumericRangeRegex.Match(rest);
+                var rangeMatch = NumericRangeRegex().Match(rest);
                 if (rangeMatch.Success)
                 {
                     yMin = ParseDouble(rangeMatch.Groups[1].Value);
@@ -107,7 +101,7 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             // bar [5000, 6000, 7500]
             if (line.StartsWith("bar", StringComparison.OrdinalIgnoreCase))
             {
-                var bracketMatch = BracketListRegex.Match(line);
+                var bracketMatch = BracketListRegex().Match(line);
                 if (bracketMatch.Success)
                     barSeries.Add(ParseDoubleList(bracketMatch.Groups[1].Value));
                 continue;
@@ -116,7 +110,7 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             // line [5000, 6000, 7000]
             if (line.StartsWith("line", StringComparison.OrdinalIgnoreCase))
             {
-                var bracketMatch = BracketListRegex.Match(line);
+                var bracketMatch = BracketListRegex().Match(line);
                 if (bracketMatch.Success)
                     lineSeries.Add(ParseDoubleList(bracketMatch.Groups[1].Value));
                 continue;
@@ -137,14 +131,32 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
         xCategories ??= GenerateNumericLabels(categoryCount, xMin, xMax);
 
         // Auto-compute Y range from data if not specified.
-        var allValues = barSeries.SelectMany(s => s)
-            .Concat(lineSeries.SelectMany(s => s))
-            .ToList();
+        bool hasValues = false;
+        double maxValue = 0;
+        foreach (var series in barSeries)
+        {
+            for (int i = 0; i < series.Length; i++)
+            {
+                if (!hasValues || series[i] > maxValue)
+                    maxValue = series[i];
+                hasValues = true;
+            }
+        }
 
-        if (allValues.Count > 0)
+        foreach (var series in lineSeries)
+        {
+            for (int i = 0; i < series.Length; i++)
+            {
+                if (!hasValues || series[i] > maxValue)
+                    maxValue = series[i];
+                hasValues = true;
+            }
+        }
+
+        if (hasValues)
         {
             yMin ??= 0;
-            yMax ??= allValues.Max() * 1.1; // 10% headroom
+            yMax ??= maxValue * 1.1; // 10% headroom
         }
         else
         {
@@ -206,22 +218,53 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
 
     private static string[] ParseStringList(string csv)
     {
-        return csv.Split(',')
-            .Select(s => s.Trim().Trim('"'))
-            .Where(s => !string.IsNullOrEmpty(s))
-            .ToArray();
+        var values = new List<string>();
+        var text = csv.AsSpan();
+        int start = 0;
+        while (start <= text.Length)
+        {
+            int length = 0;
+            while (start + length < text.Length && text[start + length] != ',')
+                length++;
+
+            var part = text.Slice(start, length);
+            var value = part.Trim().Trim('"');
+            if (!value.IsEmpty)
+                values.Add(value.ToString());
+
+            start += length + 1;
+            if (start > text.Length)
+                break;
+        }
+
+        return [.. values];
     }
 
     private static double[] ParseDoubleList(string csv)
     {
-        return csv.Split(',')
-            .Select(s => s.Trim())
-            .Where(s => !string.IsNullOrEmpty(s))
-            .Select(ParseDouble)
-            .ToArray();
+        var values = new List<double>();
+        var text = csv.AsSpan();
+        int start = 0;
+        while (start <= text.Length)
+        {
+            int length = 0;
+            while (start + length < text.Length && text[start + length] != ',')
+                length++;
+
+            var part = text.Slice(start, length);
+            var value = part.Trim();
+            if (!value.IsEmpty)
+                values.Add(ParseDouble(value));
+
+            start += length + 1;
+            if (start > text.Length)
+                break;
+        }
+
+        return [.. values];
     }
 
-    private static double ParseDouble(string s)
+    private static double ParseDouble(ReadOnlySpan<char> s)
     {
         return double.Parse(s.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture);
     }
@@ -238,4 +281,5 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
         }
         return Enumerable.Range(1, count).Select(i => i.ToString(CultureInfo.InvariantCulture)).ToArray();
     }
+
 }
