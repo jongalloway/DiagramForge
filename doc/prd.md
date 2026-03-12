@@ -48,6 +48,7 @@ Clients (e.g., MarpToPptx, Obsidian plugins, CLI tools) are responsible for extr
 - Markdown parsing or extraction of code blocks.
 - Browser‑based rendering or JS runtime dependency.
 - Reproducing SmartArt exactly; instead, provide modern equivalents.
+- Adding Conceptual DSL diagram types that are already easy to express in Mermaid.
 
 ---
 
@@ -121,9 +122,30 @@ Core primitives:
 
 SmartArt‑inspired conceptual diagrams:
 
-- Relationship (venn, overlapping sets, arrows between concepts)
 - Matrix (2×2, 3×3)
 - Pyramid (segmented, labeled)
+
+Selection rule:
+
+- The Conceptual DSL is reserved for presentation-native layouts whose main value is their slide-oriented visual form, not generic node-and-edge semantics.
+- If a diagram is already straightforward to create with Mermaid, prefer Mermaid instead of adding a parallel conceptual type.
+
+Examples that should use Mermaid rather than the Conceptual DSL:
+
+- Venn / overlapping sets
+- Generic relationship diagrams
+- Hierarchy / org-chart-style trees
+- Timelines and simple roadmaps
+
+Examples that remain good candidates for the Conceptual DSL:
+
+- Matrix
+- Pyramid
+- Funnel
+- Chevron process
+- Cycle
+- Radial / hub-and-spoke
+- Pillars / stacked segments
 
 ### 5.3 Future Diagram Types (not in v1)
 
@@ -132,6 +154,8 @@ SmartArt‑inspired conceptual diagrams:
 - Network diagrams
 - Swimlanes
 - Gantt charts
+
+Future conceptual additions, if added, should prioritize slide-native layouts such as funnel, chevron process, cycle, radial / hub-and-spoke, and pillars rather than Mermaid-equivalent graph forms.
 
 ---
 
@@ -206,6 +230,7 @@ Example clients:
 ### Phase 2
 
 - Advanced conceptual diagram types
+- Prioritize conceptual types that are not trivially represented in Mermaid (funnel, chevron process, cycle, radial, pillars)
 - Theme packs
 - Layout tuning for slide aesthetics
 - Plugin API for additional syntaxes
