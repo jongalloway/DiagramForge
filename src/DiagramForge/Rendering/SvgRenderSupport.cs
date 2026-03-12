@@ -168,7 +168,14 @@ internal static class SvgRenderSupport
         shadowFilterId = prefix + "-soft-shadow";
         sb.AppendLine($"{indent}<defs>");
         sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-8%\" y=\"-8%\" width=\"124%\" height=\"136%\" color-interpolation-filters=\"sRGB\">");
-        sb.AppendLine($"{indent}    <feDropShadow dx=\"{F(theme.ShadowOffsetX)}\" dy=\"{F(theme.ShadowOffsetY)}\" stdDeviation=\"{F(theme.ShadowBlur)}\" flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\"/>");
+        sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"shadow-blur\"/>");
+        sb.AppendLine($"{indent}    <feOffset in=\"shadow-blur\" dx=\"{F(theme.ShadowOffsetX)}\" dy=\"{F(theme.ShadowOffsetY)}\" result=\"shadow-offset\"/>");
+        sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"shadow-color\"/>");
+        sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"shadow-offset\" operator=\"in\" result=\"shadow\"/>");
+        sb.AppendLine($"{indent}    <feMerge>");
+        sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");
+        sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+        sb.AppendLine($"{indent}    </feMerge>");
         sb.AppendLine($"{indent}  </filter>");
         sb.AppendLine($"{indent}</defs>");
     }

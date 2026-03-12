@@ -201,7 +201,8 @@ public class SvgRendererPaletteTests
 
         string svg = _renderer.Render(diagram, theme);
 
-        Assert.Contains("feDropShadow", svg);
+        Assert.Contains("feGaussianBlur", svg);
+        Assert.Contains("feMergeNode", svg);
         Assert.Contains("group-0-soft-shadow", svg);
         Assert.DoesNotContain("node-0-soft-shadow", svg);
     }
