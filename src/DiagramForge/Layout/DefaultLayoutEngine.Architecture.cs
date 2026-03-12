@@ -15,7 +15,7 @@ public sealed partial class DefaultLayoutEngine
     {
         foreach (var node in diagram.Nodes.Values)
         {
-            if (node.Shape == Models.Shape.Circle && string.IsNullOrEmpty(node.Label.Text))
+            if (node.Shape == Shape.Circle && string.IsNullOrEmpty(node.Label.Text))
             {
                 node.Width = 20;
                 node.Height = 20;
