@@ -12,7 +12,9 @@ Representative snapshot fixtures from the E2E suite. Click any thumbnail to open
 <!-- markdownlint-disable MD033 -->
 <h3>Diagram Types</h3>
 
-<table cellpadding="12">
+DiagramForge currently supports more than a dozen diagram types across Mermaid and the conceptual DSL. This gallery is representative, not complete. See [Supported syntax](#supported-syntax) and [Conceptual DSL](#conceptual-dsl) below for the full set and syntax details.
+
+<table cellpadding="12" width="100%">
   <tr>
     <td align="center" valign="top" width="33%">
       <a href="tests/DiagramForge.E2ETests/Fixtures/mermaid-edge-labels.expected.svg">
@@ -109,7 +111,9 @@ Representative snapshot fixtures from the E2E suite. Click any thumbnail to open
 
 <h3>Built-in Themes</h3>
 
-<table cellpadding="16">
+This theme gallery is also a representative sample rather than the full catalog. DiagramForge ships with more than twenty built-in themes, and you can see the theme API in [With a custom theme](#with-a-custom-theme) below.
+
+<table cellpadding="16" width="100%">
   <tr>
     <td align="center" valign="top" width="50%">
       <a href="tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-default.expected.svg">
