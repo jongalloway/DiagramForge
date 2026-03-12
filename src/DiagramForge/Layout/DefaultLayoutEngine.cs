@@ -97,6 +97,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             LayoutPyramidDiagram(diagram, theme, minW, nodeH, pad);
             return;
         }
+
+        if (string.Equals(diagram.DiagramType, "cycle", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutCycleDiagram(diagram, theme, minW, nodeH, pad);
+            return;
+        }
         
         if (string.Equals(diagram.DiagramType, "xychart", StringComparison.OrdinalIgnoreCase))
         {
@@ -580,6 +586,57 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             node.Metadata["conceptual:pyramidSegment"] = true;
             node.Metadata["conceptual:pyramidTopWidth"] = topWidth;
             node.Metadata["conceptual:pyramidBottomWidth"] = segmentBottomWidth;
+        }
+    }
+
+    private static void LayoutCycleDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double pad)
+    {
+        var orderedNodes = diagram.Nodes.Values
+            .OrderBy(node => node.Id, StringComparer.Ordinal)
+            .ToList();
+
+        if (orderedNodes.Count == 0)
+            return;
+
+        // Uniform node sizing driven by the widest label.
+        double widestLabel = orderedNodes.Max(node =>
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            return EstimateTextWidth(node.Label.Text, fontSize) + 2 * theme.NodePadding;
+        });
+
+        double nodeW = Math.Max(widestLabel, minW);
+        int n = orderedNodes.Count;
+
+        // Minimum radius so adjacent node bounding boxes don't overlap.
+        // Chord between adjacent centres = 2·R·sin(π/n); must exceed the
+        // diagonal of the node box plus a small visual gap.
+        double diagonal = Math.Sqrt(nodeW * nodeW + nodeH * nodeH);
+        const double minNodeGap = 20.0;
+        double minRadiusFromSpacing = (diagonal + minNodeGap) / (2 * Math.Sin(Math.PI / n));
+
+        // Also enforce a floor so even 3-step cycles have a visually open centre.
+        double minRadiusFloor = nodeW * 1.2 + pad;
+        double radius = Math.Max(minRadiusFromSpacing, minRadiusFloor);
+
+        // Centre of the circle: offset so the nearest node edge lands exactly at `pad`.
+        double cx = pad + radius + nodeW / 2;
+        double cy = pad + radius + nodeH / 2;
+
+        // Place nodes evenly, starting at 12 o'clock (−π/2), going clockwise.
+        for (int i = 0; i < n; i++)
+        {
+            var node = orderedNodes[i];
+            double angle = -Math.PI / 2 + (2 * Math.PI * i / n);
+            node.X = cx + radius * Math.Cos(angle) - nodeW / 2;
+            node.Y = cy + radius * Math.Sin(angle) - nodeH / 2;
+            node.Width = nodeW;
+            node.Height = nodeH;
         }
     }
 

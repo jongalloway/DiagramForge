@@ -300,7 +300,7 @@ Not yet supported: class diagrams, gantt, `click` directives, and full Mermaid f
 
 A small YAML-ish format for presentation-native layouts that are awkward to express cleanly in Mermaid. First line is always `diagram: <type>`.
 
-Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix or segmented pyramid.
+Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix, segmented pyramid, or circular cycle.
 
 #### If You Want This, Use This
 
@@ -312,8 +312,9 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Timeline / phased milestones | Mermaid timeline | `timeline\n  title Launch\n  Q1 : Plan\n  Q2 : Build\n  Q3 : Release` |
 | 2x2 quadrant / prioritization matrix | Conceptual DSL | `diagram: matrix\nrows:\n  - Important\n  - Not Important\ncolumns:\n  - Urgent\n  - Not Urgent` |
 | Layered strategy / capability stack | Conceptual DSL | `diagram: pyramid\nlevels:\n  - Vision\n  - Strategy\n  - Tactics` |
+| Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 
-Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, cycle, radial / hub-and-spoke, and pillars.
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, radial / hub-and-spoke, and pillars.
 
 #### matrix
 
@@ -335,6 +336,19 @@ levels:
   - Vision
   - Strategy
   - Tactics
+```
+
+#### cycle
+
+Circular diagram for iterative processes and feedback loops. Accepts 3–6 steps arranged in a balanced radial layout with directional connectors.
+
+```text
+diagram: cycle
+steps:
+  - Plan
+  - Build
+  - Measure
+  - Learn
 ```
 
 ## Architecture

@@ -682,4 +682,80 @@ public class DefaultLayoutEngineTests
             Assert.True(group.Y + group.Height >= n.Y + n.Height, "group bottom edge should cover node bottom edge");
         }
     }
+
+    // ── Cycle ─────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Layout_CycleDiagram_PlacesNodesRadially()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"));
+
+        _engine.Layout(diagram, _theme);
+
+        // All nodes must have positive, non-overlapping positions.
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.X >= 0, $"{n.Id}.X = {n.X}");
+            Assert.True(n.Y >= 0, $"{n.Id}.Y = {n.Y}");
+            Assert.True(n.Width > 0);
+            Assert.True(n.Height > 0);
+        });
+
+        // Nodes should be evenly spaced: all centres equidistant from the common
+        // centre of the circle, within floating-point tolerance.
+        var nodes = diagram.Nodes.Values
+            .OrderBy(n => n.Id, StringComparer.Ordinal)
+            .ToList();
+
+        double cx = nodes.Average(n => n.X + n.Width / 2);
+        double cy = nodes.Average(n => n.Y + n.Height / 2);
+
+        var radii = nodes.Select(n =>
+        {
+            double dx = n.X + n.Width / 2 - cx;
+            double dy = n.Y + n.Height / 2 - cy;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }).ToList();
+
+        double avgRadius = radii.Average();
+        Assert.All(radii, r =>
+            Assert.True(Math.Abs(r - avgRadius) < 1.0,
+                $"Expected all radii ≈ {avgRadius:F2} but got {r:F2}"));
+    }
+
+    [Fact]
+    public void Layout_CycleDiagram_StableOrdering_StartFromTop()
+    {
+        // node_0 should be the topmost node (12 o'clock).
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"));
+
+        _engine.Layout(diagram, _theme);
+
+        var n0 = diagram.Nodes["node_0"];
+        Assert.All(diagram.Nodes.Values, n =>
+            Assert.True(n0.Y <= n.Y + 1.0,
+                $"node_0.Y ({n0.Y:F2}) should be the topmost node, but {n.Id}.Y = {n.Y:F2}"));
+    }
+
+    [Fact]
+    public void Layout_CycleDiagram_AllNodesHaveEqualSize()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"));
+
+        _engine.Layout(diagram, _theme);
+
+        var sizes = diagram.Nodes.Values.Select(n => (n.Width, n.Height)).Distinct().ToList();
+        Assert.Single(sizes);
+    }
 }
