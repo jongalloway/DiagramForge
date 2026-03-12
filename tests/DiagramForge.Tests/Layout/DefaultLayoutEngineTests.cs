@@ -121,6 +121,36 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_VeryLongLabel_CapsWidthAndWrapsLines()
+    {
+        var diagram = new Diagram()
+            .AddNode(new Node("long", "This is a deliberately long label that should wrap instead of producing an absurdly wide node box in the rendered diagram"));
+
+        _engine.Layout(diagram, _theme);
+
+        var node = diagram.Nodes["long"];
+        Assert.True(node.Width <= diagram.LayoutHints.MaxNodeWidth, $"node width {node.Width} should be <= max width {diagram.LayoutHints.MaxNodeWidth}");
+        Assert.True(node.Height > diagram.LayoutHints.MinNodeHeight, $"node height {node.Height} should exceed min height {diagram.LayoutHints.MinNodeHeight}");
+        Assert.True(node.Label.Lines?.Length > 1, "long label should wrap into multiple lines");
+    }
+
+    [Fact]
+    public void Layout_WrappedNode_DoesNotOverlapNextLayer_Vertical()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("a", "This is a deliberately long label that should wrap across multiple lines"))
+               .AddNode(new Node("b", "Next"))
+               .AddEdge(new Edge("a", "b"));
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["a"];
+        var b = diagram.Nodes["b"];
+        Assert.True(b.Y >= a.Y + a.Height + diagram.LayoutHints.VerticalSpacing,
+            $"node b at {b.Y} should be below node a bottom {a.Y + a.Height} plus spacing {diagram.LayoutHints.VerticalSpacing}");
+    }
+
+    [Fact]
     public void Layout_VariableWidths_PreservesGapBetweenLayers_Horizontal()
     {
         // Running-offset positioning: a wide node in column 0 should push column 1

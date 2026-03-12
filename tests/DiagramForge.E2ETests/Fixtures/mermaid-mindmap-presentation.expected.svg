@@ -1,17 +1,17 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="724.00" height="264.00" viewBox="0 0 724.00 264.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="724.00" height="288.00" viewBox="0 0 724.00 288.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
   </defs>
-  <rect width="724.00" height="264.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
-  <path d="M 115.20,72.00 C 115.20,90.50 101.28,96.00 92.00,112.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 198.40,52.00 C 230.86,52.00 206.56,100.00 212.00,132.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 198.40,52.00 C 282.19,52.00 314.56,100.00 392.00,132.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 392.00,132.00 C 290.81,132.00 248.00,180.00 152.00,212.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 392.00,132.00 C 352.00,132.00 356.00,180.00 332.00,212.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 452.00,152.00 C 452.00,168.00 452.00,176.00 452.00,192.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 198.40,52.00 C 351.23,52.00 422.56,100.00 572.00,132.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <rect width="724.00" height="288.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <path d="M 115.20,80.00 C 115.20,98.50 101.28,104.00 92.00,120.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 198.40,56.00 C 234.02,56.00 206.56,108.80 212.00,144.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 198.40,56.00 C 283.46,56.00 314.56,108.80 392.00,144.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 392.00,144.00 C 289.75,144.00 248.00,196.80 152.00,232.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 392.00,144.00 C 349.40,144.00 356.00,196.80 332.00,232.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 452.00,168.00 C 452.00,184.00 452.00,192.00 452.00,208.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 198.40,56.00 C 351.93,56.00 422.56,108.80 572.00,144.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
   <g transform="translate(32.00,32.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -31,10 +31,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="166.40" height="40.00" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <text x="83.20" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Product Launch</text>
+    <rect width="166.40" height="48.00" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="83.20" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Product Launch</text>
   </g>
-  <g transform="translate(32.00,112.00)">
+  <g transform="translate(32.00,120.00)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFE8DC"/>
@@ -53,10 +53,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Story</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Story</text>
   </g>
-  <g transform="translate(212.00,112.00)">
+  <g transform="translate(212.00,120.00)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFF1CD"/>
@@ -75,10 +75,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Message</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Message</text>
   </g>
-  <g transform="translate(392.00,112.00)">
+  <g transform="translate(392.00,120.00)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#DFF6EA"/>
@@ -97,10 +97,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Channels</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Channels</text>
   </g>
-  <g transform="translate(32.00,192.00)">
+  <g transform="translate(32.00,208.00)">
     <defs>
       <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#F0E6FF"/>
@@ -119,10 +119,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Web</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Web</text>
   </g>
-  <g transform="translate(212.00,192.00)">
+  <g transform="translate(212.00,208.00)">
     <defs>
       <linearGradient id="node-5-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#E2F3FF"/>
@@ -141,10 +141,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.80" filter="url(#node-5-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Docs</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.80" filter="url(#node-5-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Docs</text>
   </g>
-  <g transform="translate(392.00,192.00)">
+  <g transform="translate(392.00,208.00)">
     <defs>
       <linearGradient id="node-6-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FEE5E5"/>
@@ -163,10 +163,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.80" filter="url(#node-6-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Slides</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.80" filter="url(#node-6-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Slides</text>
   </g>
-  <g transform="translate(572.00,112.00)">
+  <g transform="translate(572.00,120.00)">
     <defs>
       <linearGradient id="node-7-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#EAF6EB"/>
@@ -185,7 +185,7 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.80" filter="url(#node-7-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Launch</text>
+    <rect width="120.00" height="48.00" rx="12.00" ry="12.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.80" filter="url(#node-7-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Launch</text>
   </g>
 </svg>
