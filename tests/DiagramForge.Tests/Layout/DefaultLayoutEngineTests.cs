@@ -246,6 +246,32 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_Pyramid_AssignsTriangularSegmentMetadata()
+    {
+        var diagram = new Diagram { DiagramType = "pyramid" };
+        diagram.AddNode(new Node("node_0", "Vision"))
+               .AddNode(new Node("node_1", "Strategy"))
+               .AddNode(new Node("node_2", "Tactics"))
+               .AddNode(new Node("node_3", "Execution"));
+
+        _engine.Layout(diagram, _theme);
+
+        var top = diagram.Nodes["node_0"];
+        var second = diagram.Nodes["node_1"];
+        var bottom = diagram.Nodes["node_3"];
+
+        Assert.Equal(top.X, bottom.X);
+        Assert.True(top.Y < bottom.Y);
+        Assert.True(second.Y > top.Y + top.Height,
+            $"Expected a visible gap between pyramid levels, but second.Y ({second.Y}) was not greater than top bottom ({top.Y + top.Height}).");
+        Assert.Equal(0d, Convert.ToDouble(top.Metadata["conceptual:pyramidTopWidth"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.True(
+            Convert.ToDouble(bottom.Metadata["conceptual:pyramidBottomWidth"], System.Globalization.CultureInfo.InvariantCulture)
+            > Convert.ToDouble(top.Metadata["conceptual:pyramidBottomWidth"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.All(diagram.Nodes.Values, node => Assert.True((bool)node.Metadata["conceptual:pyramidSegment"]));
+    }
+
+    [Fact]
     public void Layout_VennDiagram_PositionsNestedTextNodesUnderSetsAndUnion()
     {
         var diagram = new Diagram { DiagramType = "venn" };
