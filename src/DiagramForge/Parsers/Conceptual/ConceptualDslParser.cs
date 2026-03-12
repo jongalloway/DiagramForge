@@ -1,4 +1,3 @@
-using System.Collections.Frozen;
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
 
@@ -20,12 +19,9 @@ namespace DiagramForge.Parsers.Conceptual;
 /// </code>
 /// <para>Supported diagram types: matrix, pyramid, cycle, pillars.</para>
 /// </remarks>
-public sealed class ConceptualDslParser : IDiagramParser
+public sealed partial class ConceptualDslParser : IDiagramParser
 {
     public string SyntaxId => "conceptual";
-
-    private static readonly FrozenSet<string> KnownTypes = new[] { "matrix", "pyramid", "cycle", "pillars" }
-        .ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc/>
     public bool CanParse(string diagramText)
@@ -64,21 +60,13 @@ public sealed class ConceptualDslParser : IDiagramParser
             .WithSourceSyntax(SyntaxId)
             .WithDiagramType(diagramType);
 
-        Action parse = diagramType switch
-        {
-            "pyramid" => () => ParseListDiagram(lines, builder, "levels", diagramType),
-            "matrix" => () => ParseMatrixDiagram(lines, builder),
-            "pillars" => () => ParsePillarsDiagram(lines, builder),
-            "cycle" => () => ParseCycleDiagram(lines, builder),
-            _ => throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'."),
-        };
+        if (!ParseHandlers.TryGetValue(diagramType, out var parse))
+            throw new DiagramParseException($"Unknown conceptual diagram type: '{diagramType}'.");
 
-        parse();
+        parse(lines, builder);
 
         return builder.Build();
     }
-
-    // ── Parsers ───────────────────────────────────────────────────────────────
 
     private static void ParseListDiagram(
         string[] lines,
@@ -98,106 +86,6 @@ public sealed class ConceptualDslParser : IDiagramParser
         {
             var nodeId = $"node_{i}";
             builder.AddNode(new Node(nodeId, items[i]));
-        }
-
-        builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
-    }
-
-    private static void ParseMatrixDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
-    {
-        int rowsLine = FindSectionLine(lines, "rows");
-        int colsLine = FindSectionLine(lines, "columns");
-
-        var rows = rowsLine >= 0 ? ReadListItems(lines, rowsLine + 1) : [];
-        var cols = colsLine >= 0 ? ReadListItems(lines, colsLine + 1) : [];
-
-        if (rows.Count == 0 || cols.Count == 0)
-            throw new DiagramParseException("Matrix diagram requires non-empty 'rows' and 'columns' sections.");
-
-        if (rows.Count != 2 || cols.Count != 2)
-            throw new DiagramParseException("Matrix diagram currently supports exactly 2 rows and 2 columns.");
-
-        for (int r = 0; r < rows.Count; r++)
-        {
-            for (int c = 0; c < cols.Count; c++)
-            {
-                var nodeId = $"cell_{r}_{c}";
-                var node = new Node(nodeId, $"{cols[c]}\n{rows[r]}");
-                node.Metadata["matrix:row"] = r;
-                node.Metadata["matrix:column"] = c;
-                node.Metadata["matrix:rowLabel"] = rows[r];
-                node.Metadata["matrix:columnLabel"] = cols[c];
-                builder.AddNode(node);
-            }
-        }
-
-        builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
-    }
-
-    private static void ParseCycleDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
-    {
-        int sectionLine = FindSectionLine(lines, "steps");
-        if (sectionLine < 0)
-            throw new DiagramParseException("Missing required section 'steps:' in cycle diagram.");
-
-        var items = ReadListItems(lines, sectionLine + 1);
-        if (items.Count == 0)
-            throw new DiagramParseException("Section 'steps' contains no items.");
-
-        if (items.Count < 3 || items.Count > 6)
-            throw new DiagramParseException(
-                $"Cycle diagram requires between 3 and 6 steps, but {items.Count} were provided.");
-
-        for (int i = 0; i < items.Count; i++)
-        {
-            var nodeId = $"node_{i}";
-            var node = new Node(nodeId, items[i]);
-            node.Metadata["cycle:stepIndex"] = i;
-            builder.AddNode(node);
-        }
-
-        // Closed directional loop: 0 → 1 → 2 → … → n-1 → 0
-        for (int i = 0; i < items.Count; i++)
-        {
-            var sourceId = $"node_{i}";
-            var targetId = $"node_{(i + 1) % items.Count}";
-            builder.AddEdge(new Edge(sourceId, targetId));
-        }
-
-        builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
-    }
-
-    private static void ParsePillarsDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
-    {
-        int pillarsLine = FindSectionLine(lines, "pillars");
-        if (pillarsLine < 0)
-            throw new DiagramParseException("Missing required section 'pillars:' in pillars diagram.");
-
-        var pillars = ReadPillars(lines, pillarsLine + 1);
-
-        if (pillars.Count == 0)
-            throw new DiagramParseException("Section 'pillars' contains no pillar entries.");
-
-        if (pillars.Count < 2 || pillars.Count > 5)
-            throw new DiagramParseException("Pillars diagram requires between 2 and 5 pillars.");
-
-        for (int i = 0; i < pillars.Count; i++)
-        {
-            var (title, segments) = pillars[i];
-
-            var titleNode = new Node($"pillar_{i}", title);
-            titleNode.Metadata["pillars:pillarIndex"] = i;
-            titleNode.Metadata["pillars:kind"] = "title";
-            builder.AddNode(titleNode);
-
-            for (int j = 0; j < segments.Count; j++)
-            {
-                var segNode = new Node($"pillar_{i}_segment_{j}", segments[j]);
-                segNode.Metadata["pillars:pillarIndex"] = i;
-                segNode.Metadata["pillars:segmentIndex"] = j;
-                segNode.Metadata["pillars:kind"] = "segment";
-                builder.AddNode(segNode);
-            }
         }
 
         builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
