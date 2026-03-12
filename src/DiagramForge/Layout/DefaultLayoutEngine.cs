@@ -1002,7 +1002,9 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     }
 
     /// <summary>
-    /// Shifts all nodes and groups so that no group extends into negative coordinate space.
+    /// Shifts all nodes and groups so that every group's top-left corner is at least
+    /// <paramref name="diagramPadding"/> units from the canvas origin, preserving the
+    /// outer diagram padding even when groups would otherwise sit too close to the edge.
     /// Call this after group bounding boxes have been computed.
     /// </summary>
     private static void ShiftDiagramForGroupPadding(Diagram diagram, double diagramPadding)

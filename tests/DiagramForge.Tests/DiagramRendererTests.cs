@@ -1,3 +1,4 @@
+using System.Globalization;
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
 
@@ -56,7 +57,8 @@ public class DiagramRendererTests
 
         string svg = _renderer.Render("flowchart LR\n  A --> B", theme, paletteJson: null, transparentBackgroundOverride: true);
 
-        Assert.DoesNotContain($"fill=\"{theme.BackgroundColor}\" rx=\"{theme.BorderRadius:F2}\" ry=\"{theme.BorderRadius:F2}\"", svg);
+        string borderRadius = theme.BorderRadius.ToString("F2", CultureInfo.InvariantCulture);
+        Assert.DoesNotContain($"fill=\"{theme.BackgroundColor}\" rx=\"{borderRadius}\" ry=\"{borderRadius}\"", svg);
     }
 
     [Fact]
