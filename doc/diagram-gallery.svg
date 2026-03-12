@@ -101,80 +101,100 @@
   </svg>
   <text x="184" y="342" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Conceptual Matrix</text>
   <rect x="368" y="56" width="320" height="260" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
-  <svg x="368" y="56" width="320" height="260" viewBox="0 0 168.00 328.00" preserveAspectRatio="xMidYMid meet">
+  <svg x="368" y="56" width="320" height="260" viewBox="0 0 292.00 242.00" preserveAspectRatio="xMidYMid meet">
 <defs>
     <marker id="arrowhead-1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#406B4F"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
   </defs>
-  <rect width="168.00" height="328.00" fill="#F6FBF5" rx="8.00" ry="8.00"/>
-  <g transform="translate(24.00,24.00)">
+  <rect width="292.00" height="242.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <g transform="translate(32.00,32.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#E1F4E7"/>
-        <stop offset="58%" stop-color="#DFF3E5"/>
-        <stop offset="100%" stop-color="#D1E4D7"/>
+        <stop offset="0%" stop-color="#E9F1FF"/>
+        <stop offset="58%" stop-color="#E7F0FF"/>
+        <stop offset="100%" stop-color="#D6DEEC"/>
       </linearGradient>
       <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#B9C9BD"/>
-        <stop offset="33%" stop-color="#99BB9F"/>
-        <stop offset="67%" stop-color="#C0CBB0"/>
-        <stop offset="100%" stop-color="#9EBFAD"/>
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
       </linearGradient>
     </defs>
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Vision</text>
+    <defs>
+      <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="114.00,0 139.62,40.00 88.38,40.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Vision</text>
   </g>
-  <g transform="translate(24.00,104.00)">
+  <g transform="translate(32.00,78.00)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#CFEBD3"/>
-        <stop offset="58%" stop-color="#CBEACF"/>
-        <stop offset="100%" stop-color="#BEDBC2"/>
+        <stop offset="0%" stop-color="#FFE8DC"/>
+        <stop offset="58%" stop-color="#FFE6D8"/>
+        <stop offset="100%" stop-color="#ECD5C8"/>
       </linearGradient>
       <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#B9C9BD"/>
-        <stop offset="33%" stop-color="#99BB9F"/>
-        <stop offset="67%" stop-color="#C0CBB0"/>
-        <stop offset="100%" stop-color="#9EBFAD"/>
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
       </linearGradient>
     </defs>
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Strategy</text>
+    <defs>
+      <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="84.54,0 143.46,0 169.08,40.00 58.92,40.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Strategy</text>
   </g>
-  <g transform="translate(24.00,184.00)">
+  <g transform="translate(32.00,124.00)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#BCE3C3"/>
-        <stop offset="58%" stop-color="#B6E1BE"/>
-        <stop offset="100%" stop-color="#ABD3B2"/>
+        <stop offset="0%" stop-color="#FFF1CD"/>
+        <stop offset="58%" stop-color="#FFF0C7"/>
+        <stop offset="100%" stop-color="#ECDEB8"/>
       </linearGradient>
       <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#B9C9BD"/>
-        <stop offset="33%" stop-color="#99BB9F"/>
-        <stop offset="67%" stop-color="#C0CBB0"/>
-        <stop offset="100%" stop-color="#9EBFAD"/>
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
       </linearGradient>
     </defs>
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Tactics</text>
+    <defs>
+      <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="55.08,0 172.92,0 198.54,40.00 29.46,40.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Tactics</text>
   </g>
-  <g transform="translate(24.00,264.00)">
+  <g transform="translate(32.00,170.00)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#ABDBB7"/>
-        <stop offset="58%" stop-color="#A3D8B0"/>
-        <stop offset="100%" stop-color="#99CBA5"/>
+        <stop offset="0%" stop-color="#DFF6EA"/>
+        <stop offset="58%" stop-color="#DCF5E8"/>
+        <stop offset="100%" stop-color="#CCE3D7"/>
       </linearGradient>
       <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#B9C9BD"/>
-        <stop offset="33%" stop-color="#99BB9F"/>
-        <stop offset="67%" stop-color="#C0CBB0"/>
-        <stop offset="100%" stop-color="#9EBFAD"/>
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
       </linearGradient>
     </defs>
-    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Execution</text>
+    <defs>
+      <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="25.62,0 202.38,0 228.00,40.00 0.00,40.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Execution</text>
   </g>
   </svg>
   <text x="528" y="342" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Conceptual Pyramid</text>

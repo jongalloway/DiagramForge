@@ -255,6 +255,26 @@ public class SvgRendererTests
         Assert.DoesNotContain("<rect width=\"0.00\" height=\"0.00\"", svg);
     }
 
+    [Fact]
+    public void Render_PyramidSegmentNode_UsesPolygon()
+    {
+        var node = new Node("node_0", "Vision")
+        {
+            Width = 180,
+            Height = 60,
+        };
+        node.Metadata["conceptual:pyramidSegment"] = true;
+        node.Metadata["conceptual:pyramidTopWidth"] = 0d;
+        node.Metadata["conceptual:pyramidBottomWidth"] = 90d;
+
+        var diagram = new Diagram().AddNode(node);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("<polygon points=", svg);
+        Assert.Contains(">Vision</text>", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>

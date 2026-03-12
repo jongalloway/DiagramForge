@@ -144,6 +144,14 @@ public sealed class SvgRenderer : ISvgRenderer
 
         if (!textOnly)
         {
+            if (node.Metadata.TryGetValue("conceptual:pyramidSegment", out var pyramidSegmentObj)
+                && pyramidSegmentObj is bool isPyramidSegment
+                && isPyramidSegment)
+            {
+                AppendPyramidSegmentNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+            }
+            else
+            {
             switch (node.Shape)
             {
                 case Shape.Circle:
@@ -181,6 +189,7 @@ public sealed class SvgRenderer : ISvgRenderer
                 default:
                     AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx, nodeShadowAttribute);
                     break;
+            }
             }
         }
         else if (HasTextOnlyBackdrop(node, fillOpacity))
@@ -499,6 +508,20 @@ public sealed class SvgRenderer : ISvgRenderer
         double mx = node.Width / 2;
         double my = node.Height / 2;
         sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendPyramidSegmentNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        double topWidth = GetMetadataDouble(node, "conceptual:pyramidTopWidth") ?? 0;
+        double bottomWidth = GetMetadataDouble(node, "conceptual:pyramidBottomWidth") ?? node.Width;
+        double topInset = (node.Width - topWidth) / 2;
+        double bottomInset = (node.Width - bottomWidth) / 2;
+
+        string points = topWidth <= 0.01
+            ? $"{F(node.Width / 2)},0 {F(bottomInset + bottomWidth)},{F(node.Height)} {F(bottomInset)},{F(node.Height)}"
+            : $"{F(topInset)},0 {F(topInset + topWidth)},0 {F(bottomInset + bottomWidth)},{F(node.Height)} {F(bottomInset)},{F(node.Height)}";
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
 
     private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius, string shadowAttribute)
