@@ -127,7 +127,8 @@ public class DiagramRendererTests
         string svg = _renderer.Render("---\ntheme: presentation\nshadowStyle: soft\n---\nflowchart LR\n  subgraph backend [Backend Services]\n    A[API] --> B[Worker]\n  end");
 
         Assert.Contains("soft-shadow", svg);
-        Assert.Contains("feDropShadow", svg);
+        Assert.Contains("feGaussianBlur", svg);
+        Assert.Contains("feMergeNode", svg);
     }
 
     [Fact]
@@ -136,7 +137,7 @@ public class DiagramRendererTests
         string svg = _renderer.Render("---\ntheme: presentation\nshadowStyle: none\n---\nflowchart LR\n  subgraph backend [Backend Services]\n    A[API] --> B[Worker]\n  end");
 
         Assert.DoesNotContain("soft-shadow", svg);
-        Assert.DoesNotContain("feDropShadow", svg);
+        Assert.DoesNotContain("feGaussianBlur", svg);
     }
 
     [Fact]
@@ -163,7 +164,8 @@ public class DiagramRendererTests
         string svg = _renderer.Render("flowchart LR\n  subgraph backend [Backend Services]\n    A[API] --> B[Worker]\n  end", theme);
 
         Assert.Contains("node-0-fill-gradient", svg);
-        Assert.Contains("feDropShadow", svg);
+        Assert.Contains("feGaussianBlur", svg);
+        Assert.Contains("feMergeNode", svg);
     }
 
     [Fact]

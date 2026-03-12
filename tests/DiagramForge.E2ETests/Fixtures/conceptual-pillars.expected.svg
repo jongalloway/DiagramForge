@@ -21,7 +21,14 @@
     </defs>
     <defs>
       <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
@@ -43,7 +50,14 @@
     </defs>
     <defs>
       <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
@@ -65,7 +79,14 @@
     </defs>
     <defs>
       <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
@@ -87,7 +108,14 @@
     </defs>
     <defs>
       <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
@@ -109,7 +137,14 @@
     </defs>
     <defs>
       <filter id="node-4-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
@@ -131,7 +166,14 @@
     </defs>
     <defs>
       <filter id="node-5-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.80" filter="url(#node-5-soft-shadow)"/>
@@ -153,7 +195,14 @@
     </defs>
     <defs>
       <filter id="node-6-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.80" filter="url(#node-6-soft-shadow)"/>
@@ -175,7 +224,14 @@
     </defs>
     <defs>
       <filter id="node-7-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.80" filter="url(#node-7-soft-shadow)"/>
@@ -197,7 +253,14 @@
     </defs>
     <defs>
       <filter id="node-8-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
-        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
       </filter>
     </defs>
     <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-8-fill-gradient)" stroke="url(#node-8-stroke-gradient)" stroke-width="1.80" filter="url(#node-8-soft-shadow)"/>
