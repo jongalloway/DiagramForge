@@ -236,7 +236,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // own padding (especially the label-height top inset) exceeds DiagramPadding.
         // Right/bottom are handled separately by SvgRenderer.ComputeWidth/Height
         // including group extents.
-        ShiftDiagramForGroupPadding(diagram);
+        ShiftDiagramForGroupPadding(diagram, theme.DiagramPadding);
     }
 
     private static void LayoutArchitectureDiagram(
@@ -449,7 +449,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         }
 
         // Shift whole diagram if any group extends into negative space.
-        ShiftDiagramForGroupPadding(diagram);
+        ShiftDiagramForGroupPadding(diagram, theme.DiagramPadding);
     }
 
     private static void LayoutSequenceDiagram(
@@ -1002,16 +1002,20 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     }
 
     /// <summary>
-    /// Shifts all nodes and groups so that no group extends into negative coordinate space.
+    /// Shifts all nodes and groups so that every group's top-left corner is at least
+    /// <paramref name="diagramPadding"/> units from the canvas origin, preserving the
+    /// outer diagram padding even when groups would otherwise sit too close to the edge.
     /// Call this after group bounding boxes have been computed.
     /// </summary>
-    private static void ShiftDiagramForGroupPadding(Diagram diagram)
+    private static void ShiftDiagramForGroupPadding(Diagram diagram, double diagramPadding)
     {
         if (diagram.Groups.Count == 0)
             return;
 
-        double shiftX = Math.Max(0, -diagram.Groups.Min(g => g.X));
-        double shiftY = Math.Max(0, -diagram.Groups.Min(g => g.Y));
+        double minGroupX = diagram.Groups.Min(g => g.X);
+        double minGroupY = diagram.Groups.Min(g => g.Y);
+        double shiftX = Math.Max(0, diagramPadding - minGroupX);
+        double shiftY = Math.Max(0, diagramPadding - minGroupY);
         if (shiftX > 0 || shiftY > 0)
         {
             foreach (var n in diagram.Nodes.Values) { n.X += shiftX; n.Y += shiftY; }

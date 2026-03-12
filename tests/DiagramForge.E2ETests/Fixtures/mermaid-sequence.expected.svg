@@ -1,24 +1,46 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="348.00" height="228.00" viewBox="0 0 348.00 228.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
-      <polygon points="0 0, 10 3.5, 0 7" fill="#A0AEC0"/>
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
     </marker>
   </defs>
-  <rect width="348.00" height="228.00" fill="#1E1E1E" rx="8.00" ry="8.00"/>
-  <line x1="84.00" y1="64.00" x2="84.00" y2="204.00" stroke="#A0AEC0" stroke-width="1.50" stroke-dasharray="6,3"/>
-  <line x1="264.00" y1="64.00" x2="264.00" y2="204.00" stroke="#A0AEC0" stroke-width="1.50" stroke-dasharray="6,3"/>
-  <path d="M 84.00,84.00 C 156.00,84.00 192.00,84.00 264.00,84.00" fill="none" stroke="#A0AEC0" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <text x="174.00" y="80.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0" font-style="italic">Hello</text>
-  <path d="M 264.00,124.00 C 192.00,124.00 156.00,124.00 84.00,124.00" fill="none" stroke="#A0AEC0" stroke-width="1.50" stroke-dasharray="6,3"  marker-end="url(#arrowhead)" />
-  <text x="174.00" y="120.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0" font-style="italic">Hi back</text>
-  <path d="M 84.00,164.00 C 156.00,164.00 192.00,164.00 264.00,164.00" fill="none" stroke="#A0AEC0" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <text x="174.00" y="160.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A0AEC0" font-style="italic">Done</text>
+  <rect width="348.00" height="228.00" fill="#111827" rx="8.00" ry="8.00"/>
+  <line x1="84.00" y1="64.00" x2="84.00" y2="204.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
+  <line x1="264.00" y1="64.00" x2="264.00" y2="204.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
+  <path d="M 84.00,84.00 C 156.00,84.00 192.00,84.00 264.00,84.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <text x="174.00" y="80.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Hello</text>
+  <path d="M 264.00,124.00 C 192.00,124.00 156.00,124.00 84.00,124.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"  marker-end="url(#arrowhead)" />
+  <text x="174.00" y="120.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Hi back</text>
+  <path d="M 84.00,164.00 C 156.00,164.00 192.00,164.00 264.00,164.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <text x="174.00" y="160.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Done</text>
   <g transform="translate(24.00,24.00)">
-    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#2B4A7A" stroke="#223B61" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Alice</text>
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#374C62"/>
+        <stop offset="58%" stop-color="#243B53"/>
+        <stop offset="100%" stop-color="#21374E"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#233649"/>
+        <stop offset="100%" stop-color="#22384D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Alice</text>
   </g>
   <g transform="translate(204.00,24.00)">
-    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#1D5C37" stroke="#17492C" stroke-width="1.50"/>
-    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Bob</text>
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2C4D5E"/>
+        <stop offset="58%" stop-color="#183C4F"/>
+        <stop offset="100%" stop-color="#16384A"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#1A3745"/>
+        <stop offset="100%" stop-color="#193949"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Bob</text>
   </g>
 </svg>

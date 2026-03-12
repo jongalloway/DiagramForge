@@ -5,6 +5,27 @@ namespace DiagramForge.Tests.Models;
 public class ThemeFromPaletteTests
 {
     [Fact]
+    public void FromColors_MinimalSemanticInputs_ProducesUsableTheme()
+    {
+        var theme = Theme.FromColors(
+            backgroundColor: "#0F172A",
+            foregroundColor: "#E2E8F0",
+            accentColor: "#38BDF8",
+            useGradients: true,
+            useBorderGradients: true);
+
+        Assert.Equal("#0F172A", theme.BackgroundColor);
+        Assert.Equal("#E2E8F0", theme.TextColor);
+        Assert.Equal("#38BDF8", theme.PrimaryColor);
+        Assert.False(string.IsNullOrWhiteSpace(theme.GroupFillColor));
+        Assert.False(string.IsNullOrWhiteSpace(theme.GroupStrokeColor));
+        Assert.True(theme.UseGradients);
+        Assert.True(theme.UseBorderGradients);
+        Assert.NotNull(theme.NodePalette);
+        Assert.True(theme.NodePalette!.Count >= 6);
+    }
+
+    [Fact]
     public void FromPalette_PrimaryOnly_ProducesUsableTheme()
     {
         var theme = Theme.FromPalette("#4F81BD");
@@ -14,16 +35,17 @@ public class ThemeFromPaletteTests
         Assert.False(string.IsNullOrEmpty(theme.NodeFillColor));
         Assert.False(string.IsNullOrEmpty(theme.EdgeColor));
         Assert.False(string.IsNullOrEmpty(theme.TextColor));
+        Assert.True(theme.UseGradients);
     }
 
     [Fact]
     public void FromPalette_AllParameters_UsesProvidedValues()
     {
         var theme = Theme.FromPalette(
-            primaryColor:     "#FF0000",
-            secondaryColor:   "#00FF00",
-            accentColor:      "#0000FF",
-            backgroundColor:  "#111111");
+            primaryColor: "#FF0000",
+            secondaryColor: "#00FF00",
+            accentColor: "#0000FF",
+            backgroundColor: "#111111");
 
         Assert.Equal("#FF0000", theme.PrimaryColor);
         Assert.Equal("#00FF00", theme.SecondaryColor);

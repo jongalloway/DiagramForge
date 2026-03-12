@@ -1,0 +1,7 @@
+---
+theme: default
+fillStyle: diagonal-strong
+---
+flowchart LR
+  A[Start] --> B[Process]
+  B --> C[Finish]

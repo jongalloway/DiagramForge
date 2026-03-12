@@ -1,0 +1,6 @@
+---
+theme: prism
+---
+flowchart LR
+  A[Collect] --> B[Shape]
+  B --> C[Deliver]

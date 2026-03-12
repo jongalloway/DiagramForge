@@ -33,17 +33,21 @@ public sealed class SvgRenderer : ISvgRenderer
         AppendDefs(sb, theme);
 
         // Background
-        sb.AppendLine($"""  <rect width="{F(width)}" height="{F(height)}" fill="{Escape(theme.BackgroundColor)}" rx="{F(theme.BorderRadius)}" ry="{F(theme.BorderRadius)}"/>""");
+        if (!theme.TransparentBackground)
+        {
+            sb.AppendLine($"""  <rect width="{F(width)}" height="{F(height)}" fill="{Escape(theme.BackgroundColor)}" rx="{F(theme.BorderRadius)}" ry="{F(theme.BorderRadius)}"/>""");
+        }
 
         // Title
         if (!string.IsNullOrWhiteSpace(diagram.Title))
         {
-            sb.AppendLine($"""  <text x="{F(width / 2)}" y="{F(theme.DiagramPadding - 4)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(theme.TitleFontSize)}" font-weight="bold" fill="{Escape(theme.TextColor)}">{Escape(diagram.Title)}</text>""");
+            sb.AppendLine($"""  <text x="{F(width / 2)}" y="{F(theme.DiagramPadding - 4)}" text-anchor="middle" font-family="{Escape(theme.FontFamily)}" font-size="{F(theme.TitleFontSize)}" font-weight="bold" fill="{Escape(theme.TitleTextColor)}">{Escape(diagram.Title)}</text>""");
         }
 
         // Groups (render behind nodes)
+        int groupIndex = 0;
         foreach (var group in diagram.Groups)
-            AppendGroup(sb, group, theme);
+            AppendGroup(sb, group, theme, groupIndex++);
 
         // Sequence-diagram lifelines: dashed vertical lines below each participant box.
         if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
@@ -85,32 +89,42 @@ public sealed class SvgRenderer : ISvgRenderer
 
     private static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
     {
-        string fill;
-        string stroke;
+        string? xyChartKind = node.Metadata.TryGetValue("xychart:kind", out var xyKindObj) ? xyKindObj as string : null;
+        string baseFill;
+        string baseStroke;
 
-        if (node.FillColor is not null)
+        if (TryResolveXyChartColors(node, theme, out string chartFill, out string chartStroke))
+        {
+            baseFill = chartFill;
+            baseStroke = chartStroke;
+        }
+        else if (node.FillColor is not null)
         {
             // Explicit per-node color takes priority
-            fill   = Escape(node.FillColor);
-            stroke = Escape(node.StrokeColor ?? ColorUtils.Darken(node.FillColor, 0.20));
+            baseFill = node.FillColor;
+            baseStroke = node.StrokeColor ?? ColorUtils.Darken(node.FillColor, 0.20);
         }
         else if (theme.NodePalette is { Count: > 0 })
         {
             // Cycle through the palette
             string paletteFill = theme.NodePalette[nodeIndex % theme.NodePalette.Count];
-            fill = Escape(paletteFill);
-            stroke = Escape(
+            baseFill = paletteFill;
+            baseStroke =
                 node.StrokeColor
                 ?? (theme.NodeStrokePalette is { Count: > 0 }
                     ? theme.NodeStrokePalette[nodeIndex % theme.NodeStrokePalette.Count]
-                    : ColorUtils.Darken(paletteFill, 0.20)));
+                    : ColorUtils.Darken(paletteFill, 0.20));
         }
         else
         {
-            fill   = Escape(theme.NodeFillColor);
-            stroke = Escape(node.StrokeColor ?? theme.NodeStrokeColor);
+            baseFill = theme.NodeFillColor;
+            baseStroke = node.StrokeColor ?? theme.NodeStrokeColor;
         }
         double? fillOpacity = GetMetadataDouble(node, "render:fillOpacity");
+        if (!fillOpacity.HasValue && string.Equals(xyChartKind, "bar", StringComparison.OrdinalIgnoreCase))
+        {
+            fillOpacity = ColorUtils.IsLight(theme.BackgroundColor) ? 0.88 : 0.80;
+        }
         string fillOpacityAttribute = fillOpacity.HasValue
             ? $" fill-opacity=\"{F(fillOpacity.Value)}\""
             : string.Empty;
@@ -118,8 +132,15 @@ public sealed class SvgRenderer : ISvgRenderer
         bool textOnly = node.Metadata.TryGetValue("render:textOnly", out var textOnlyObj)
             && textOnlyObj is bool isTextOnly
             && isTextOnly;
+        bool applyNodeShadow = theme.UseNodeShadows
+            && string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase)
+            && !textOnly;
 
         sb.AppendLine($"""  <g transform="translate({F(node.X)},{F(node.Y)})">""");
+
+        AppendGradientDefs(sb, "    ", $"node-{nodeIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
+        AppendShadowFilterDefs(sb, "    ", $"node-{nodeIndex}", theme, out string? nodeShadowFilterId, applyNodeShadow);
+        string nodeShadowAttribute = nodeShadowFilterId is null ? string.Empty : $" filter=\"url(#{nodeShadowFilterId})\"";
 
         if (!textOnly)
         {
@@ -127,35 +148,38 @@ public sealed class SvgRenderer : ISvgRenderer
             {
                 case Shape.Circle:
                 case Shape.Ellipse:
-                    AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
+                    AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
                     break;
                 case Shape.Diamond:
-                    AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute);
+                    AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
                     break;
                 case Shape.Pill:
                 case Shape.Stadium:
-                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2);
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2, nodeShadowAttribute);
                     break;
                 case Shape.ArrowRight:
-                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right");
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right", nodeShadowAttribute);
                     break;
                 case Shape.ArrowLeft:
-                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left");
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left", nodeShadowAttribute);
                     break;
                 case Shape.ArrowUp:
-                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up");
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up", nodeShadowAttribute);
                     break;
                 case Shape.ArrowDown:
-                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down");
+                    AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down", nodeShadowAttribute);
                     break;
                 case Shape.Rectangle:
-                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0);
+                    if (string.Equals(xyChartKind, "bar", StringComparison.OrdinalIgnoreCase))
+                        AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, GetXyChartBarRadius(node, theme), nodeShadowAttribute);
+                    else
+                        AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0, nodeShadowAttribute);
                     break;
                 case Shape.Cloud:
-                    AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme);
+                    AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme, nodeShadowAttribute);
                     break;
                 default:
-                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx);
+                    AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, rx, nodeShadowAttribute);
                     break;
             }
         }
@@ -173,7 +197,8 @@ public sealed class SvgRenderer : ISvgRenderer
         // Label
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
-            string textColor = Escape(node.Label.Color ?? theme.TextColor);
+            string resolvedTextColor = node.Label.Color ?? ResolveNodeTextColor(baseFill, theme);
+            string textColor = Escape(resolvedTextColor);
             double fontSize = node.Label.FontSize ?? theme.FontSize;
             double textX = GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
             double textBaselineY = GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
@@ -323,16 +348,30 @@ public sealed class SvgRenderer : ISvgRenderer
         }
     }
 
-    private static void AppendGroup(StringBuilder sb, Group group, Theme theme)
+    private static void AppendGroup(StringBuilder sb, Group group, Theme theme, int groupIndex)
     {
-        string fill = Escape(group.FillColor ?? "#F3F4F6");
-        string stroke = Escape(group.StrokeColor ?? "#D1D5DB");
+        string baseFill = group.FillColor ?? theme.GroupFillColor;
+        string baseStroke = group.StrokeColor ?? theme.GroupStrokeColor;
+        AppendGradientDefs(sb, "  ", $"group-{groupIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
+        AppendShadowFilterDefs(sb, "  ", $"group-{groupIndex}", theme, out string? shadowFilterId);
 
-        sb.AppendLine($"""  <rect x="{F(group.X)}" y="{F(group.Y)}" width="{F(group.Width)}" height="{F(group.Height)}" rx="{F(theme.BorderRadius)}" ry="{F(theme.BorderRadius)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}" opacity="0.6"/>""");
+        string shadowAttribute = shadowFilterId is null ? string.Empty : $" filter=\"url(#{shadowFilterId})\"";
+
+        sb.AppendLine($"""  <rect x="{F(group.X)}" y="{F(group.Y)}" width="{F(group.Width)}" height="{F(group.Height)}" rx="{F(theme.BorderRadius)}" ry="{F(theme.BorderRadius)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{shadowAttribute}/>""");
 
         if (!string.IsNullOrWhiteSpace(group.Label.Text))
         {
-            sb.AppendLine($"""  <text x="{F(group.X + 8)}" y="{F(group.Y + theme.FontSize + 4)}" font-family="{Escape(theme.FontFamily)}" font-size="{F(theme.FontSize * 0.9)}" fill="{Escape(theme.SubtleTextColor)}" font-weight="bold">{Escape(group.Label.Text)}</text>""");
+            double badgeFontSize = theme.FontSize * 0.82;
+            double badgeWidth = EstimateTextWidth(group.Label.Text, badgeFontSize) + 18;
+            double badgeHeight = badgeFontSize + 10;
+            double badgeX = group.X + 10;
+            double badgeY = group.Y + 10;
+            string badgeFill = Escape(ColorUtils.Blend(theme.BackgroundColor, baseStroke, ColorUtils.IsLight(theme.BackgroundColor) ? 0.10 : 0.22));
+            string badgeStroke = Escape(ColorUtils.Blend(baseStroke, theme.BackgroundColor, ColorUtils.IsLight(theme.BackgroundColor) ? 0.18 : 0.08));
+            string badgeText = Escape(ResolveNodeTextColor(ColorUtils.Blend(baseFill, theme.BackgroundColor, 0.35), theme));
+
+            sb.AppendLine($"""  <rect x="{F(badgeX)}" y="{F(badgeY)}" width="{F(badgeWidth)}" height="{F(badgeHeight)}" rx="{F(badgeHeight / 2)}" ry="{F(badgeHeight / 2)}" fill="{badgeFill}" stroke="{badgeStroke}" stroke-width="{F(theme.StrokeWidth * 0.8)}"/>""");
+            sb.AppendLine($"""  <text x="{F(badgeX + 9)}" y="{F(badgeY + badgeHeight * 0.68)}" font-family="{Escape(theme.FontFamily)}" font-size="{F(badgeFontSize)}" fill="{badgeText}" font-weight="bold">{Escape(group.Label.Text)}</text>""");
         }
     }
 
@@ -348,13 +387,6 @@ public sealed class SvgRenderer : ISvgRenderer
             sb.AppendLine($"""  <line x1="{F(cx)}" y1="{F(topY)}" x2="{F(cx)}" y2="{F(bottomY)}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}" stroke-dasharray="6,3"/>""");
         }
     }
-
-    // Palette for XY chart series (bars and lines cycle through these).
-    private static readonly string[] SeriesPalette =
-    [
-        "#4F81BD", "#70AD47", "#ED7D31", "#FFC000", "#5B9BD5",
-        "#A5A5A5", "#264478", "#9B57A0", "#636363", "#255E91",
-    ];
 
     private static void AppendXyChartAxes(StringBuilder sb, Diagram diagram, Theme theme)
     {
@@ -396,7 +428,7 @@ public sealed class SvgRenderer : ISvgRenderer
 
             // Grid line (light)
             if (t > 0 && t < yTickCount)
-                sb.AppendLine($"""  <line x1="{F(chartX)}" y1="{F(yPos)}" x2="{F(chartX + plotWidth)}" y2="{F(yPos)}" stroke="{axisColor}" stroke-width="0.5" opacity="0.2"/>""");
+                sb.AppendLine($"""  <line x1="{F(chartX)}" y1="{F(yPos)}" x2="{F(chartX + plotWidth)}" y2="{F(yPos)}" stroke="{axisColor}" stroke-width="0.8" opacity="0.55" stroke-dasharray="2,6" stroke-linecap="round"/>""");
 
             // Label
             sb.AppendLine($"""  <text x="{F(chartX - 8)}" y="{F(yPos + fontSize * 0.35)}" text-anchor="end" font-family="{fontFamily}" font-size="{F(fontSize)}" fill="{textColor}">{Escape(label)}</text>""");
@@ -435,13 +467,13 @@ public sealed class SvgRenderer : ISvgRenderer
             // Bar series get lower palette indices; line series start after them.
             int barSeriesCount = diagram.Metadata.TryGetValue("xychart:barSeriesCount", out var bscObj)
                 ? Convert.ToInt32(bscObj, System.Globalization.CultureInfo.InvariantCulture) : 0;
-            string lineColor = Escape(SeriesPalette[(barSeriesCount + si) % SeriesPalette.Length]);
+            string lineColor = Escape(GetXyChartSeriesColor(theme, barSeriesCount + si));
 
             sb.AppendLine($"""  <polyline points="{string.Join(" ", points)}" fill="none" stroke="{lineColor}" stroke-width="{F(theme.StrokeWidth * 1.5)}" stroke-linejoin="round" stroke-linecap="round"/>""");
         }
     }
 
-    private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction)
+    private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction, string shadowAttribute)
     {
         double head = Math.Min(width, height) * 0.4;
         string points = direction switch
@@ -452,30 +484,30 @@ public sealed class SvgRenderer : ISvgRenderer
             _ => $"0,{F(height * 0.2)} {F(width - head)},{F(height * 0.2)} {F(width - head)},0 {F(width)},{F(height / 2)} {F(width - head)},{F(height)} {F(width - head)},{F(height * 0.8)} 0,{F(height * 0.8)}",
         };
 
-        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{shadowAttribute}/>""");
     }
 
-    private static void AppendEllipseNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute)
+    private static void AppendEllipseNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
     {
         double cx = node.Width / 2;
         double cy = node.Height / 2;
-        sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+        sb.AppendLine($"""    <ellipse cx="{F(cx)}" cy="{F(cy)}" rx="{F(cx)}" ry="{F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
 
-    private static void AppendDiamondNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute)
+    private static void AppendDiamondNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
     {
         double mx = node.Width / 2;
         double my = node.Height / 2;
-        sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+        sb.AppendLine($"""    <polygon points="{F(mx)},0 {F(node.Width)},{F(my)} {F(mx)},{F(node.Height)} 0,{F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
 
-    private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius)
+    private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius, string shadowAttribute)
     {
         string formattedRadius = radius == 0 ? "0" : F(radius);
-        sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+        sb.AppendLine($"""    <rect width="{F(node.Width)}" height="{F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
 
-    private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme)
+    private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string shadowAttribute)
     {
         // Approximate a cloud shape using a path with arc segments.
         // The cloud is built from 5 overlapping arcs across the top and a flat bottom.
@@ -497,7 +529,7 @@ public sealed class SvgRenderer : ISvgRenderer
             $"A {F(r4)},{F(r4)} 0 0,1 {F(w * 0.80)},{F(flatBottomY - r4 * 0.9)} " +
             $"A {F(r5)},{F(r5)} 0 0,1 {F(w * 0.92)},{F(flatBottomY)} " +
             $"Z";
-        sb.AppendLine($"""    <path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"/>""");
+        sb.AppendLine($"""    <path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{F(theme.StrokeWidth)}"{shadowAttribute}/>""");
     }
 
     // ── Dimension helpers ─────────────────────────────────────────────────────
@@ -550,9 +582,149 @@ public sealed class SvgRenderer : ISvgRenderer
         return text.Length * fontSize * AvgGlyphAdvanceEm;
     }
 
+    private static bool TryResolveXyChartColors(Node node, Theme theme, out string fillColor, out string strokeColor)
+    {
+        fillColor = string.Empty;
+        strokeColor = string.Empty;
+
+        if (!node.Metadata.TryGetValue("xychart:kind", out var kindObj) || kindObj is not string kind)
+            return false;
+
+        if (!string.Equals(kind, "bar", StringComparison.OrdinalIgnoreCase)
+            && !string.Equals(kind, "linePoint", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        int paletteIndex = node.Metadata.TryGetValue("xychart:paletteIndex", out var paletteIndexObj)
+            ? Convert.ToInt32(paletteIndexObj, System.Globalization.CultureInfo.InvariantCulture)
+            : 0;
+
+        fillColor = GetXyChartSeriesColor(theme, paletteIndex);
+        strokeColor = GetXyChartSeriesStrokeColor(fillColor, theme);
+        return true;
+    }
+
+    private static string GetXyChartSeriesColor(Theme theme, int seriesIndex)
+    {
+        bool isLightBackground = ColorUtils.IsLight(theme.BackgroundColor);
+        string accent = theme.AccentColor;
+
+        string[] palette =
+        [
+            accent,
+            isLightBackground ? ColorUtils.Darken(accent, 0.14) : ColorUtils.Lighten(accent, 0.14),
+            isLightBackground ? ColorUtils.Darken(accent, 0.28) : ColorUtils.Lighten(accent, 0.28),
+            ColorUtils.Blend(accent, theme.PrimaryColor, 0.32),
+            ColorUtils.Blend(accent, theme.SecondaryColor, 0.28),
+            isLightBackground ? ColorUtils.Blend(accent, theme.SurfaceColor, 0.18) : ColorUtils.Blend(accent, "#FFFFFF", 0.12),
+            isLightBackground ? ColorUtils.Darken(accent, 0.40) : ColorUtils.Lighten(accent, 0.40),
+            isLightBackground ? ColorUtils.Blend(accent, theme.BackgroundColor, 0.10) : ColorUtils.Blend(accent, theme.SurfaceColor, 0.22),
+        ];
+
+        return palette[Math.Abs(seriesIndex) % palette.Length];
+    }
+
+    private static string GetXyChartSeriesStrokeColor(string fillColor, Theme theme) =>
+        ColorUtils.IsLight(theme.BackgroundColor)
+            ? ColorUtils.Darken(fillColor, 0.12)
+            : ColorUtils.Lighten(fillColor, 0.10);
+
+    private static double GetXyChartBarRadius(Node node, Theme theme)
+    {
+        double maxRadius = Math.Min(Math.Min(node.Width, node.Height) * 0.18, Math.Max(4, theme.BorderRadius));
+        return Math.Max(0, maxRadius);
+    }
+
     private static bool HasTextOnlyBackdrop(Node node, double? fillOpacity) =>
         !string.IsNullOrWhiteSpace(node.Label.Text)
         && (node.FillColor is not null || node.StrokeColor is not null || fillOpacity.HasValue);
+
+    private static string ResolveNodeTextColor(string fillColor, Theme theme)
+    {
+        string darkText = ColorUtils.IsLight(theme.TextColor) ? "#0F172A" : theme.TextColor;
+        string lightText = ColorUtils.IsLight(theme.TextColor) ? theme.TextColor : "#F8FAFC";
+        return ColorUtils.ChooseTextColor(fillColor, lightText, darkText);
+    }
+
+    private static void AppendGradientDefs(
+        StringBuilder sb,
+        string indent,
+        string prefix,
+        string fillColor,
+        string strokeColor,
+        Theme theme,
+        out string fillPaint,
+        out string strokePaint)
+    {
+        fillPaint = Escape(fillColor);
+        strokePaint = Escape(strokeColor);
+
+        if (!theme.UseGradients && !theme.UseBorderGradients)
+            return;
+
+        sb.AppendLine($"{indent}<defs>");
+
+        if (theme.UseGradients)
+        {
+            string fillId = prefix + "-fill-gradient";
+            string fillStart = ColorUtils.Lighten(fillColor, Math.Max(theme.GradientStrength * 0.90, 0.06));
+            string fillEnd = ColorUtils.Darken(fillColor, Math.Max(theme.GradientStrength * 0.60, 0.05));
+            sb.AppendLine($"{indent}  <linearGradient id=\"{fillId}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"100%\">");
+            sb.AppendLine($"{indent}    <stop offset=\"0%\" stop-color=\"{Escape(fillStart)}\"/>");
+            sb.AppendLine($"{indent}    <stop offset=\"58%\" stop-color=\"{Escape(fillColor)}\"/>");
+            sb.AppendLine($"{indent}    <stop offset=\"100%\" stop-color=\"{Escape(fillEnd)}\"/>");
+            sb.AppendLine($"{indent}  </linearGradient>");
+            fillPaint = $"url(#{fillId})";
+        }
+
+        if (theme.UseBorderGradients)
+        {
+            string strokeId = prefix + "-stroke-gradient";
+            sb.AppendLine($"{indent}  <linearGradient id=\"{strokeId}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
+
+            if (theme.BorderGradientStops is { Count: > 1 })
+            {
+                int stopCount = theme.BorderGradientStops.Count;
+                for (int i = 0; i < stopCount; i++)
+                {
+                    double offset = stopCount == 1 ? 100 : i * 100.0 / (stopCount - 1);
+                    sb.AppendLine($"{indent}    <stop offset=\"{offset:F0}%\" stop-color=\"{Escape(theme.BorderGradientStops[i])}\"/>");
+                }
+            }
+            else
+            {
+                string strokeStart = ColorUtils.Lighten(strokeColor, Math.Max(theme.GradientStrength * 0.28, 0.03));
+                string strokeEnd = ColorUtils.Blend(strokeColor, theme.AccentColor, Math.Max(theme.GradientStrength * 0.24, 0.05));
+                sb.AppendLine($"{indent}    <stop offset=\"0%\" stop-color=\"{Escape(strokeStart)}\"/>");
+                sb.AppendLine($"{indent}    <stop offset=\"100%\" stop-color=\"{Escape(strokeEnd)}\"/>");
+            }
+
+            sb.AppendLine($"{indent}  </linearGradient>");
+            strokePaint = $"url(#{strokeId})";
+        }
+
+        sb.AppendLine($"{indent}</defs>");
+    }
+
+    private static void AppendShadowFilterDefs(
+        StringBuilder sb,
+        string indent,
+        string prefix,
+        Theme theme,
+        out string? shadowFilterId,
+        bool enabled = true)
+    {
+        shadowFilterId = null;
+
+        if (!enabled || !string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase))
+            return;
+
+        shadowFilterId = prefix + "-soft-shadow";
+        sb.AppendLine($"{indent}<defs>");
+        sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-8%\" y=\"-8%\" width=\"124%\" height=\"136%\" color-interpolation-filters=\"sRGB\">");
+        sb.AppendLine($"{indent}    <feDropShadow dx=\"{F(theme.ShadowOffsetX)}\" dy=\"{F(theme.ShadowOffsetY)}\" stdDeviation=\"{F(theme.ShadowBlur)}\" flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\"/>");
+        sb.AppendLine($"{indent}  </filter>");
+        sb.AppendLine($"{indent}</defs>");
+    }
 
     private static double? GetMetadataDouble(Node node, string key)
     {

@@ -1,0 +1,1970 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1744" height="712" viewBox="0 0 1744 712">
+  <rect width="100%" height="100%" fill="#F8FAFC" rx="12"/>
+  <text x="872" y="36" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="20" font-weight="bold" fill="#1F2937">DiagramForge - Theme Gallery</text>
+  <rect x="24" y="56" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="24" y="56" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-0" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8FA3B8"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#0F172A" rx="10.00" ry="10.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3A4354E0"/>
+      <stop offset="58%" stop-color="#1A2438E0"/>
+      <stop offset="100%" stop-color="#172032E0"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="10.00" ry="10.00" fill="url(#group-0-fill-gradient)" stroke="#3A475C" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#182235" stroke="#374358" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E2E8F0" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#8FA3B8" stroke-width="1.50"  marker-end="url(#arrowhead-0)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#8FA3B8" stroke-width="1.50"  marker-end="url(#arrowhead-0)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#8FA3B8" stroke-width="1.50"  marker-end="url(#arrowhead-0)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#94A3B8" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#8FA3B8" stroke-width="1.50"  marker-end="url(#arrowhead-0)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#94A3B8" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#404E66"/>
+        <stop offset="58%" stop-color="#21314D"/>
+        <stop offset="100%" stop-color="#1D2C45"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#1B283F" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3C5661"/>
+        <stop offset="58%" stop-color="#1C3A47"/>
+        <stop offset="100%" stop-color="#193440"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#162F3A" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#564C71"/>
+        <stop offset="58%" stop-color="#3A2F5A"/>
+        <stop offset="100%" stop-color="#342A51"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#2F2649" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#495E71"/>
+        <stop offset="58%" stop-color="#2B435A"/>
+        <stop offset="100%" stop-color="#263C51"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#233649" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E2E8F0">Publish</text>
+  </g>
+  </svg>
+  <text x="184" y="152" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Angled Dark</text>
+  <rect x="368" y="56" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="368" y="56" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-1" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FFFDF8" rx="10.00" ry="10.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFFE6"/>
+      <stop offset="58%" stop-color="#FFFFFFE6"/>
+      <stop offset="100%" stop-color="#E6E6E6E6"/>
+    </linearGradient>
+  </defs>
+  <defs>
+    <filter id="group-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="10.00" ry="10.00" fill="url(#group-0-fill-gradient)" stroke="#DAE1EA" stroke-width="1.50" filter="url(#group-0-soft-shadow)"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#FBFAF7" stroke="#E1E6ED" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#111827" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-1)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-1)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-1)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#64748B" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-1)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#64748B" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F0F5FF"/>
+        <stop offset="58%" stop-color="#EEF4FF"/>
+        <stop offset="100%" stop-color="#D7DCE6"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#B4B9C1" stroke-width="1.50" filter="url(#node-0-soft-shadow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EEF9F3"/>
+        <stop offset="58%" stop-color="#ECF8F1"/>
+        <stop offset="100%" stop-color="#D5E0D9"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#B3BCB7" stroke-width="1.50" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF4ED"/>
+        <stop offset="58%" stop-color="#FFF3EA"/>
+        <stop offset="100%" stop-color="#E6DBD3"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#C1B8B1" stroke-width="1.50" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5EEFF"/>
+        <stop offset="58%" stop-color="#F4ECFF"/>
+        <stop offset="100%" stop-color="#DCD5E6"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#B9B3C1" stroke-width="1.50" filter="url(#node-3-soft-shadow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Publish</text>
+  </g>
+  </svg>
+  <text x="528" y="152" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Angled Light</text>
+  <rect x="712" y="56" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="712" y="56" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7C7F93"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#EFF1F5" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EAEBF1EB"/>
+      <stop offset="58%" stop-color="#E8EAF0EB"/>
+      <stop offset="100%" stop-color="#DADBE1EB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#7E92FC" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#E4E8F6" stroke="#92A3FB" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#4C4F69" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#7C7F93" stroke-width="1.50"  marker-end="url(#arrowhead-2)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#7C7F93" stroke-width="1.50"  marker-end="url(#arrowhead-2)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#7C7F93" stroke-width="1.50"  marker-end="url(#arrowhead-2)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8C8FA1" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#7C7F93" stroke-width="1.50"  marker-end="url(#arrowhead-2)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8C8FA1" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E8EAF0"/>
+        <stop offset="58%" stop-color="#E6E9EF"/>
+        <stop offset="100%" stop-color="#D8DBE0"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#AEB1B5" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#4C4F69">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E0E8F7"/>
+        <stop offset="58%" stop-color="#DDE6F7"/>
+        <stop offset="100%" stop-color="#CFD8E8"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#A7AEBB" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#4C4F69">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F3E6FF"/>
+        <stop offset="58%" stop-color="#F2E4FF"/>
+        <stop offset="100%" stop-color="#E3D6EF"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#B7ADC1" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#4C4F69">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E6F4F0"/>
+        <stop offset="58%" stop-color="#E4F4EF"/>
+        <stop offset="100%" stop-color="#D6E5E0"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#ADB9B5" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#4C4F69">Publish</text>
+  </g>
+  </svg>
+  <text x="872" y="152" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Catppuccin Latte</text>
+  <rect x="1056" y="56" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1056" y="56" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-3" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#74C7EC"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#1E1E2E" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3E3F4FE0"/>
+      <stop offset="58%" stop-color="#2C2D3EE0"/>
+      <stop offset="100%" stop-color="#292A3AE0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#86ADEE"/>
+      <stop offset="100%" stop-color="#87ABEE"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#343D58" stroke="#7BA0DF" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#CDD6F4" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#74C7EC" stroke-width="1.50"  marker-end="url(#arrowhead-3)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#74C7EC" stroke-width="1.50"  marker-end="url(#arrowhead-3)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#74C7EC" stroke-width="1.50"  marker-end="url(#arrowhead-3)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A6ADC8" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#74C7EC" stroke-width="1.50"  marker-end="url(#arrowhead-3)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A6ADC8" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#434454"/>
+        <stop offset="58%" stop-color="#313244"/>
+        <stop offset="100%" stop-color="#2E2F3F"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2E2F3D"/>
+        <stop offset="100%" stop-color="#303041"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#CDD6F4">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4C4761"/>
+        <stop offset="58%" stop-color="#3B3552"/>
+        <stop offset="100%" stop-color="#37314D"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#363148"/>
+        <stop offset="100%" stop-color="#38314C"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#CDD6F4">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4A5B72"/>
+        <stop offset="58%" stop-color="#394B65"/>
+        <stop offset="100%" stop-color="#35465E"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#344257"/>
+        <stop offset="100%" stop-color="#36425A"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#CDD6F4">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#486C73"/>
+        <stop offset="58%" stop-color="#365E66"/>
+        <stop offset="100%" stop-color="#32585F"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#325258"/>
+        <stop offset="100%" stop-color="#34525B"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#CDD6F4">Publish</text>
+  </g>
+  </svg>
+  <text x="1216" y="152" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Catppuccin Mocha</text>
+  <rect x="1400" y="56" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1400" y="56" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-4" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#111827" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2F3845E0"/>
+      <stop offset="58%" stop-color="#1B2533E0"/>
+      <stop offset="100%" stop-color="#19222FE0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3CB5EB"/>
+      <stop offset="100%" stop-color="#3AB5EC"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#193A52" stroke="#33A7DB" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E5EEF9" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead-4)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead-4)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead-4)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead-4)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#374C62"/>
+        <stop offset="58%" stop-color="#243B53"/>
+        <stop offset="100%" stop-color="#21374E"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#233649"/>
+        <stop offset="100%" stop-color="#22384D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2C4D5E"/>
+        <stop offset="58%" stop-color="#183C4F"/>
+        <stop offset="100%" stop-color="#16384A"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#1A3745"/>
+        <stop offset="100%" stop-color="#193949"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#435D93"/>
+        <stop offset="58%" stop-color="#314E89"/>
+        <stop offset="100%" stop-color="#2E4980"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2E4474"/>
+        <stop offset="100%" stop-color="#2D4777"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#365D61"/>
+        <stop offset="58%" stop-color="#234E52"/>
+        <stop offset="100%" stop-color="#20494D"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#224448"/>
+        <stop offset="100%" stop-color="#21474C"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Publish</text>
+  </g>
+  </svg>
+  <text x="1560" y="152" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Dark</text>
+  <rect x="24" y="184" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="24" y="184" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-5" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EEF4FFEB"/>
+      <stop offset="58%" stop-color="#EDF4FFEB"/>
+      <stop offset="100%" stop-color="#DEE5EFEB"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7D9DF6"/>
+      <stop offset="100%" stop-color="#7697F4"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#EFF2FC" stroke="#91ACF7" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#0F172A" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead-5)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead-5)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead-5)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead-5)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B3B9C2"/>
+        <stop offset="100%" stop-color="#AAB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAF7F1"/>
+        <stop offset="58%" stop-color="#E8F7F0"/>
+        <stop offset="100%" stop-color="#DAE8E1"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B2BDB8"/>
+        <stop offset="100%" stop-color="#A9B6B8"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF2E9"/>
+        <stop offset="58%" stop-color="#FFF1E7"/>
+        <stop offset="100%" stop-color="#EFE2D9"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B9B1"/>
+        <stop offset="100%" stop-color="#B9B2B1"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5EBFE"/>
+        <stop offset="58%" stop-color="#F5EAFE"/>
+        <stop offset="100%" stop-color="#E6DBEE"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#BCB3C2"/>
+        <stop offset="100%" stop-color="#B2ADC2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Publish</text>
+  </g>
+  </svg>
+  <text x="184" y="280" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Default</text>
+  <rect x="368" y="184" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="368" y="184" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-6" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FF79C6"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#282A36" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#454854E0"/>
+      <stop offset="58%" stop-color="#313442E0"/>
+      <stop offset="100%" stop-color="#2D303DE0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#444754"/>
+      <stop offset="33%" stop-color="#574D77"/>
+      <stop offset="67%" stop-color="#63516F"/>
+      <stop offset="100%" stop-color="#4A4E57"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#34394D" stroke="#5B6995" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#F8F8F2" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#FF79C6" stroke-width="1.50"  marker-end="url(#arrowhead-6)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#FF79C6" stroke-width="1.50"  marker-end="url(#arrowhead-6)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#FF79C6" stroke-width="1.50"  marker-end="url(#arrowhead-6)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#FF79C6" stroke-width="1.50"  marker-end="url(#arrowhead-6)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#484A58"/>
+        <stop offset="58%" stop-color="#343746"/>
+        <stop offset="100%" stop-color="#303341"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#F8F8F2">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#505270"/>
+        <stop offset="58%" stop-color="#3D4061"/>
+        <stop offset="100%" stop-color="#383B5A"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#F8F8F2">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#5C527F"/>
+        <stop offset="58%" stop-color="#4B3F72"/>
+        <stop offset="100%" stop-color="#463A6A"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#F8F8F2">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4F6676"/>
+        <stop offset="58%" stop-color="#3C5668"/>
+        <stop offset="100%" stop-color="#385061"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#F8F8F2">Publish</text>
+  </g>
+  </svg>
+  <text x="528" y="280" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Dracula</text>
+  <rect x="712" y="184" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="712" y="184" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-7" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#406B4F"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#F6FBF5" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E5F4EAEB"/>
+      <stop offset="58%" stop-color="#E3F4E8EB"/>
+      <stop offset="100%" stop-color="#D5E5DAEB"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#B9C9BD"/>
+      <stop offset="33%" stop-color="#99BB9F"/>
+      <stop offset="67%" stop-color="#C0CBB0"/>
+      <stop offset="100%" stop-color="#9EBFAD"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#E4F0E7" stroke="#63A483" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#16311F" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"  marker-end="url(#arrowhead-7)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"  marker-end="url(#arrowhead-7)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"  marker-end="url(#arrowhead-7)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#5B7F69" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"  marker-end="url(#arrowhead-7)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#5B7F69" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E1F4E7"/>
+        <stop offset="58%" stop-color="#DFF3E5"/>
+        <stop offset="100%" stop-color="#D1E4D7"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B9C9BD"/>
+        <stop offset="33%" stop-color="#99BB9F"/>
+        <stop offset="67%" stop-color="#C0CBB0"/>
+        <stop offset="100%" stop-color="#9EBFAD"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#CFEBD3"/>
+        <stop offset="58%" stop-color="#CBEACF"/>
+        <stop offset="100%" stop-color="#BEDBC2"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B9C9BD"/>
+        <stop offset="33%" stop-color="#99BB9F"/>
+        <stop offset="67%" stop-color="#C0CBB0"/>
+        <stop offset="100%" stop-color="#9EBFAD"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#BCE3C3"/>
+        <stop offset="58%" stop-color="#B6E1BE"/>
+        <stop offset="100%" stop-color="#ABD3B2"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B9C9BD"/>
+        <stop offset="33%" stop-color="#99BB9F"/>
+        <stop offset="67%" stop-color="#C0CBB0"/>
+        <stop offset="100%" stop-color="#9EBFAD"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ABDBB7"/>
+        <stop offset="58%" stop-color="#A3D8B0"/>
+        <stop offset="100%" stop-color="#99CBA5"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B9C9BD"/>
+        <stop offset="33%" stop-color="#99BB9F"/>
+        <stop offset="67%" stop-color="#C0CBB0"/>
+        <stop offset="100%" stop-color="#9EBFAD"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#16311F">Publish</text>
+  </g>
+  </svg>
+  <text x="872" y="280" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Forest</text>
+  <rect x="1056" y="184" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1056" y="184" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-8" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#8B949E"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#0D1117" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2B2E35E0"/>
+      <stop offset="58%" stop-color="#14181FE0"/>
+      <stop offset="100%" stop-color="#12161CE0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2A3241"/>
+      <stop offset="33%" stop-color="#30394E"/>
+      <stop offset="67%" stop-color="#3A3D44"/>
+      <stop offset="100%" stop-color="#303A3E"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#171C22" stroke="#363D46" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E6EDF3" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#8B949E" stroke-width="1.50"  marker-end="url(#arrowhead-8)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#8B949E" stroke-width="1.50"  marker-end="url(#arrowhead-8)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#8B949E" stroke-width="1.50"  marker-end="url(#arrowhead-8)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#9198A1" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#8B949E" stroke-width="1.50"  marker-end="url(#arrowhead-8)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#9198A1" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2D3647"/>
+        <stop offset="58%" stop-color="#172033"/>
+        <stop offset="100%" stop-color="#151D2F"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2A3241"/>
+        <stop offset="33%" stop-color="#30394E"/>
+        <stop offset="67%" stop-color="#3A3D44"/>
+        <stop offset="100%" stop-color="#303A3E"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E6EDF3">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2C363F"/>
+        <stop offset="58%" stop-color="#15212B"/>
+        <stop offset="100%" stop-color="#131E28"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2A3241"/>
+        <stop offset="33%" stop-color="#30394E"/>
+        <stop offset="67%" stop-color="#3A3D44"/>
+        <stop offset="100%" stop-color="#303A3E"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E6EDF3">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#353F56"/>
+        <stop offset="58%" stop-color="#1F2A44"/>
+        <stop offset="100%" stop-color="#1C273F"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2A3241"/>
+        <stop offset="33%" stop-color="#30394E"/>
+        <stop offset="67%" stop-color="#3A3D44"/>
+        <stop offset="100%" stop-color="#303A3E"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E6EDF3">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#364552"/>
+        <stop offset="58%" stop-color="#20313F"/>
+        <stop offset="100%" stop-color="#1D2D3A"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2A3241"/>
+        <stop offset="33%" stop-color="#30394E"/>
+        <stop offset="67%" stop-color="#3A3D44"/>
+        <stop offset="100%" stop-color="#303A3E"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E6EDF3">Publish</text>
+  </g>
+  </svg>
+  <text x="1216" y="280" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Github Dark</text>
+  <rect x="1400" y="184" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1400" y="184" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-9" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#57606A"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8F9FBEB"/>
+      <stop offset="58%" stop-color="#F8F9FBEB"/>
+      <stop offset="100%" stop-color="#E9EAEBEB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#D5DBE1" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#FBFBFC" stroke="#DDE1E6" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#1F2328" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead-9)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead-9)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead-9)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#59636E" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead-9)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#59636E" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#B1B7C1" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2328">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAF4EB"/>
+        <stop offset="58%" stop-color="#E8F4EA"/>
+        <stop offset="100%" stop-color="#DAE5DB"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#B0B9B1" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2328">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1E7"/>
+        <stop offset="58%" stop-color="#FFF0E5"/>
+        <stop offset="100%" stop-color="#EFE1D7"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#C1B6AE" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2328">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F3EDFF"/>
+        <stop offset="58%" stop-color="#F2ECFF"/>
+        <stop offset="100%" stop-color="#E3DDEF"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#B7B3C1" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#1F2328">Publish</text>
+  </g>
+  </svg>
+  <text x="1560" y="280" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Github Light</text>
+  <rect x="24" y="312" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="24" y="312" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-10" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#4B5563"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F5F6F8EB"/>
+      <stop offset="58%" stop-color="#F5F6F8EB"/>
+      <stop offset="100%" stop-color="#E8E9EBEB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#A6ACB7" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#F6F7F8" stroke="#B6BBC4" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#111111" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#4B5563" stroke-width="1.50"  marker-end="url(#arrowhead-10)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#4B5563" stroke-width="1.50"  marker-end="url(#arrowhead-10)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#4B5563" stroke-width="1.50"  marker-end="url(#arrowhead-10)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#4B5563" stroke-width="1.50"  marker-end="url(#arrowhead-10)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#6B7280" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5F5F5"/>
+        <stop offset="58%" stop-color="#F5F5F5"/>
+        <stop offset="100%" stop-color="#E8E8E8"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#BABABA" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111111">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EDEDED"/>
+        <stop offset="58%" stop-color="#ECECEC"/>
+        <stop offset="100%" stop-color="#E0E0E0"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#B3B3B3" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111111">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E5E5E5"/>
+        <stop offset="58%" stop-color="#E3E3E3"/>
+        <stop offset="100%" stop-color="#D7D7D7"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#ACACAC" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111111">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#DADADA"/>
+        <stop offset="58%" stop-color="#D8D8D8"/>
+        <stop offset="100%" stop-color="#CDCDCD"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#A4A4A4" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111111">Publish</text>
+  </g>
+  </svg>
+  <text x="184" y="408" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Neutral</text>
+  <rect x="368" y="312" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="368" y="312" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-11" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#AAB1C0"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#ECEFF4" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E8ECF3EB"/>
+      <stop offset="58%" stop-color="#E6EBF2EB"/>
+      <stop offset="100%" stop-color="#D9DEE4EB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#B1B7C5" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#E6E9EF" stroke="#BCC1CD" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#2E3440" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#AAB1C0" stroke-width="1.50"  marker-end="url(#arrowhead-11)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#AAB1C0" stroke-width="1.50"  marker-end="url(#arrowhead-11)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#AAB1C0" stroke-width="1.50"  marker-end="url(#arrowhead-11)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#7B88A1" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#AAB1C0" stroke-width="1.50"  marker-end="url(#arrowhead-11)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#7B88A1" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E8EBF1"/>
+        <stop offset="58%" stop-color="#E6EAF0"/>
+        <stop offset="100%" stop-color="#D9DDE3"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#AEB1B6" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#2E3440">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E0E6ED"/>
+        <stop offset="58%" stop-color="#DEE4EC"/>
+        <stop offset="100%" stop-color="#D2D7DF"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#A8ADB3" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#2E3440">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#DAE2EC"/>
+        <stop offset="58%" stop-color="#D7E0EB"/>
+        <stop offset="100%" stop-color="#CBD3DE"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#A3AAB2" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#2E3440">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBEBF3"/>
+        <stop offset="58%" stop-color="#EAEAF2"/>
+        <stop offset="100%" stop-color="#DDDDE4"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#B1B1B7" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#2E3440">Publish</text>
+  </g>
+  </svg>
+  <text x="528" y="408" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Nord Light</text>
+  <rect x="712" y="312" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="712" y="312" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-12" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#81A1C1"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#2E3440" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#484D5BE0"/>
+      <stop offset="58%" stop-color="#383E4DE0"/>
+      <stop offset="100%" stop-color="#343A48E0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#5F7FA8"/>
+      <stop offset="100%" stop-color="#5E80A8"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#384456" stroke="#57769E" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#D8DEE9" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#81A1C1" stroke-width="1.50"  marker-end="url(#arrowhead-12)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#81A1C1" stroke-width="1.50"  marker-end="url(#arrowhead-12)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#81A1C1" stroke-width="1.50"  marker-end="url(#arrowhead-12)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A7B5C8" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#81A1C1" stroke-width="1.50"  marker-end="url(#arrowhead-12)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A7B5C8" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#525A6B"/>
+        <stop offset="58%" stop-color="#434C5E"/>
+        <stop offset="100%" stop-color="#3F4758"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3C4352"/>
+        <stop offset="100%" stop-color="#3A4554"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#D8DEE9">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#5A6376"/>
+        <stop offset="58%" stop-color="#4C566A"/>
+        <stop offset="100%" stop-color="#475164"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#434B5B"/>
+        <stop offset="100%" stop-color="#424C5C"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#D8DEE9">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#6B8BB2"/>
+        <stop offset="58%" stop-color="#5E81AC"/>
+        <stop offset="100%" stop-color="#587AA2"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#526D90"/>
+        <stop offset="100%" stop-color="#506E90"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#D8DEE9">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#8BA8C6"/>
+        <stop offset="58%" stop-color="#81A1C1"/>
+        <stop offset="100%" stop-color="#7A98B6"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#6D87A0"/>
+        <stop offset="100%" stop-color="#6B87A1"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Publish</text>
+  </g>
+  </svg>
+  <text x="872" y="408" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Nord</text>
+  <rect x="1056" y="312" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1056" y="312" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-13" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7F848E"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#282C34" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3F454EE0"/>
+      <stop offset="58%" stop-color="#2D333DE0"/>
+      <stop offset="100%" stop-color="#2A2F39E0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#4E5564"/>
+      <stop offset="100%" stop-color="#4B5567"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#2F343E" stroke="#464D5C" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#ABB2BF" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#7F848E" stroke-width="1.50"  marker-end="url(#arrowhead-13)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#7F848E" stroke-width="1.50"  marker-end="url(#arrowhead-13)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#7F848E" stroke-width="1.50"  marker-end="url(#arrowhead-13)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8C95A6" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#7F848E" stroke-width="1.50"  marker-end="url(#arrowhead-13)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8C95A6" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#414851"/>
+        <stop offset="58%" stop-color="#2F3640"/>
+        <stop offset="100%" stop-color="#2C323C"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2C323A"/>
+        <stop offset="100%" stop-color="#29333D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#ABB2BF">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#455263"/>
+        <stop offset="58%" stop-color="#334154"/>
+        <stop offset="100%" stop-color="#2F3D4E"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2F3B49"/>
+        <stop offset="100%" stop-color="#2C3B4C"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#ABB2BF">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#415C71"/>
+        <stop offset="58%" stop-color="#2F4C63"/>
+        <stop offset="100%" stop-color="#2C475D"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2C4356"/>
+        <stop offset="100%" stop-color="#294459"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#ABB2BF">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4D5462"/>
+        <stop offset="58%" stop-color="#3C4453"/>
+        <stop offset="100%" stop-color="#383F4E"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#373D49"/>
+        <stop offset="100%" stop-color="#343D4C"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#ABB2BF">Publish</text>
+  </g>
+  </svg>
+  <text x="1216" y="408" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">One Dark</text>
+  <rect x="1400" y="312" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1400" y="312" width="320" height="70" viewBox="0 0 740.00 160.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-14" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
+    </marker>
+  </defs>
+  <rect width="740.00" height="160.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#EDF3FEEB"/>
+      <stop offset="58%" stop-color="#EBF2FEEB"/>
+      <stop offset="100%" stop-color="#DAE0EBEB"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#C0C6D3"/>
+      <stop offset="33%" stop-color="#D3C6A6"/>
+      <stop offset="67%" stop-color="#B9C8D3"/>
+      <stop offset="100%" stop-color="#C1CAC1"/>
+    </linearGradient>
+  </defs>
+  <defs>
+    <filter id="group-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+    </filter>
+  </defs>
+  <rect x="32.00" y="32.00" width="332.00" height="96.00" rx="12.00" ry="12.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.80" filter="url(#group-0-soft-shadow)"/>
+  <rect x="42.00" y="42.00" width="104.59" height="23.12" rx="11.56" ry="11.56" fill="#E9EEF2" stroke="#4E7FCA" stroke-width="1.44"/>
+  <text x="51.00" y="57.72" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.12" fill="#111827" font-weight="bold">Design Loop</text>
+  <path d="M 168.00,92.00 C 192.00,92.00 204.00,92.00 228.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead-14)" />
+  <path d="M 348.00,92.00 C 372.00,92.00 384.00,92.00 408.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead-14)" />
+  <path d="M 528.00,92.00 C 552.00,92.00 564.00,92.00 588.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead-14)" />
+  <text x="558.00" y="88.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">ship</text>
+  <path d="M 408.00,92.00 C 312.00,92.00 264.00,92.00 168.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead-14)" />
+  <text x="288.00" y="88.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">revise</text>
+  <g transform="translate(48.00,72.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E9F1FF"/>
+        <stop offset="58%" stop-color="#E7F0FF"/>
+        <stop offset="100%" stop-color="#D6DEEC"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Plan</text>
+  </g>
+  <g transform="translate(228.00,72.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE8DC"/>
+        <stop offset="58%" stop-color="#FFE6D8"/>
+        <stop offset="100%" stop-color="#ECD5C8"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Draft</text>
+  </g>
+  <g transform="translate(408.00,72.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1CD"/>
+        <stop offset="58%" stop-color="#FFF0C7"/>
+        <stop offset="100%" stop-color="#ECDEB8"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Review</text>
+  </g>
+  <g transform="translate(588.00,72.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#DFF6EA"/>
+        <stop offset="58%" stop-color="#DCF5E8"/>
+        <stop offset="100%" stop-color="#CCE3D7"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Publish</text>
+  </g>
+  </svg>
+  <text x="1560" y="408" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Presentation</text>
+  <rect x="24" y="440" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="24" y="440" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-15" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FFFFFF" rx="10.00" ry="10.00"/>
+  <defs>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="33%" stop-color="#7C3AED"/>
+      <stop offset="67%" stop-color="#DB2777"/>
+      <stop offset="100%" stop-color="#F59E0B"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="10.00" ry="10.00" fill="#FFFFFFE6" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#FBFCFD" stroke="#DEE4EC" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#111827" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-15)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-15)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-15)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#64748B" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#64748B" stroke-width="1.50"  marker-end="url(#arrowhead-15)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#64748B" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#FFFFFF" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#FFFFFF" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="#FFFFFF" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="#FFFFFF" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#111827">Publish</text>
+  </g>
+  </svg>
+  <text x="184" y="536" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Prism</text>
+  <rect x="368" y="440" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="368" y="440" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-16" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#839496"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#002B36" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#19434EE0"/>
+      <stop offset="58%" stop-color="#05333FE0"/>
+      <stop offset="100%" stop-color="#04303BE0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#586E75"/>
+      <stop offset="100%" stop-color="#516C76"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#123943" stroke="#4C656C" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#93A1A1" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-16)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-16)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-16)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#657B83" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-16)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#657B83" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1B4651"/>
+        <stop offset="58%" stop-color="#073642"/>
+        <stop offset="100%" stop-color="#06333E"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0C323C"/>
+        <stop offset="100%" stop-color="#07313E"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#93A1A1">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#1D5160"/>
+        <stop offset="58%" stop-color="#0A4252"/>
+        <stop offset="100%" stop-color="#093E4D"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#0F3C48"/>
+        <stop offset="100%" stop-color="#0A3A4A"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#93A1A1">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#255864"/>
+        <stop offset="58%" stop-color="#124A57"/>
+        <stop offset="100%" stop-color="#114652"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#15414C"/>
+        <stop offset="100%" stop-color="#10404E"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#93A1A1">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38545C"/>
+        <stop offset="58%" stop-color="#27464E"/>
+        <stop offset="100%" stop-color="#244249"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#253E44"/>
+        <stop offset="100%" stop-color="#203D46"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#93A1A1">Publish</text>
+  </g>
+  </svg>
+  <text x="528" y="536" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Solarized Dark</text>
+  <rect x="712" y="440" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="712" y="440" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-17" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#839496"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FDF6E3" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F8F1DDEB"/>
+      <stop offset="58%" stop-color="#F8F0DBEB"/>
+      <stop offset="100%" stop-color="#EAE3CFEB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#9EAAA8" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#F4EEDD" stroke="#AFB8B3" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#657B83" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-17)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-17)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-17)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#93A1A1" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#839496" stroke-width="1.50"  marker-end="url(#arrowhead-17)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#93A1A1" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F7F0DC"/>
+        <stop offset="58%" stop-color="#F7EFD9"/>
+        <stop offset="100%" stop-color="#E9E2CD"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#BBB5A4" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#657B83">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F0F3D5"/>
+        <stop offset="58%" stop-color="#EFF3D2"/>
+        <stop offset="100%" stop-color="#E2E5C6"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#B5B89F" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#657B83">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E9F2E8"/>
+        <stop offset="58%" stop-color="#E8F1E6"/>
+        <stop offset="100%" stop-color="#DBE3D9"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#B0B7AE" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#657B83">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E9EDF4"/>
+        <stop offset="58%" stop-color="#E8ECF4"/>
+        <stop offset="100%" stop-color="#DBDFE6"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#B0B3B9" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#657B83">Publish</text>
+  </g>
+  </svg>
+  <text x="872" y="536" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Solarized Light</text>
+  <rect x="1056" y="440" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1056" y="440" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-18" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#34548A"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#D5D6DB" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E1E3E9EB"/>
+      <stop offset="58%" stop-color="#DFE1E7EB"/>
+      <stop offset="100%" stop-color="#D1D3D9EB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#ACB3C2" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#D1D2D8" stroke="#B3B9C6" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#343B58" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#34548A" stroke-width="1.50"  marker-end="url(#arrowhead-18)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#34548A" stroke-width="1.50"  marker-end="url(#arrowhead-18)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#34548A" stroke-width="1.50"  marker-end="url(#arrowhead-18)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#9699A3" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#34548A" stroke-width="1.50"  marker-end="url(#arrowhead-18)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#9699A3" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E8EAEF"/>
+        <stop offset="58%" stop-color="#E6E8EE"/>
+        <stop offset="100%" stop-color="#D8DADF"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#AEB0B4" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#343B58">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E1E7EF"/>
+        <stop offset="58%" stop-color="#DFE5EE"/>
+        <stop offset="100%" stop-color="#D1D7DF"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#A9AEB4" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#343B58">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAE7F1"/>
+        <stop offset="58%" stop-color="#E9E5F0"/>
+        <stop offset="100%" stop-color="#DBD7E1"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#B1AEB6" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#343B58">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E4EAF2"/>
+        <stop offset="58%" stop-color="#E2E8F1"/>
+        <stop offset="100%" stop-color="#D4DAE2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#ABB0B7" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#343B58">Publish</text>
+  </g>
+  </svg>
+  <text x="1216" y="536" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Tokyo Night Light</text>
+  <rect x="1400" y="440" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="1400" y="440" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-19" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3D59A1"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#24283B" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3D435CE0"/>
+      <stop offset="58%" stop-color="#282F4BE0"/>
+      <stop offset="100%" stop-color="#252B46E0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3C425D"/>
+      <stop offset="33%" stop-color="#3C4A60"/>
+      <stop offset="67%" stop-color="#3E4965"/>
+      <stop offset="100%" stop-color="#3A4462"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#293250" stroke="#3A5293" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#A9B1D6" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#3D59A1" stroke-width="1.50"  marker-end="url(#arrowhead-19)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#3D59A1" stroke-width="1.50"  marker-end="url(#arrowhead-19)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#3D59A1" stroke-width="1.50"  marker-end="url(#arrowhead-19)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#565F89" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#3D59A1" stroke-width="1.50"  marker-end="url(#arrowhead-19)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#565F89" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3F4562"/>
+        <stop offset="58%" stop-color="#2A3151"/>
+        <stop offset="100%" stop-color="#272D4B"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3C425D"/>
+        <stop offset="33%" stop-color="#3C4A60"/>
+        <stop offset="67%" stop-color="#3E4965"/>
+        <stop offset="100%" stop-color="#3A4462"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#A9B1D6">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3F4968"/>
+        <stop offset="58%" stop-color="#2B3658"/>
+        <stop offset="100%" stop-color="#283252"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3C425D"/>
+        <stop offset="33%" stop-color="#3C4A60"/>
+        <stop offset="67%" stop-color="#3E4965"/>
+        <stop offset="100%" stop-color="#3A4462"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#A9B1D6">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3F4F64"/>
+        <stop offset="58%" stop-color="#2A3C54"/>
+        <stop offset="100%" stop-color="#27384E"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3C425D"/>
+        <stop offset="33%" stop-color="#3C4A60"/>
+        <stop offset="67%" stop-color="#3E4965"/>
+        <stop offset="100%" stop-color="#3A4462"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#A9B1D6">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#4E4366"/>
+        <stop offset="58%" stop-color="#3B2F56"/>
+        <stop offset="100%" stop-color="#372B50"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#3C425D"/>
+        <stop offset="33%" stop-color="#3C4A60"/>
+        <stop offset="67%" stop-color="#3E4965"/>
+        <stop offset="100%" stop-color="#3A4462"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#A9B1D6">Publish</text>
+  </g>
+  </svg>
+  <text x="1560" y="536" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Tokyo Night Storm</text>
+  <rect x="24" y="568" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="24" y="568" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-20" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#7DCFFF"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#1A1B26" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#363A49E0"/>
+      <stop offset="58%" stop-color="#212536E0"/>
+      <stop offset="100%" stop-color="#1E2232E0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#353949"/>
+      <stop offset="33%" stop-color="#39435F"/>
+      <stop offset="67%" stop-color="#34536E"/>
+      <stop offset="100%" stop-color="#374151"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#212840" stroke="#385091" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#C0CAF5" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#7DCFFF" stroke-width="1.50"  marker-end="url(#arrowhead-20)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#7DCFFF" stroke-width="1.50"  marker-end="url(#arrowhead-20)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#7DCFFF" stroke-width="1.50"  marker-end="url(#arrowhead-20)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8F9CC6" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#7DCFFF" stroke-width="1.50"  marker-end="url(#arrowhead-20)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8F9CC6" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#393D4E"/>
+        <stop offset="58%" stop-color="#24283B"/>
+        <stop offset="100%" stop-color="#212537"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#353949"/>
+        <stop offset="33%" stop-color="#39435F"/>
+        <stop offset="67%" stop-color="#34536E"/>
+        <stop offset="100%" stop-color="#374151"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#C0CAF5">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3F4562"/>
+        <stop offset="58%" stop-color="#2A3151"/>
+        <stop offset="100%" stop-color="#272D4B"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#353949"/>
+        <stop offset="33%" stop-color="#39435F"/>
+        <stop offset="67%" stop-color="#34536E"/>
+        <stop offset="100%" stop-color="#374151"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#C0CAF5">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3D4867"/>
+        <stop offset="58%" stop-color="#283457"/>
+        <stop offset="100%" stop-color="#253051"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#353949"/>
+        <stop offset="33%" stop-color="#39435F"/>
+        <stop offset="67%" stop-color="#34536E"/>
+        <stop offset="100%" stop-color="#374151"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#C0CAF5">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3B4F64"/>
+        <stop offset="58%" stop-color="#263C54"/>
+        <stop offset="100%" stop-color="#23384E"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#353949"/>
+        <stop offset="33%" stop-color="#39435F"/>
+        <stop offset="67%" stop-color="#34536E"/>
+        <stop offset="100%" stop-color="#374151"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#C0CAF5">Publish</text>
+  </g>
+  </svg>
+  <text x="184" y="664" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Tokyo Night</text>
+  <rect x="368" y="568" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="368" y="568" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-21" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#52525B"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#18181B" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#323235E0"/>
+      <stop offset="58%" stop-color="#232326E0"/>
+      <stop offset="100%" stop-color="#212124E0"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#4F4F57" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#242428" stroke="#4B4B52" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#FAFAFA" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#52525B" stroke-width="1.50"  marker-end="url(#arrowhead-21)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#52525B" stroke-width="1.50"  marker-end="url(#arrowhead-21)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#52525B" stroke-width="1.50"  marker-end="url(#arrowhead-21)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A1A1AA" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#52525B" stroke-width="1.50"  marker-end="url(#arrowhead-21)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#A1A1AA" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#323235"/>
+        <stop offset="58%" stop-color="#232326"/>
+        <stop offset="100%" stop-color="#212124"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#1C1C1F" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#FAFAFA">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#39393E"/>
+        <stop offset="58%" stop-color="#2A2A30"/>
+        <stop offset="100%" stop-color="#27272D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#222227" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#FAFAFA">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3E3E47"/>
+        <stop offset="58%" stop-color="#303039"/>
+        <stop offset="100%" stop-color="#2D2D36"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#27272E" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#FAFAFA">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#35353B"/>
+        <stop offset="58%" stop-color="#26262C"/>
+        <stop offset="100%" stop-color="#242429"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#1F1F24" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#FAFAFA">Publish</text>
+  </g>
+  </svg>
+  <text x="528" y="664" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Zinc Dark</text>
+  <rect x="712" y="568" width="320" height="70" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1" rx="8"/>
+  <svg x="712" y="568" width="320" height="70" viewBox="0 0 720.00 133.00" preserveAspectRatio="xMidYMid meet">
+<defs>
+    <marker id="arrowhead-22" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#71717A"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F7F7F7EB"/>
+      <stop offset="58%" stop-color="#F7F7F7EB"/>
+      <stop offset="100%" stop-color="#EAEAEAEB"/>
+    </linearGradient>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#AAAAB2" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#F6F6F7" stroke="#B9B9C0" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#27272A" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#71717A" stroke-width="1.50"  marker-end="url(#arrowhead-22)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#71717A" stroke-width="1.50"  marker-end="url(#arrowhead-22)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#71717A" stroke-width="1.50"  marker-end="url(#arrowhead-22)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#71717A" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#71717A" stroke-width="1.50"  marker-end="url(#arrowhead-22)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#71717A" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F7F7F8"/>
+        <stop offset="58%" stop-color="#F7F7F8"/>
+        <stop offset="100%" stop-color="#EAEAEB"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="#BBBBBC" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#27272A">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F2F2F3"/>
+        <stop offset="58%" stop-color="#F1F1F3"/>
+        <stop offset="100%" stop-color="#E4E4E6"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="#B7B7B8" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#27272A">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#ECEDF1"/>
+        <stop offset="58%" stop-color="#EBECF0"/>
+        <stop offset="100%" stop-color="#DFE0E4"/>
+      </linearGradient>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="#B2B3B6" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#27272A">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F4F4F7"/>
+        <stop offset="58%" stop-color="#F4F4F7"/>
+        <stop offset="100%" stop-color="#E7E7EA"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="#B9B9BB" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#27272A">Publish</text>
+  </g>
+  </svg>
+  <text x="872" y="664" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14" fill="#6B7280">Zinc Light</text>
+</svg>

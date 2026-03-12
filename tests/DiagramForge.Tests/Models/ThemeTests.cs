@@ -57,13 +57,45 @@ public class ThemeTests
         Assert.True(Theme.Presentation.TitleFontSize > Theme.Default.TitleFontSize);
     }
 
+    [Fact]
+    public void Presentation_EnablesNodeShadows_WithStrongerSoftShadow()
+    {
+        Assert.True(Theme.Presentation.UseNodeShadows);
+        Assert.Equal("soft", Theme.Presentation.ShadowStyle);
+        Assert.InRange(Theme.Presentation.ShadowOpacity, 0.15, 0.18);
+        Assert.InRange(Theme.Presentation.ShadowBlur, 1.60, 1.70);
+        Assert.InRange(Theme.Presentation.ShadowOffsetY, 1.50, 1.60);
+    }
+
+    [Fact]
+    public void AngledLight_EnablesNodeShadows_WithStrongerSoftShadow()
+    {
+        Assert.True(Theme.AngledLight.UseNodeShadows);
+        Assert.Equal("soft", Theme.AngledLight.ShadowStyle);
+        Assert.InRange(Theme.AngledLight.ShadowOpacity, 0.15, 0.18);
+        Assert.InRange(Theme.AngledLight.ShadowBlur, 1.60, 1.70);
+        Assert.InRange(Theme.AngledLight.ShadowOffsetY, 1.50, 1.60);
+    }
+
     // ── Built-in themes have NodePalette ──────────────────────────────────────
 
     [Theory]
     [InlineData("dark")]
+    [InlineData("zinc-light")]
+    [InlineData("zinc-dark")]
     [InlineData("neutral")]
     [InlineData("forest")]
     [InlineData("presentation")]
+    [InlineData("prism")]
+    [InlineData("angled-light")]
+    [InlineData("angled-dark")]
+    [InlineData("github-light")]
+    [InlineData("github-dark")]
+    [InlineData("tokyo-night")]
+    [InlineData("tokyo-night-storm")]
+    [InlineData("tokyo-night-light")]
+    [InlineData("nord-light")]
+    [InlineData("catppuccin-mocha")]
     public void BuiltInTheme_NodePalette_HasAtLeastSixColors(string themeName)
     {
         var theme = Theme.GetByName(themeName)!;
@@ -80,10 +112,28 @@ public class ThemeTests
 
     [Theory]
     [InlineData("default")]
+    [InlineData("zinc-light")]
+    [InlineData("zinc-dark")]
     [InlineData("dark")]
     [InlineData("neutral")]
     [InlineData("forest")]
     [InlineData("presentation")]
+    [InlineData("prism")]
+    [InlineData("angled-light")]
+    [InlineData("angled-dark")]
+    [InlineData("github-light")]
+    [InlineData("github-dark")]
+    [InlineData("nord")]
+    [InlineData("nord-light")]
+    [InlineData("dracula")]
+    [InlineData("tokyo-night")]
+    [InlineData("tokyo-night-storm")]
+    [InlineData("tokyo-night-light")]
+    [InlineData("catppuccin-latte")]
+    [InlineData("catppuccin-mocha")]
+    [InlineData("solarized-light")]
+    [InlineData("solarized-dark")]
+    [InlineData("one-dark")]
     public void GetByName_KnownName_ReturnsTheme(string name)
     {
         var theme = Theme.GetByName(name);
@@ -96,6 +146,7 @@ public class ThemeTests
     [InlineData("FOREST")]
     [InlineData("Neutral")]
     [InlineData("PRESENTATION")]
+    [InlineData("Tokyo-Night-Light")]
     public void GetByName_CaseInsensitive(string name)
     {
         var theme = Theme.GetByName(name);
@@ -125,7 +176,7 @@ public class ThemeTests
     [Fact]
     public void ToJson_FromJson_RoundTrips()
     {
-        var original = Theme.Dark;
+        var original = Theme.TokyoNight;
         string json = original.ToJson();
         var restored = Theme.FromJson(json);
 
@@ -133,6 +184,104 @@ public class ThemeTests
         Assert.Equal(original.TextColor, restored.TextColor);
         Assert.Equal(original.NodeFillColor, restored.NodeFillColor);
         Assert.Equal(original.FontSize, restored.FontSize);
+        Assert.Equal(original.GroupFillColor, restored.GroupFillColor);
+        Assert.Equal(original.UseGradients, restored.UseGradients);
+        Assert.Equal(original.UseBorderGradients, restored.UseBorderGradients);
+        Assert.Equal(original.ShadowStyle, restored.ShadowStyle);
+        Assert.Equal(original.ShadowOpacity, restored.ShadowOpacity);
+    }
+
+    [Fact]
+    public void ToJson_FromJson_RoundTripsTransparentBackground()
+    {
+        var original = Theme.Dracula;
+        original.TransparentBackground = true;
+
+        string json = original.ToJson();
+        var restored = Theme.FromJson(json);
+
+        Assert.True(restored.TransparentBackground);
+    }
+
+    [Fact]
+    public void BuiltInThemeNames_ContainsMermaidCoreAndDiagramForgeExclusiveThemes()
+    {
+        Assert.Contains("default", Theme.BuiltInThemeNames);
+        Assert.Contains("dark", Theme.BuiltInThemeNames);
+        Assert.Contains("neutral", Theme.BuiltInThemeNames);
+        Assert.Contains("forest", Theme.BuiltInThemeNames);
+        Assert.Contains("prism", Theme.BuiltInThemeNames);
+        Assert.Contains("angled-light", Theme.BuiltInThemeNames);
+        Assert.Contains("angled-dark", Theme.BuiltInThemeNames);
+        Assert.Contains("tokyo-night", Theme.BuiltInThemeNames);
+        Assert.Contains("tokyo-night-storm", Theme.BuiltInThemeNames);
+        Assert.Contains("tokyo-night-light", Theme.BuiltInThemeNames);
+        Assert.Contains("zinc-light", Theme.BuiltInThemeNames);
+        Assert.Contains("zinc-dark", Theme.BuiltInThemeNames);
+        Assert.Contains("nord-light", Theme.BuiltInThemeNames);
+        Assert.Contains("github-dark", Theme.BuiltInThemeNames);
+    }
+
+    [Fact]
+    public void Prism_UsesWhiteNodeFills()
+    {
+        var theme = Theme.Prism;
+
+        Assert.Equal("#FFFFFF", theme.NodeFillColor);
+        Assert.NotNull(theme.NodePalette);
+        Assert.All(theme.NodePalette!, color => Assert.Equal("#FFFFFF", color));
+        Assert.NotNull(theme.BorderGradientStops);
+        Assert.True(theme.BorderGradientStops!.Count >= 4);
+    }
+
+    [Fact]
+    public void AngledLight_UsesStrongerDiagonalFillDefaults()
+    {
+        var theme = Theme.AngledLight;
+
+        Assert.True(theme.UseGradients);
+        Assert.False(theme.UseBorderGradients);
+        Assert.InRange(theme.GradientStrength, 0.14, 0.16);
+        Assert.Equal("soft", theme.ShadowStyle);
+    }
+
+    [Fact]
+    public void AngledDark_UsesDiagonalFillOnDarkSurface()
+    {
+        var theme = Theme.AngledDark;
+
+        Assert.True(theme.UseGradients);
+        Assert.False(theme.UseBorderGradients);
+        Assert.True(ColorUtils.GetLuminance(theme.BackgroundColor) < 128);
+        Assert.InRange(theme.GradientStrength, 0.14, 0.16);
+    }
+
+    [Theory]
+    [InlineData("presentation")]
+    [InlineData("forest")]
+    [InlineData("github-dark")]
+    [InlineData("dracula")]
+    [InlineData("tokyo-night")]
+    public void BuiltInTheme_SelectedThemes_UseExpressiveMultiStopBorderGradients(string name)
+    {
+        var theme = Theme.GetByName(name)!;
+
+        Assert.True(theme.UseBorderGradients);
+        Assert.NotNull(theme.BorderGradientStops);
+        Assert.True(theme.BorderGradientStops!.Count >= 4);
+    }
+
+    [Theory]
+    [InlineData("default")]
+    [InlineData("dark")]
+    [InlineData("nord")]
+    [InlineData("one-dark")]
+    public void BuiltInTheme_NonExpressiveGradientThemes_DefaultToSubtleBorderGradients(string name)
+    {
+        var theme = Theme.GetByName(name)!;
+
+        Assert.True(theme.UseBorderGradients);
+        Assert.Null(theme.BorderGradientStops);
     }
 
     [Fact]
@@ -151,14 +300,14 @@ public class ThemeTests
 
     private static void AssertValidTheme(Theme t, string name)
     {
-        Assert.False(string.IsNullOrEmpty(t.BackgroundColor),  $"{name}.BackgroundColor is empty");
-        Assert.False(string.IsNullOrEmpty(t.NodeFillColor),    $"{name}.NodeFillColor is empty");
-        Assert.False(string.IsNullOrEmpty(t.NodeStrokeColor),  $"{name}.NodeStrokeColor is empty");
-        Assert.False(string.IsNullOrEmpty(t.EdgeColor),        $"{name}.EdgeColor is empty");
-        Assert.False(string.IsNullOrEmpty(t.TextColor),        $"{name}.TextColor is empty");
-        Assert.False(string.IsNullOrEmpty(t.FontFamily),       $"{name}.FontFamily is empty");
-        Assert.True(t.FontSize > 0,                            $"{name}.FontSize must be > 0");
-        Assert.True(t.BorderRadius >= 0,                       $"{name}.BorderRadius must be >= 0");
-        Assert.True(t.DiagramPadding > 0,                      $"{name}.DiagramPadding must be > 0");
+        Assert.False(string.IsNullOrEmpty(t.BackgroundColor), $"{name}.BackgroundColor is empty");
+        Assert.False(string.IsNullOrEmpty(t.NodeFillColor), $"{name}.NodeFillColor is empty");
+        Assert.False(string.IsNullOrEmpty(t.NodeStrokeColor), $"{name}.NodeStrokeColor is empty");
+        Assert.False(string.IsNullOrEmpty(t.EdgeColor), $"{name}.EdgeColor is empty");
+        Assert.False(string.IsNullOrEmpty(t.TextColor), $"{name}.TextColor is empty");
+        Assert.False(string.IsNullOrEmpty(t.FontFamily), $"{name}.FontFamily is empty");
+        Assert.True(t.FontSize > 0, $"{name}.FontSize must be > 0");
+        Assert.True(t.BorderRadius >= 0, $"{name}.BorderRadius must be >= 0");
+        Assert.True(t.DiagramPadding > 0, $"{name}.DiagramPadding must be > 0");
     }
 }

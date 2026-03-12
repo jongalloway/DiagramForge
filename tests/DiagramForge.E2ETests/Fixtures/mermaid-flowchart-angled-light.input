@@ -1,0 +1,7 @@
+---
+theme: angled-light
+---
+flowchart LR
+  A[Explore] --> B[Draft]
+  B --> C[Refine]
+  C --> D[Share]

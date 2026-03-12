@@ -1,0 +1,9 @@
+---
+theme: dracula
+---
+xychart-beta
+    title "2023 vs 2024 Sales"
+    x-axis [Q1, Q2, Q3, Q4]
+    y-axis 200 --> 360
+    bar [205, 254, 304, 284]
+    bar [235, 284, 324, 354]
