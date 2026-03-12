@@ -208,7 +208,14 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // resulting rects may overlap. That's an accepted v1 limitation (tracked in
         // #14) — real-world subgraphs tend to be naturally clustered in the source.
 
-        var groupsById = diagram.Groups.ToDictionary(group => group.Id, StringComparer.Ordinal);
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
+        foreach (var g in diagram.Groups)
+        {
+            if (!groupsById.TryAdd(g.Id, g))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
+        }
+
         var computedGroups = new HashSet<string>(StringComparer.Ordinal);
 
         void ComputeGroupBounds(Group group)
@@ -229,7 +236,11 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             foreach (var childGroup in childGroups)
                 ComputeGroupBounds(childGroup);
 
-            if (nodeMembers.Count == 0 && childGroups.Count == 0)
+            // Only count child groups that have non-zero bounds (empty child groups
+            // do not contribute to the parent frame and must not leave min/max as ±Infinity).
+            var validChildGroups = childGroups.Where(child => child.Width > 0 && child.Height > 0).ToList();
+
+            if (nodeMembers.Count == 0 && validChildGroups.Count == 0)
             {
                 // Reset to zero so that a Diagram that is laid out more than once
                 // does not carry stale bounds from a previous pass.
@@ -253,7 +264,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 maxY = Math.Max(maxY, node.Y + node.Height);
             }
 
-            foreach (var childGroup in childGroups.Where(child => child.Width > 0 && child.Height > 0))
+            foreach (var childGroup in validChildGroups)
             {
                 minX = Math.Min(minX, childGroup.X);
                 minY = Math.Min(minY, childGroup.Y);
@@ -451,7 +462,14 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         }
 
         // ── Group bounding boxes ──────────────────────────────────────────────
-        var groupsById = diagram.Groups.ToDictionary(group => group.Id, StringComparer.Ordinal);
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
+        foreach (var g in diagram.Groups)
+        {
+            if (!groupsById.TryAdd(g.Id, g))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
+        }
+
         var computedGroups = new HashSet<string>(StringComparer.Ordinal);
 
         void ComputeGroupBounds(Group group)
@@ -472,7 +490,11 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             foreach (var childGroup in childGroups)
                 ComputeGroupBounds(childGroup);
 
-            if (nodeMembers.Count == 0 && childGroups.Count == 0)
+            // Only count child groups that have non-zero bounds (empty child groups
+            // do not contribute to the parent frame and must not leave min/max as ±Infinity).
+            var validChildGroups = childGroups.Where(child => child.Width > 0 && child.Height > 0).ToList();
+
+            if (nodeMembers.Count == 0 && validChildGroups.Count == 0)
             {
                 group.X = 0;
                 group.Y = 0;
@@ -494,7 +516,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 maxY = Math.Max(maxY, node.Y + node.Height);
             }
 
-            foreach (var childGroup in childGroups.Where(child => child.Width > 0 && child.Height > 0))
+            foreach (var childGroup in validChildGroups)
             {
                 minX = Math.Min(minX, childGroup.X);
                 minY = Math.Min(minY, childGroup.Y);
