@@ -161,7 +161,7 @@
         <stop offset="100%" stop-color="#8C4118"/>
       </linearGradient>
     </defs>
-    <rect x="-20.40" y="-10.40" width="40.80" height="16.25" rx="4.55" ry="4.55" fill="url(#node-10-fill-gradient)" stroke="url(#node-10-stroke-gradient)" stroke-width="1.50" fill-opacity="0.55"/>
+    <rect x="-20.40" y="-8.45" width="40.80" height="16.25" rx="4.55" ry="4.55" fill="url(#node-10-fill-gradient)" stroke="url(#node-10-stroke-gradient)" stroke-width="1.50" fill-opacity="0.55"/>
     <text x="0.00" y="4.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Heat</text>
   </g>
 </svg>

@@ -104,6 +104,7 @@ public class DiagramModelTests
         Assert.True(hints.HorizontalSpacing > 0);
         Assert.True(hints.VerticalSpacing > 0);
         Assert.True(hints.MinNodeWidth > 0);
+        Assert.True(hints.MaxNodeWidth > hints.MinNodeWidth);
         Assert.True(hints.MinNodeHeight > 0);
     }
 

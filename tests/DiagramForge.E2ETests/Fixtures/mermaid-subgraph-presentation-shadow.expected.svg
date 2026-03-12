@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="576.00" height="160.00" viewBox="0 0 576.00 160.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="576.00" height="168.00" viewBox="0 0 576.00 168.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
   </defs>
-  <rect width="576.00" height="160.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <rect width="576.00" height="168.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
   <defs>
     <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#EDF3FEEB"/>
@@ -23,7 +23,7 @@
       <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
     </filter>
   </defs>
-  <rect x="32.00" y="32.00" width="332.00" height="96.00" rx="12.00" ry="12.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.80" filter="url(#group-0-soft-shadow)"/>
+  <rect x="32.00" y="32.00" width="332.00" height="104.00" rx="12.00" ry="12.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.80" filter="url(#group-0-soft-shadow)"/>
   <rect x="42.00" y="42.00" width="143.95" height="23.12" rx="11.56" ry="11.56" fill="#E9EEF2" stroke="#4E7FCA" stroke-width="1.44"/>
   <text x="51.00" y="57.72" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.12" fill="#111827" font-weight="bold">Backend Services</text>
   <defs>
@@ -44,11 +44,11 @@
       <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
     </filter>
   </defs>
-  <rect x="392.00" y="32.00" width="152.00" height="96.00" rx="12.00" ry="12.00" fill="url(#group-1-fill-gradient)" stroke="url(#group-1-stroke-gradient)" stroke-width="1.80" filter="url(#group-1-soft-shadow)"/>
+  <rect x="392.00" y="32.00" width="152.00" height="104.00" rx="12.00" ry="12.00" fill="url(#group-1-fill-gradient)" stroke="url(#group-1-stroke-gradient)" stroke-width="1.80" filter="url(#group-1-soft-shadow)"/>
   <rect x="402.00" y="42.00" width="49.49" height="23.12" rx="11.56" ry="11.56" fill="#E9EEF2" stroke="#4E7FCA" stroke-width="1.44"/>
   <text x="411.00" y="57.72" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.12" fill="#111827" font-weight="bold">data</text>
-  <path d="M 168.00,92.00 C 192.00,92.00 204.00,92.00 228.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 348.00,92.00 C 372.00,92.00 384.00,92.00 408.00,92.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 168.00,96.00 C 192.00,96.00 204.00,96.00 228.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 348.00,96.00 C 372.00,96.00 384.00,96.00 408.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
   <g transform="translate(48.00,72.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -68,8 +68,8 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">API</text>
+    <rect width="120.00" height="48.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">API</text>
   </g>
   <g transform="translate(228.00,72.00)">
     <defs>
@@ -90,8 +90,8 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Worker</text>
+    <rect width="120.00" height="48.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Worker</text>
   </g>
   <g transform="translate(408.00,72.00)">
     <defs>
@@ -112,7 +112,7 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">DB</text>
+    <rect width="120.00" height="48.00" rx="0" ry="0" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">DB</text>
   </g>
 </svg>

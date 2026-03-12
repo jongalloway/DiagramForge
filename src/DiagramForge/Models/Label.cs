@@ -16,6 +16,9 @@ public class Label
     /// <summary>Optional tooltip / long-form description.</summary>
     public string? Tooltip { get; set; }
 
+    /// <summary>Computed line breaks used for wrapped SVG rendering.</summary>
+    public string[]? Lines { get; set; }
+
     /// <summary>Override font size (null = inherit from theme).</summary>
     public double? FontSize { get; set; }
 

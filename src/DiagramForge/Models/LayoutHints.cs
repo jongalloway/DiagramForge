@@ -20,6 +20,9 @@ public class LayoutHints
     /// <summary>Minimum width of a node (in SVG user units).</summary>
     public double MinNodeWidth { get; set; } = 120;
 
+    /// <summary>Maximum width of a node before text wrapping kicks in.</summary>
+    public double? MaxNodeWidth { get; set; } = 240;
+
     /// <summary>Minimum height of a node (in SVG user units).</summary>
     public double MinNodeHeight { get; set; } = 40;
 

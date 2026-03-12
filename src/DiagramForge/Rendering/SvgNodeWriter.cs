@@ -5,6 +5,8 @@ namespace DiagramForge.Rendering;
 
 internal static class SvgNodeWriter
 {
+    private const double DefaultLabelLineHeight = 1.15;
+
     internal static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
     {
         string? xyChartKind = node.Metadata.TryGetValue("xychart:kind", out var xyKindObj) ? xyKindObj as string : null;
@@ -111,10 +113,13 @@ internal static class SvgNodeWriter
         else if (SvgRenderSupport.HasTextOnlyBackdrop(node, fillOpacity))
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textWidth = SvgRenderSupport.EstimateTextWidth(node.Label.Text, fontSize);
+            var lines = GetRenderedLabelLines(node.Label);
+            double textWidth = lines.Length == 0 ? 0 : lines.Max(line => SvgRenderSupport.EstimateTextWidth(line, fontSize));
             double horizontalPadding = theme.NodePadding * 0.4;
-            double top = -fontSize * 0.80;
-            double height = fontSize * 1.25;
+            double lineHeight = fontSize * DefaultLabelLineHeight;
+            double textBlockHeight = lines.Length == 0 ? fontSize : fontSize + (lines.Length - 1) * lineHeight;
+            double top = -textBlockHeight * 0.65;
+            double height = textBlockHeight + fontSize * 0.25;
             double width = textWidth + horizontalPadding * 2;
             sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(-width / 2)}" y="{SvgRenderSupport.F(top)}" width="{SvgRenderSupport.F(width)}" height="{SvgRenderSupport.F(height)}" rx="{SvgRenderSupport.F(fontSize * 0.35)}" ry="{SvgRenderSupport.F(fontSize * 0.35)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
         }
@@ -127,7 +132,7 @@ internal static class SvgNodeWriter
             double textX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
             double textBaselineY = SvgRenderSupport.GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
 
-            AppendNodeLabel(sb, node.Label.Text, theme, textX, textBaselineY, fontSize, textColor);
+            AppendNodeLabel(sb, node.Label, theme, textX, textBaselineY, fontSize, textColor);
         }
 
         sb.AppendLine("  </g>");
@@ -135,15 +140,15 @@ internal static class SvgNodeWriter
 
     private static void AppendNodeLabel(
         StringBuilder sb,
-        string labelText,
+        Label label,
         Theme theme,
         double centerX,
         double centerY,
         double fontSize,
         string textColor)
     {
-        var lines = labelText.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
-        double lineHeight = fontSize * 1.15;
+        var lines = GetRenderedLabelLines(label);
+        double lineHeight = fontSize * DefaultLabelLineHeight;
         double firstBaselineY = centerY + fontSize * 0.35 - ((lines.Length - 1) * lineHeight / 2);
 
         if (lines.Length == 1)
@@ -160,6 +165,11 @@ internal static class SvgNodeWriter
 
         sb.AppendLine("    </text>");
     }
+
+    private static string[] GetRenderedLabelLines(Label label) =>
+        label.Lines is { Length: > 0 }
+            ? label.Lines
+            : label.Text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
 
     private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction, string shadowAttribute)
     {

@@ -1,0 +1,5 @@
+---
+theme: default
+---
+flowchart LR
+  A[This is a deliberately long label that should wrap instead of producing an absurdly wide node box in the rendered diagram] --> B[Ship]
