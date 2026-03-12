@@ -77,6 +77,18 @@ public class ConceptualDslParserTests
         Assert.Contains("exactly 2 rows and 2 columns", ex.Message);
     }
 
+    [Fact]
+    public void Parse_Matrix_WithCrLfLineEndings_ProducesFourQuadrantNodes()
+    {
+        const string text = "diagram: matrix\r\nrows:\r\n  - Row A\r\n  - Row B\r\ncolumns:\r\n  - Col 1\r\n  - Col 2\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal("Col 1\nRow A", diagram.Nodes["cell_0_0"].Label.Text);
+        Assert.Equal("Col 2\nRow B", diagram.Nodes["cell_1_1"].Label.Text);
+    }
+
     // ── Pyramid ───────────────────────────────────────────────────────────────
 
     [Fact]

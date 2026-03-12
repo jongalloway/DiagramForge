@@ -12,6 +12,7 @@
 
   <!-- Test project packages -->
   <ItemGroup>
+    <PackageVersion Include="BenchmarkDotNet" Version="0.14.0" />
     <!-- xUnit v3 (Apache-2.0) — includes Microsoft Testing Platform (MTP) runner -->
     <PackageVersion Include="xunit.v3" Version="3.2.2" />
     <!-- Code coverage (MIT) -->

@@ -437,6 +437,42 @@ public class MermaidParserTests
     }
 
     [Fact]
+    public void Parse_LeadingCommentsAndBlankLines_WithCrLf_DispatchesToFlowchartParser()
+    {
+        const string text = "\r\n%% comment before header\r\n\r\n%% another comment\r\nflowchart LR\r\n  A --> B\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("flowchart", diagram.DiagramType);
+        Assert.Equal("mermaid", diagram.SourceSyntax);
+        Assert.Single(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_XyChart_WithFlexibleWhitespace_ParsesCategoriesAndSeries()
+    {
+        const string text = """
+            xychart-beta
+              title "Quarterly Revenue"
+              x-axis [ Q1 ,  Q2, Q3 ]
+              y-axis "Revenue"   0   -->   10
+              bar [ 1 , 2 , 3 ]
+              line [ 3, 2 , 1 ]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("xychart", diagram.DiagramType);
+        Assert.Equal("Quarterly Revenue", diagram.Title);
+        Assert.Equal(6, diagram.Nodes.Count);
+
+        var categories = Assert.IsType<string[]>(diagram.Metadata["xychart:categories"]);
+        Assert.Equal(["Q1", "Q2", "Q3"], categories);
+        Assert.Equal(0d, Convert.ToDouble(diagram.Metadata["xychart:yMin"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(10d, Convert.ToDouble(diagram.Metadata["xychart:yMax"], System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
     public void Parse_UnsupportedMermaidDiagramType_ThrowsDiagramParseException()
     {
         var ex = Assert.Throws<DiagramParseException>(() =>

@@ -1,3 +1,4 @@
+using System.Collections.Frozen;
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
 
@@ -23,10 +24,8 @@ public sealed class ConceptualDslParser : IDiagramParser
 {
     public string SyntaxId => "conceptual";
 
-    private static readonly HashSet<string> KnownTypes = new(StringComparer.OrdinalIgnoreCase)
-    {
-        "matrix", "pyramid",
-    };
+    private static readonly FrozenSet<string> KnownTypes = new[] { "matrix", "pyramid" }
+        .ToFrozenSet(StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc/>
     public bool CanParse(string diagramText)
@@ -34,11 +33,13 @@ public sealed class ConceptualDslParser : IDiagramParser
         if (string.IsNullOrWhiteSpace(diagramText))
             return false;
 
-        var firstLine = diagramText.TrimStart().Split('\n')[0].Trim();
+        if (!TryReadFirstNonEmptyLine(diagramText.AsSpan(), out var firstLine))
+            return false;
+
         if (!firstLine.StartsWith("diagram:", StringComparison.OrdinalIgnoreCase))
             return false;
 
-        var typeValue = firstLine["diagram:".Length..].Trim().ToLowerInvariant();
+        var typeValue = firstLine["diagram:".Length..].Trim().ToString();
         return KnownTypes.Contains(typeValue);
     }
 
@@ -48,10 +49,7 @@ public sealed class ConceptualDslParser : IDiagramParser
         if (string.IsNullOrWhiteSpace(diagramText))
             throw new DiagramParseException("Diagram text cannot be null or empty.");
 
-        var lines = diagramText
-            .Split('\n')
-            .Select(l => l.TrimEnd())
-            .ToArray();
+        var lines = ReadLines(diagramText);
 
         if (lines.Length == 0)
             throw new DiagramParseException("Diagram text is empty.");
@@ -150,6 +148,66 @@ public sealed class ConceptualDslParser : IDiagramParser
 
     private static List<string> ReadListItems(string[] lines, int startIndex)
         => [.. EnumerateListItems(lines, startIndex)];
+
+    private static string[] ReadLines(string text)
+    {
+        var lines = new List<string>();
+
+        var span = text.AsSpan();
+        int start = 0;
+        while (start <= span.Length)
+        {
+            int length = 0;
+            while (start + length < span.Length && span[start + length] != '\n')
+                length++;
+
+            lines.Add(TrimLineEnd(span.Slice(start, length)).ToString());
+
+            start += length + 1;
+            if (start > span.Length)
+                break;
+        }
+
+        return [.. lines];
+    }
+
+    private static bool TryReadFirstNonEmptyLine(ReadOnlySpan<char> text, out ReadOnlySpan<char> line)
+    {
+        int start = 0;
+        while (start <= text.Length)
+        {
+            int length = 0;
+            while (start + length < text.Length && text[start + length] != '\n')
+                length++;
+
+            var candidate = text.Slice(start, length);
+            if (!candidate.IsEmpty && candidate[^1] == '\r')
+                candidate = candidate[..^1];
+
+            var trimmed = candidate.Trim();
+            if (!trimmed.IsEmpty)
+            {
+                line = trimmed;
+                return true;
+            }
+
+            start += length + 1;
+            if (start > text.Length)
+                break;
+        }
+
+        line = default;
+        return false;
+    }
+
+    private static ReadOnlySpan<char> TrimLineEnd(ReadOnlySpan<char> line)
+    {
+        int end = line.Length;
+        while (end > 0 && char.IsWhiteSpace(line[end - 1]) && line[end - 1] != '\n' && line[end - 1] != '\r')
+            end--;
+
+        return line[..end];
+    }
 
     private static IEnumerable<string> EnumerateListItems(string[] lines, int startIndex)
     {
