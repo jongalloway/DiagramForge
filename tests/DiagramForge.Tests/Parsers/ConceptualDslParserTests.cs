@@ -21,6 +21,7 @@ public class ConceptualDslParserTests
     [Theory]
     [InlineData("diagram: matrix\nrows:\n  - R1\ncolumns:\n  - C1")]
     [InlineData("diagram: pyramid\nlevels:\n  - L1")]
+    [InlineData("diagram: pillars\npillars:\n  - title: A\n  - title: B")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -99,6 +100,169 @@ public class ConceptualDslParserTests
         var diagram = _parser.Parse(text);
 
         Assert.Equal(3, diagram.Nodes.Count);
+    }
+
+    // ── Pillars ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForPillars()
+    {
+        const string text = "diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process\n    segments:\n      - Intake";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Pillars_ProducesTitleNodePerPillar()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: People
+                segments:
+                  - Skills
+                  - Roles
+              - title: Process
+                segments:
+                  - Intake
+                  - Delivery
+              - title: Technology
+                segments:
+                  - Platform
+                  - Tooling
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count(n => n.Value.Metadata.TryGetValue("pillars:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal)));
+        Assert.True(diagram.Nodes.ContainsKey("pillar_0"));
+        Assert.True(diagram.Nodes.ContainsKey("pillar_1"));
+        Assert.True(diagram.Nodes.ContainsKey("pillar_2"));
+        Assert.Equal("People", diagram.Nodes["pillar_0"].Label.Text);
+        Assert.Equal("Process", diagram.Nodes["pillar_1"].Label.Text);
+        Assert.Equal("Technology", diagram.Nodes["pillar_2"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Pillars_ProducesSegmentNodesPerPillar()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: People
+                segments:
+                  - Skills
+                  - Roles
+              - title: Process
+                segments:
+                  - Intake
+                  - Delivery
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(6, diagram.Nodes.Count); // 2 titles + 4 segments
+        Assert.True(diagram.Nodes.ContainsKey("pillar_0_segment_0"));
+        Assert.Equal("Skills", diagram.Nodes["pillar_0_segment_0"].Label.Text);
+        Assert.Equal("Roles", diagram.Nodes["pillar_0_segment_1"].Label.Text);
+        Assert.Equal("Intake", diagram.Nodes["pillar_1_segment_0"].Label.Text);
+        Assert.Equal("Delivery", diagram.Nodes["pillar_1_segment_1"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Pillars_SetsCorrectMetadata()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: People
+                segments:
+                  - Skills
+              - title: Process
+                segments:
+                  - Intake
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var titleNode = diagram.Nodes["pillar_0"];
+        Assert.Equal(0, titleNode.Metadata["pillars:pillarIndex"]);
+        Assert.Equal("title", titleNode.Metadata["pillars:kind"]);
+
+        var segNode = diagram.Nodes["pillar_0_segment_0"];
+        Assert.Equal(0, segNode.Metadata["pillars:pillarIndex"]);
+        Assert.Equal(0, segNode.Metadata["pillars:segmentIndex"]);
+        Assert.Equal("segment", segNode.Metadata["pillars:kind"]);
+    }
+
+    [Fact]
+    public void Parse_Pillars_WithNoSegments_ProducesOnlyTitleNodes()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: People
+              - title: Process
+              - title: Technology
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+        Assert.All(diagram.Nodes.Values, n =>
+            Assert.Equal("title", n.Metadata["pillars:kind"]));
+    }
+
+    [Fact]
+    public void Parse_Pillars_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: pillars\r\npillars:\r\n  - title: People\r\n    segments:\r\n      - Skills\r\n  - title: Process\r\n    segments:\r\n      - Intake\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal("People", diagram.Nodes["pillar_0"].Label.Text);
+        Assert.Equal("Skills", diagram.Nodes["pillar_0_segment_0"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Pillars_TooFewPillars_ThrowsDiagramParseException()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: People
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("2 and 5", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Pillars_TooManyPillars_ThrowsDiagramParseException()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: A
+              - title: B
+              - title: C
+              - title: D
+              - title: E
+              - title: F
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("2 and 5", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Pillars_MissingPillarsSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: pillars\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("pillars:", ex.Message);
     }
 
     // ── Metadata ─────────────────────────────────────────────────────────────
