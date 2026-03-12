@@ -46,5 +46,13 @@ public sealed partial class DefaultLayoutEngine
             node.Width = nodeW;
             node.Height = nodeH;
         }
+
+        foreach (var edge in diagram.Edges)
+        {
+            edge.Metadata["conceptual:cycleArc"] = true;
+            edge.Metadata["cycle:centerX"] = cx;
+            edge.Metadata["cycle:centerY"] = cy;
+            edge.Metadata["cycle:radius"] = radius;
+        }
     }
 }
