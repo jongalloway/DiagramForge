@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="536.00" height="456.00" viewBox="0 0 536.00 456.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
+    </marker>
+  </defs>
+  <rect width="536.00" height="456.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <path d="M 328.00,52.00 C 401.88,52.00 361.60,157.60 384.00,228.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 384.00,228.00 C 310.12,228.00 350.40,333.60 328.00,404.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 208.00,404.00 C 134.12,404.00 174.40,298.40 152.00,228.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 92.00,208.00 C 92.00,119.03 197.60,126.40 268.00,72.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <g transform="translate(208.00,32.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E9F1FF"/>
+        <stop offset="58%" stop-color="#E7F0FF"/>
+        <stop offset="100%" stop-color="#D6DEEC"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Plan</text>
+  </g>
+  <g transform="translate(384.00,208.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE8DC"/>
+        <stop offset="58%" stop-color="#FFE6D8"/>
+        <stop offset="100%" stop-color="#ECD5C8"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Build</text>
+  </g>
+  <g transform="translate(208.00,384.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1CD"/>
+        <stop offset="58%" stop-color="#FFF0C7"/>
+        <stop offset="100%" stop-color="#ECDEB8"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Measure</text>
+  </g>
+  <g transform="translate(32.00,208.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#DFF6EA"/>
+        <stop offset="58%" stop-color="#DCF5E8"/>
+        <stop offset="100%" stop-color="#CCE3D7"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Learn</text>
+  </g>
+</svg>

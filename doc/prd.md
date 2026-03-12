@@ -124,6 +124,7 @@ SmartArt‑inspired conceptual diagrams:
 
 - Matrix (2×2, 3×3)
 - Pyramid (segmented, labeled)
+- Cycle (3–6 steps, radial layout)
 
 Selection rule:
 
@@ -141,9 +142,9 @@ Examples that remain good candidates for the Conceptual DSL:
 
 - Matrix
 - Pyramid
+- Cycle ✓ (implemented)
 - Funnel
 - Chevron process
-- Cycle
 - Radial / hub-and-spoke
 - Pillars / stacked segments
 
@@ -155,7 +156,7 @@ Examples that remain good candidates for the Conceptual DSL:
 - Swimlanes
 - Gantt charts
 
-Future conceptual additions, if added, should prioritize slide-native layouts such as funnel, chevron process, cycle, radial / hub-and-spoke, and pillars rather than Mermaid-equivalent graph forms.
+Future conceptual additions, if added, should prioritize slide-native layouts such as funnel, chevron process, radial / hub-and-spoke, and pillars rather than Mermaid-equivalent graph forms.
 
 ---
 
