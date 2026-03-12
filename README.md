@@ -111,7 +111,7 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
 
 <h3>Built-in Themes</h3>
 
-This theme gallery is also a representative sample rather than the full catalog. DiagramForge ships with more than twenty built-in themes, and you can see the theme API in [With a custom theme](#with-a-custom-theme) below.
+This theme gallery is also a representative sample rather than the full catalog. DiagramForge ships with 23 built-in themes: `default`, `zinc-light`, `zinc-dark`, `dark`, `neutral`, `forest`, `presentation`, `prism`, `angled-light`, `angled-dark`, `github-light`, `github-dark`, `nord`, `nord-light`, `dracula`, `tokyo-night`, `tokyo-night-storm`, `tokyo-night-light`, `catppuccin-latte`, `catppuccin-mocha`, `solarized-light`, `solarized-dark`, and `one-dark`. See [With a custom theme](#with-a-custom-theme), [doc/theming.md](doc/theming.md), and [doc/frontmatter.md](doc/frontmatter.md) for the full styling surface.
 
 <table cellpadding="16" width="100%">
   <tr>
@@ -240,6 +240,8 @@ DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **
 
 ## Install
 
+DiagramForge targets `.NET 10`. For local development and the CLI tool, use SDK/runtime `10.0.100` or later.
+
 ### Library
 
 ```sh
@@ -285,7 +287,29 @@ var theme = new Theme
 string svg = new DiagramRenderer().Render(diagramText, theme);
 ```
 
-Theme precedence: **diagram-embedded theme** › **argument theme** › **`Theme.Default`**.
+Theme precedence: **frontmatter theme** -> **parser-assigned `Diagram.Theme`** -> **argument theme** -> **`Theme.Default`**.
+
+See [doc/theming.md](doc/theming.md) for the full `Theme` property surface and [doc/frontmatter.md](doc/frontmatter.md) for diagram-embedded styling.
+
+### With diagram frontmatter
+
+Diagram files can embed a small frontmatter block ahead of Mermaid or Conceptual DSL content:
+
+```text
+---
+theme: dracula
+palette: ["#FFB86C", "#8BE9FD", "#50FA7B"]
+borderStyle: rainbow
+fillStyle: diagonal-strong
+shadowStyle: soft
+transparent: true
+---
+flowchart LR
+  A[Plan] --> B[Build]
+  B --> C[Ship]
+```
+
+Supported frontmatter keys today: `theme`, `palette`, `borderStyle` / `border-style`, `fillStyle` / `fill-style`, `shadowStyle` / `shadow-style`, and `transparent` / `transparentBackground` / `transparent-background`.
 
 ### With a custom parser
 
@@ -306,17 +330,22 @@ Implement `IDiagramParser`. You get two methods: `CanParse(string)` for sniffing
 ## CLI usage
 
 ```text
-diagramforge <input-file> [--output <output.svg>]
+diagramforge <input-file> [options]
 ```
 
-| Argument                | Description                                          |
-| ----------------------- | ---------------------------------------------------- |
-| `<input-file>`          | Path to a diagram source file. Syntax auto-detected. |
-| `-o`, `--output <path>` | Write SVG to a file. Omit to write to stdout.        |
-| `--transparent`         | Omit the SVG background rect for overlay/embed use.  |
-| `-h`, `--help`          | Show usage.                                          |
+| Argument | Description |
+| --- | --- |
+| `<input-file>` | Path to a diagram source file. Syntax auto-detected. |
+| `-o`, `--output <path>` | Write SVG to a file. Omit to write to stdout. |
+| `--theme <name>` | Use one of the built-in named themes. |
+| `--palette <json>` | Override the theme's node palette with a JSON array of hex colors. |
+| `--theme-file <path.json>` | Load a complete theme object from JSON. |
+| `--transparent` | Omit the SVG background rect for overlay/embed use. |
+| `-h`, `--help` | Show usage. |
 
 **Exit codes:** `0` success · `1` bad arguments / file not found · `2` parse error · `3` unexpected failure.
+
+CLI precedence mirrors the library API: frontmatter can define theme and styling inside the diagram source, while explicit CLI flags win for `--palette` and `--transparent`.
 
 ```sh
 # write to file
@@ -333,7 +362,7 @@ diagramforge diagram.txt | rsvg-convert -o diagram.png
 
 ### Mermaid (subset)
 
-First line must start with one of the supported keywords below.
+DiagramForge intentionally implements a focused Mermaid subset rather than full Mermaid parity. The first non-frontmatter line must start with one of the supported keywords below.
 
 | Diagram family | Keywords | Current support |
 | --- | --- | --- |
@@ -496,7 +525,7 @@ xychart-beta
   line [20, 55, 80]
 ```
 
-Not yet supported: class diagrams, gantt, `click` directives, and full Mermaid feature parity within every supported diagram family.
+Not yet supported: class diagrams, ER diagrams, gantt, git graphs, requirement diagrams, C4, sankey, `click` directives, ELK flowchart layout, and full Mermaid feature parity within every supported diagram family.
 
 ### Conceptual DSL
 
@@ -592,6 +621,12 @@ flowchart LR
 ```
 
 Parsers produce a syntax-independent `Diagram` (nodes, edges, groups, labels, layout hints). The layout engine assigns coordinates. The SVG renderer draws. Every stage is replaceable via the DI constructor on `DiagramRenderer`.
+
+## Known limitations
+
+- Mermaid support is intentionally incremental. If you need broad Mermaid.js feature coverage, DiagramForge is not a drop-in replacement.
+- Frontmatter is recognized when the raw source starts with `---` and contains a closing `---` fence. Do not begin diagram content with a YAML-style fence unless you intend to use frontmatter.
+- Snapshot tests compare canonicalized XML, so whitespace and attribute ordering are not significant in E2E baseline files.
 
 ## Roadmap
 
