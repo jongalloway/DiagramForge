@@ -42,9 +42,58 @@ public sealed class SvgRenderer : ISvgRenderer
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(theme.DiagramPadding - 4)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.TitleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
         }
 
-        // Groups (render behind nodes)
-        int groupIndex = 0;
+        // Groups (render behind nodes). Parents render first so nested child groups
+        // sit on top of the parent fill instead of being washed out by it.
+        var parentMap = new Dictionary<string, List<string>>(StringComparer.Ordinal);
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
         foreach (var group in diagram.Groups)
+        {
+            if (!groupsById.TryAdd(group.Id, group))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{group.Id}' in diagram. Group IDs must be unique.");
+            foreach (var childGroupId in group.ChildGroupIds)
+            {
+                if (!parentMap.TryGetValue(childGroupId, out var parents))
+                {
+                    parents = [];
+                    parentMap[childGroupId] = parents;
+                }
+
+                parents.Add(group.Id);
+            }
+        }
+
+        var depthCache = new Dictionary<string, int>(StringComparer.Ordinal);
+        int GetGroupDepth(Group group, HashSet<string>? visiting = null)
+        {
+            if (depthCache.TryGetValue(group.Id, out var cachedDepth))
+                return cachedDepth;
+
+            visiting ??= new HashSet<string>(StringComparer.Ordinal);
+
+            // Cycle detection: if already on the call stack, break the cycle by
+            // treating this group as top-level to avoid infinite recursion.
+            if (!visiting.Add(group.Id))
+                return depthCache[group.Id] = 0;
+
+            if (!parentMap.TryGetValue(group.Id, out var parentIds) || parentIds.Count == 0)
+            {
+                visiting.Remove(group.Id);
+                return depthCache[group.Id] = 0;
+            }
+
+            var depth = 1 + parentIds
+                .Where(groupsById.ContainsKey)
+                .Select(parentId => groupsById[parentId])
+                .Max(g => GetGroupDepth(g, visiting));
+
+            visiting.Remove(group.Id);
+            depthCache[group.Id] = depth;
+            return depth;
+        }
+
+        int groupIndex = 0;
+        foreach (var group in diagram.Groups.OrderBy(g => GetGroupDepth(g)).ThenBy(g => g.Id, StringComparer.Ordinal))
             SvgStructureWriter.AppendGroup(sb, group, theme, groupIndex++);
 
         // Sequence-diagram lifelines: dashed vertical lines below each participant box.

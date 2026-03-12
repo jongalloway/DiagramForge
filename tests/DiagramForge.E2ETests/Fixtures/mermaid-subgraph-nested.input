@@ -1,0 +1,18 @@
+---
+theme: default
+---
+flowchart LR
+  Client((Client))
+  subgraph platform [Platform]
+    subgraph api [API]
+      subgraph ingress [Ingress]
+        A[Gateway] --> B[Auth]
+      end
+      B --> C[Service]
+    end
+    subgraph data [Data]
+      E(Cache) --> D((DB))
+    end
+    C --> E
+  end
+  Client --> A

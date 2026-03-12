@@ -208,14 +208,39 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // resulting rects may overlap. That's an accepted v1 limitation (tracked in
         // #14) — real-world subgraphs tend to be naturally clustered in the source.
 
-        foreach (var group in diagram.Groups)
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
+        foreach (var g in diagram.Groups)
         {
-            var members = group.ChildNodeIds
+            if (!groupsById.TryAdd(g.Id, g))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
+        }
+
+        var computedGroups = new HashSet<string>(StringComparer.Ordinal);
+
+        void ComputeGroupBounds(Group group)
+        {
+            if (!computedGroups.Add(group.Id))
+                return;
+
+            var nodeMembers = group.ChildNodeIds
                 .Where(diagram.Nodes.ContainsKey)
                 .Select(id => diagram.Nodes[id])
                 .ToList();
 
-            if (members.Count == 0)
+            var childGroups = group.ChildGroupIds
+                .Where(groupsById.ContainsKey)
+                .Select(id => groupsById[id])
+                .ToList();
+
+            foreach (var childGroup in childGroups)
+                ComputeGroupBounds(childGroup);
+
+            // Only count child groups that have non-zero bounds (empty child groups
+            // do not contribute to the parent frame and must not leave min/max as ±Infinity).
+            var validChildGroups = childGroups.Where(child => child.Width > 0 && child.Height > 0).ToList();
+
+            if (nodeMembers.Count == 0 && validChildGroups.Count == 0)
             {
                 // Reset to zero so that a Diagram that is laid out more than once
                 // does not carry stale bounds from a previous pass.
@@ -223,13 +248,29 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 group.Y = 0;
                 group.Width = 0;
                 group.Height = 0;
-                continue; // leave at zero-size; renderer emits an invisible <rect>
+                return;
             }
 
-            double minX = members.Min(n => n.X);
-            double minY = members.Min(n => n.Y);
-            double maxX = members.Max(n => n.X + n.Width);
-            double maxY = members.Max(n => n.Y + n.Height);
+            double minX = double.PositiveInfinity;
+            double minY = double.PositiveInfinity;
+            double maxX = double.NegativeInfinity;
+            double maxY = double.NegativeInfinity;
+
+            foreach (var node in nodeMembers)
+            {
+                minX = Math.Min(minX, node.X);
+                minY = Math.Min(minY, node.Y);
+                maxX = Math.Max(maxX, node.X + node.Width);
+                maxY = Math.Max(maxY, node.Y + node.Height);
+            }
+
+            foreach (var childGroup in validChildGroups)
+            {
+                minX = Math.Min(minX, childGroup.X);
+                minY = Math.Min(minY, childGroup.Y);
+                maxX = Math.Max(maxX, childGroup.X + childGroup.Width);
+                maxY = Math.Max(maxY, childGroup.Y + childGroup.Height);
+            }
 
             // Top padding reserves room for the group label (SvgRenderer draws it at
             // group.Y + fontSize + 4). Unlabeled groups — anonymous `subgraph` blocks
@@ -243,6 +284,9 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             group.Width = (maxX - minX) + 2 * sidePad;
             group.Height = (maxY - minY) + topPad + sidePad;
         }
+
+        foreach (var group in diagram.Groups)
+            ComputeGroupBounds(group);
 
         // Shift the whole diagram if any group extends into negative space. This
         // happens when a group member sits in the first row/column and the group's
@@ -418,38 +462,67 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         }
 
         // ── Group bounding boxes ──────────────────────────────────────────────
-        // Recursively collect all descendant node IDs for a group (including nested groups).
-        IEnumerable<string> AllNodeIds(Group g)
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
+        foreach (var g in diagram.Groups)
         {
-            foreach (var nid in g.ChildNodeIds)
-                yield return nid;
-
-            foreach (var cgid in g.ChildGroupIds)
-            {
-                var cg = diagram.Groups.FirstOrDefault(x => x.Id == cgid);
-                if (cg is not null)
-                    foreach (var nid in AllNodeIds(cg))
-                        yield return nid;
-            }
+            if (!groupsById.TryAdd(g.Id, g))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
         }
 
-        foreach (var group in diagram.Groups)
+        var computedGroups = new HashSet<string>(StringComparer.Ordinal);
+
+        void ComputeGroupBounds(Group group)
         {
-            var members = AllNodeIds(group)
+            if (!computedGroups.Add(group.Id))
+                return;
+
+            var nodeMembers = group.ChildNodeIds
                 .Where(diagram.Nodes.ContainsKey)
                 .Select(id => diagram.Nodes[id])
                 .ToList();
 
-            if (members.Count == 0)
+            var childGroups = group.ChildGroupIds
+                .Where(groupsById.ContainsKey)
+                .Select(id => groupsById[id])
+                .ToList();
+
+            foreach (var childGroup in childGroups)
+                ComputeGroupBounds(childGroup);
+
+            // Only count child groups that have non-zero bounds (empty child groups
+            // do not contribute to the parent frame and must not leave min/max as ±Infinity).
+            var validChildGroups = childGroups.Where(child => child.Width > 0 && child.Height > 0).ToList();
+
+            if (nodeMembers.Count == 0 && validChildGroups.Count == 0)
             {
-                group.X = 0; group.Y = 0; group.Width = 0; group.Height = 0;
-                continue;
+                group.X = 0;
+                group.Y = 0;
+                group.Width = 0;
+                group.Height = 0;
+                return;
             }
 
-            double minX = members.Min(n => n.X);
-            double minY = members.Min(n => n.Y);
-            double maxX = members.Max(n => n.X + n.Width);
-            double maxY = members.Max(n => n.Y + n.Height);
+            double minX = double.PositiveInfinity;
+            double minY = double.PositiveInfinity;
+            double maxX = double.NegativeInfinity;
+            double maxY = double.NegativeInfinity;
+
+            foreach (var node in nodeMembers)
+            {
+                minX = Math.Min(minX, node.X);
+                minY = Math.Min(minY, node.Y);
+                maxX = Math.Max(maxX, node.X + node.Width);
+                maxY = Math.Max(maxY, node.Y + node.Height);
+            }
+
+            foreach (var childGroup in validChildGroups)
+            {
+                minX = Math.Min(minX, childGroup.X);
+                minY = Math.Min(minY, childGroup.Y);
+                maxX = Math.Max(maxX, childGroup.X + childGroup.Width);
+                maxY = Math.Max(maxY, childGroup.Y + childGroup.Height);
+            }
 
             double sidePad = theme.NodePadding;
             bool labeled = !string.IsNullOrWhiteSpace(group.Label.Text);
@@ -460,6 +533,9 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             group.Width = (maxX - minX) + 2 * sidePad;
             group.Height = (maxY - minY) + topPad + sidePad;
         }
+
+        foreach (var group in diagram.Groups)
+            ComputeGroupBounds(group);
 
         // Shift whole diagram if any group extends into negative space.
         ShiftDiagramForGroupPadding(diagram, theme.DiagramPadding);

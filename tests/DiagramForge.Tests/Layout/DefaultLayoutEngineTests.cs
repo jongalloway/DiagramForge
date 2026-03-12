@@ -483,6 +483,34 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_NestedGroups_ParentEnclosesChildGroup()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var parent = new Group("parent", "Parent");
+        parent.ChildGroupIds.Add("child");
+
+        var child = new Group("child", "Child");
+        child.ChildNodeIds.AddRange(["A", "B"]);
+
+        diagram.AddGroup(parent);
+        diagram.AddGroup(child);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(parent.X <= child.X, $"parent.X {parent.X} should be <= child.X {child.X}");
+        Assert.True(parent.Y <= child.Y, $"parent.Y {parent.Y} should be <= child.Y {child.Y}");
+        Assert.True(parent.X + parent.Width >= child.X + child.Width,
+            $"parent right edge {parent.X + parent.Width} should cover child right edge {child.X + child.Width}");
+        Assert.True(parent.Y + parent.Height >= child.Y + child.Height,
+            $"parent bottom edge {parent.Y + parent.Height} should cover child bottom edge {child.Y + child.Height}");
+    }
+
+    [Fact]
     public void Layout_BlockDiagram_UsesGridColumnsAndSpans()
     {
         var diagram = new Diagram { DiagramType = "block" };
