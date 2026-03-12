@@ -1,0 +1,233 @@
+using System.Text;
+using DiagramForge.Models;
+
+namespace DiagramForge.Rendering;
+
+internal static class SvgNodeWriter
+{
+    internal static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
+    {
+        string? xyChartKind = node.Metadata.TryGetValue("xychart:kind", out var xyKindObj) ? xyKindObj as string : null;
+        string baseFill;
+        string baseStroke;
+
+        if (SvgRenderSupport.TryResolveXyChartColors(node, theme, out string chartFill, out string chartStroke))
+        {
+            baseFill = chartFill;
+            baseStroke = chartStroke;
+        }
+        else if (node.FillColor is not null)
+        {
+            baseFill = node.FillColor;
+            baseStroke = node.StrokeColor ?? ColorUtils.Darken(node.FillColor, 0.20);
+        }
+        else if (theme.NodePalette is { Count: > 0 })
+        {
+            string paletteFill = theme.NodePalette[nodeIndex % theme.NodePalette.Count];
+            baseFill = paletteFill;
+            baseStroke =
+                node.StrokeColor
+                ?? (theme.NodeStrokePalette is { Count: > 0 }
+                    ? theme.NodeStrokePalette[nodeIndex % theme.NodeStrokePalette.Count]
+                    : ColorUtils.Darken(paletteFill, 0.20));
+        }
+        else
+        {
+            baseFill = theme.NodeFillColor;
+            baseStroke = node.StrokeColor ?? theme.NodeStrokeColor;
+        }
+
+        double? fillOpacity = SvgRenderSupport.GetMetadataDouble(node, "render:fillOpacity");
+        if (!fillOpacity.HasValue && string.Equals(xyChartKind, "bar", StringComparison.OrdinalIgnoreCase))
+            fillOpacity = ColorUtils.IsLight(theme.BackgroundColor) ? 0.88 : 0.80;
+
+        string fillOpacityAttribute = fillOpacity.HasValue
+            ? $" fill-opacity=\"{SvgRenderSupport.F(fillOpacity.Value)}\""
+            : string.Empty;
+
+        bool textOnly = node.Metadata.TryGetValue("render:textOnly", out var textOnlyObj)
+            && textOnlyObj is bool isTextOnly
+            && isTextOnly;
+        bool applyNodeShadow = theme.UseNodeShadows
+            && string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase)
+            && !textOnly;
+
+        sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
+
+        SvgRenderSupport.AppendGradientDefs(sb, "    ", $"node-{nodeIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
+        SvgRenderSupport.AppendShadowFilterDefs(sb, "    ", $"node-{nodeIndex}", theme, out string? nodeShadowFilterId, applyNodeShadow);
+        string nodeShadowAttribute = nodeShadowFilterId is null ? string.Empty : $" filter=\"url(#{nodeShadowFilterId})\"";
+
+        if (!textOnly)
+        {
+            if (node.Metadata.TryGetValue("conceptual:pyramidSegment", out var pyramidSegmentObj)
+                && pyramidSegmentObj is bool isPyramidSegment
+                && isPyramidSegment)
+            {
+                AppendPyramidSegmentNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+            }
+            else
+            {
+                switch (node.Shape)
+                {
+                    case Shape.Circle:
+                    case Shape.Ellipse:
+                        AppendEllipseNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+                        break;
+                    case Shape.Diamond:
+                        AppendDiamondNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+                        break;
+                    case Shape.Pill:
+                    case Shape.Stadium:
+                        AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, node.Height / 2, nodeShadowAttribute);
+                        break;
+                    case Shape.ArrowRight:
+                        AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "right", nodeShadowAttribute);
+                        break;
+                    case Shape.ArrowLeft:
+                        AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "left", nodeShadowAttribute);
+                        break;
+                    case Shape.ArrowUp:
+                        AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "up", nodeShadowAttribute);
+                        break;
+                    case Shape.ArrowDown:
+                        AppendArrowPolygon(sb, node.Width, node.Height, fill, stroke, theme, "down", nodeShadowAttribute);
+                        break;
+                    case Shape.Rectangle:
+                        if (string.Equals(xyChartKind, "bar", StringComparison.OrdinalIgnoreCase))
+                            AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, SvgRenderSupport.GetXyChartBarRadius(node, theme), nodeShadowAttribute);
+                        else
+                            AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, 0, nodeShadowAttribute);
+                        break;
+                    case Shape.Cloud:
+                        AppendCloudPath(sb, node.Width, node.Height, fill, stroke, theme, nodeShadowAttribute);
+                        break;
+                    default:
+                        AppendRoundedRectNode(sb, node, fill, stroke, theme, fillOpacityAttribute, theme.BorderRadius, nodeShadowAttribute);
+                        break;
+                }
+            }
+        }
+        else if (SvgRenderSupport.HasTextOnlyBackdrop(node, fillOpacity))
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textWidth = SvgRenderSupport.EstimateTextWidth(node.Label.Text, fontSize);
+            double horizontalPadding = theme.NodePadding * 0.4;
+            double top = -fontSize * 0.80;
+            double height = fontSize * 1.25;
+            double width = textWidth + horizontalPadding * 2;
+            sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(-width / 2)}" y="{SvgRenderSupport.F(top)}" width="{SvgRenderSupport.F(width)}" height="{SvgRenderSupport.F(height)}" rx="{SvgRenderSupport.F(fontSize * 0.35)}" ry="{SvgRenderSupport.F(fontSize * 0.35)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
+        }
+
+        if (!string.IsNullOrWhiteSpace(node.Label.Text))
+        {
+            string resolvedTextColor = node.Label.Color ?? SvgRenderSupport.ResolveNodeTextColor(baseFill, theme);
+            string textColor = SvgRenderSupport.Escape(resolvedTextColor);
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            double textX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
+            double textBaselineY = SvgRenderSupport.GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
+
+            AppendNodeLabel(sb, node.Label.Text, theme, textX, textBaselineY, fontSize, textColor);
+        }
+
+        sb.AppendLine("  </g>");
+    }
+
+    private static void AppendNodeLabel(
+        StringBuilder sb,
+        string labelText,
+        Theme theme,
+        double centerX,
+        double centerY,
+        double fontSize,
+        string textColor)
+    {
+        var lines = labelText.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
+        double lineHeight = fontSize * 1.15;
+        double firstBaselineY = centerY + fontSize * 0.35 - ((lines.Length - 1) * lineHeight / 2);
+
+        if (lines.Length == 1)
+        {
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{textColor}">{SvgRenderSupport.Escape(lines[0])}</text>""");
+            return;
+        }
+
+        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{textColor}">""");
+        sb.AppendLine($"""      <tspan x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}">{SvgRenderSupport.Escape(lines[0])}</tspan>""");
+
+        for (int i = 1; i < lines.Length; i++)
+            sb.AppendLine($"""      <tspan x="{SvgRenderSupport.F(centerX)}" dy="{SvgRenderSupport.F(lineHeight)}">{SvgRenderSupport.Escape(lines[i])}</tspan>""");
+
+        sb.AppendLine("    </text>");
+    }
+
+    private static void AppendArrowPolygon(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string direction, string shadowAttribute)
+    {
+        double head = Math.Min(width, height) * 0.4;
+        string points = direction switch
+        {
+            "left" => $"{SvgRenderSupport.F(width)},{SvgRenderSupport.F(height * 0.2)} {SvgRenderSupport.F(head)},{SvgRenderSupport.F(height * 0.2)} {SvgRenderSupport.F(head)},{SvgRenderSupport.F(0)} 0,{SvgRenderSupport.F(height / 2)} {SvgRenderSupport.F(head)},{SvgRenderSupport.F(height)} {SvgRenderSupport.F(head)},{SvgRenderSupport.F(height * 0.8)} {SvgRenderSupport.F(width)},{SvgRenderSupport.F(height * 0.8)}",
+            "up" => $"{SvgRenderSupport.F(width * 0.2)},{SvgRenderSupport.F(height)} {SvgRenderSupport.F(width * 0.2)},{SvgRenderSupport.F(head)} 0,{SvgRenderSupport.F(head)} {SvgRenderSupport.F(width / 2)},0 {SvgRenderSupport.F(width)},{SvgRenderSupport.F(head)} {SvgRenderSupport.F(width * 0.8)},{SvgRenderSupport.F(head)} {SvgRenderSupport.F(width * 0.8)},{SvgRenderSupport.F(height)}",
+            "down" => $"{SvgRenderSupport.F(width * 0.2)},0 {SvgRenderSupport.F(width * 0.2)},{SvgRenderSupport.F(height - head)} 0,{SvgRenderSupport.F(height - head)} {SvgRenderSupport.F(width / 2)},{SvgRenderSupport.F(height)} {SvgRenderSupport.F(width)},{SvgRenderSupport.F(height - head)} {SvgRenderSupport.F(width * 0.8)},{SvgRenderSupport.F(height - head)} {SvgRenderSupport.F(width * 0.8)},0",
+            _ => $"0,{SvgRenderSupport.F(height * 0.2)} {SvgRenderSupport.F(width - head)},{SvgRenderSupport.F(height * 0.2)} {SvgRenderSupport.F(width - head)},0 {SvgRenderSupport.F(width)},{SvgRenderSupport.F(height / 2)} {SvgRenderSupport.F(width - head)},{SvgRenderSupport.F(height)} {SvgRenderSupport.F(width - head)},{SvgRenderSupport.F(height * 0.8)} 0,{SvgRenderSupport.F(height * 0.8)}",
+        };
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{shadowAttribute}/>""");
+    }
+
+    private static void AppendEllipseNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        double cx = node.Width / 2;
+        double cy = node.Height / 2;
+        sb.AppendLine($"""    <ellipse cx="{SvgRenderSupport.F(cx)}" cy="{SvgRenderSupport.F(cy)}" rx="{SvgRenderSupport.F(cx)}" ry="{SvgRenderSupport.F(cy)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendDiamondNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        double mx = node.Width / 2;
+        double my = node.Height / 2;
+        sb.AppendLine($"""    <polygon points="{SvgRenderSupport.F(mx)},0 {SvgRenderSupport.F(node.Width)},{SvgRenderSupport.F(my)} {SvgRenderSupport.F(mx)},{SvgRenderSupport.F(node.Height)} 0,{SvgRenderSupport.F(my)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendPyramidSegmentNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        double topWidth = SvgRenderSupport.GetMetadataDouble(node, "conceptual:pyramidTopWidth") ?? 0;
+        double bottomWidth = SvgRenderSupport.GetMetadataDouble(node, "conceptual:pyramidBottomWidth") ?? node.Width;
+        double topInset = (node.Width - topWidth) / 2;
+        double bottomInset = (node.Width - bottomWidth) / 2;
+
+        string points = topWidth <= 0.01
+            ? $"{SvgRenderSupport.F(node.Width / 2)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}"
+            : $"{SvgRenderSupport.F(topInset)},0 {SvgRenderSupport.F(topInset + topWidth)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}";
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius, string shadowAttribute)
+    {
+        string formattedRadius = radius == 0 ? "0" : SvgRenderSupport.F(radius);
+        sb.AppendLine($"""    <rect width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        double w = width;
+        double h = height;
+        double r1 = h * 0.28;
+        double r2 = h * 0.22;
+        double r3 = h * 0.30;
+        double r4 = h * 0.24;
+        double r5 = h * 0.20;
+        double flatBottomY = h * 0.72;
+
+        string d =
+            $"M {SvgRenderSupport.F(w * 0.10)},{SvgRenderSupport.F(flatBottomY)} " +
+            $"A {SvgRenderSupport.F(r1)},{SvgRenderSupport.F(r1)} 0 0,1 {SvgRenderSupport.F(w * 0.20)},{SvgRenderSupport.F(flatBottomY - r1 * 1.1)} " +
+            $"A {SvgRenderSupport.F(r2)},{SvgRenderSupport.F(r2)} 0 0,1 {SvgRenderSupport.F(w * 0.37)},{SvgRenderSupport.F(flatBottomY - r2 * 1.5)} " +
+            $"A {SvgRenderSupport.F(r3)},{SvgRenderSupport.F(r3)} 0 0,1 {SvgRenderSupport.F(w * 0.60)},{SvgRenderSupport.F(flatBottomY - r3 * 1.0)} " +
+            $"A {SvgRenderSupport.F(r4)},{SvgRenderSupport.F(r4)} 0 0,1 {SvgRenderSupport.F(w * 0.80)},{SvgRenderSupport.F(flatBottomY - r4 * 0.9)} " +
+            $"A {SvgRenderSupport.F(r5)},{SvgRenderSupport.F(r5)} 0 0,1 {SvgRenderSupport.F(w * 0.92)},{SvgRenderSupport.F(flatBottomY)} " +
+            "Z";
+        sb.AppendLine($"""    <path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{shadowAttribute}/>""");
+    }
+}
