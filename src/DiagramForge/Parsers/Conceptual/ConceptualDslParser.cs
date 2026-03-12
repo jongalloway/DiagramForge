@@ -105,14 +105,6 @@ public sealed class ConceptualDslParser : IDiagramParser
 
     private static void ParseMatrixDiagram(string[] lines, IDiagramSemanticModelBuilder builder)
     {
-        // Expected format:
-        //   rows:
-        //     - Row A
-        //     - Row B
-        //   columns:
-        //     - Col 1
-        //     - Col 2
-
         int rowsLine = FindSectionLine(lines, "rows");
         int colsLine = FindSectionLine(lines, "columns");
 
@@ -122,13 +114,20 @@ public sealed class ConceptualDslParser : IDiagramParser
         if (rows.Count == 0 || cols.Count == 0)
             throw new DiagramParseException("Matrix diagram requires non-empty 'rows' and 'columns' sections.");
 
+        if (rows.Count != 2 || cols.Count != 2)
+            throw new DiagramParseException("Matrix diagram currently supports exactly 2 rows and 2 columns.");
+
         for (int r = 0; r < rows.Count; r++)
         {
             for (int c = 0; c < cols.Count; c++)
             {
                 var nodeId = $"cell_{r}_{c}";
-                var label = $"{rows[r]} / {cols[c]}";
-                builder.AddNode(new Node(nodeId, label));
+                var node = new Node(nodeId, $"{cols[c]}\n{rows[r]}");
+                node.Metadata["matrix:row"] = r;
+                node.Metadata["matrix:column"] = c;
+                node.Metadata["matrix:rowLabel"] = rows[r];
+                node.Metadata["matrix:columnLabel"] = cols[c];
+                builder.AddNode(node);
             }
         }
 

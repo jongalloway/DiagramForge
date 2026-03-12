@@ -8,6 +8,14 @@ public class DefaultLayoutEngineTests
     private readonly DefaultLayoutEngine _engine = new();
     private readonly Theme _theme = Theme.Default;
 
+    private static Node MatrixCell(string id, string label, int row, int column)
+    {
+        var node = new Node(id, label);
+        node.Metadata["matrix:row"] = row;
+        node.Metadata["matrix:column"] = column;
+        return node;
+    }
+
     [Fact]
     public void Layout_SingleNode_AssignsNonNegativePosition()
     {
@@ -243,6 +251,32 @@ public class DefaultLayoutEngineTests
             $"Expected two-set overlap label X ({overlap.X}) to fall between the circles.");
         Assert.True(overlap.Y > left.Y && overlap.Y < left.Y + left.Height,
             $"Expected two-set overlap label Y ({overlap.Y}) to remain inside the overlapping band.");
+    }
+
+    [Fact]
+    public void Layout_MatrixDiagram_PlacesQuadrantsInTwoByTwoGrid()
+    {
+        var diagram = new Diagram { DiagramType = "matrix" };
+
+        diagram.AddNode(MatrixCell("cell_0_0", "Urgent\nImportant", 0, 0))
+               .AddNode(MatrixCell("cell_0_1", "Not Urgent\nImportant", 0, 1))
+               .AddNode(MatrixCell("cell_1_0", "Urgent\nNot Important", 1, 0))
+               .AddNode(MatrixCell("cell_1_1", "Not Urgent\nNot Important", 1, 1));
+
+        _engine.Layout(diagram, _theme);
+
+        var topLeft = diagram.Nodes["cell_0_0"];
+        var topRight = diagram.Nodes["cell_0_1"];
+        var bottomLeft = diagram.Nodes["cell_1_0"];
+        var bottomRight = diagram.Nodes["cell_1_1"];
+
+        Assert.Equal(topLeft.Width, topRight.Width);
+        Assert.Equal(topLeft.Height, bottomLeft.Height);
+        Assert.True(topLeft.X < topRight.X);
+        Assert.True(topLeft.Y < bottomLeft.Y);
+        Assert.True(bottomLeft.X < bottomRight.X);
+        Assert.Equal(topLeft.Width / 2, Convert.ToDouble(topLeft.Metadata["label:centerX"], System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(topLeft.Height / 2, Convert.ToDouble(topLeft.Metadata["label:centerY"], System.Globalization.CultureInfo.InvariantCulture));
     }
 
     [Fact]

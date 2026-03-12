@@ -39,7 +39,7 @@ public class ConceptualDslParserTests
     // ── Matrix ────────────────────────────────────────────────────────────────
 
     [Fact]
-    public void Parse_Matrix_ProducesRowsTimesColumnsNodes()
+    public void Parse_Matrix_ProducesFourQuadrantNodes()
     {
         const string text = """
             diagram: matrix
@@ -53,7 +53,28 @@ public class ConceptualDslParserTests
 
         var diagram = _parser.Parse(text);
 
-        Assert.Equal(4, diagram.Nodes.Count); // 2×2
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal("Col 1\nRow A", diagram.Nodes["cell_0_0"].Label.Text);
+        Assert.Equal(0, diagram.Nodes["cell_0_0"].Metadata["matrix:row"]);
+        Assert.Equal(0, diagram.Nodes["cell_0_0"].Metadata["matrix:column"]);
+        Assert.Equal("Col 2\nRow B", diagram.Nodes["cell_1_1"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Matrix_RequiresExactlyTwoRowsAndTwoColumns()
+    {
+        const string text = """
+            diagram: matrix
+            rows:
+              - Row A
+            columns:
+              - Col 1
+              - Col 2
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("exactly 2 rows and 2 columns", ex.Message);
     }
 
     // ── Pyramid ───────────────────────────────────────────────────────────────
@@ -73,7 +94,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_SourceSyntax_IsConceptual()
     {
-        var diagram = _parser.Parse("diagram: matrix\nrows:\n  - X\ncolumns:\n  - Y");
+        var diagram = _parser.Parse("diagram: matrix\nrows:\n  - X\n  - Y\ncolumns:\n  - A\n  - B");
 
         Assert.Equal("conceptual", diagram.SourceSyntax);
     }

@@ -215,7 +215,7 @@ directly on trimmed lines:
 | Diagram type | Section key | Structure |
 |-------------|------------|-----------|
 | `pyramid` | `levels:` | Nodes only |
-| `matrix` | `rows:` + `columns:` | Grid of `cell_{r}_{c}` nodes |
+| `matrix` | `rows:` + `columns:` | Specialized 2×2 quadrant nodes (`cell_{r}_{c}`) |
 
 The parser sets `LayoutDirection` to `LeftToRight` for all types.
 
