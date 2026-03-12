@@ -886,4 +886,28 @@ public class DefaultLayoutEngineTests
         var sizes = diagram.Nodes.Values.Select(n => (n.Width, n.Height)).Distinct().ToList();
         Assert.Single(sizes);
     }
+
+    [Fact]
+    public void Layout_CycleDiagram_TagsEdgesForCircularRouting()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"))
+               .AddEdge(new Edge("node_0", "node_1"))
+               .AddEdge(new Edge("node_1", "node_2"))
+               .AddEdge(new Edge("node_2", "node_3"))
+               .AddEdge(new Edge("node_3", "node_0"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Edges, edge =>
+        {
+            Assert.True(edge.Metadata.TryGetValue("conceptual:cycleArc", out var route) && route is true);
+            Assert.True(edge.Metadata.ContainsKey("cycle:centerX"));
+            Assert.True(edge.Metadata.ContainsKey("cycle:centerY"));
+            Assert.True(edge.Metadata.ContainsKey("cycle:radius"));
+        });
+    }
 }

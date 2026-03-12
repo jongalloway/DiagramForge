@@ -109,7 +109,20 @@ internal static class SvgStructureWriter
         double strokeWidth = edge.LineStyle == EdgeLineStyle.Thick ? theme.StrokeWidth * 2 : theme.StrokeWidth;
         string markerEnd = edge.ArrowHead != ArrowHeadStyle.None ? """ marker-end="url(#arrowhead)" """ : " ";
 
-        sb.AppendLine($"""  <path d="M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} C {cp1} {cp2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerEnd}/>""");
+        string pathData = $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} C {cp1} {cp2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
+        if (TryBuildCycleArcPath(edge, source, target, out var cycleArcPath, out var cycleLabelX, out var cycleLabelY))
+        {
+            pathData = cycleArcPath;
+            if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
+            {
+                x1 = cycleLabelX;
+                y1 = cycleLabelY + 4;
+                x2 = cycleLabelX;
+                y2 = cycleLabelY + 4;
+            }
+        }
+
+        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerEnd}/>""");
 
         if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
         {
@@ -144,6 +157,132 @@ internal static class SvgStructureWriter
             sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(badgeX)}" y="{SvgRenderSupport.F(badgeY)}" width="{SvgRenderSupport.F(badgeWidth)}" height="{SvgRenderSupport.F(badgeHeight)}" rx="{SvgRenderSupport.F(badgeHeight / 2)}" ry="{SvgRenderSupport.F(badgeHeight / 2)}" fill="{badgeFill}" stroke="{badgeStroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth * 0.8)}"/>""");
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(badgeX + 9)}" y="{SvgRenderSupport.F(badgeY + badgeHeight * 0.68)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(badgeFontSize)}" fill="{badgeText}" font-weight="bold">{SvgRenderSupport.Escape(group.Label.Text)}</text>""");
         }
+    }
+
+    private static bool TryBuildCycleArcPath(Edge edge, Node source, Node target, out string pathData, out double labelX, out double labelY)
+    {
+        pathData = string.Empty;
+        labelX = 0;
+        labelY = 0;
+
+        if (!edge.Metadata.TryGetValue("conceptual:cycleArc", out var isCycleArc) || isCycleArc is not true)
+            return false;
+
+        if (!edge.Metadata.TryGetValue("cycle:centerX", out var centerXObj)
+            || !edge.Metadata.TryGetValue("cycle:centerY", out var centerYObj)
+            || !edge.Metadata.TryGetValue("cycle:radius", out var radiusObj))
+            return false;
+
+        double centerX = Convert.ToDouble(centerXObj, System.Globalization.CultureInfo.InvariantCulture);
+        double centerY = Convert.ToDouble(centerYObj, System.Globalization.CultureInfo.InvariantCulture);
+        double radius = Convert.ToDouble(radiusObj, System.Globalization.CultureInfo.InvariantCulture);
+
+        double sourceCenterX = source.X + source.Width / 2;
+        double sourceCenterY = source.Y + source.Height / 2;
+        double targetCenterX = target.X + target.Width / 2;
+        double targetCenterY = target.Y + target.Height / 2;
+
+        double sourceAngle = Math.Atan2(sourceCenterY - centerY, sourceCenterX - centerX);
+        double targetAngle = Math.Atan2(targetCenterY - centerY, targetCenterX - centerX);
+        double sweepAngle = NormalizeAngle(targetAngle - sourceAngle);
+        if (sweepAngle <= 0)
+            return false;
+
+        double midAngle = sourceAngle + sweepAngle / 2;
+        double midX = centerX + radius * Math.Cos(midAngle);
+        double midY = centerY + radius * Math.Sin(midAngle);
+
+        double startTangentX = -Math.Sin(sourceAngle);
+        double startTangentY = Math.Cos(sourceAngle);
+        double endTangentX = Math.Sin(targetAngle);
+        double endTangentY = -Math.Cos(targetAngle);
+
+        var (startX, startY) = ProjectPointToNodeBoundary(source, startTangentX, startTangentY);
+        var (endX, endY) = ProjectPointToNodeBoundary(target, endTangentX, endTangentY);
+
+        if (!TryBuildArcThroughPoint(startX, startY, midX, midY, endX, endY, out pathData))
+            return false;
+
+        labelX = midX;
+        labelY = midY - 4;
+        return true;
+    }
+
+    private static (double X, double Y) ProjectPointToNodeBoundary(Node node, double directionX, double directionY)
+    {
+        double centerX = node.X + node.Width / 2;
+        double centerY = node.Y + node.Height / 2;
+        double dx = directionX;
+        double dy = directionY;
+
+        if (Math.Abs(dx) < double.Epsilon && Math.Abs(dy) < double.Epsilon)
+            return (centerX, centerY);
+
+        double halfWidth = node.Width / 2;
+        double halfHeight = node.Height / 2;
+        double scale = 1 / Math.Max(Math.Abs(dx) / halfWidth, Math.Abs(dy) / halfHeight);
+        return (centerX + dx * scale, centerY + dy * scale);
+    }
+
+    private static bool TryBuildArcThroughPoint(
+        double startX,
+        double startY,
+        double midX,
+        double midY,
+        double endX,
+        double endY,
+        out string pathData)
+    {
+        pathData = string.Empty;
+
+        double determinant = 2 * (
+            startX * (midY - endY)
+            + midX * (endY - startY)
+            + endX * (startY - midY));
+
+        if (Math.Abs(determinant) < 0.001)
+            return false;
+
+        double startSquared = startX * startX + startY * startY;
+        double midSquared = midX * midX + midY * midY;
+        double endSquared = endX * endX + endY * endY;
+
+        double centerX = (
+            startSquared * (midY - endY)
+            + midSquared * (endY - startY)
+            + endSquared * (startY - midY)) / determinant;
+        double centerY = (
+            startSquared * (endX - midX)
+            + midSquared * (startX - endX)
+            + endSquared * (midX - startX)) / determinant;
+
+        double radius = Math.Sqrt(Math.Pow(startX - centerX, 2) + Math.Pow(startY - centerY, 2));
+        if (radius <= 0)
+            return false;
+
+        double startAngle = Math.Atan2(startY - centerY, startX - centerX);
+        double middleAngle = Math.Atan2(midY - centerY, midX - centerX);
+        double endAngle = Math.Atan2(endY - centerY, endX - centerX);
+
+        double forwardSweep = NormalizeAngle(endAngle - startAngle);
+        double middleSweep = NormalizeAngle(middleAngle - startAngle);
+        bool useForwardSweep = middleSweep <= forwardSweep;
+        int sweepFlag = useForwardSweep ? 1 : 0;
+        double selectedSweep = useForwardSweep ? forwardSweep : NormalizeAngle(startAngle - endAngle);
+        int largeArcFlag = selectedSweep > Math.PI ? 1 : 0;
+
+        pathData = $"M {SvgRenderSupport.F(startX)},{SvgRenderSupport.F(startY)} A {SvgRenderSupport.F(radius)},{SvgRenderSupport.F(radius)} 0 {largeArcFlag},{sweepFlag} {SvgRenderSupport.F(endX)},{SvgRenderSupport.F(endY)}";
+        return true;
+    }
+
+    private static double NormalizeAngle(double angle)
+    {
+        const double Tau = Math.PI * 2;
+        while (angle <= 0)
+            angle += Tau;
+        while (angle > Tau)
+            angle -= Tau;
+        return angle;
     }
 
     internal static void AppendLifelines(StringBuilder sb, Diagram diagram, Theme theme, double canvasHeight)

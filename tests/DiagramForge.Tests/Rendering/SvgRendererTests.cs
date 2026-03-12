@@ -301,6 +301,27 @@ public class SvgRendererTests
         Assert.Contains(">Vision</text>", svg);
     }
 
+    [Fact]
+    public void Render_CycleDiagram_UsesCircularArcEdgePaths()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"))
+               .AddEdge(new Edge("node_0", "node_1"))
+               .AddEdge(new Edge("node_1", "node_2"))
+               .AddEdge(new Edge("node_2", "node_3"))
+               .AddEdge(new Edge("node_3", "node_0"));
+
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Matches(@"<path d=""M [^""]+ A [^""]+"" fill=""none""", svg);
+        Assert.DoesNotMatch(@"<path d=""M [^""]+ C [^""]+"" fill=""none""", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>
