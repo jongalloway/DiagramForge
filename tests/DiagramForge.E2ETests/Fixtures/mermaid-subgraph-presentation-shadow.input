@@ -1,0 +1,11 @@
+---
+theme: presentation
+---
+flowchart LR
+  subgraph backend [Backend Services]
+    A[API] --> B[Worker]
+  end
+  subgraph data
+    C[DB]
+  end
+  B --> C

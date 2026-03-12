@@ -20,12 +20,6 @@ namespace DiagramForge.Parsers.Mermaid;
 /// </remarks>
 internal sealed class MermaidXyChartParser : IMermaidDiagramParser
 {
-    // Palette for bar and line series — matches the renderer's SeriesPalette.
-    private static readonly string[] SeriesPalette =
-    [
-        "#4F81BD", "#70AD47", "#ED7D31", "#FFC000", "#5B9BD5",
-        "#A5A5A5", "#264478", "#9B57A0", "#636363", "#255E91",
-    ];
     // Matches a bracketed list of values: [a, b, c] or [100, 200, 300]
     private static readonly Regex BracketListRegex = new(
         @"\[([^\]]*)\]",
@@ -175,9 +169,8 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             {
                 var id = $"bar_{seriesIndex}_{ci}";
                 var node = new Node(id, string.Empty) { Shape = Shape.Rectangle };
-                node.FillColor = SeriesPalette[seriesIndex % SeriesPalette.Length];
-                node.StrokeColor = SeriesPalette[seriesIndex % SeriesPalette.Length];
                 node.Metadata["xychart:kind"] = "bar";
+                node.Metadata["xychart:paletteIndex"] = seriesIndex;
                 node.Metadata["xychart:seriesIndex"] = seriesIndex;
                 node.Metadata["xychart:categoryIndex"] = ci;
                 node.Metadata["xychart:value"] = series[ci];
@@ -194,10 +187,8 @@ internal sealed class MermaidXyChartParser : IMermaidDiagramParser
             {
                 var id = $"line_{lineSeriesIndex}_{ci}";
                 var node = new Node(id, string.Empty) { Shape = Shape.Circle };
-                string lineColor = SeriesPalette[(barSeries.Count + lineSeriesIndex) % SeriesPalette.Length];
-                node.FillColor = lineColor;
-                node.StrokeColor = lineColor;
                 node.Metadata["xychart:kind"] = "linePoint";
+                node.Metadata["xychart:paletteIndex"] = barSeries.Count + lineSeriesIndex;
                 node.Metadata["xychart:seriesIndex"] = lineSeriesIndex;
                 node.Metadata["xychart:categoryIndex"] = ci;
                 node.Metadata["xychart:value"] = series[ci];

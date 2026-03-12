@@ -7,7 +7,9 @@
 
 **Text in, SVG out.** A .NET library and CLI that turns plain-text diagram descriptions into clean, self-contained SVG — no browser, no JavaScript runtime, no headless Chrome.
 
-![DiagramForge sample gallery — flowcharts, block diagrams, mindmaps, Venn diagrams, and more](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/docs/gallery.svg)
+![DiagramForge diagram gallery — representative diagram types rendered as clean SVG](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/doc/diagram-gallery.svg)
+
+![DiagramForge theme gallery — the same flowchart rendered across every built-in theme](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/doc/theme-gallery.svg)
 
 ```csharp
 var renderer = new DiagramRenderer();
@@ -75,6 +77,7 @@ var theme = new Theme
     TextColor       = "#F9FAFB",
     FontFamily      = "Inter, sans-serif",
     BorderRadius    = 12,
+  TransparentBackground = true,
 };
 
 string svg = new DiagramRenderer().Render(diagramText, theme);
@@ -108,6 +111,7 @@ diagramforge <input-file> [--output <output.svg>]
 | ----------------------- | ---------------------------------------------------- |
 | `<input-file>`          | Path to a diagram source file. Syntax auto-detected. |
 | `-o`, `--output <path>` | Write SVG to a file. Omit to write to stdout.        |
+| `--transparent`         | Omit the SVG background rect for overlay/embed use.  |
 | `-h`, `--help`          | Show usage.                                          |
 
 **Exit codes:** `0` success · `1` bad arguments / file not found · `2` parse error · `3` unexpected failure.
@@ -115,6 +119,9 @@ diagramforge <input-file> [--output <output.svg>]
 ```sh
 # write to file
 diagramforge diagram.mmd -o diagram.svg
+
+# render for overlay on an existing page background
+diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg
 
 # pipe to something else
 diagramforge diagram.txt | rsvg-convert -o diagram.png

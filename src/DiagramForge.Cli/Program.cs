@@ -3,7 +3,7 @@ using DiagramForge.Models;
 
 // DiagramForge CLI
 // Usage:
-//   diagramforge <input-file> [--output <output-file>] [--theme <name>] [--palette <json>]
+//   diagramforge <input-file> [--output <output-file>] [--theme <name>] [--palette <json>] [--transparent]
 //   diagramforge --help
 
 if (args.Length == 0 || args[0] is "--help" or "-h")
@@ -14,10 +14,11 @@ if (args.Length == 0 || args[0] is "--help" or "-h")
 
 string inputPath = args[0];
 
-string? outputPath   = ParseFlagValue(args, "--output",  "-o");
-string? themeName    = ParseFlagValue(args, "--theme");
-string? paletteJson  = ParseFlagValue(args, "--palette");
-string? themeFile    = ParseFlagValue(args, "--theme-file");
+string? outputPath = ParseFlagValue(args, "--output", "-o");
+string? themeName = ParseFlagValue(args, "--theme");
+string? paletteJson = ParseFlagValue(args, "--palette");
+string? themeFile = ParseFlagValue(args, "--theme-file");
+bool transparentBackground = args.Skip(1).Any(arg => string.Equals(arg, "--transparent", StringComparison.Ordinal));
 
 if (outputPath is null)
 {
@@ -81,7 +82,7 @@ else if (themeName is not null)
     theme = Theme.GetByName(themeName);
     if (theme is null)
     {
-        Console.Error.WriteLine($"Error: Unknown theme '{themeName}'. Valid themes: default, dark, neutral, forest, presentation.");
+        Console.Error.WriteLine($"Error: Unknown theme '{themeName}'. Valid themes: {string.Join(", ", Theme.BuiltInThemeNames)}.");
         return 1;
     }
 }
@@ -92,7 +93,7 @@ try
 {
     string diagramText = await File.ReadAllTextAsync(inputPath);
     var renderer = new DiagramRenderer();
-    string svg = renderer.Render(diagramText, theme, paletteJson);
+    string svg = renderer.Render(diagramText, theme, paletteJson, transparentBackgroundOverride: transparentBackground ? true : null);
 
     if (outputPath is not null)
     {
@@ -157,7 +158,9 @@ static bool RequiresFlagValue(string[] args, params string[] flags)
 
 static void PrintHelp()
 {
-    Console.WriteLine("""
+    string builtInThemes = string.Join(", ", Theme.BuiltInThemeNames);
+
+    Console.WriteLine($$"""
         DiagramForge — Diagram text to SVG renderer
 
         Usage:
@@ -170,10 +173,11 @@ static void PrintHelp()
         Options:
           --output, -o <path>           Write SVG to a file instead of stdout
           --theme <name>                Use a built-in named theme:
-                                          default, dark, neutral, forest, presentation
+                                                                                    {{builtInThemes}}
           --palette <json>              JSON array of hex colors for node palette, e.g. '["#FF0000","#00FF00"]'
                                         Overrides the node palette of the selected theme.
           --theme-file <path.json>      Load a complete theme from a JSON file.
+          --transparent                 Omit the SVG background rect for embedding on an existing surface.
 
         Supported syntaxes:
           mermaid                       Flowchart LR/TB (Mermaid subset)
@@ -183,6 +187,7 @@ static void PrintHelp()
           diagramforge diagram.mmd --output diagram.svg
           diagramforge diagram.mmd --theme dark --output diagram.svg
           diagramforge diagram.mmd --theme dark --palette '["#FF6B6B","#4ECDC4","#45B7D1"]' -o out.svg
+            diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg
           diagramforge diagram.mmd --theme-file mytheme.json -o out.svg
-        """);
+                """);
 }

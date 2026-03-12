@@ -15,6 +15,25 @@ namespace DiagramForge.Models;
 public static class ColorUtils
 {
     /// <summary>
+    /// Blends <paramref name="fromHex"/> toward <paramref name="toHex"/> by <paramref name="amount"/>.
+    /// </summary>
+    /// <param name="fromHex">Starting hex color string.</param>
+    /// <param name="toHex">Target hex color string.</param>
+    /// <param name="amount">Blend factor 0–1 (0 = <paramref name="fromHex"/>, 1 = <paramref name="toHex"/>).</param>
+    public static string Blend(string fromHex, string toHex, double amount)
+    {
+        amount = Math.Clamp(amount, 0, 1);
+        var (fromR, fromG, fromB, fromA) = ParseHexWithAlpha(fromHex);
+        var (toR, toG, toB, toA) = ParseHexWithAlpha(toHex);
+
+        return ToHex(
+            Clamp((int)Math.Round(fromR + (toR - fromR) * amount)),
+            Clamp((int)Math.Round(fromG + (toG - fromG) * amount)),
+            Clamp((int)Math.Round(fromB + (toB - fromB) * amount)),
+            Clamp((int)Math.Round(fromA + (toA - fromA) * amount)));
+    }
+
+    /// <summary>
     /// Returns a lighter version of the given hex color by blending toward white.
     /// The alpha channel (if present) is preserved in the output.
     /// </summary>
@@ -63,6 +82,36 @@ public static class ColorUtils
             Clamp((int)(b + (luminance - b) * amount)),
             a);
     }
+
+    /// <summary>
+    /// Returns the same color with the requested alpha opacity.
+    /// </summary>
+    public static string WithOpacity(string hex, double opacity)
+    {
+        var (r, g, b, _) = ParseHexWithAlpha(hex);
+        int a = Clamp((int)Math.Round(Math.Clamp(opacity, 0, 1) * 255));
+        return ToHex(r, g, b, a);
+    }
+
+    /// <summary>
+    /// Computes a simple perceived luminance value for a hex color.
+    /// </summary>
+    public static double GetLuminance(string hex)
+    {
+        var (r, g, b) = ParseHex(hex);
+        return r * 0.299 + g * 0.587 + b * 0.114;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when a color is perceived as light.
+    /// </summary>
+    public static bool IsLight(string hex) => GetLuminance(hex) > 128;
+
+    /// <summary>
+    /// Picks a readable text color for a given background.
+    /// </summary>
+    public static string ChooseTextColor(string backgroundHex, string lightTextHex = "#F8FAFC", string darkTextHex = "#0F172A") =>
+        IsLight(backgroundHex) ? darkTextHex : lightTextHex;
 
     // ── Parsing ───────────────────────────────────────────────────────────────
 

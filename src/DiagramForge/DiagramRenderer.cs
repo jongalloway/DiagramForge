@@ -76,7 +76,7 @@ public sealed class DiagramRenderer
     /// Converts <paramref name="diagramText"/> to an SVG string using the supplied <paramref name="theme"/>.
     /// </summary>
     public string Render(string diagramText, Theme? theme)
-        => Render(diagramText, theme, paletteJson: null);
+        => Render(diagramText, theme, paletteJson: null, transparentBackgroundOverride: null);
 
     /// <summary>
     /// Converts <paramref name="diagramText"/> to an SVG string, applying an optional JSON palette
@@ -95,20 +95,67 @@ public sealed class DiagramRenderer
     /// <exception cref="DiagramParseException">No registered parser can handle the input.</exception>
     /// <exception cref="ArgumentException"><paramref name="paletteJson"/> is not valid JSON or contains non-hex values.</exception>
     public string Render(string diagramText, Theme? theme, string? paletteJson)
+        => Render(diagramText, theme, paletteJson, transparentBackgroundOverride: null);
+
+    /// <summary>
+    /// Converts <paramref name="diagramText"/> to an SVG string, applying optional palette and
+    /// transparent-background overrides on top of the resolved theme.
+    /// </summary>
+    public string Render(string diagramText, Theme? theme, string? paletteJson, bool? transparentBackgroundOverride)
     {
-        var parser = FindParser(diagramText)
+        var frontmatter = ParseFrontmatter(diagramText);
+        var parser = FindParser(frontmatter.DiagramText)
             ?? throw new DiagramParseException(
                 $"No registered parser can handle the supplied diagram text. " +
                 $"Registered syntaxes: {string.Join(", ", _parsers.Select(p => p.SyntaxId))}");
 
-        var diagram = parser.Parse(diagramText);
-        var effectiveTheme = diagram.Theme ?? theme ?? _defaultTheme;
+        var diagram = parser.Parse(frontmatter.DiagramText);
+        var effectiveTheme = frontmatter.Theme ?? diagram.Theme ?? theme ?? _defaultTheme;
+        var effectivePaletteJson = paletteJson ?? frontmatter.PaletteJson;
+        bool? effectiveTransparentBackground = transparentBackgroundOverride ?? frontmatter.TransparentBackground;
 
-        if (paletteJson is not null)
-        {
-            // Clone so we don't mutate shared instances like Theme.Dark
+        if (effectivePaletteJson is not null
+            || frontmatter.BorderStyle is not null
+            || frontmatter.FillStyle is not null
+            || frontmatter.ShadowStyle is not null
+            || effectiveTransparentBackground.HasValue
+            || effectiveTheme.FillStyle is not null
+            || effectiveTheme.ShadowStyle is not null)
             effectiveTheme = CloneTheme(effectiveTheme);
-            effectiveTheme.NodePalette = DeserializePaletteJson(paletteJson);
+
+        if (effectiveTransparentBackground.HasValue)
+        {
+            effectiveTheme.TransparentBackground = effectiveTransparentBackground.Value;
+        }
+
+        if (effectiveTheme.FillStyle is not null)
+        {
+            ApplyFillStyle(effectiveTheme, effectiveTheme.FillStyle);
+        }
+
+        if (effectiveTheme.ShadowStyle is not null)
+        {
+            ApplyShadowStyle(effectiveTheme, effectiveTheme.ShadowStyle);
+        }
+
+        if (effectivePaletteJson is not null)
+        {
+            effectiveTheme.NodePalette = DeserializePaletteJson(effectivePaletteJson);
+        }
+
+        if (frontmatter.BorderStyle is not null)
+        {
+            ApplyBorderStyle(effectiveTheme, frontmatter.BorderStyle);
+        }
+
+        if (frontmatter.FillStyle is not null)
+        {
+            ApplyFillStyle(effectiveTheme, frontmatter.FillStyle);
+        }
+
+        if (frontmatter.ShadowStyle is not null)
+        {
+            ApplyShadowStyle(effectiveTheme, frontmatter.ShadowStyle);
         }
 
         _layoutEngine.Layout(diagram, effectiveTheme);
@@ -185,25 +232,201 @@ public sealed class DiagramRenderer
 
     private static Theme CloneTheme(Theme source) => new()
     {
-        PrimaryColor     = source.PrimaryColor,
-        SecondaryColor   = source.SecondaryColor,
-        AccentColor      = source.AccentColor,
-        BackgroundColor  = source.BackgroundColor,
-        NodeFillColor    = source.NodeFillColor,
-        NodeStrokeColor  = source.NodeStrokeColor,
-        EdgeColor        = source.EdgeColor,
-        TextColor        = source.TextColor,
-        SubtleTextColor  = source.SubtleTextColor,
-        FontFamily       = source.FontFamily,
-        FontSize         = source.FontSize,
-        TitleFontSize    = source.TitleFontSize,
-        BorderRadius     = source.BorderRadius,
-        StrokeWidth      = source.StrokeWidth,
-        NodePadding      = source.NodePadding,
-        DiagramPadding   = source.DiagramPadding,
-        NodePalette      = source.NodePalette is not null ? [.. source.NodePalette] : null,
+        PrimaryColor = source.PrimaryColor,
+        SecondaryColor = source.SecondaryColor,
+        AccentColor = source.AccentColor,
+        BackgroundColor = source.BackgroundColor,
+        SurfaceColor = source.SurfaceColor,
+        BorderColor = source.BorderColor,
+        NodeFillColor = source.NodeFillColor,
+        NodeStrokeColor = source.NodeStrokeColor,
+        GroupFillColor = source.GroupFillColor,
+        GroupStrokeColor = source.GroupStrokeColor,
+        EdgeColor = source.EdgeColor,
+        TextColor = source.TextColor,
+        TitleTextColor = source.TitleTextColor,
+        SubtleTextColor = source.SubtleTextColor,
+        FillStyle = source.FillStyle,
+        ShadowStyle = source.ShadowStyle,
+        BorderGradientStops = source.BorderGradientStops is null ? null : [.. source.BorderGradientStops],
+        UseGradients = source.UseGradients,
+        UseBorderGradients = source.UseBorderGradients,
+        GradientStrength = source.GradientStrength,
+        ShadowColor = source.ShadowColor,
+        ShadowOpacity = source.ShadowOpacity,
+        ShadowBlur = source.ShadowBlur,
+        ShadowOffsetX = source.ShadowOffsetX,
+        ShadowOffsetY = source.ShadowOffsetY,
+        TransparentBackground = source.TransparentBackground,
+        UseNodeShadows = source.UseNodeShadows,
+        FontFamily = source.FontFamily,
+        FontSize = source.FontSize,
+        TitleFontSize = source.TitleFontSize,
+        BorderRadius = source.BorderRadius,
+        StrokeWidth = source.StrokeWidth,
+        NodePadding = source.NodePadding,
+        DiagramPadding = source.DiagramPadding,
+        NodePalette = source.NodePalette is not null ? [.. source.NodePalette] : null,
         NodeStrokePalette = source.NodeStrokePalette is not null ? [.. source.NodeStrokePalette] : null,
     };
+
+    private static FrontmatterOptions ParseFrontmatter(string raw)
+    {
+        if (!raw.StartsWith("---", StringComparison.Ordinal))
+            return new FrontmatterOptions(raw, null, null, null, null, null, null);
+
+        int endIndex = raw.IndexOf("\n---", 3, StringComparison.Ordinal);
+        if (endIndex < 0)
+            return new FrontmatterOptions(raw, null, null, null, null, null, null);
+
+        string frontmatter = raw[3..endIndex].Trim();
+        string diagramText = raw[(endIndex + 4)..].TrimStart('\r', '\n');
+
+        Theme? parsedTheme = null;
+        string? parsedPaletteJson = null;
+        string? parsedBorderStyle = null;
+        string? parsedFillStyle = null;
+        string? parsedShadowStyle = null;
+        bool? parsedTransparentBackground = null;
+
+        foreach (string rawLine in frontmatter.Split('\n'))
+        {
+            string line = rawLine.Trim();
+            if (line.Length == 0)
+                continue;
+
+            if (line.StartsWith("theme:", StringComparison.OrdinalIgnoreCase))
+            {
+                string name = Unquote(line["theme:".Length..].Trim());
+                parsedTheme = Theme.GetByName(name)
+                    ?? throw new ArgumentException($"Unknown theme name in frontmatter: '{name}'.", nameof(raw));
+            }
+            else if (line.StartsWith("palette:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedPaletteJson = line["palette:".Length..].Trim();
+            }
+            else if (line.StartsWith("borderStyle:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedBorderStyle = Unquote(line["borderStyle:".Length..].Trim());
+            }
+            else if (line.StartsWith("border-style:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedBorderStyle = Unquote(line["border-style:".Length..].Trim());
+            }
+            else if (line.StartsWith("fillStyle:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedFillStyle = Unquote(line["fillStyle:".Length..].Trim());
+            }
+            else if (line.StartsWith("fill-style:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedFillStyle = Unquote(line["fill-style:".Length..].Trim());
+            }
+            else if (line.StartsWith("shadowStyle:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedShadowStyle = Unquote(line["shadowStyle:".Length..].Trim());
+            }
+            else if (line.StartsWith("shadow-style:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedShadowStyle = Unquote(line["shadow-style:".Length..].Trim());
+            }
+            else if (line.StartsWith("transparent:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedTransparentBackground = ParseBoolean(line["transparent:".Length..].Trim(), raw, "transparent");
+            }
+            else if (line.StartsWith("transparentBackground:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedTransparentBackground = ParseBoolean(line["transparentBackground:".Length..].Trim(), raw, "transparentBackground");
+            }
+            else if (line.StartsWith("transparent-background:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedTransparentBackground = ParseBoolean(line["transparent-background:".Length..].Trim(), raw, "transparent-background");
+            }
+        }
+
+        return new FrontmatterOptions(diagramText, parsedTheme, parsedPaletteJson, parsedBorderStyle, parsedFillStyle, parsedShadowStyle, parsedTransparentBackground);
+    }
+
+    private static void ApplyBorderStyle(Theme theme, string borderStyle)
+    {
+        switch (borderStyle.Trim().ToLowerInvariant())
+        {
+            case "solid":
+                theme.UseBorderGradients = false;
+                theme.BorderGradientStops = null;
+                break;
+            case "subtle":
+                theme.UseBorderGradients = true;
+                theme.BorderGradientStops = null;
+                break;
+            case "rainbow":
+                theme.UseBorderGradients = true;
+                theme.BorderGradientStops = Theme.CreateExpressiveBorderStops(
+                    theme.NodePalette ?? [theme.NodeFillColor, theme.PrimaryColor, theme.SecondaryColor, theme.AccentColor],
+                    theme.BackgroundColor);
+                break;
+            default:
+                throw new ArgumentException($"Unknown border style in frontmatter: '{borderStyle}'. Expected solid, subtle, or rainbow.", nameof(borderStyle));
+        }
+    }
+
+    private static void ApplyFillStyle(Theme theme, string fillStyle)
+    {
+        switch (fillStyle.Trim().ToLowerInvariant())
+        {
+            case "flat":
+                theme.FillStyle = "flat";
+                theme.UseGradients = false;
+                break;
+            case "subtle":
+                theme.FillStyle = "subtle";
+                theme.UseGradients = true;
+                theme.GradientStrength = Math.Min(Math.Max(theme.GradientStrength, 0.10), 0.12);
+                break;
+            case "diagonal-strong":
+                theme.FillStyle = "diagonal-strong";
+                theme.UseGradients = true;
+                theme.GradientStrength = Math.Max(theme.GradientStrength, 0.16);
+                break;
+            default:
+                throw new ArgumentException($"Unknown fill style in frontmatter: '{fillStyle}'. Expected flat, subtle, or diagonal-strong.", nameof(fillStyle));
+        }
+    }
+
+    private static void ApplyShadowStyle(Theme theme, string shadowStyle)
+    {
+        switch (shadowStyle.Trim().ToLowerInvariant())
+        {
+            case "none":
+                theme.ShadowStyle = "none";
+                break;
+            case "soft":
+                theme.ShadowStyle = "soft";
+                theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.12 : theme.ShadowOpacity, 0.04, 0.20);
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 1.20 : theme.ShadowBlur, 0.60, 2.40);
+                theme.ShadowOffsetY = theme.ShadowOffsetY == 0 ? 1.20 : theme.ShadowOffsetY;
+                break;
+            default:
+                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none or soft.", nameof(shadowStyle));
+        }
+    }
+
+    private static string Unquote(string value) =>
+        value.Length >= 2 && ((value[0] == '"' && value[^1] == '"') || (value[0] == '\'' && value[^1] == '\''))
+            ? value[1..^1]
+            : value;
+
+    private static bool ParseBoolean(string rawValue, string raw, string fieldName)
+    {
+        string value = Unquote(rawValue.Trim());
+        return value.ToLowerInvariant() switch
+        {
+            "true" or "yes" or "on" or "1" => true,
+            "false" or "no" or "off" or "0" => false,
+            _ => throw new ArgumentException($"Invalid boolean value for '{fieldName}' in frontmatter: '{value}'.", nameof(raw)),
+        };
+    }
+
+    private sealed record FrontmatterOptions(string DiagramText, Theme? Theme, string? PaletteJson, string? BorderStyle, string? FillStyle, string? ShadowStyle, bool? TransparentBackground);
 }
 
 [System.Text.Json.Serialization.JsonSerializable(typeof(List<string>))]

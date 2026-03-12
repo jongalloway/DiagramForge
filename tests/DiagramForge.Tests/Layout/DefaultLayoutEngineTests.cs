@@ -384,6 +384,23 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_GroupInFirstColumn_PreservesOuterDiagramPadding()
+    {
+        var diagram = new Diagram().AddNode(new Node("A"));
+        var group = new Group("G", "Label pushes the top up");
+        group.ChildNodeIds.Add("A");
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["A"];
+        Assert.True(group.X >= _theme.DiagramPadding, $"group.X = {group.X}");
+        Assert.True(group.Y >= _theme.DiagramPadding, $"group.Y = {group.Y}");
+        Assert.True(a.X >= _theme.DiagramPadding, $"A.X = {a.X}");
+        Assert.True(a.Y >= _theme.DiagramPadding, $"A.Y = {a.Y}");
+    }
+
+    [Fact]
     public void Layout_GroupBox_ComputedAfterMirror_RightToLeft()
     {
         // Group bbox must be computed *after* the RL flip, not before — otherwise

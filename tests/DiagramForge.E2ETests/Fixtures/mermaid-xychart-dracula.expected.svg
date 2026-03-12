@@ -1,0 +1,159 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="598.00" height="401.00" viewBox="0 0 598.00 401.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FF79C6"/>
+    </marker>
+  </defs>
+  <rect width="598.00" height="401.00" fill="#282A36" rx="8.00" ry="8.00"/>
+  <text x="299.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#F8F8F2">2023 vs 2024 Sales</text>
+  <line x1="74.00" y1="47.00" x2="74.00" y2="347.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="74.00" y1="347.00" x2="574.00" y2="347.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="70.00" y1="347.00" x2="74.00" y2="347.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <text x="66.00" y="350.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">200</text>
+  <line x1="70.00" y1="287.00" x2="74.00" y2="287.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="74.00" y1="287.00" x2="574.00" y2="287.00" stroke="#FF79C6" stroke-width="0.8" opacity="0.55" stroke-dasharray="2,6" stroke-linecap="round"/>
+  <text x="66.00" y="290.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">232</text>
+  <line x1="70.00" y1="227.00" x2="74.00" y2="227.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="74.00" y1="227.00" x2="574.00" y2="227.00" stroke="#FF79C6" stroke-width="0.8" opacity="0.55" stroke-dasharray="2,6" stroke-linecap="round"/>
+  <text x="66.00" y="230.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">264</text>
+  <line x1="70.00" y1="167.00" x2="74.00" y2="167.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="74.00" y1="167.00" x2="574.00" y2="167.00" stroke="#FF79C6" stroke-width="0.8" opacity="0.55" stroke-dasharray="2,6" stroke-linecap="round"/>
+  <text x="66.00" y="170.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">296</text>
+  <line x1="70.00" y1="107.00" x2="74.00" y2="107.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <line x1="74.00" y1="107.00" x2="574.00" y2="107.00" stroke="#FF79C6" stroke-width="0.8" opacity="0.55" stroke-dasharray="2,6" stroke-linecap="round"/>
+  <text x="66.00" y="110.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">328</text>
+  <line x1="70.00" y1="47.00" x2="74.00" y2="47.00" stroke="#FF79C6" stroke-width="1.50"/>
+  <text x="66.00" y="50.87" text-anchor="end" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">360</text>
+  <text x="136.50" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">Q1</text>
+  <text x="261.50" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">Q2</text>
+  <text x="386.50" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">Q3</text>
+  <text x="511.50" y="362.05" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#B2B6C8">Q4</text>
+  <g transform="translate(92.75,337.62)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#C8A6F8"/>
+        <stop offset="58%" stop-color="#C39DF8"/>
+        <stop offset="100%" stop-color="#B692E7"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="9.38" rx="1.69" ry="1.69" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(217.75,245.75)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#C8A6F8"/>
+        <stop offset="58%" stop-color="#C39DF8"/>
+        <stop offset="100%" stop-color="#B692E7"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="101.25" rx="7.88" ry="7.88" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(342.75,152.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#C8A6F8"/>
+        <stop offset="58%" stop-color="#C39DF8"/>
+        <stop offset="100%" stop-color="#B692E7"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="195.00" rx="7.88" ry="7.88" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(467.75,189.50)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#C8A6F8"/>
+        <stop offset="58%" stop-color="#C39DF8"/>
+        <stop offset="100%" stop-color="#B692E7"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="157.50" rx="7.88" ry="7.88" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(136.50,281.38)">
+    <defs>
+      <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D0B2F8"/>
+        <stop offset="58%" stop-color="#CBAAF8"/>
+        <stop offset="100%" stop-color="#BD9EE7"/>
+      </linearGradient>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="65.62" rx="7.88" ry="7.88" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(261.50,189.50)">
+    <defs>
+      <linearGradient id="node-5-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D0B2F8"/>
+        <stop offset="58%" stop-color="#CBAAF8"/>
+        <stop offset="100%" stop-color="#BD9EE7"/>
+      </linearGradient>
+      <linearGradient id="node-5-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="157.50" rx="7.88" ry="7.88" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(386.50,114.50)">
+    <defs>
+      <linearGradient id="node-6-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D0B2F8"/>
+        <stop offset="58%" stop-color="#CBAAF8"/>
+        <stop offset="100%" stop-color="#BD9EE7"/>
+      </linearGradient>
+      <linearGradient id="node-6-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="232.50" rx="7.88" ry="7.88" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+  <g transform="translate(511.50,58.25)">
+    <defs>
+      <linearGradient id="node-7-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#D0B2F8"/>
+        <stop offset="58%" stop-color="#CBAAF8"/>
+        <stop offset="100%" stop-color="#BD9EE7"/>
+      </linearGradient>
+      <linearGradient id="node-7-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <rect width="43.75" height="288.75" rx="7.88" ry="7.88" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.50" fill-opacity="0.80"/>
+  </g>
+</svg>
