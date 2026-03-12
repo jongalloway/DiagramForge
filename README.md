@@ -315,10 +315,7 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 
-| Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
-
 Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, and radial / hub-and-spoke.
-
 #### matrix
 
 ```text
