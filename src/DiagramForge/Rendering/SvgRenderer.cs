@@ -42,9 +42,42 @@ public sealed class SvgRenderer : ISvgRenderer
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(theme.DiagramPadding - 4)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.TitleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
         }
 
-        // Groups (render behind nodes)
-        int groupIndex = 0;
+        // Groups (render behind nodes). Parents render first so nested child groups
+        // sit on top of the parent fill instead of being washed out by it.
+        var parentMap = new Dictionary<string, List<string>>(StringComparer.Ordinal);
         foreach (var group in diagram.Groups)
+        {
+            foreach (var childGroupId in group.ChildGroupIds)
+            {
+                if (!parentMap.TryGetValue(childGroupId, out var parents))
+                {
+                    parents = [];
+                    parentMap[childGroupId] = parents;
+                }
+
+                parents.Add(group.Id);
+            }
+        }
+
+        var depthCache = new Dictionary<string, int>(StringComparer.Ordinal);
+        int GetGroupDepth(Group group)
+        {
+            if (depthCache.TryGetValue(group.Id, out var cachedDepth))
+                return cachedDepth;
+
+            if (!parentMap.TryGetValue(group.Id, out var parentIds) || parentIds.Count == 0)
+                return depthCache[group.Id] = 0;
+
+            var depth = 1 + parentIds
+                .Select(parentId => diagram.Groups.First(candidate => candidate.Id == parentId))
+                .Max(GetGroupDepth);
+
+            depthCache[group.Id] = depth;
+            return depth;
+        }
+
+        int groupIndex = 0;
+        foreach (var group in diagram.Groups.OrderBy(GetGroupDepth))
             SvgStructureWriter.AppendGroup(sb, group, theme, groupIndex++);
 
         // Sequence-diagram lifelines: dashed vertical lines below each participant box.

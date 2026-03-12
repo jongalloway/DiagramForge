@@ -673,6 +673,24 @@ public class MermaidParserTests
         Assert.Contains("B", outer.ChildNodeIds);
     }
 
+        [Fact]
+        public void Parse_NestedSubgraphs_OuterGroupIncludesInnerGroupId()
+        {
+                const string text = """
+                        flowchart LR
+                            subgraph outer
+                                subgraph inner
+                                    A --> B
+                                end
+                            end
+                        """;
+
+                var diagram = _parser.Parse(text);
+
+                var outer = diagram.Groups.Single(g => g.Id == "outer");
+                Assert.Contains("inner", outer.ChildGroupIds);
+        }
+
     // ── Mindmap: CanParse ─────────────────────────────────────────────────────
 
     [Fact]

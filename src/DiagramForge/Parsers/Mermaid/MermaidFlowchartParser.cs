@@ -5,6 +5,18 @@ namespace DiagramForge.Parsers.Mermaid;
 
 internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
 {
+    private sealed class GroupFrame
+    {
+        public GroupFrame(Group group)
+        {
+            Group = group;
+        }
+
+        public Group Group { get; }
+
+        public HashSet<string> Members { get; } = new(StringComparer.Ordinal);
+    }
+
     public bool CanParse(MermaidDiagramKind kind) => kind == MermaidDiagramKind.Flowchart;
 
     public Diagram Parse(MermaidDocument document)
@@ -17,7 +29,7 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
         builder.WithLayoutHints(new LayoutHints { Direction = direction });
 
         var nodesSeen = new Dictionary<string, Node>(StringComparer.Ordinal);
-        var groupStack = new Stack<(Group group, HashSet<string> members)>();
+        var groupStack = new Stack<GroupFrame>();
         int autoSubgraphId = 0;
 
         Node GetOrCreateNode(string id, string label)
@@ -30,16 +42,20 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
             }
 
             foreach (var frame in groupStack)
-                frame.members.Add(id);
+                frame.Members.Add(id);
 
             return node;
         }
 
         void CloseGroup()
         {
-            var (group, members) = groupStack.Pop();
-            group.ChildNodeIds.AddRange(members.OrderBy(member => member, StringComparer.Ordinal));
-            builder.AddGroup(group);
+            var frame = groupStack.Pop();
+            frame.Group.ChildNodeIds.AddRange(frame.Members.OrderBy(member => member, StringComparer.Ordinal));
+
+            if (groupStack.Count > 0)
+                groupStack.Peek().Group.ChildGroupIds.Add(frame.Group.Id);
+
+            builder.AddGroup(frame.Group);
         }
 
         for (int i = 1; i < document.Lines.Length; i++)
@@ -51,7 +67,7 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
             {
                 var (id, title) = ParseSubgraphHeader(line.Length > 8 ? line[8..] : string.Empty);
                 id ??= $"__subgraph{autoSubgraphId++}";
-                groupStack.Push((new Group(id, title), new HashSet<string>(StringComparer.Ordinal)));
+                groupStack.Push(new GroupFrame(new Group(id, title)));
                 continue;
             }
 
