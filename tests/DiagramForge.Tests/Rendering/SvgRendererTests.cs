@@ -269,6 +269,19 @@ public class SvgRendererTests
     }
 
     [Fact]
+    public void Render_WrappedLongLabel_UsesTspans()
+    {
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "This is a deliberately long label that should wrap instead of staying on a single line")));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("<tspan", svg);
+        Assert.True(svg.Split("<tspan", StringSplitOptions.None).Length > 2, "wrapped label should render as multiple tspans");
+        Assert.Contains("This is a deliberately", svg);
+    }
+
+    [Fact]
     public void Render_PyramidSegmentNode_UsesPolygon()
     {
         var node = new Node("node_0", "Vision")

@@ -1,17 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="184.00" height="376.00" viewBox="0 0 184.00 376.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="536.00" height="456.00" viewBox="0 0 536.00 456.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
   </defs>
-  <rect width="184.00" height="376.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
-  <path d="M 92.00,80.00 C 92.00,96.00 92.00,104.00 92.00,120.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 92.00,168.00 C 92.00,184.00 92.00,192.00 92.00,208.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <text x="92.00" y="184.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">start</text>
-  <path d="M 92.00,208.00 C 92.00,192.00 92.00,184.00 92.00,168.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <text x="92.00" y="184.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">stop</text>
-  <path d="M 92.00,256.00 C 92.00,272.00 92.00,280.00 92.00,296.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <g transform="translate(32.00,32.00)">
+  <rect width="536.00" height="456.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <path d="M 328.00,52.00 C 401.88,52.00 361.60,157.60 384.00,228.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 384.00,228.00 C 310.12,228.00 350.40,333.60 328.00,404.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 208.00,404.00 C 134.12,404.00 174.40,298.40 152.00,228.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 92.00,208.00 C 92.00,119.03 197.60,126.40 268.00,72.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <g transform="translate(208.00,32.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#E9F1FF"/>
@@ -30,10 +28,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <ellipse cx="60.00" cy="24.00" rx="60.00" ry="24.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">[*]</text>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Plan</text>
   </g>
-  <g transform="translate(32.00,120.00)">
+  <g transform="translate(384.00,208.00)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFE8DC"/>
@@ -52,10 +50,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="48.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
-    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Idle</text>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Build</text>
   </g>
-  <g transform="translate(32.00,208.00)">
+  <g transform="translate(208.00,384.00)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFF1CD"/>
@@ -74,10 +72,10 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <rect width="120.00" height="48.00" rx="0" ry="0" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Running</text>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Measure</text>
   </g>
-  <g transform="translate(32.00,296.00)">
+  <g transform="translate(32.00,208.00)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#DFF6EA"/>
@@ -96,7 +94,7 @@
         <feDropShadow dx="0.00" dy="1.55" stdDeviation="1.65" flood-color="#0F172A" flood-opacity="0.16"/>
       </filter>
     </defs>
-    <ellipse cx="60.00" cy="24.00" rx="60.00" ry="24.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
-    <text x="60.00" y="29.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">[*]</text>
+    <rect width="120.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <text x="60.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Learn</text>
   </g>
 </svg>

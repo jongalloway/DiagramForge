@@ -27,6 +27,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     private const double BlockHGapWide = 50;
     private const double BlockVGapWide = 40;
     private const double PyramidLevelGap = 6;
+    private const double DefaultLabelLineHeight = 1.15;
 
     /// <summary>
     /// Average glyph advance as a fraction of font size (em-units) for typical
@@ -52,6 +53,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double hGap = hints.HorizontalSpacing;
         double vGap = hints.VerticalSpacing;
         double pad = theme.DiagramPadding;
+
+        PrepareNodeLabels(diagram, theme);
 
         if (string.Equals(diagram.DiagramType, "block", StringComparison.OrdinalIgnoreCase))
         {
@@ -98,6 +101,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (string.Equals(diagram.DiagramType, "cycle", StringComparison.OrdinalIgnoreCase))
+        {
+            LayoutCycleDiagram(diagram, theme, minW, nodeH, pad);
+            return;
+        }
+
         if (string.Equals(diagram.DiagramType, "pillars", StringComparison.OrdinalIgnoreCase))
         {
             LayoutPillarsDiagram(diagram, theme, minW, nodeH, pad);
@@ -116,12 +125,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // produce skinny boxes.
 
         foreach (var node in diagram.Nodes.Values)
-        {
-            double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textW = EstimateTextWidth(node.Label.Text, fontSize);
-            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
-            node.Height = nodeH;
-        }
+            SizeStandardNode(node, theme, minW, nodeH);
 
         // ── Positioning pass ──────────────────────────────────────────────────
         // Assign nodes to layers via BFS, then place them. Because widths are now
@@ -153,11 +157,12 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                     continue;
 
                 double maxWidthInColumn = layer.Max(n => n.Width);
-                for (int i = 0; i < layer.Count; i++)
+                double runY = pad;
+                foreach (var node in layer)
                 {
-                    var node = layer[i];
                     node.X = columnX;
-                    node.Y = pad + i * (nodeH + vGap);
+                    node.Y = runY;
+                    runY += node.Height + vGap;
                 }
                 columnX += maxWidthInColumn + hGap;
             }
@@ -171,13 +176,14 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                     continue; // see comment above
 
                 double runX = pad;
+                double rowHeight = layer.Max(node => node.Height);
                 foreach (var node in layer)
                 {
                     node.X = runX;
-                    node.Y = rowY;
+                    node.Y = rowY + (rowHeight - node.Height) / 2;
                     runX += node.Width + hGap;
                 }
-                rowY += nodeH + vGap;
+                rowY += rowHeight + vGap;
             }
         }
 
@@ -314,8 +320,6 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         // ── Sizing pass ───────────────────────────────────────────────────────
         foreach (var node in diagram.Nodes.Values)
         {
-            double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textW = EstimateTextWidth(node.Label.Text, fontSize);
             // Junctions (Shape.Circle, no label) get a small fixed size.
             if (node.Shape == Models.Shape.Circle && string.IsNullOrEmpty(node.Label.Text))
             {
@@ -324,8 +328,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             }
             else
             {
-                node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
-                node.Height = nodeH;
+                SizeStandardNode(node, theme, minW, nodeH);
             }
         }
 
@@ -564,7 +567,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double widestLabel = orderedNodes.Max(node =>
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
-            return EstimateTextWidth(node.Label.Text, fontSize) + 2 * theme.NodePadding;
+            return EstimateTextWidth(node.Label, fontSize) + 2 * theme.NodePadding;
         });
 
         int levelCount = orderedNodes.Count;
@@ -589,6 +592,57 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         }
     }
 
+    private static void LayoutCycleDiagram(
+        Diagram diagram,
+        Theme theme,
+        double minW,
+        double nodeH,
+        double pad)
+    {
+        var orderedNodes = diagram.Nodes.Values
+            .OrderBy(node => node.Id, StringComparer.Ordinal)
+            .ToList();
+
+        if (orderedNodes.Count == 0)
+            return;
+
+        // Uniform node sizing driven by the widest label.
+        double widestLabel = orderedNodes.Max(node =>
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            return EstimateTextWidth(node.Label.Text, fontSize) + 2 * theme.NodePadding;
+        });
+
+        double nodeW = Math.Max(widestLabel, minW);
+        int n = orderedNodes.Count;
+
+        // Minimum radius so adjacent node bounding boxes don't overlap.
+        // Chord between adjacent centres = 2·R·sin(π/n); must exceed the
+        // diagonal of the node box plus a small visual gap.
+        double diagonal = Math.Sqrt(nodeW * nodeW + nodeH * nodeH);
+        const double minNodeGap = 20.0;
+        double minRadiusFromSpacing = (diagonal + minNodeGap) / (2 * Math.Sin(Math.PI / n));
+
+        // Also enforce a floor so even 3-step cycles have a visually open centre.
+        double minRadiusFloor = nodeW * 1.2 + pad;
+        double radius = Math.Max(minRadiusFromSpacing, minRadiusFloor);
+
+        // Centre of the circle: offset so the nearest node edge lands exactly at `pad`.
+        double cx = pad + radius + nodeW / 2;
+        double cy = pad + radius + nodeH / 2;
+
+        // Place nodes evenly, starting at 12 o'clock (−π/2), going clockwise.
+        for (int i = 0; i < n; i++)
+        {
+            var node = orderedNodes[i];
+            double angle = -Math.PI / 2 + (2 * Math.PI * i / n);
+            node.X = cx + radius * Math.Cos(angle) - nodeW / 2;
+            node.Y = cy + radius * Math.Sin(angle) - nodeH / 2;
+            node.Width = nodeW;
+            node.Height = nodeH;
+        }
+    }
+
     private static void LayoutPillarsDiagram(
         Diagram diagram,
         Theme theme,
@@ -596,26 +650,22 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double nodeH,
         double pad)
     {
-        // Collect title nodes ordered by pillar index
         var titleNodes = diagram.Nodes.Values
-            .Where(n => n.Metadata.TryGetValue("pillars:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal))
+            .Where(n => n.Metadata.TryGetValue("pillars:kind", out var kind) && "title".Equals(kind as string, StringComparison.Ordinal))
             .OrderBy(n => GetMetadataInt(n.Metadata, "pillars:pillarIndex"))
             .ToList();
 
         if (titleNodes.Count == 0)
             return;
 
-        // Group segment nodes by pillar index, sorted by segment index
         var segmentsByPillar = diagram.Nodes.Values
-            .Where(n => n.Metadata.TryGetValue("pillars:kind", out var k) && "segment".Equals(k as string, StringComparison.Ordinal))
+            .Where(n => n.Metadata.TryGetValue("pillars:kind", out var kind) && "segment".Equals(kind as string, StringComparison.Ordinal))
             .GroupBy(n => GetMetadataInt(n.Metadata, "pillars:pillarIndex"))
             .ToDictionary(
                 g => g.Key,
                 g => g.OrderBy(n => GetMetadataInt(n.Metadata, "pillars:segmentIndex")).ToList());
 
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
-
-        // Column width: widest text across all nodes + padding
         double maxTextWidth = diagram.Nodes.Values.Max(n =>
             EstimateTextWidth(n.Label.Text, n.Label.FontSize ?? theme.FontSize));
         double colWidth = Math.Max(minW + 24, maxTextWidth + theme.NodePadding * 2.5);
@@ -623,7 +673,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double titleH = Math.Max(nodeH, (theme.FontSize * 1.15) + theme.NodePadding * 2.2);
         double segH = nodeH;
         double colGap = Math.Max(theme.NodePadding * 2, 20);
-        double segGap = 4; // tight gap between stacked segments
+        double segGap = 4;
 
         string[] palette = theme.NodePalette is { Count: > 0 }
             ? [.. theme.NodePalette]
@@ -642,7 +692,6 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 ? theme.NodeStrokePalette[i % theme.NodeStrokePalette.Count]
                 : ColorUtils.Darken(pillarFill, 0.18);
 
-            // Title node
             titleNode.Shape = Shape.RoundedRectangle;
             titleNode.Width = colWidth;
             titleNode.Height = titleH;
@@ -653,12 +702,11 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             SetLabelCenter(titleNode, colWidth / 2, titleH / 2);
             curY += titleH + segGap;
 
-            // Segment nodes stacked below the title
-            if (segmentsByPillar.TryGetValue(pillarIdx, out var segs))
+            if (segmentsByPillar.TryGetValue(pillarIdx, out var segments))
             {
                 string segFill = ColorUtils.Lighten(pillarFill, 0.25);
 
-                foreach (var segNode in segs)
+                foreach (var segNode in segments)
                 {
                     segNode.Shape = Shape.RoundedRectangle;
                     segNode.Width = colWidth;
@@ -673,8 +721,6 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             }
         }
     }
-
-
     private static void LayoutSequenceDiagram(
         Diagram diagram,
         Theme theme,
@@ -686,12 +732,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     {
         // Size each participant node from its label.
         foreach (var node in diagram.Nodes.Values)
-        {
-            double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textW = EstimateTextWidth(node.Label.Text, fontSize);
-            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
-            node.Height = nodeH;
-        }
+            SizeStandardNode(node, theme, minW, nodeH);
 
         // Order participants by their declared index (stored during parsing).
         // ThenBy ensures deterministic output when the index is missing or two
@@ -705,16 +746,17 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         // Place participants in a single row across the top of the diagram.
         double runX = pad;
+        double participantStripHeight = ordered.Max(node => node.Height);
         foreach (var node in ordered)
         {
             node.X = runX;
-            node.Y = pad;
+            node.Y = pad + (participantStripHeight - node.Height);
             runX += node.Width + hGap;
         }
 
         // Assign each message edge its own Y row below the participant strip.
         // Each row is vGap tall, giving space for the arrow line and any label above it.
-        double firstMessageY = pad + nodeH + vGap / 2;
+        double firstMessageY = pad + participantStripHeight + vGap / 2;
         double messageRowHeight = vGap;
 
         foreach (var edge in diagram.Edges)
@@ -743,12 +785,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     {
         foreach (var node in diagram.Nodes.Values)
         {
-            double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textW = EstimateTextWidth(node.Label.Text, fontSize);
             bool isArrow = node.Shape is Shape.ArrowRight or Shape.ArrowLeft or Shape.ArrowUp or Shape.ArrowDown;
-
-            node.Width = Math.Max(isArrow ? minW * 0.75 : minW, textW + 2 * theme.NodePadding);
-            node.Height = isArrow ? nodeH + 8 : nodeH;
+            SizeStandardNode(node, theme, isArrow ? minW * 0.75 : minW, isArrow ? nodeH + 8 : nodeH);
         }
 
         var placedNodes = diagram.Nodes.Values
@@ -811,12 +849,7 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     {
         // Size all nodes from their labels.
         foreach (var node in diagram.Nodes.Values)
-        {
-            double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double textW = EstimateTextWidth(node.Label.Text, fontSize);
-            node.Width = Math.Max(minW, textW + 2 * theme.NodePadding);
-            node.Height = nodeH;
-        }
+            SizeStandardNode(node, theme, minW, nodeH);
 
         // Collect period nodes in declaration order.
         var periodNodes = diagram.Nodes.Values
@@ -846,19 +879,23 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         // Place period nodes in a single horizontal row.
         double periodY = pad + titleOffset;
+        double periodRowHeight = periodNodes.Max(node => node.Height);
         for (int i = 0; i < periodNodes.Count; i++)
         {
             var pn = periodNodes[i];
             pn.X = pad + i * (colWidth + hGap);
-            pn.Y = periodY;
+            pn.Y = periodY + (periodRowHeight - pn.Height) / 2;
             pn.Width = colWidth;
         }
 
         // Place event nodes in columns below their owning period.
+        var nextEventYByPeriod = periodNodes.ToDictionary(
+            node => GetMetadataInt(node.Metadata, "timeline:periodIndex"),
+            _ => periodY + periodRowHeight + vGap);
+
         foreach (var eventNode in eventNodes)
         {
             int pIdx = GetMetadataInt(eventNode.Metadata, "timeline:periodIndex");
-            int eIdx = GetMetadataInt(eventNode.Metadata, "timeline:eventIndex");
 
             var periodNode = periodNodes.Find(n =>
                 GetMetadataInt(n.Metadata, "timeline:periodIndex") == pIdx);
@@ -867,7 +904,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
                 continue;
 
             eventNode.X = periodNode.X;
-            eventNode.Y = periodY + nodeH + vGap + eIdx * (nodeH + vGap);
+            eventNode.Y = nextEventYByPeriod[pIdx];
+            nextEventYByPeriod[pIdx] += eventNode.Height + vGap;
             eventNode.Width = colWidth;
         }
     }
@@ -928,11 +966,11 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
         double diameter = setNodes.Max(node =>
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
-            double labelWidth = EstimateTextWidth(node.Label.Text, fontSize);
+            double labelWidth = EstimateTextWidth(node.Label, fontSize);
             var nestedTextNodes = GetSetTextNodes(textNodes, node.Id).ToList();
             double nestedTextWidth = nestedTextNodes.Count == 0
                 ? 0
-                : nestedTextNodes.Max(textNode => EstimateTextWidth(textNode.Label.Text, textNode.Label.FontSize ?? theme.FontSize));
+                : nestedTextNodes.Max(textNode => EstimateTextWidth(textNode.Label, textNode.Label.FontSize ?? theme.FontSize));
             double nestedHeightAllowance = nestedTextNodes.Count == 0
                 ? 0
                 : nestedTextNodes.Count * fontSize * 1.15 + fontSize * 1.8;
@@ -1095,8 +1133,8 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
 
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
         double baseFontSize = cells.Max(node => node.Label.FontSize ?? theme.FontSize);
-        int maxLineCount = cells.Max(node => GetTextLineCount(node.Label.Text));
-        double maxTextWidth = cells.Max(node => EstimateTextWidth(node.Label.Text, node.Label.FontSize ?? theme.FontSize));
+        int maxLineCount = cells.Max(node => GetTextLineCount(node.Label));
+        double maxTextWidth = cells.Max(node => EstimateTextWidth(node.Label, node.Label.FontSize ?? theme.FontSize));
 
         double cellWidth = Math.Max(minW + 24, maxTextWidth + theme.NodePadding * 2.5);
         double textBlockHeight = Math.Max(1, maxLineCount) * baseFontSize * 1.15;
@@ -1267,6 +1305,126 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
     /// query for <c>getBBox()</c>; this gets us within ±10% for Latin text, which
     /// is sufficient for layout (padding absorbs the slop).
     /// </summary>
+    private static void PrepareNodeLabels(Diagram diagram, Theme theme)
+    {
+        foreach (var node in diagram.Nodes.Values)
+            PrepareLabelLines(node.Label, theme, diagram.LayoutHints);
+    }
+
+    private static void PrepareLabelLines(Label label, Theme theme, LayoutHints hints)
+    {
+        double fontSize = label.FontSize ?? theme.FontSize;
+        double maxTextWidth = hints.MaxNodeWidth.HasValue
+            ? Math.Max(1, hints.MaxNodeWidth.Value - 2 * theme.NodePadding)
+            : double.PositiveInfinity;
+
+        label.Lines = WrapLabelText(label.Text, fontSize, maxTextWidth);
+    }
+
+    private static string[] WrapLabelText(string? text, double fontSize, double maxTextWidth)
+    {
+        if (string.IsNullOrEmpty(text))
+            return [];
+
+        var lines = new List<string>();
+        foreach (var paragraph in text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n'))
+        {
+            if (paragraph.Length == 0)
+            {
+                lines.Add(string.Empty);
+                continue;
+            }
+
+            if (double.IsPositiveInfinity(maxTextWidth) || EstimateTextWidth(paragraph, fontSize) <= maxTextWidth)
+            {
+                lines.Add(paragraph);
+                continue;
+            }
+
+            WrapParagraph(paragraph, fontSize, maxTextWidth, lines);
+        }
+
+        return [.. lines];
+    }
+
+    private static void WrapParagraph(string paragraph, double fontSize, double maxTextWidth, List<string> lines)
+    {
+        string currentLine = string.Empty;
+
+        foreach (var word in paragraph.Split(' ', StringSplitOptions.RemoveEmptyEntries))
+        {
+            string candidate = string.IsNullOrEmpty(currentLine) ? word : $"{currentLine} {word}";
+            if (EstimateTextWidth(candidate, fontSize) <= maxTextWidth)
+            {
+                currentLine = candidate;
+                continue;
+            }
+
+            if (!string.IsNullOrEmpty(currentLine))
+            {
+                lines.Add(currentLine);
+                currentLine = string.Empty;
+            }
+
+            if (EstimateTextWidth(word, fontSize) <= maxTextWidth)
+            {
+                currentLine = word;
+                continue;
+            }
+
+            foreach (var chunk in BreakWord(word, fontSize, maxTextWidth))
+            {
+                if (string.IsNullOrEmpty(currentLine))
+                {
+                    currentLine = chunk;
+                }
+                else
+                {
+                    lines.Add(currentLine);
+                    currentLine = chunk;
+                }
+            }
+        }
+
+        if (!string.IsNullOrEmpty(currentLine))
+            lines.Add(currentLine);
+    }
+
+    private static IEnumerable<string> BreakWord(string word, double fontSize, double maxTextWidth)
+    {
+        if (string.IsNullOrEmpty(word))
+            yield break;
+
+        var chunk = new System.Text.StringBuilder();
+        foreach (var ch in word)
+        {
+            string candidate = chunk.ToString() + ch;
+            if (chunk.Length > 0 && EstimateTextWidth(candidate, fontSize) > maxTextWidth)
+            {
+                yield return chunk.ToString();
+                chunk.Clear();
+            }
+
+            chunk.Append(ch);
+        }
+
+        if (chunk.Length > 0)
+            yield return chunk.ToString();
+    }
+
+    private static void SizeStandardNode(Node node, Theme theme, double minWidth, double minHeight)
+    {
+        double fontSize = node.Label.FontSize ?? theme.FontSize;
+        double textWidth = EstimateTextWidth(node.Label, fontSize);
+        double textBlockHeight = GetTextBlockHeight(node.Label, fontSize);
+
+        node.Width = Math.Max(minWidth, textWidth + 2 * theme.NodePadding);
+        node.Height = Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding);
+    }
+
+    private static double EstimateTextWidth(Label label, double fontSize) =>
+        EstimateTextWidth(string.Join('\n', GetLabelLines(label)), fontSize);
+
     private static double EstimateTextWidth(string? text, double fontSize)
     {
         if (string.IsNullOrEmpty(text))
@@ -1278,13 +1436,21 @@ public sealed class DefaultLayoutEngine : ILayoutEngine
             .Max(line => line.Length) * fontSize * AvgGlyphAdvanceEm;
     }
 
-    private static int GetTextLineCount(string? text)
+    private static int GetTextLineCount(Label label) => GetLabelLines(label).Length;
+
+    private static double GetTextBlockHeight(Label label, double fontSize)
     {
-        if (string.IsNullOrEmpty(text))
+        int lineCount = GetTextLineCount(label);
+        if (lineCount == 0)
             return 0;
 
-        return text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n').Length;
+        return fontSize + (lineCount - 1) * fontSize * DefaultLabelLineHeight;
     }
+
+    private static string[] GetLabelLines(Label label) =>
+        label.Lines is { Length: > 0 }
+            ? label.Lines
+            : label.Text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
 
     /// <summary>
     /// Shifts all nodes and groups so that every group's top-left corner is at least

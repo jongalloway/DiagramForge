@@ -121,6 +121,36 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_VeryLongLabel_CapsWidthAndWrapsLines()
+    {
+        var diagram = new Diagram()
+            .AddNode(new Node("long", "This is a deliberately long label that should wrap instead of producing an absurdly wide node box in the rendered diagram"));
+
+        _engine.Layout(diagram, _theme);
+
+        var node = diagram.Nodes["long"];
+        Assert.True(node.Width <= diagram.LayoutHints.MaxNodeWidth, $"node width {node.Width} should be <= max width {diagram.LayoutHints.MaxNodeWidth}");
+        Assert.True(node.Height > diagram.LayoutHints.MinNodeHeight, $"node height {node.Height} should exceed min height {diagram.LayoutHints.MinNodeHeight}");
+        Assert.True(node.Label.Lines?.Length > 1, "long label should wrap into multiple lines");
+    }
+
+    [Fact]
+    public void Layout_WrappedNode_DoesNotOverlapNextLayer_Vertical()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("a", "This is a deliberately long label that should wrap across multiple lines"))
+               .AddNode(new Node("b", "Next"))
+               .AddEdge(new Edge("a", "b"));
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["a"];
+        var b = diagram.Nodes["b"];
+        Assert.True(b.Y >= a.Y + a.Height + diagram.LayoutHints.VerticalSpacing,
+            $"node b at {b.Y} should be below node a bottom {a.Y + a.Height} plus spacing {diagram.LayoutHints.VerticalSpacing}");
+    }
+
+    [Fact]
     public void Layout_VariableWidths_PreservesGapBetweenLayers_Horizontal()
     {
         // Running-offset positioning: a wide node in column 0 should push column 1
@@ -779,5 +809,81 @@ public class DefaultLayoutEngineTests
             Assert.True(group.X + group.Width >= n.X + n.Width, "group right edge should cover node right edge");
             Assert.True(group.Y + group.Height >= n.Y + n.Height, "group bottom edge should cover node bottom edge");
         }
+    }
+
+    // ── Cycle ─────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Layout_CycleDiagram_PlacesNodesRadially()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"));
+
+        _engine.Layout(diagram, _theme);
+
+        // All nodes must have positive, non-overlapping positions.
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.X >= 0, $"{n.Id}.X = {n.X}");
+            Assert.True(n.Y >= 0, $"{n.Id}.Y = {n.Y}");
+            Assert.True(n.Width > 0);
+            Assert.True(n.Height > 0);
+        });
+
+        // Nodes should be evenly spaced: all centres equidistant from the common
+        // centre of the circle, within floating-point tolerance.
+        var nodes = diagram.Nodes.Values
+            .OrderBy(n => n.Id, StringComparer.Ordinal)
+            .ToList();
+
+        double cx = nodes.Average(n => n.X + n.Width / 2);
+        double cy = nodes.Average(n => n.Y + n.Height / 2);
+
+        var radii = nodes.Select(n =>
+        {
+            double dx = n.X + n.Width / 2 - cx;
+            double dy = n.Y + n.Height / 2 - cy;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }).ToList();
+
+        double avgRadius = radii.Average();
+        Assert.All(radii, r =>
+            Assert.True(Math.Abs(r - avgRadius) < 1.0,
+                $"Expected all radii ≈ {avgRadius:F2} but got {r:F2}"));
+    }
+
+    [Fact]
+    public void Layout_CycleDiagram_StableOrdering_StartFromTop()
+    {
+        // node_0 should be the topmost node (12 o'clock).
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"));
+
+        _engine.Layout(diagram, _theme);
+
+        var n0 = diagram.Nodes["node_0"];
+        Assert.All(diagram.Nodes.Values, n =>
+            Assert.True(n0.Y <= n.Y + 1.0,
+                $"node_0.Y ({n0.Y:F2}) should be the topmost node, but {n.Id}.Y = {n.Y:F2}"));
+    }
+
+    [Fact]
+    public void Layout_CycleDiagram_AllNodesHaveEqualSize()
+    {
+        var diagram = new Diagram { DiagramType = "cycle" };
+        diagram.AddNode(new Node("node_0", "Plan"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Measure"))
+               .AddNode(new Node("node_3", "Learn"));
+
+        _engine.Layout(diagram, _theme);
+
+        var sizes = diagram.Nodes.Values.Select(n => (n.Width, n.Height)).Distinct().ToList();
+        Assert.Single(sizes);
     }
 }
