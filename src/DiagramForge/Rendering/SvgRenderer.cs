@@ -111,7 +111,7 @@ public sealed class SvgRenderer : ISvgRenderer
                 || !diagram.Nodes.TryGetValue(edge.TargetId, out var target))
                 continue;
 
-            SvgStructureWriter.AppendEdge(sb, edge, source, target, theme);
+            SvgStructureWriter.AppendEdge(sb, edge, source, target, theme, diagram.LayoutHints);
         }
 
         // Nodes (pass index for palette cycling)

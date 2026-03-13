@@ -156,6 +156,11 @@ public sealed class DiagramRenderer
             ApplyShadowStyle(effectiveTheme, frontmatter.ShadowStyle);
         }
 
+        if (frontmatter.EdgeRouting.HasValue)
+        {
+            diagram.LayoutHints.EdgeRouting = frontmatter.EdgeRouting.Value;
+        }
+
         _layoutEngine.Layout(diagram, effectiveTheme);
         return _svgRenderer.Render(diagram, effectiveTheme);
     }
@@ -327,6 +332,7 @@ public sealed class DiagramRenderer
         string? parsedFillStyle = null;
         string? parsedShadowStyle = null;
         bool? parsedTransparentBackground = null;
+        EdgeRouting? parsedEdgeRouting = null;
 
         foreach (string rawLine in frontmatter.Split('\n'))
         {
@@ -380,9 +386,17 @@ public sealed class DiagramRenderer
             {
                 parsedTransparentBackground = ParseBoolean(line["transparent-background:".Length..].Trim(), raw, "transparent-background");
             }
+            else if (line.StartsWith("edgeRouting:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedEdgeRouting = ParseEdgeRouting(Unquote(line["edgeRouting:".Length..].Trim()), raw);
+            }
+            else if (line.StartsWith("edge-routing:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedEdgeRouting = ParseEdgeRouting(Unquote(line["edge-routing:".Length..].Trim()), raw);
+            }
         }
 
-        return new FrontmatterOptions(diagramText, parsedTheme, parsedPaletteJson, parsedBorderStyle, parsedFillStyle, parsedShadowStyle, parsedTransparentBackground);
+        return new FrontmatterOptions(diagramText, parsedTheme, parsedPaletteJson, parsedBorderStyle, parsedFillStyle, parsedShadowStyle, parsedTransparentBackground, parsedEdgeRouting);
     }
 
     private static void ApplyBorderStyle(Theme theme, string borderStyle)
@@ -454,6 +468,15 @@ public sealed class DiagramRenderer
             ? value[1..^1]
             : value;
 
+    private static EdgeRouting ParseEdgeRouting(string value, string raw) =>
+        value.Trim().ToLowerInvariant() switch
+        {
+            "bezier" => EdgeRouting.Bezier,
+            "orthogonal" => EdgeRouting.Orthogonal,
+            "straight" => EdgeRouting.Straight,
+            _ => throw new ArgumentException($"Unknown edge-routing value in frontmatter: '{value}'. Expected bezier, orthogonal, or straight.", nameof(raw)),
+        };
+
     private static bool ParseBoolean(string rawValue, string raw, string fieldName)
     {
         string value = Unquote(rawValue.Trim());
@@ -465,7 +488,7 @@ public sealed class DiagramRenderer
         };
     }
 
-    private sealed record FrontmatterOptions(string DiagramText, Theme? Theme, string? PaletteJson, string? BorderStyle, string? FillStyle, string? ShadowStyle, bool? TransparentBackground);
+    private sealed record FrontmatterOptions(string DiagramText, Theme? Theme, string? PaletteJson, string? BorderStyle, string? FillStyle, string? ShadowStyle, bool? TransparentBackground, EdgeRouting? EdgeRouting = null);
 }
 
 [System.Text.Json.Serialization.JsonSerializable(typeof(List<string>))]

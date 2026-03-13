@@ -28,6 +28,18 @@ public class LayoutHints
 
     /// <summary>Padding inside nodes (in SVG user units).</summary>
     public double NodePadding { get; set; } = 12;
+
+    /// <summary>
+    /// Default edge routing style for all edges in the diagram.
+    /// Individual edges may override this via <see cref="Edge.Routing"/>.
+    /// </summary>
+    public EdgeRouting EdgeRouting { get; set; } = EdgeRouting.Bezier;
+
+    /// <summary>
+    /// Corner radius used when <see cref="EdgeRouting"/> is
+    /// <see cref="EdgeRouting.Orthogonal"/> (in SVG user units).
+    /// </summary>
+    public double OrthogonalCornerRadius { get; set; } = 6.0;
 }
 
 /// <summary>The primary direction of diagram flow.</summary>

@@ -1,0 +1,10 @@
+---
+theme: neutral
+edge-routing: orthogonal
+---
+flowchart TD
+  A[Start] --> B[Process A]
+  A --> C[Process B]
+  B --> D[Merge]
+  C --> D
+  D --> E[End]

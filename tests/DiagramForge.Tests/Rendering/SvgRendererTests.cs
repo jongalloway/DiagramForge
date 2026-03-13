@@ -322,6 +322,189 @@ public class SvgRendererTests
         Assert.DoesNotMatch(@"<path d=""M [^""]+ C [^""]+"" fill=""none""", svg);
     }
 
+    // ── Edge routing ──────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Render_OrthogonalRouting_DiagramLevel_ProducesOrthogonalPath()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Orthogonal paths use L and A commands, not C (cubic Bézier)
+        Assert.Contains("<path d=", svg);
+        Assert.DoesNotContain(" C ", svg);
+        Assert.Contains(" L ", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_IncludesArcCommand_ForRoundedCorners()
+    {
+        // Place A and B with a horizontal offset so the Z-path produces arcs.
+        // A is top-left, B is lower-right: produces a horizontal-exit Z-path with bends.
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 220, Y = 120, Width = 120, Height = 40 };
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+        // Skip layout engine — positions are set manually.
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Rounded corners use SVG arc command
+        Assert.Matches(@"A \d+\.\d+,\d+\.\d+ 0 0 [01]", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_LR_ProducesOrthogonalPath()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("<path d=", svg);
+        Assert.DoesNotContain(" C ", svg);
+        Assert.Contains(" L ", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_PerEdgeOverride_TakesPriorityOverDiagramDefault()
+    {
+        var diagram = new Diagram();
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Bezier; // diagram default is Bezier
+        var orthoEdge = new Edge("A", "B") { Routing = EdgeRouting.Orthogonal };
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(orthoEdge);
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // The single edge uses Orthogonal despite the Bezier default
+        Assert.DoesNotContain(" C ", svg);
+        Assert.Contains(" L ", svg);
+    }
+
+    [Fact]
+    public void Render_StraightRouting_DiagramLevel_ProducesStraightLine()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Straight;
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Straight paths use M…L only, no C or A
+        Assert.Contains("<path d=", svg);
+        Assert.DoesNotContain(" C ", svg);
+        Assert.DoesNotContain(" A ", svg);
+        Assert.Matches(@"<path d=""M \S+ L \S+"" fill=""none""", svg);
+    }
+
+    [Fact]
+    public void Render_BezierRouting_DefaultBehavior_UnchangedFromBaseline()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        // EdgeRouting.Bezier is the default — no explicit assignment needed
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Matches(@"<path d=""M [^""]+ C [^""]+"" fill=""none""", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_WithLabel_RendersLabelAtMidSegment()
+    {
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B") { Label = new DiagramForge.Models.Label("yes") });
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+        BuildAndLayout(diagram);
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("yes", svg);
+        Assert.Contains("<text ", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_CustomCornerRadius_UsedInArc()
+    {
+        // Place nodes with an offset to guarantee Z-path bends with custom radius.
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 220, Y = 120, Width = 120, Height = 40 };
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+        diagram.LayoutHints.OrthogonalCornerRadius = 12.0;
+        // Skip layout engine — positions are set manually.
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // radius 12 should appear in the arc command
+        Assert.Contains("A 12.00,12.00", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_HorizontalBranch_ZeroDeltaX_FallsBackToStraightLine()
+    {
+        // preferHorizontal=true, x2≈x1 → zero-length outer segments; must degenerate to M…L
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 24, Y = 120, Width = 120, Height = 40 }; // same X, same center
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Must not produce zero-length segments — expect a plain M…L straight line
+        Assert.DoesNotContain(" A ", svg);
+        Assert.Matches(@"<path d=""M \S+ L \S+"" fill=""none""", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_VerticalBranch_ZeroDeltaY_FallsBackToStraightLine()
+    {
+        // preferHorizontal=false, y2≈y1 → zero-length outer segments; must degenerate to M…L
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 220, Y = 24, Width = 120, Height = 40 }; // same Y, different X
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Must not produce zero-length segments — expect a plain M…L straight line
+        Assert.DoesNotContain(" A ", svg);
+        Assert.Matches(@"<path d=""M \S+ L \S+"" fill=""none""", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>
