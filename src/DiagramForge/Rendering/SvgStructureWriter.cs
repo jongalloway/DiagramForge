@@ -171,7 +171,11 @@ internal static class SvgStructureWriter
             double labX = midX;
             double labY = (y1 + y2) / 2 - 4;
 
-            if (Math.Abs(y2 - y1) < 0.5)
+            // Degenerate: nodes are horizontally aligned (no vertical delta) or
+            // vertically aligned (x2≈x1 → zero-length outer segments). Fall back to
+            // a straight line in both cases to avoid zero-length segments that can
+            // cause inconsistent marker-end orientation in some SVG renderers.
+            if (Math.Abs(y2 - y1) < 0.5 || Math.Abs(x2 - x1) < 0.5)
                 return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}", labX, labY);
 
             double seg1 = Math.Abs(midX - x1);
@@ -212,7 +216,11 @@ internal static class SvgStructureWriter
             double labX = (x1 + x2) / 2;
             double labY = midY - 4;
 
-            if (Math.Abs(x2 - x1) < 0.5)
+            // Degenerate: nodes are vertically aligned (no horizontal delta) or
+            // horizontally aligned (y2≈y1 → zero-length outer segments). Fall back to
+            // a straight line in both cases to avoid zero-length segments that can
+            // cause inconsistent marker-end orientation in some SVG renderers.
+            if (Math.Abs(x2 - x1) < 0.5 || Math.Abs(y2 - y1) < 0.5)
                 return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}", labX, labY);
 
             double seg1 = Math.Abs(midY - y1);

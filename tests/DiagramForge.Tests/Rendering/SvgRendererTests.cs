@@ -469,6 +469,42 @@ public class SvgRendererTests
         Assert.Contains("A 12.00,12.00", svg);
     }
 
+    [Fact]
+    public void Render_OrthogonalRouting_HorizontalBranch_ZeroDeltaX_FallsBackToStraightLine()
+    {
+        // preferHorizontal=true, x2≈x1 → zero-length outer segments; must degenerate to M…L
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 24, Y = 120, Width = 120, Height = 40 }; // same X, same center
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Must not produce zero-length segments — expect a plain M…L straight line
+        Assert.DoesNotContain(" A ", svg);
+        Assert.Matches(@"<path d=""M \S+ L \S+"" fill=""none""", svg);
+    }
+
+    [Fact]
+    public void Render_OrthogonalRouting_VerticalBranch_ZeroDeltaY_FallsBackToStraightLine()
+    {
+        // preferHorizontal=false, y2≈y1 → zero-length outer segments; must degenerate to M…L
+        var nodeA = new Node("A") { X = 24, Y = 24, Width = 120, Height = 40 };
+        var nodeB = new Node("B") { X = 220, Y = 24, Width = 120, Height = 40 }; // same Y, different X
+        var diagram = new Diagram();
+        diagram.AddNode(nodeA).AddNode(nodeB).AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+        diagram.LayoutHints.EdgeRouting = EdgeRouting.Orthogonal;
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        // Must not produce zero-length segments — expect a plain M…L straight line
+        Assert.DoesNotContain(" A ", svg);
+        Assert.Matches(@"<path d=""M \S+ L \S+"" fill=""none""", svg);
+    }
+
     // ── Utilities (mirrors the production SvgRenderer.F() helper) ────────────
 
     private static string F(double v) =>
