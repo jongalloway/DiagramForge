@@ -206,11 +206,6 @@ public sealed class DiagramRenderer
             hints.Add("Input appears to start with a Markdown code fence. Paste only the raw Mermaid or Conceptual DSL body, not the ```mermaid wrapper.");
         }
 
-        if (normalized.Equals("xychart", StringComparison.OrdinalIgnoreCase))
-        {
-            hints.Add("Use `xychart-beta` as the Mermaid header; `xychart` is not recognized by the current parser.");
-        }
-
         string details = $" First content line: '{normalized}'.";
         if (hints.Count == 0)
             return baseMessage + details;

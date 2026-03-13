@@ -19,6 +19,12 @@ public class MermaidXyChartParserTests
     }
 
     [Fact]
+    public void CanParse_ReturnsTrue_ForXyChartHeader()
+    {
+        Assert.True(_parser.CanParse("xychart\n    bar [5000, 6000]"));
+    }
+
+    [Fact]
     public void CanParse_ReturnsFalse_ForNonMermaidInput()
     {
         Assert.False(_parser.CanParse("diagram: process\nsteps:\n  - A"));
@@ -31,6 +37,21 @@ public class MermaidXyChartParserTests
     {
         const string input = """
             xychart-beta
+                title "Sales Revenue"
+                x-axis [jan, feb, mar]
+                bar [5000, 6000, 7500]
+            """;
+
+        var diagram = _parser.Parse(input);
+
+        Assert.Equal("Sales Revenue", diagram.Title);
+    }
+
+    [Fact]
+    public void Parse_TitleLine_SetsDiagramTitle_ForXyChartHeader()
+    {
+        const string input = """
+            xychart
                 title "Sales Revenue"
                 x-axis [jan, feb, mar]
                 bar [5000, 6000, 7500]
