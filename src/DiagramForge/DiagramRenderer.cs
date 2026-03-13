@@ -105,9 +105,7 @@ public sealed class DiagramRenderer
     {
         var frontmatter = ParseFrontmatter(diagramText);
         var parser = FindParser(frontmatter.DiagramText)
-            ?? throw new DiagramParseException(
-                $"No registered parser can handle the supplied diagram text. " +
-                $"Registered syntaxes: {string.Join(", ", _parsers.Select(p => p.SyntaxId))}");
+            ?? throw new DiagramParseException(BuildUnknownParserMessage(frontmatter.DiagramText));
 
         var diagram = parser.Parse(frontmatter.DiagramText);
         var effectiveTheme = frontmatter.Theme ?? diagram.Theme ?? theme ?? _defaultTheme;
@@ -187,6 +185,52 @@ public sealed class DiagramRenderer
             if (parser.CanParse(diagramText))
                 return parser;
         }
+        return null;
+    }
+
+    private string BuildUnknownParserMessage(string diagramText)
+    {
+        string baseMessage =
+            $"No registered parser can handle the supplied diagram text. " +
+            $"Registered syntaxes: {string.Join(", ", _parsers.Select(p => p.SyntaxId))}";
+
+        string? firstContentLine = GetFirstContentLine(diagramText);
+        if (firstContentLine is null)
+            return baseMessage;
+
+        var hints = new List<string>();
+        string normalized = firstContentLine.Trim();
+
+        if (normalized.StartsWith("```", StringComparison.Ordinal))
+        {
+            hints.Add("Input appears to start with a Markdown code fence. Paste only the raw Mermaid or Conceptual DSL body, not the ```mermaid wrapper.");
+        }
+
+        if (normalized.Equals("xychart", StringComparison.OrdinalIgnoreCase))
+        {
+            hints.Add("Use `xychart-beta` as the Mermaid header; `xychart` is not recognized by the current parser.");
+        }
+
+        string details = $" First content line: '{normalized}'.";
+        if (hints.Count == 0)
+            return baseMessage + details;
+
+        return baseMessage + details + " Hint: " + string.Join(" ", hints);
+    }
+
+    private static string? GetFirstContentLine(string diagramText)
+    {
+        using var reader = new StringReader(diagramText);
+        string? line;
+        while ((line = reader.ReadLine()) is not null)
+        {
+            string trimmed = line.Trim();
+            if (trimmed.Length == 0 || trimmed.StartsWith("%%", StringComparison.Ordinal))
+                continue;
+
+            return trimmed;
+        }
+
         return null;
     }
 
