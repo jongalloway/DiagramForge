@@ -162,8 +162,45 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // nodes using that local direction. The anchor (min X/Y from the outer BFS)
         // is preserved so the group stays in roughly the same area of the diagram
         // while its members are re-ordered internally.
+        //
+        // Process in pre-order (outer → inner) so that the innermost group's
+        // direction always wins: an outer group re-lays out all its members first,
+        // then each inner group refines the positions of its own subset.
+        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
+        foreach (var g in diagram.Groups)
+        {
+            if (!groupsById.TryAdd(g.Id, g))
+                throw new InvalidOperationException(
+                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
+        }
+
+        var childGroupIdSet = new HashSet<string>(
+            diagram.Groups.SelectMany(g => g.ChildGroupIds), StringComparer.Ordinal);
+
+        var visitedGroups = new HashSet<string>(StringComparer.Ordinal);
+
+        void ApplyGroupDirectionPreOrder(Group g)
+        {
+            if (!visitedGroups.Add(g.Id))
+                return;
+            ApplyLocalGroupDirection(g, diagram, hGap, vGap);
+            foreach (var childId in g.ChildGroupIds)
+            {
+                if (groupsById.TryGetValue(childId, out var child))
+                    ApplyGroupDirectionPreOrder(child);
+            }
+        }
+
+        // Start from root groups (groups that are not a child of any other group).
         foreach (var group in diagram.Groups)
-            ApplyLocalGroupDirection(group, diagram, hGap, vGap);
+        {
+            if (!childGroupIdSet.Contains(group.Id))
+                ApplyGroupDirectionPreOrder(group);
+        }
+        // Visit any remaining groups not reachable from a root (e.g., groups
+        // whose parent is missing from the diagram — defensive fallback).
+        foreach (var group in diagram.Groups)
+            ApplyGroupDirectionPreOrder(group);
 
         // ── Group bounding boxes ──────────────────────────────────────────────────
         // Compute each group's frame from its member nodes' final positions. Must
@@ -173,14 +210,6 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // members of different groups can interleave in the same BFS layer and the
         // resulting rects may overlap. That's an accepted v1 limitation (tracked in
         // #14) — real-world subgraphs tend to be naturally clustered in the source.
-
-        var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
-        foreach (var g in diagram.Groups)
-        {
-            if (!groupsById.TryAdd(g.Id, g))
-                throw new InvalidOperationException(
-                    $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
-        }
 
         var computedGroups = new HashSet<string>(StringComparer.Ordinal);
 
@@ -473,21 +502,44 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
     /// </summary>
     private static List<List<Node>> ComputeLayers(Diagram diagram)
     {
+        var nodeIds = diagram.Nodes.Keys.ToHashSet(StringComparer.Ordinal);
+        var idLayers = ComputeLayersCore(nodeIds, diagram.Edges);
+        return idLayers.Select(ids => ids.Select(id => diagram.Nodes[id]).ToList()).ToList();
+    }
+
+    /// <summary>
+    /// Computes BFS layers for a subset of nodes connected by <paramref name="intraEdges"/>.
+    /// Used for group-scoped layout when a subgraph declares its own local direction.
+    /// </summary>
+    private static List<List<Node>> ComputeLocalLayers(List<Node> members, List<Edge> intraEdges)
+    {
+        var nodeById = members.ToDictionary(n => n.Id, StringComparer.Ordinal);
+        var nodeIds = nodeById.Keys.ToHashSet(StringComparer.Ordinal);
+        var idLayers = ComputeLayersCore(nodeIds, intraEdges);
+        return idLayers.Select(ids => ids.Select(id => nodeById[id]).ToList()).ToList();
+    }
+
+    /// <summary>
+    /// Core BFS/Kahn layering algorithm. Operates on an explicit set of node IDs and edges
+    /// so it can be reused for both the full diagram (<see cref="ComputeLayers"/>) and
+    /// subgraph-scoped passes (<see cref="ComputeLocalLayers"/>).
+    /// Returns layers as lists of node IDs; callers resolve them to <see cref="Node"/> objects.
+    /// </summary>
+    private static List<List<string>> ComputeLayersCore(
+        IReadOnlyCollection<string> nodeIds,
+        IEnumerable<Edge> edges)
+    {
         // Compute in-degree for each node
-        var inDegree = diagram.Nodes.Keys.ToDictionary(id => id, _ => 0, StringComparer.Ordinal);
-        foreach (var edge in diagram.Edges)
+        var inDegree = nodeIds.ToDictionary(id => id, _ => 0, StringComparer.Ordinal);
+        foreach (var edge in edges)
         {
             if (inDegree.ContainsKey(edge.TargetId))
                 inDegree[edge.TargetId]++;
         }
 
         // Build adjacency list
-        var adj = diagram.Nodes.Keys.ToDictionary(
-            id => id,
-            _ => new List<string>(),
-            StringComparer.Ordinal);
-
-        foreach (var edge in diagram.Edges)
+        var adj = nodeIds.ToDictionary(id => id, _ => new List<string>(), StringComparer.Ordinal);
+        foreach (var edge in edges)
         {
             if (adj.ContainsKey(edge.SourceId))
                 adj[edge.SourceId].Add(edge.TargetId);
@@ -525,7 +577,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // Iterate in stable order so layout is fully deterministic regardless of Dictionary
         // enumeration order.
         int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
-        foreach (var id in diagram.Nodes.Keys.OrderBy(id => id, StringComparer.Ordinal))
+        foreach (var id in nodeIds.OrderBy(id => id, StringComparer.Ordinal))
         {
             if (!rank.ContainsKey(id))
                 rank[id] = ++maxRank;
@@ -533,13 +585,11 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         // Group nodes by rank — iterate in key-sorted order so nodes within each layer
         // are positioned consistently across runtimes.
-        int totalLayers = rank.Values.Max() + 1;
-        var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
+        int totalLayers = rank.Count > 0 ? rank.Values.Max() + 1 : 0;
+        var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<string>()).ToList();
 
         foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
-        {
-            layers[r].Add(diagram.Nodes[id]);
-        }
+            layers[r].Add(id);
 
         return layers;
     }
@@ -645,73 +695,5 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             node.X += anchorX;
             node.Y += anchorY;
         }
-    }
-
-    /// <summary>
-    /// Computes BFS layers for a subset of nodes connected by <paramref name="intraEdges"/>.
-    /// Mirrors <see cref="ComputeLayers"/> but operates on an explicit node list and edge list
-    /// rather than the full diagram, enabling group-scoped layout.
-    /// </summary>
-    private static List<List<Node>> ComputeLocalLayers(List<Node> members, List<Edge> intraEdges)
-    {
-        var nodeById = members.ToDictionary(n => n.Id, StringComparer.Ordinal);
-
-        var inDegree = members.ToDictionary(n => n.Id, _ => 0, StringComparer.Ordinal);
-        foreach (var edge in intraEdges)
-        {
-            if (inDegree.ContainsKey(edge.TargetId))
-                inDegree[edge.TargetId]++;
-        }
-
-        var adj = members.ToDictionary(n => n.Id, _ => new List<string>(), StringComparer.Ordinal);
-        foreach (var edge in intraEdges)
-        {
-            if (adj.ContainsKey(edge.SourceId))
-                adj[edge.SourceId].Add(edge.TargetId);
-        }
-
-        var rank = new Dictionary<string, int>(StringComparer.Ordinal);
-        var queue = new Queue<string>();
-
-        foreach (var (id, deg) in inDegree)
-        {
-            if (deg == 0)
-            {
-                queue.Enqueue(id);
-                rank[id] = 0;
-            }
-        }
-
-        while (queue.Count > 0)
-        {
-            var current = queue.Dequeue();
-            foreach (var neighbor in adj[current])
-            {
-                int newRank = rank[current] + 1;
-                if (!rank.TryGetValue(neighbor, out int existing) || newRank > existing)
-                    rank[neighbor] = newRank;
-
-                inDegree[neighbor]--;
-                if (inDegree[neighbor] == 0)
-                    queue.Enqueue(neighbor);
-            }
-        }
-
-        int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
-        foreach (var id in members.Select(n => n.Id).OrderBy(id => id, StringComparer.Ordinal))
-        {
-            if (!rank.ContainsKey(id))
-                rank[id] = ++maxRank;
-        }
-
-        int totalLayers = rank.Count > 0 ? rank.Values.Max() + 1 : 0;
-        var localLayers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
-
-        foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
-        {
-            localLayers[r].Add(nodeById[id]);
-        }
-
-        return localLayers;
     }
 }
