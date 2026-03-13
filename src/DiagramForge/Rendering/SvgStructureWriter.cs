@@ -5,7 +5,7 @@ namespace DiagramForge.Rendering;
 
 internal static class SvgStructureWriter
 {
-    internal static void AppendEdge(StringBuilder sb, Edge edge, Node source, Node target, Theme theme)
+    internal static void AppendEdge(StringBuilder sb, Edge edge, Node source, Node target, Theme theme, LayoutHints hints)
     {
         double sourceCenterX = source.X + source.Width / 2;
         double sourceCenterY = source.Y + source.Height / 2;
@@ -87,8 +87,10 @@ internal static class SvgStructureWriter
             cp2 = $"{SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
         }
 
+        bool isSequenceEdge = false;
         if (edge.Metadata.TryGetValue("sequence:messageY", out var msgYObj))
         {
+            isSequenceEdge = true;
             double msgY = Convert.ToDouble(msgYObj, System.Globalization.CultureInfo.InvariantCulture);
             x1 = sourceCenterX;
             y1 = msgY;
@@ -109,16 +111,41 @@ internal static class SvgStructureWriter
         double strokeWidth = edge.LineStyle == EdgeLineStyle.Thick ? theme.StrokeWidth * 2 : theme.StrokeWidth;
         string markerEnd = edge.ArrowHead != ArrowHeadStyle.None ? """ marker-end="url(#arrowhead)" """ : " ";
 
-        string pathData = $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} C {cp1} {cp2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
+        // Determine effective routing mode (per-edge override wins over diagram default).
+        // Sequence edges always use Bezier to preserve their horizontal arrow style.
+        EdgeRouting routing = isSequenceEdge ? EdgeRouting.Bezier : (edge.Routing ?? hints.EdgeRouting);
+
+        string pathData;
+        double labelX = (x1 + x2) / 2;
+        double labelY = (y1 + y2) / 2 - 4;
+
+        switch (routing)
+        {
+            case EdgeRouting.Orthogonal:
+            {
+                var (oPath, oLx, oLy) = BuildOrthogonalPath(x1, y1, x2, y2, preferHorizontal, hints.OrthogonalCornerRadius);
+                pathData = oPath;
+                labelX = oLx;
+                labelY = oLy;
+                break;
+            }
+
+            case EdgeRouting.Straight:
+                pathData = $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
+                break;
+
+            default: // Bezier
+                pathData = $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} C {cp1} {cp2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
+                break;
+        }
+
         if (TryBuildCycleArcPath(edge, source, target, out var cycleArcPath, out var cycleLabelX, out var cycleLabelY))
         {
             pathData = cycleArcPath;
             if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
             {
-                x1 = cycleLabelX;
-                y1 = cycleLabelY + 4;
-                x2 = cycleLabelX;
-                y2 = cycleLabelY + 4;
+                labelX = cycleLabelX;
+                labelY = cycleLabelY + 4;
             }
         }
 
@@ -126,9 +153,94 @@ internal static class SvgStructureWriter
 
         if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
         {
-            double lx = (x1 + x2) / 2;
-            double ly = (y1 + y2) / 2 - 4;
-            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(lx)}" y="{SvgRenderSupport.F(ly)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.FontSize * 0.85)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}" font-style="italic">{SvgRenderSupport.Escape(edge.Label.Text)}</text>""");
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(labelX)}" y="{SvgRenderSupport.F(labelY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.FontSize * 0.85)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}" font-style="italic">{SvgRenderSupport.Escape(edge.Label.Text)}</text>""");
+        }
+    }
+
+    /// <summary>
+    /// Builds an orthogonal (rectilinear) SVG path with rounded corners between two anchor points.
+    /// The path uses a Z-shape (two 90° bends) with SVG arcs replacing each sharp corner.
+    /// </summary>
+    private static (string pathData, double labelX, double labelY) BuildOrthogonalPath(
+        double x1, double y1, double x2, double y2, bool preferHorizontal, double cornerRadius)
+    {
+        if (preferHorizontal)
+        {
+            // Route: (x1,y1) → (midX,y1) → (midX,y2) → (x2,y2)
+            double midX = (x1 + x2) / 2;
+            double labX = midX;
+            double labY = (y1 + y2) / 2 - 4;
+
+            if (Math.Abs(y2 - y1) < 0.5)
+                return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}", labX, labY);
+
+            double seg1 = Math.Abs(midX - x1);
+            double seg2 = Math.Abs(y2 - y1);
+            double seg3 = Math.Abs(x2 - midX);
+            double r = Math.Min(cornerRadius, Math.Min(seg1, Math.Min(seg2 / 2.0, seg3)));
+
+            if (r < 0.5)
+            {
+                return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(midX)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(midX)},{SvgRenderSupport.F(y2)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}",
+                    labX, labY);
+            }
+
+            double s1 = Math.Sign(midX - x1);   // direction of seg 1 (horizontal)
+            double sv = Math.Sign(y2 - y1);      // direction of seg 2 (vertical)
+            double s2 = Math.Sign(x2 - midX);   // direction of seg 3 (horizontal)
+
+            // Bend 1 sweep: incoming (s1,0) → outgoing (0,sv). cross = s1*sv.
+            int sweep1 = s1 * sv > 0 ? 1 : 0;
+            // Bend 2 sweep: incoming (0,sv) → outgoing (s2,0). cross = -sv*s2.
+            int sweep2 = -sv * s2 > 0 ? 1 : 0;
+
+            return (string.Concat(
+                $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} ",
+                $"L {SvgRenderSupport.F(midX - s1 * r)},{SvgRenderSupport.F(y1)} ",
+                $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 {sweep1} {SvgRenderSupport.F(midX)},{SvgRenderSupport.F(y1 + sv * r)} ",
+                $"L {SvgRenderSupport.F(midX)},{SvgRenderSupport.F(y2 - sv * r)} ",
+                $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 {sweep2} {SvgRenderSupport.F(midX + s2 * r)},{SvgRenderSupport.F(y2)} ",
+                $"L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}"),
+                labX, labY);
+        }
+        else
+        {
+            // Route: (x1,y1) → (x1,midY) → (x2,midY) → (x2,y2)
+            double midY = (y1 + y2) / 2;
+            double labX = (x1 + x2) / 2;
+            double labY = midY - 4;
+
+            if (Math.Abs(x2 - x1) < 0.5)
+                return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}", labX, labY);
+
+            double seg1 = Math.Abs(midY - y1);
+            double seg2 = Math.Abs(x2 - x1);
+            double seg3 = Math.Abs(y2 - midY);
+            double r = Math.Min(cornerRadius, Math.Min(seg1, Math.Min(seg2 / 2.0, seg3)));
+
+            if (r < 0.5)
+            {
+                return ($"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} L {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(midY)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(midY)} L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}",
+                    labX, labY);
+            }
+
+            double sv1 = Math.Sign(midY - y1);  // direction of seg 1 (vertical)
+            double sh = Math.Sign(x2 - x1);     // direction of seg 2 (horizontal)
+            double sv2 = Math.Sign(y2 - midY);  // direction of seg 3 (vertical)
+
+            // Bend 1 sweep: incoming (0,sv1) → outgoing (sh,0). cross = -sv1*sh.
+            int sweep1 = -sv1 * sh > 0 ? 1 : 0;
+            // Bend 2 sweep: incoming (sh,0) → outgoing (0,sv2). cross = sh*sv2.
+            int sweep2 = sh * sv2 > 0 ? 1 : 0;
+
+            return (string.Concat(
+                $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} ",
+                $"L {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(midY - sv1 * r)} ",
+                $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 {sweep1} {SvgRenderSupport.F(x1 + sh * r)},{SvgRenderSupport.F(midY)} ",
+                $"L {SvgRenderSupport.F(x2 - sh * r)},{SvgRenderSupport.F(midY)} ",
+                $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 {sweep2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(midY + sv2 * r)} ",
+                $"L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}"),
+                labX, labY);
         }
     }
 

@@ -32,6 +32,12 @@ public class Edge
     /// <summary>Override stroke color (null = inherit from theme).</summary>
     public string? Color { get; set; }
 
+    /// <summary>
+    /// Per-edge routing override. When <see langword="null"/> the diagram-level
+    /// <see cref="LayoutHints.EdgeRouting"/> default is used.
+    /// </summary>
+    public EdgeRouting? Routing { get; set; }
+
     /// <summary>Arbitrary metadata from the parser (e.g., port directions for architecture diagrams).</summary>
     public Dictionary<string, object> Metadata { get; } = new();
 }
@@ -51,4 +57,17 @@ public enum ArrowHeadStyle
     OpenArrow,
     Diamond,
     Circle,
+}
+
+/// <summary>Controls the geometry used to draw edge paths.</summary>
+public enum EdgeRouting
+{
+    /// <summary>Smooth cubic Bézier curve (default).</summary>
+    Bezier,
+
+    /// <summary>Axis-aligned (rectilinear) segments with subtly rounded corners.</summary>
+    Orthogonal,
+
+    /// <summary>Direct straight line from source anchor to target anchor.</summary>
+    Straight,
 }
