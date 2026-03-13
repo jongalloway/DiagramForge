@@ -80,7 +80,10 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
 
             if (groupStack.Count > 0
                 && line.StartsWith("direction ", StringComparison.OrdinalIgnoreCase))
+            {
+                groupStack.Peek().Group.Direction = ParseDirection(line.ToLowerInvariant());
                 continue;
+            }
 
             ParseLine(line, builder, GetOrCreateNode);
         }

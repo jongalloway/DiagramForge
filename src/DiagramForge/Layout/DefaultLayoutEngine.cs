@@ -157,9 +157,18 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             }
         }
 
+        // ── Group-local direction pass ────────────────────────────────────────────
+        // For subgraphs that declare their own `direction`, re-arrange the member
+        // nodes using that local direction. The anchor (min X/Y from the outer BFS)
+        // is preserved so the group stays in roughly the same area of the diagram
+        // while its members are re-ordered internally.
+        foreach (var group in diagram.Groups)
+            ApplyLocalGroupDirection(group, diagram, hGap, vGap);
+
         // ── Group bounding boxes ──────────────────────────────────────────────────
         // Compute each group's frame from its member nodes' final positions. Must
-        // run after the RL/BT mirror so group rects don't end up on the wrong side.
+        // run after the RL/BT mirror and after the local-direction pass so group
+        // rects reflect the final node positions.
         // This is deliberately a post-hoc fit rather than group-aware positioning:
         // members of different groups can interleave in the same BFS layer and the
         // resulting rects may overlap. That's an accepted v1 limitation (tracked in
@@ -533,5 +542,176 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         }
 
         return layers;
+    }
+
+    /// <summary>
+    /// Re-positions the member nodes of <paramref name="group"/> using the group's
+    /// own <see cref="Group.Direction"/> when it differs from (or overrides) the
+    /// diagram-wide direction. The outer-diagram anchor (minimum X/Y among the
+    /// group's members after the outer BFS) is preserved so the group stays in
+    /// roughly the same area of the diagram.
+    /// </summary>
+    private static void ApplyLocalGroupDirection(
+        Group group,
+        Diagram diagram,
+        double hGap,
+        double vGap)
+    {
+        if (group.Direction is null)
+            return;
+
+        var memberSet = new HashSet<string>(group.ChildNodeIds, StringComparer.Ordinal);
+        var members = memberSet
+            .Where(diagram.Nodes.ContainsKey)
+            .Select(id => diagram.Nodes[id])
+            .ToList();
+
+        if (members.Count == 0)
+            return;
+
+        // Record the top-left anchor from the outer BFS so the group stays in place.
+        double anchorX = members.Min(n => n.X);
+        double anchorY = members.Min(n => n.Y);
+
+        // Collect intra-group edges (both endpoints inside the group).
+        var intraEdges = diagram.Edges
+            .Where(e => memberSet.Contains(e.SourceId) && memberSet.Contains(e.TargetId))
+            .ToList();
+
+        var localLayers = ComputeLocalLayers(members, intraEdges);
+        var localDir = group.Direction.Value;
+        bool isLocalHorizontal = localDir is LayoutDirection.LeftToRight or LayoutDirection.RightToLeft;
+
+        // Place members in local coordinates starting from (0, 0).
+        if (isLocalHorizontal)
+        {
+            double colX = 0;
+            foreach (var layer in localLayers)
+            {
+                if (layer.Count == 0)
+                    continue;
+
+                double maxColWidth = layer.Max(n => n.Width);
+                double runY = 0;
+                foreach (var node in layer)
+                {
+                    node.X = colX;
+                    node.Y = runY;
+                    runY += node.Height + vGap;
+                }
+                colX += maxColWidth + hGap;
+            }
+        }
+        else
+        {
+            double rowY = 0;
+            foreach (var layer in localLayers)
+            {
+                if (layer.Count == 0)
+                    continue;
+
+                double rowH = layer.Max(n => n.Height);
+                double runX = 0;
+                foreach (var node in layer)
+                {
+                    node.X = runX;
+                    node.Y = rowY + (rowH - node.Height) / 2;
+                    runX += node.Width + hGap;
+                }
+                rowY += rowH + vGap;
+            }
+        }
+
+        // Mirror for RL / BT local directions.
+        if (localDir == LayoutDirection.RightToLeft || localDir == LayoutDirection.BottomToTop)
+        {
+            if (isLocalHorizontal)
+            {
+                double frameW = members.Max(n => n.X + n.Width);
+                foreach (var node in members)
+                    node.X = frameW - node.X - node.Width;
+            }
+            else
+            {
+                double frameH = members.Max(n => n.Y + n.Height);
+                foreach (var node in members)
+                    node.Y = frameH - node.Y - node.Height;
+            }
+        }
+
+        // Translate back to the outer-diagram anchor.
+        foreach (var node in members)
+        {
+            node.X += anchorX;
+            node.Y += anchorY;
+        }
+    }
+
+    /// <summary>
+    /// Computes BFS layers for a subset of nodes connected by <paramref name="intraEdges"/>.
+    /// Mirrors <see cref="ComputeLayers"/> but operates on an explicit node list and edge list
+    /// rather than the full diagram, enabling group-scoped layout.
+    /// </summary>
+    private static List<List<Node>> ComputeLocalLayers(List<Node> members, List<Edge> intraEdges)
+    {
+        var nodeById = members.ToDictionary(n => n.Id, StringComparer.Ordinal);
+
+        var inDegree = members.ToDictionary(n => n.Id, _ => 0, StringComparer.Ordinal);
+        foreach (var edge in intraEdges)
+        {
+            if (inDegree.ContainsKey(edge.TargetId))
+                inDegree[edge.TargetId]++;
+        }
+
+        var adj = members.ToDictionary(n => n.Id, _ => new List<string>(), StringComparer.Ordinal);
+        foreach (var edge in intraEdges)
+        {
+            if (adj.ContainsKey(edge.SourceId))
+                adj[edge.SourceId].Add(edge.TargetId);
+        }
+
+        var rank = new Dictionary<string, int>(StringComparer.Ordinal);
+        var queue = new Queue<string>();
+
+        foreach (var (id, deg) in inDegree)
+        {
+            if (deg == 0)
+            {
+                queue.Enqueue(id);
+                rank[id] = 0;
+            }
+        }
+
+        while (queue.Count > 0)
+        {
+            var current = queue.Dequeue();
+            foreach (var neighbor in adj[current])
+            {
+                int newRank = rank[current] + 1;
+                if (!rank.TryGetValue(neighbor, out int existing) || newRank > existing)
+                    rank[neighbor] = newRank;
+
+                inDegree[neighbor]--;
+                if (inDegree[neighbor] == 0)
+                    queue.Enqueue(neighbor);
+            }
+        }
+
+        int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
+        foreach (var id in members.Select(n => n.Id).OrderBy(id => id, StringComparer.Ordinal))
+        {
+            if (!rank.ContainsKey(id))
+                rank[id] = ++maxRank;
+        }
+
+        int totalLayers = rank.Values.Max() + 1;
+        var localLayers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
+
+        foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
+        {
+            localLayers[r].Add(nodeById[id]);
+        }
+
+        return localLayers;
     }
 }

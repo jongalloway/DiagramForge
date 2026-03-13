@@ -705,10 +705,10 @@ public class MermaidParserTests
     }
 
     [Fact]
-    public void Parse_Subgraph_DirectionDirective_IsSkipped()
+    public void Parse_Subgraph_DirectionDirective_CapturedOnGroup()
     {
-        // `direction` inside a subgraph is valid Mermaid but out of scope (#14).
-        // Must not leak through as a spurious node declaration.
+        // `direction` inside a subgraph must be stored on the group and must not
+        // leak through as a spurious node declaration.
         const string text = """
             flowchart LR
               subgraph G
@@ -721,6 +721,42 @@ public class MermaidParserTests
 
         Assert.Equal(2, diagram.Nodes.Count);
         Assert.DoesNotContain(diagram.Nodes.Keys, id => id.Contains("direction"));
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal(DiagramForge.Models.LayoutDirection.TopToBottom, group.Direction);
+    }
+
+    [Fact]
+    public void Parse_Subgraph_DirectionLR_CapturedOnGroup()
+    {
+        const string text = """
+            flowchart TB
+              subgraph G
+                direction LR
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal(DiagramForge.Models.LayoutDirection.LeftToRight, group.Direction);
+    }
+
+    [Fact]
+    public void Parse_Subgraph_NoDirection_GroupDirectionIsNull()
+    {
+        const string text = """
+            flowchart LR
+              subgraph G
+                A --> B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Null(group.Direction);
     }
 
     [Fact]
