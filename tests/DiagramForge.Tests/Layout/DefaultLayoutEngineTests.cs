@@ -639,6 +639,71 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_SubgraphLocalDirection_MembersFollowLocalDirection()
+    {
+        // Outer diagram is LR; Backend subgraph declares direction TB.
+        // A and B must end up stacked vertically (same X, B.Y > A.Y)
+        // even though the outer flow is horizontal.
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddNode(new Node("C"))
+               .AddEdge(new Edge("A", "B"))
+               .AddEdge(new Edge("B", "C"));
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var group = new Group("Backend", "Backend") { Direction = LayoutDirection.TopToBottom };
+        group.ChildNodeIds.AddRange(["A", "B"]);
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["A"];
+        var b = diagram.Nodes["B"];
+        var c = diagram.Nodes["C"];
+
+        // Inside the Backend group: A is above B (TB direction)
+        Assert.True(a.Y < b.Y, $"With local TB: A.Y ({a.Y}) should be < B.Y ({b.Y})");
+
+        // Inside the Backend group: A and B share the same column (same X)
+        Assert.Equal(a.X, b.X);
+
+        // The outer LR flow is preserved: C (outside the group) is to the right of the group
+        Assert.True(c.X > group.X + group.Width - _theme.DiagramPadding,
+            $"C.X ({c.X}) should be to the right of the group's right edge ({group.X + group.Width})");
+
+        // Group must still enclose its members
+        Assert.True(group.X < a.X);
+        Assert.True(group.Y < a.Y);
+        Assert.True(group.X + group.Width > b.X + b.Width);
+        Assert.True(group.Y + group.Height > b.Y + b.Height);
+    }
+
+    [Fact]
+    public void Layout_SubgraphLocalDirectionLR_OuterTB_MembersArrangedHorizontally()
+    {
+        // Outer diagram is TB; subgraph declares direction LR.
+        // A and B must end up side-by-side (same Y, B.X > A.X).
+        var diagram = new Diagram();
+        diagram.AddNode(new Node("A"))
+               .AddNode(new Node("B"))
+               .AddEdge(new Edge("A", "B"));
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+
+        var group = new Group("G", "G") { Direction = LayoutDirection.LeftToRight };
+        group.ChildNodeIds.AddRange(["A", "B"]);
+        diagram.AddGroup(group);
+
+        _engine.Layout(diagram, _theme);
+
+        var a = diagram.Nodes["A"];
+        var b = diagram.Nodes["B"];
+
+        // With local LR: A is to the left of B (A.X < B.X)
+        Assert.True(a.X < b.X, $"With local LR: A.X ({a.X}) should be < B.X ({b.X})");
+    }
+
+    [Fact]
     public void Layout_BlockDiagram_UsesGridColumnsAndSpans()
     {
         var diagram = new Diagram { DiagramType = "block" };

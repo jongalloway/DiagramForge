@@ -1,0 +1,9 @@
+---
+theme: default
+---
+flowchart LR
+  subgraph Backend
+    direction TB
+    A[API] --> B[Worker]
+  end
+  B --> C[DB]

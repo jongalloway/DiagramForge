@@ -157,14 +157,15 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             }
         }
 
-        // ── Group bounding boxes ──────────────────────────────────────────────────
-        // Compute each group's frame from its member nodes' final positions. Must
-        // run after the RL/BT mirror so group rects don't end up on the wrong side.
-        // This is deliberately a post-hoc fit rather than group-aware positioning:
-        // members of different groups can interleave in the same BFS layer and the
-        // resulting rects may overlap. That's an accepted v1 limitation (tracked in
-        // #14) — real-world subgraphs tend to be naturally clustered in the source.
-
+        // ── Group-local direction pass ────────────────────────────────────────────
+        // For subgraphs that declare their own `direction`, re-arrange the member
+        // nodes using that local direction. The anchor (min X/Y from the outer BFS)
+        // is preserved so the group stays in roughly the same area of the diagram
+        // while its members are re-ordered internally.
+        //
+        // Process in pre-order (outer → inner) so that the innermost group's
+        // direction always wins: an outer group re-lays out all its members first,
+        // then each inner group refines the positions of its own subset.
         var groupsById = new Dictionary<string, Group>(StringComparer.Ordinal);
         foreach (var g in diagram.Groups)
         {
@@ -172,6 +173,43 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
                 throw new InvalidOperationException(
                     $"Duplicate group id '{g.Id}' in diagram. Group IDs must be unique.");
         }
+
+        var childGroupIdSet = new HashSet<string>(
+            diagram.Groups.SelectMany(g => g.ChildGroupIds), StringComparer.Ordinal);
+
+        var visitedGroups = new HashSet<string>(StringComparer.Ordinal);
+
+        void ApplyGroupDirectionPreOrder(Group g)
+        {
+            if (!visitedGroups.Add(g.Id))
+                return;
+            ApplyLocalGroupDirection(g, diagram, hGap, vGap);
+            foreach (var childId in g.ChildGroupIds)
+            {
+                if (groupsById.TryGetValue(childId, out var child))
+                    ApplyGroupDirectionPreOrder(child);
+            }
+        }
+
+        // Start from root groups (groups that are not a child of any other group).
+        foreach (var group in diagram.Groups)
+        {
+            if (!childGroupIdSet.Contains(group.Id))
+                ApplyGroupDirectionPreOrder(group);
+        }
+        // Visit any remaining groups not reachable from a root (e.g., groups
+        // whose parent is missing from the diagram — defensive fallback).
+        foreach (var group in diagram.Groups)
+            ApplyGroupDirectionPreOrder(group);
+
+        // ── Group bounding boxes ──────────────────────────────────────────────────
+        // Compute each group's frame from its member nodes' final positions. Must
+        // run after the RL/BT mirror and after the local-direction pass so group
+        // rects reflect the final node positions.
+        // This is deliberately a post-hoc fit rather than group-aware positioning:
+        // members of different groups can interleave in the same BFS layer and the
+        // resulting rects may overlap. That's an accepted v1 limitation (tracked in
+        // #14) — real-world subgraphs tend to be naturally clustered in the source.
 
         var computedGroups = new HashSet<string>(StringComparer.Ordinal);
 
@@ -464,21 +502,44 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
     /// </summary>
     private static List<List<Node>> ComputeLayers(Diagram diagram)
     {
+        var nodeIds = diagram.Nodes.Keys.ToHashSet(StringComparer.Ordinal);
+        var idLayers = ComputeLayersCore(nodeIds, diagram.Edges);
+        return idLayers.Select(ids => ids.Select(id => diagram.Nodes[id]).ToList()).ToList();
+    }
+
+    /// <summary>
+    /// Computes BFS layers for a subset of nodes connected by <paramref name="intraEdges"/>.
+    /// Used for group-scoped layout when a subgraph declares its own local direction.
+    /// </summary>
+    private static List<List<Node>> ComputeLocalLayers(List<Node> members, List<Edge> intraEdges)
+    {
+        var nodeById = members.ToDictionary(n => n.Id, StringComparer.Ordinal);
+        var nodeIds = nodeById.Keys.ToHashSet(StringComparer.Ordinal);
+        var idLayers = ComputeLayersCore(nodeIds, intraEdges);
+        return idLayers.Select(ids => ids.Select(id => nodeById[id]).ToList()).ToList();
+    }
+
+    /// <summary>
+    /// Core BFS/Kahn layering algorithm. Operates on an explicit set of node IDs and edges
+    /// so it can be reused for both the full diagram (<see cref="ComputeLayers"/>) and
+    /// subgraph-scoped passes (<see cref="ComputeLocalLayers"/>).
+    /// Returns layers as lists of node IDs; callers resolve them to <see cref="Node"/> objects.
+    /// </summary>
+    private static List<List<string>> ComputeLayersCore(
+        IReadOnlyCollection<string> nodeIds,
+        IEnumerable<Edge> edges)
+    {
         // Compute in-degree for each node
-        var inDegree = diagram.Nodes.Keys.ToDictionary(id => id, _ => 0, StringComparer.Ordinal);
-        foreach (var edge in diagram.Edges)
+        var inDegree = nodeIds.ToDictionary(id => id, _ => 0, StringComparer.Ordinal);
+        foreach (var edge in edges)
         {
             if (inDegree.ContainsKey(edge.TargetId))
                 inDegree[edge.TargetId]++;
         }
 
         // Build adjacency list
-        var adj = diagram.Nodes.Keys.ToDictionary(
-            id => id,
-            _ => new List<string>(),
-            StringComparer.Ordinal);
-
-        foreach (var edge in diagram.Edges)
+        var adj = nodeIds.ToDictionary(id => id, _ => new List<string>(), StringComparer.Ordinal);
+        foreach (var edge in edges)
         {
             if (adj.ContainsKey(edge.SourceId))
                 adj[edge.SourceId].Add(edge.TargetId);
@@ -516,7 +577,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // Iterate in stable order so layout is fully deterministic regardless of Dictionary
         // enumeration order.
         int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
-        foreach (var id in diagram.Nodes.Keys.OrderBy(id => id, StringComparer.Ordinal))
+        foreach (var id in nodeIds.OrderBy(id => id, StringComparer.Ordinal))
         {
             if (!rank.ContainsKey(id))
                 rank[id] = ++maxRank;
@@ -524,14 +585,115 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         // Group nodes by rank — iterate in key-sorted order so nodes within each layer
         // are positioned consistently across runtimes.
-        int totalLayers = rank.Values.Max() + 1;
-        var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
+        int totalLayers = rank.Count > 0 ? rank.Values.Max() + 1 : 0;
+        var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<string>()).ToList();
 
         foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
-        {
-            layers[r].Add(diagram.Nodes[id]);
-        }
+            layers[r].Add(id);
 
         return layers;
+    }
+
+    /// <summary>
+    /// Re-positions the member nodes of <paramref name="group"/> using the group's
+    /// own <see cref="Group.Direction"/> when it differs from (or overrides) the
+    /// diagram-wide direction. The outer-diagram anchor (minimum X/Y among the
+    /// group's members after the outer BFS) is preserved so the group stays in
+    /// roughly the same area of the diagram.
+    /// </summary>
+    private static void ApplyLocalGroupDirection(
+        Group group,
+        Diagram diagram,
+        double hGap,
+        double vGap)
+    {
+        if (group.Direction is null)
+            return;
+
+        var memberSet = new HashSet<string>(group.ChildNodeIds, StringComparer.Ordinal);
+        var members = memberSet
+            .Where(diagram.Nodes.ContainsKey)
+            .Select(id => diagram.Nodes[id])
+            .ToList();
+
+        if (members.Count == 0)
+            return;
+
+        // Record the top-left anchor from the outer BFS so the group stays in place.
+        double anchorX = members.Min(n => n.X);
+        double anchorY = members.Min(n => n.Y);
+
+        // Collect intra-group edges (both endpoints inside the group).
+        var intraEdges = diagram.Edges
+            .Where(e => memberSet.Contains(e.SourceId) && memberSet.Contains(e.TargetId))
+            .ToList();
+
+        var localLayers = ComputeLocalLayers(members, intraEdges);
+        var localDir = group.Direction.Value;
+        bool isLocalHorizontal = localDir is LayoutDirection.LeftToRight or LayoutDirection.RightToLeft;
+
+        // Place members in local coordinates starting from (0, 0).
+        if (isLocalHorizontal)
+        {
+            double colX = 0;
+            foreach (var layer in localLayers)
+            {
+                if (layer.Count == 0)
+                    continue;
+
+                double maxColWidth = layer.Max(n => n.Width);
+                double runY = 0;
+                foreach (var node in layer)
+                {
+                    node.X = colX;
+                    node.Y = runY;
+                    runY += node.Height + vGap;
+                }
+                colX += maxColWidth + hGap;
+            }
+        }
+        else
+        {
+            double rowY = 0;
+            foreach (var layer in localLayers)
+            {
+                if (layer.Count == 0)
+                    continue;
+
+                double rowH = layer.Max(n => n.Height);
+                double runX = 0;
+                foreach (var node in layer)
+                {
+                    node.X = runX;
+                    node.Y = rowY + (rowH - node.Height) / 2;
+                    runX += node.Width + hGap;
+                }
+                rowY += rowH + vGap;
+            }
+        }
+
+        // Mirror for RL / BT local directions.
+        if (localDir == LayoutDirection.RightToLeft || localDir == LayoutDirection.BottomToTop)
+        {
+            if (isLocalHorizontal)
+            {
+                double frameW = members.Max(n => n.X + n.Width);
+                foreach (var node in members)
+                    node.X = frameW - node.X - node.Width;
+            }
+            else
+            {
+                double frameH = members.Max(n => n.Y + n.Height);
+                foreach (var node in members)
+                    node.Y = frameH - node.Y - node.Height;
+            }
+        }
+
+        // Translate back to the outer-diagram anchor.
+        foreach (var node in members)
+        {
+            node.X += anchorX;
+            node.Y += anchorY;
+        }
     }
 }

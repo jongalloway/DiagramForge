@@ -35,6 +35,13 @@ public class Group
     /// <summary>Override stroke color (null = inherit from theme).</summary>
     public string? StrokeColor { get; set; }
 
+    /// <summary>
+    /// Optional local layout direction for this group's member nodes.
+    /// When set, the layout engine arranges the group's members according to this
+    /// direction instead of the diagram-wide direction.
+    /// </summary>
+    public LayoutDirection? Direction { get; set; }
+
     /// <summary>Layout position computed by the layout engine.</summary>
     public double X { get; set; }
 
