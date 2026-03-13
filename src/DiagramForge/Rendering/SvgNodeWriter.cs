@@ -68,6 +68,12 @@ internal static class SvgNodeWriter
             {
                 AppendPyramidSegmentNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
             }
+            else if (node.Metadata.TryGetValue("conceptual:funnelSegment", out var funnelSegmentObj)
+                && funnelSegmentObj is bool isFunnelSegment
+                && isFunnelSegment)
+            {
+                AppendFunnelSegmentNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+            }
             else
             {
                 switch (node.Shape)
@@ -208,6 +214,20 @@ internal static class SvgNodeWriter
 
         string points = topWidth <= 0.01
             ? $"{SvgRenderSupport.F(node.Width / 2)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}"
+            : $"{SvgRenderSupport.F(topInset)},0 {SvgRenderSupport.F(topInset + topWidth)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}";
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendFunnelSegmentNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        double topWidth = SvgRenderSupport.GetMetadataDouble(node, "conceptual:funnelTopWidth") ?? node.Width;
+        double bottomWidth = SvgRenderSupport.GetMetadataDouble(node, "conceptual:funnelBottomWidth") ?? 0;
+        double topInset = (node.Width - topWidth) / 2;
+        double bottomInset = (node.Width - bottomWidth) / 2;
+
+        string points = bottomWidth <= 0.01
+            ? $"{SvgRenderSupport.F(topInset)},0 {SvgRenderSupport.F(topInset + topWidth)},0 {SvgRenderSupport.F(node.Width / 2)},{SvgRenderSupport.F(node.Height)}"
             : $"{SvgRenderSupport.F(topInset)},0 {SvgRenderSupport.F(topInset + topWidth)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}";
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
