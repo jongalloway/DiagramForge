@@ -177,6 +177,8 @@ internal static class SvgStructureWriter
             double seg1 = Math.Abs(midX - x1);
             double seg2 = Math.Abs(y2 - y1);
             double seg3 = Math.Abs(x2 - midX);
+            // r must not exceed the length of any adjacent segment; the middle segment is
+            // shared by both bends, so cap at half its length to leave room for both arcs.
             double r = Math.Min(cornerRadius, Math.Min(seg1, Math.Min(seg2 / 2.0, seg3)));
 
             if (r < 0.5)
@@ -216,6 +218,8 @@ internal static class SvgStructureWriter
             double seg1 = Math.Abs(midY - y1);
             double seg2 = Math.Abs(x2 - x1);
             double seg3 = Math.Abs(y2 - midY);
+            // r must not exceed the length of any adjacent segment; the middle segment is
+            // shared by both bends, so cap at half its length to leave room for both arcs.
             double r = Math.Min(cornerRadius, Math.Min(seg1, Math.Min(seg2 / 2.0, seg3)));
 
             if (r < 0.5)
