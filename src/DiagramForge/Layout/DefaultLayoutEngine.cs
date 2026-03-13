@@ -704,7 +704,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
                 rank[id] = ++maxRank;
         }
 
-        int totalLayers = rank.Values.Max() + 1;
+        int totalLayers = rank.Count > 0 ? rank.Values.Max() + 1 : 0;
         var localLayers = Enumerable.Range(0, totalLayers).Select(_ => new List<Node>()).ToList();
 
         foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
