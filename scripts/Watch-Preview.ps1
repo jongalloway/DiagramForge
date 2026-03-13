@@ -4,9 +4,9 @@
 
 .DESCRIPTION
     Provides a tight edit-save-preview loop for Mermaid and Conceptual DSL files.
-    By default it uses the local CLI project via `dotnet run`, writes to a stable
-    latest.svg output, and can optionally archive timestamped copies after each
-    successful render.
+    By default it uses `dnx --yes DiagramForge.Tool` so preview runs exercise the latest
+    packaged CLI behavior, writes to a stable latest.svg output, and can optionally
+    archive timestamped copies after each successful render.
 
 .PARAMETER InputPath
     Path to the diagram source file to watch. Defaults to
@@ -22,8 +22,8 @@
 
 .PARAMETER Mode
     Render mode:
-    - dotnet-run: uses the local CLI project via dotnet run
-    - tool: uses an installed `diagramforge` command on PATH
+    - dnx: uses `dnx --yes DiagramForge.Tool`
+    - project: uses the local CLI project via `dotnet run`
 
 .PARAMETER Theme
     Optional built-in theme name passed through to the CLI.
@@ -54,15 +54,15 @@
     pwsh scripts/Watch-Preview.ps1 -Theme presentation -ArchiveOnSuccess
 
 .EXAMPLE
-    pwsh scripts/Watch-Preview.ps1 -InputPath samples/test.mmd -OutputPath samples/latest.svg -Mode tool
+    pwsh scripts/Watch-Preview.ps1 -InputPath samples/test.mmd -OutputPath samples/latest.svg -Mode project
 #>
 [CmdletBinding()]
 param(
     [string]$InputPath,
     [string]$OutputPath,
     [string]$HistoryDirectory,
-    [ValidateSet('dotnet-run', 'tool')]
-    [string]$Mode = 'dotnet-run',
+    [ValidateSet('dnx', 'project')]
+    [string]$Mode = 'dnx',
     [string]$Theme,
     [string]$PaletteJson,
     [string]$ThemeFile,
@@ -135,7 +135,11 @@ function Get-RenderCommand {
 
     $arguments = [System.Collections.Generic.List[string]]::new()
 
-    if ($Mode -eq 'dotnet-run') {
+    if ($Mode -eq 'dnx') {
+        [string[]]$dnxArguments = @('--yes', 'DiagramForge.Tool')
+        $arguments.AddRange($dnxArguments)
+    }
+    elseif ($Mode -eq 'project') {
         [string[]]$dotnetArguments = @('run', '--project', (Join-Path $repoRoot 'src\DiagramForge.Cli'), '--')
         $arguments.AddRange($dotnetArguments)
     }
@@ -258,7 +262,7 @@ function Invoke-Render {
 
     try {
         $arguments = Get-RenderCommand -RenderInputPath $preparedInput.RenderPath
-        $commandName = if ($Mode -eq 'dotnet-run') { 'dotnet' } else { 'diagramforge' }
+        $commandName = if ($Mode -eq 'project') { 'dotnet' } else { 'dnx' }
 
         Write-Host "Rendering $(Split-Path $InputPath -Leaf) -> $(Split-Path $OutputPath -Leaf)"
         if ($preparedInput.StrippedMermaidFence) {

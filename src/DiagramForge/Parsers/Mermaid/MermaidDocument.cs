@@ -192,7 +192,8 @@ internal sealed class MermaidDocument
             kind = MermaidDiagramKind.ArchitectureDiagram;
             return true;
         }
-        if (normalizedHeader.Equals("xychart-beta", StringComparison.OrdinalIgnoreCase))
+        if (normalizedHeader.Equals("xychart", StringComparison.OrdinalIgnoreCase)
+            || normalizedHeader.Equals("xychart-beta", StringComparison.OrdinalIgnoreCase))
         {
             kind = MermaidDiagramKind.XyChart;
             return true;
