@@ -24,11 +24,6 @@ public sealed partial class DefaultLayoutEngine
         }
 
         // ── Step 1: layout composite groups ──────────────────────────────────────
-        // Build a lookup of groupId → Group for quick access.
-        var groupById = diagram.Groups.Count > 0
-            ? diagram.Groups.ToDictionary(g => g.Id, StringComparer.Ordinal)
-            : new Dictionary<string, Group>(StringComparer.Ordinal);
-
         // Layout each composite group's inner nodes and compute group dimensions.
         foreach (var group in diagram.Groups)
         {
@@ -153,8 +148,8 @@ public sealed partial class DefaultLayoutEngine
         double vGap)
     {
         var innerNodes = group.ChildNodeIds
-            .Where(diagram.Nodes.ContainsKey)
-            .Select(id => diagram.Nodes[id])
+            .Select(id => diagram.Nodes.TryGetValue(id, out var n) ? n : null)
+            .OfType<Node>()
             .ToList();
 
         if (innerNodes.Count == 0)
