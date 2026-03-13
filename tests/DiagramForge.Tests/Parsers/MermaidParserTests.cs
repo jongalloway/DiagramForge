@@ -394,6 +394,120 @@ public class MermaidParserTests
         Assert.DoesNotContain("--", diagram.Nodes.Keys);
     }
 
+    [Fact]
+    public void Parse_BlockDiagram_CompositeBlock_CreatesGroupWithChildNodes()
+    {
+        const string text = """
+            block
+            columns 1
+              db(("DB"))
+              block:ID
+                A
+                B["A wide one in the middle"]
+                C
+              end
+              D
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // The composite block should create a Group named "ID".
+        Assert.Single(diagram.Groups);
+        var group = diagram.Groups[0];
+        Assert.Equal("ID", group.Id);
+
+        // A, B, C are children of the group.
+        Assert.Contains("A", group.ChildNodeIds);
+        Assert.Contains("B", group.ChildNodeIds);
+        Assert.Contains("C", group.ChildNodeIds);
+
+        // db and D are top-level (not in any group).
+        Assert.False(diagram.Nodes["db"].Metadata.ContainsKey("block:groupId"));
+        Assert.False(diagram.Nodes["D"].Metadata.ContainsKey("block:groupId"));
+
+        // Nodes inside the group carry the group id.
+        Assert.Equal("ID", diagram.Nodes["A"].Metadata["block:groupId"]);
+        Assert.Equal("ID", diagram.Nodes["B"].Metadata["block:groupId"]);
+        Assert.Equal("ID", diagram.Nodes["C"].Metadata["block:groupId"]);
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_CompositeBlock_WithSpan_ReservesCorrectOuterColumns()
+    {
+        const string text = """
+            block
+              columns 3
+              a:3
+              block:group1:2
+                columns 2
+                h i j k
+              end
+              g
+              block:group2:3
+                l m n o p q r
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // Outer column count is 3.
+        Assert.Equal(3, diagram.Metadata["block:columnCount"]);
+
+        // Top-level node positions.
+        Assert.Equal(0, diagram.Nodes["a"].Metadata["block:row"]);
+        Assert.Equal(0, diagram.Nodes["a"].Metadata["block:column"]);
+        Assert.Equal(3, diagram.Nodes["a"].Metadata["block:span"]);
+
+        // g is at outer row 1, column 2.
+        Assert.Equal(1, diagram.Nodes["g"].Metadata["block:row"]);
+        Assert.Equal(2, diagram.Nodes["g"].Metadata["block:column"]);
+
+        // group1 is at outer row 1, column 0, span 2.
+        Assert.Equal(1, Convert.ToInt32(diagram.Metadata["block:group:group1:row"]));
+        Assert.Equal(0, Convert.ToInt32(diagram.Metadata["block:group:group1:column"]));
+        Assert.Equal(2, Convert.ToInt32(diagram.Metadata["block:group:group1:span"]));
+
+        // Inner nodes of group1 are placed in a 2-column grid.
+        Assert.Equal(0, diagram.Nodes["h"].Metadata["block:row"]);
+        Assert.Equal(0, diagram.Nodes["h"].Metadata["block:column"]);
+        Assert.Equal(0, diagram.Nodes["i"].Metadata["block:row"]);
+        Assert.Equal(1, diagram.Nodes["i"].Metadata["block:column"]);
+        Assert.Equal(1, diagram.Nodes["j"].Metadata["block:row"]);
+        Assert.Equal(0, diagram.Nodes["j"].Metadata["block:column"]);
+        Assert.Equal(1, diagram.Nodes["k"].Metadata["block:row"]);
+        Assert.Equal(1, diagram.Nodes["k"].Metadata["block:column"]);
+
+        // group2 is at outer row 2, column 0, span 3.
+        Assert.Equal(2, Convert.ToInt32(diagram.Metadata["block:group:group2:row"]));
+        Assert.Equal(0, Convert.ToInt32(diagram.Metadata["block:group:group2:column"]));
+        Assert.Equal(3, Convert.ToInt32(diagram.Metadata["block:group:group2:span"]));
+
+        // Inner nodes of group2 are auto-columns (7 nodes in one row).
+        foreach (var id in new[] { "l", "m", "n", "o", "p", "q", "r" })
+        {
+            Assert.Equal("group2", diagram.Nodes[id].Metadata["block:groupId"]);
+            Assert.Equal(0, diagram.Nodes[id].Metadata["block:row"]);
+        }
+    }
+
+    [Fact]
+    public void Parse_BlockDiagram_CompositeBlock_NoExceptionForNamedBlock()
+    {
+        // Regression: previously threw "Invalid span value 'ID': must be a positive integer."
+        const string text = """
+            block
+              block:ID
+                A
+                B
+              end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Contains("A", diagram.Nodes.Keys);
+        Assert.Contains("B", diagram.Nodes.Keys);
+    }
+
     // ── Parse: error cases ────────────────────────────────────────────────────
 
     [Fact]
