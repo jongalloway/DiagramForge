@@ -248,11 +248,13 @@ DiagramForge targets `.NET 10`. For local development and the CLI tool, use SDK/
 dotnet add package DiagramForge
 ```
 
-### CLI (.NET tool)
+### CLI (`dnx`)
 
 ```sh
-dotnet tool install -g DiagramForge.Tool
+dnx DiagramForge.Tool --help
 ```
+
+With `.NET 10`, `dnx` can run the tool package directly without a prior install.
 
 ## Library usage
 
@@ -330,7 +332,7 @@ Implement `IDiagramParser`. You get two methods: `CanParse(string)` for sniffing
 ## CLI usage
 
 ```text
-diagramforge <input-file> [options]
+dnx DiagramForge.Tool <input-file> [options]
 ```
 
 | Argument | Description |
@@ -349,13 +351,13 @@ CLI precedence mirrors the library API: frontmatter can define theme and styling
 
 ```sh
 # write to file
-diagramforge diagram.mmd -o diagram.svg
+dnx DiagramForge.Tool diagram.mmd -o diagram.svg
 
 # render for overlay on an existing page background
-diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg
+dnx DiagramForge.Tool diagram.mmd --theme dracula --transparent -o overlay.svg
 
 # pipe to something else
-diagramforge diagram.txt | rsvg-convert -o diagram.png
+dnx DiagramForge.Tool diagram.txt | rsvg-convert -o diagram.png
 ```
 
 ## Supported syntax

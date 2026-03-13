@@ -165,8 +165,8 @@ static void PrintHelp()
         "DiagramForge — Diagram text to SVG renderer",
         string.Empty,
         "Usage:",
-        "  diagramforge <input-file> [options]",
-        "  diagramforge --help",
+        "  dnx DiagramForge.Tool <input-file> [options]",
+        "  dnx DiagramForge.Tool --help",
         string.Empty,
         "Arguments:",
         "  <input-file>                  Path to the diagram source file (Mermaid or Conceptual DSL)",
@@ -185,11 +185,11 @@ static void PrintHelp()
         "  conceptual                    Matrix, Pyramid",
         string.Empty,
         "Examples:",
-        "  diagramforge diagram.mmd --output diagram.svg",
-        "  diagramforge diagram.mmd --theme dark --output diagram.svg",
-        "  diagramforge diagram.mmd --theme dark --palette '[\"#FF6B6B\",\"#4ECDC4\",\"#45B7D1\"]' -o out.svg",
-        "  diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg",
-        "  diagramforge diagram.mmd --theme-file mytheme.json -o out.svg"
+        "  dnx DiagramForge.Tool diagram.mmd --output diagram.svg",
+        "  dnx DiagramForge.Tool diagram.mmd --theme dark --output diagram.svg",
+        "  dnx DiagramForge.Tool diagram.mmd --theme dark --palette '[\"#FF6B6B\",\"#4ECDC4\",\"#45B7D1\"]' -o out.svg",
+        "  dnx DiagramForge.Tool diagram.mmd --theme dracula --transparent -o overlay.svg",
+        "  dnx DiagramForge.Tool diagram.mmd --theme-file mytheme.json -o out.svg"
     ];
 
     Console.WriteLine(string.Join(Environment.NewLine, lines));
