@@ -15,8 +15,12 @@ public sealed partial class DefaultLayoutEngine
         double nodeH,
         double pad)
     {
+        // Sort by the numeric suffix of the node ID ("node_0", "node_1", ...) so
+        // that 10+ stages order correctly (string-ordinal would put node_10 between
+        // node_1 and node_2).
         var orderedNodes = diagram.Nodes.Values
-            .OrderBy(node => node.Id, StringComparer.Ordinal)
+            .OrderBy(node => TryParseNodeIndex(node.Id))
+            .ThenBy(node => node.Id, StringComparer.Ordinal)
             .ToList();
 
         if (orderedNodes.Count == 0)
@@ -30,26 +34,34 @@ public sealed partial class DefaultLayoutEngine
 
         int stageCount = orderedNodes.Count;
         double fullWidth = Math.Max(widestLabel, minW * 1.9);
-        double totalHeight = stageCount * nodeH + (stageCount - 1) * FunnelLevelGap;
+        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
 
         for (int index = 0; index < orderedNodes.Count; index++)
         {
             var node = orderedNodes[index];
             double yTop = index * (nodeH + FunnelLevelGap);
-            double yBottom = yTop + nodeH;
 
-            // Linear taper: width decreases from fullWidth at the top edge to
-            // fullWidth * FunnelMinWidthRatio at the bottom edge of the last segment.
-            double topWidth = fullWidth * (1 - yTop / totalHeight * (1 - FunnelMinWidthRatio));
-            double segmentBottomWidth = fullWidth * (1 - yBottom / totalHeight * (1 - FunnelMinWidthRatio));
+            // Compute widths from stage fraction, not from pixel Y position, so
+            // that the gap between segments doesn't widen adjacent trapezoid edges.
+            // Adjacent segments connect: bottom of segment i == top of segment i+1.
+            double topWidth = fullWidth * (1 - (double)index / stageCount * (1 - FunnelMinWidthRatio));
+            double segmentBottomWidth = fullWidth * (1 - (double)(index + 1) / stageCount * (1 - FunnelMinWidthRatio));
 
             node.X = pad;
-            node.Y = pad + yTop;
+            node.Y = pad + titleOffset + yTop;
             node.Width = fullWidth;
             node.Height = nodeH;
             node.Metadata["conceptual:funnelSegment"] = true;
             node.Metadata["conceptual:funnelTopWidth"] = topWidth;
             node.Metadata["conceptual:funnelBottomWidth"] = segmentBottomWidth;
         }
+    }
+
+    private static int TryParseNodeIndex(string nodeId)
+    {
+        int underscore = nodeId.LastIndexOf('_');
+        if (underscore >= 0 && int.TryParse(nodeId.AsSpan(underscore + 1), out int idx))
+            return idx;
+        return int.MaxValue;
     }
 }

@@ -116,6 +116,7 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <sub>Conceptual Funnel</sub>
     </td>
   </tr>
+</table>
 
 <h3>Built-in Themes</h3>
 

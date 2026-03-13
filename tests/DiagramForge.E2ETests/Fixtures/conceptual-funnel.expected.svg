@@ -31,7 +31,7 @@
         </feMerge>
       </filter>
     </defs>
-    <polygon points="0.00,0 228.00,0 200.36,40.00 27.64,40.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <polygon points="0.00,0 228.00,0 197.60,40.00 30.40,40.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
     <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Awareness</text>
   </g>
   <g transform="translate(32.00,78.00)">
@@ -60,7 +60,7 @@
         </feMerge>
       </filter>
     </defs>
-    <polygon points="31.78,0 196.22,0 168.58,40.00 59.42,40.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <polygon points="30.40,0 197.60,0 167.20,40.00 60.80,40.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
     <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Evaluation</text>
   </g>
   <g transform="translate(32.00,124.00)">
@@ -89,7 +89,7 @@
         </feMerge>
       </filter>
     </defs>
-    <polygon points="63.56,0 164.44,0 136.80,40.00 91.20,40.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <polygon points="60.80,0 167.20,0 136.80,40.00 91.20,40.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
     <text x="114.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Conversion</text>
   </g>
 </svg>
