@@ -26,11 +26,13 @@ DiagramForge targets `.NET 10`.
 dotnet add package DiagramForge
 ```
 
-### CLI tool
+### CLI (`dnx`)
 
 ```bash
-dotnet tool install -g DiagramForge.Tool
+dnx DiagramForge.Tool --help
 ```
+
+With `.NET 10`, `dnx` can run the tool package directly without a prior install.
 
 ## Basic usage
 
@@ -48,8 +50,8 @@ flowchart LR
 ## CLI usage
 
 ```bash
-diagramforge diagram.mmd -o diagram.svg
-diagramforge diagram.mmd --theme dracula --transparent -o overlay.svg
+dnx DiagramForge.Tool diagram.mmd -o diagram.svg
+dnx DiagramForge.Tool diagram.mmd --theme dracula --transparent -o overlay.svg
 ```
 
 ## Supported today
