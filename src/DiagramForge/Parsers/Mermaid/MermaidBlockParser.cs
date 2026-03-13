@@ -8,6 +8,10 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
 {
     private const string BlockColumnCountKey = "block:columnCount";
 
+    // Metadata key prefix for composite block group layout info stored in diagram.Metadata.
+    // Full key format: "block:group:{id}:row" / ":column" / ":span" / ":columnCount"
+    internal const string GroupMetaPrefix = "block:group:";
+
     public bool CanParse(MermaidDiagramKind kind) => kind == MermaidDiagramKind.BlockDiagram;
 
     public Diagram Parse(MermaidDocument document)
@@ -18,10 +22,24 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
 
         var diagram = builder.Build();
         var nodesSeen = new Dictionary<string, Node>(StringComparer.Ordinal);
+
+        // --- mutable grid-state variables (represent the *current* block level) ---
         int configuredColumns = -1;
         int currentRow = 0;
         int currentColumn = 0;
         int maxColumn = 0;
+        string? currentGroupId = null;   // null ⇒ top-level
+
+        // Stack for composite block nesting.  Each frame saves the outer grid state
+        // so we can restore it when the composite block ends.
+        var compositeBlockStack = new Stack<(
+            string GroupId,
+            int Span,
+            int SavedConfiguredColumns,
+            int SavedCurrentRow,
+            int SavedCurrentColumn,
+            int SavedMaxColumn,
+            string? SavedGroupId)>();
 
         Node GetOrCreateNode(string id, string label)
         {
@@ -71,11 +89,74 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
                 continue;
             }
 
+            // ── composite block opening: block:<id> or block:<id>:<span> ─────────
+            if (TryParseCompositeBlockOpening(line, out var cbId, out var cbSpan))
+            {
+                // Check for overflow into the next outer row.
+                if (configuredColumns > 0 && currentColumn + cbSpan > configuredColumns)
+                {
+                    currentRow++;
+                    currentColumn = 0;
+                }
+
+                // Record the position of this composite block in the outer grid.
+                diagram.Metadata[$"{GroupMetaPrefix}{cbId}:row"] = currentRow;
+                diagram.Metadata[$"{GroupMetaPrefix}{cbId}:column"] = currentColumn;
+                diagram.Metadata[$"{GroupMetaPrefix}{cbId}:span"] = cbSpan;
+
+                // Reserve the span in the current (outer) grid *before* pushing.
+                ReserveColumns(cbSpan);
+
+                // Save the current outer grid state and push a new inner context.
+                compositeBlockStack.Push((
+                    GroupId: cbId,
+                    Span: cbSpan,
+                    SavedConfiguredColumns: configuredColumns,
+                    SavedCurrentRow: currentRow,
+                    SavedCurrentColumn: currentColumn,
+                    SavedMaxColumn: maxColumn,
+                    SavedGroupId: currentGroupId));
+
+                // Reset inner grid state.
+                configuredColumns = -1;
+                currentRow = 0;
+                currentColumn = 0;
+                maxColumn = 0;
+                currentGroupId = cbId;
+
+                // Create the group (or retrieve it if the id was seen before).
+                if (!diagram.Groups.Exists(g => g.Id == cbId))
+                    diagram.AddGroup(new Group(cbId));
+
+                // Do NOT call AdvanceToNextRow here – the composite block opener does
+                // not itself represent a row of content in the outer grid.
+                continue;
+            }
+
+            // ── composite block closing ───────────────────────────────────────────
+            if (line.Equals("end", StringComparison.OrdinalIgnoreCase))
+            {
+                if (compositeBlockStack.Count > 0)
+                {
+                    // Store inner column count before popping.
+                    var innerColumnCount = configuredColumns > 0 ? configuredColumns : Math.Max(1, maxColumn);
+                    diagram.Metadata[$"{GroupMetaPrefix}{currentGroupId}:columnCount"] = innerColumnCount;
+
+                    var frame = compositeBlockStack.Pop();
+                    configuredColumns = frame.SavedConfiguredColumns;
+                    currentRow = frame.SavedCurrentRow;
+                    currentColumn = frame.SavedCurrentColumn;
+                    maxColumn = frame.SavedMaxColumn;
+                    currentGroupId = frame.SavedGroupId;
+                }
+                // Whether or not we popped a frame, skip the line.
+                continue;
+            }
+
             if (line.StartsWith("style ", StringComparison.OrdinalIgnoreCase)
                 || line.StartsWith("class ", StringComparison.OrdinalIgnoreCase)
                 || line.StartsWith("classDef ", StringComparison.OrdinalIgnoreCase)
-                || line.StartsWith("linkStyle ", StringComparison.OrdinalIgnoreCase)
-                || line.Equals("end", StringComparison.OrdinalIgnoreCase))
+                || line.StartsWith("linkStyle ", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
@@ -105,6 +186,14 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
                     node.Metadata["block:column"] = currentColumn;
                     node.Metadata["block:span"] = descriptor.Span;
 
+                    if (currentGroupId is not null)
+                    {
+                        node.Metadata["block:groupId"] = currentGroupId;
+                        // Associate node with the group.
+                        var grp = diagram.Groups.Find(g => g.Id == currentGroupId);
+                        grp?.ChildNodeIds.Add(node.Id);
+                    }
+
                     if (descriptor.ArrowDirection is not null)
                         node.Metadata["block:arrowDirection"] = descriptor.ArrowDirection;
                 }
@@ -115,8 +204,59 @@ internal sealed class MermaidBlockParser : IMermaidDiagramParser
             AdvanceToNextRow();
         }
 
+        // If the document ended without closing all composite blocks, finalize them.
+        while (compositeBlockStack.Count > 0)
+        {
+            var innerColumnCount = configuredColumns > 0 ? configuredColumns : Math.Max(1, maxColumn);
+            diagram.Metadata[$"{GroupMetaPrefix}{currentGroupId}:columnCount"] = innerColumnCount;
+
+            var frame = compositeBlockStack.Pop();
+            configuredColumns = frame.SavedConfiguredColumns;
+            currentRow = frame.SavedCurrentRow;
+            currentColumn = frame.SavedCurrentColumn;
+            maxColumn = frame.SavedMaxColumn;
+            currentGroupId = frame.SavedGroupId;
+        }
+
         diagram.Metadata[BlockColumnCountKey] = configuredColumns > 0 ? configuredColumns : Math.Max(1, maxColumn);
         return diagram;
+    }
+
+    // Detects "block:<id>" or "block:<id>:<span>" lines (composite block opening).
+    // Returns false for any other input (including "block-beta" header lines, which
+    // never appear in the inner-content loop since they're line index 0).
+    private static bool TryParseCompositeBlockOpening(string line, out string id, out int span)
+    {
+        id = string.Empty;
+        span = 1;
+
+        if (!line.StartsWith("block:", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var rest = line[6..]; // everything after "block:"
+
+        // Validate: must not be empty and must not contain whitespace (which would
+        // indicate we mis-matched a multi-token line).
+        if (rest.Length == 0 || rest.Any(char.IsWhiteSpace))
+            return false;
+
+        // Check for optional trailing span: "block:<id>:<n>"
+        int lastColon = rest.LastIndexOf(':');
+        if (lastColon > 0)
+        {
+            var possibleSpan = rest[(lastColon + 1)..];
+            if (int.TryParse(possibleSpan, CultureInfo.InvariantCulture, out int parsedSpan) && parsedSpan >= 1)
+            {
+                id = rest[..lastColon];
+                span = parsedSpan;
+                return true;
+            }
+        }
+
+        // No numeric suffix – the whole rest is the id.
+        id = rest;
+        span = 1;
+        return true;
     }
 
     private static bool TryParseEdge(string line, out Edge edge)
