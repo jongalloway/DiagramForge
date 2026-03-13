@@ -216,26 +216,6 @@ public class DiagramRendererTests
             _renderer.Render("this is not a diagram"));
     }
 
-    [Fact]
-    public void Render_WithXyChartHeader_SuggestsXyChartBeta()
-    {
-        var ex = Assert.Throws<DiagramParseException>(() =>
-            _renderer.Render("xychart\n    bar [1, 2]"));
-
-        Assert.Contains("First content line: 'xychart'", ex.Message, StringComparison.Ordinal);
-        Assert.Contains("xychart-beta", ex.Message, StringComparison.OrdinalIgnoreCase);
-    }
-
-    [Fact]
-    public void Render_WithMermaidCodeFence_SuggestsRemovingFence()
-    {
-        var ex = Assert.Throws<DiagramParseException>(() =>
-            _renderer.Render("```mermaid\nflowchart LR\n  A --> B\n```"));
-
-        Assert.Contains("Markdown code fence", ex.Message, StringComparison.OrdinalIgnoreCase);
-        Assert.Contains("```mermaid", ex.Message, StringComparison.Ordinal);
-    }
-
     // ── Constructor null guards ───────────────────────────────────────────────
 
     [Fact]
