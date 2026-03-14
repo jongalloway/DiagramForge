@@ -63,6 +63,17 @@ public sealed partial class DefaultLayoutEngine
             ? theme.NodeStrokePalette[0]
             : ColorUtils.Darken(palette[0], 0.20);
 
+        // Build an item-only sub-palette that never wraps back to the center color.
+        // When the palette has more than one entry, skip index 0 (used by the center)
+        // and cycle over the remaining entries. When the palette is a single color,
+        // all items share that same color (same as the center — unavoidable).
+        string[] itemPalette = palette.Length > 1 ? palette[1..] : palette;
+        string[]? strokePalette = theme.NodeStrokePalette is { Count: > 1 }
+            ? [.. theme.NodeStrokePalette.Skip(1)]
+            : theme.NodeStrokePalette is { Count: 1 }
+                ? [.. theme.NodeStrokePalette]
+                : null;
+
         // Place item nodes evenly around the circle, starting at top (-π/2)
         for (int i = 0; i < n; i++)
         {
@@ -73,11 +84,10 @@ public sealed partial class DefaultLayoutEngine
             node.Width = itemNodeW;
             node.Height = itemNodeH;
 
-            // Cycle through remaining palette entries for items
-            string itemFill = palette[(i + 1) % palette.Length];
+            string itemFill = itemPalette[i % itemPalette.Length];
             node.FillColor = itemFill;
-            node.StrokeColor = theme.NodeStrokePalette is { Count: > 0 }
-                ? theme.NodeStrokePalette[(i + 1) % theme.NodeStrokePalette.Count]
+            node.StrokeColor = strokePalette is not null
+                ? strokePalette[i % strokePalette.Length]
                 : ColorUtils.Darken(itemFill, 0.20);
 
             SetLabelCenter(node, itemNodeW / 2, itemNodeH / 2);
