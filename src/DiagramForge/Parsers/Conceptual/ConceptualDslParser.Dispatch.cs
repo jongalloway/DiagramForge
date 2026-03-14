@@ -12,6 +12,7 @@ public sealed partial class ConceptualDslParser
     private static readonly FrozenDictionary<string, ConceptualDiagramParseHandler> ParseHandlers =
         new Dictionary<string, ConceptualDiagramParseHandler>(StringComparer.OrdinalIgnoreCase)
         {
+            ["chevrons"] = ParseChevronsDiagram,
             ["cycle"] = ParseCycleDiagram,
             ["funnel"] = ParseFunnelDiagram,
             ["matrix"] = ParseMatrixDiagram,

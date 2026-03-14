@@ -24,6 +24,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: pillars\npillars:\n  - title: A\n  - title: B")]
     [InlineData("diagram: cycle\nsteps:\n  - S1\n  - S2\n  - S3")]
     [InlineData("diagram: funnel\nstages:\n  - Awareness\n  - Conversion")]
+    [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -450,5 +451,97 @@ public class ConceptualDslParserTests
     {
         Assert.Throws<DiagramParseException>(() =>
             _parser.Parse("diagram: cycle\n"));
+    }
+
+    // ── Chevrons ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForChevrons()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Chevrons_ProducesOneNodePerStep()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_NodeLabelsMatchStepNames()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Discover", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Build", diagram.Nodes["node_1"].Label.Text);
+        Assert.Equal("Launch", diagram.Nodes["node_2"].Label.Text);
+        Assert.Equal("Learn", diagram.Nodes["node_3"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_SetsDiagramTypeToChevrons()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - A\n  - B";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("chevrons", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_MissingStepsSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: chevrons\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("steps:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_EmptyStepsSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: chevrons\nsteps:\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("steps", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_SingleStep_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - OnlyOne";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("at least 2", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_TwoSteps_IsMinimumValid()
+    {
+        const string text = "diagram: chevrons\nsteps:\n  - Start\n  - End";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Chevrons_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: chevrons\r\nsteps:\r\n  - Discover\r\n  - Build\r\n  - Launch\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+        Assert.Equal("Discover", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Launch", diagram.Nodes["node_2"].Label.Text);
     }
 }

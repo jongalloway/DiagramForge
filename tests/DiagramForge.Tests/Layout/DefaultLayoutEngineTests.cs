@@ -1131,4 +1131,124 @@ public class DefaultLayoutEngineTests
             Assert.True(edge.Metadata.ContainsKey("cycle:radius"));
         });
     }
+
+    // ── Chevrons ──────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Layout_Chevrons_AssignsChevronSegmentMetadata()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "Discover"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Launch"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node => Assert.True((bool)node.Metadata["conceptual:chevronSegment"]));
+        Assert.All(diagram.Nodes.Values, node => Assert.True(node.Metadata.ContainsKey("conceptual:chevronTipDepth")));
+    }
+
+    [Fact]
+    public void Layout_Chevrons_HorizontalOrderMatchesNodeIdOrder()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "Discover"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Launch"));
+
+        _engine.Layout(diagram, _theme);
+
+        double x0 = diagram.Nodes["node_0"].X;
+        double x1 = diagram.Nodes["node_1"].X;
+        double x2 = diagram.Nodes["node_2"].X;
+
+        Assert.True(x0 < x1, $"node_0.X ({x0}) should be left of node_1.X ({x1})");
+        Assert.True(x1 < x2, $"node_1.X ({x1}) should be left of node_2.X ({x2})");
+    }
+
+    [Fact]
+    public void Layout_Chevrons_AllNodesHaveEqualSizeAndSameY()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "Discover"))
+               .AddNode(new Node("node_1", "Build"))
+               .AddNode(new Node("node_2", "Launch"));
+
+        _engine.Layout(diagram, _theme);
+
+        var nodes = diagram.Nodes.Values.ToList();
+        double w0 = nodes[0].Width;
+        double h0 = nodes[0].Height;
+        double y0 = nodes[0].Y;
+
+        Assert.All(nodes, node =>
+        {
+            Assert.Equal(w0, node.Width, precision: 6);
+            Assert.Equal(h0, node.Height, precision: 6);
+            Assert.Equal(y0, node.Y, precision: 6);
+        });
+    }
+
+    [Fact]
+    public void Layout_Chevrons_FirstNodeHasNoLeftNotchByIndex()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "First"))
+               .AddNode(new Node("node_1", "Second"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.Equal(0, diagram.Nodes["node_0"].Metadata["conceptual:chevronIndex"]);
+        Assert.Equal(1, diagram.Nodes["node_1"].Metadata["conceptual:chevronIndex"]);
+    }
+
+    [Fact]
+    public void Layout_Chevrons_WithTitle_OffsetsNodesDownward()
+    {
+        var diagramNoTitle = new Diagram { DiagramType = "chevrons" };
+        diagramNoTitle.AddNode(new Node("node_0", "A"))
+                      .AddNode(new Node("node_1", "B"));
+
+        var diagramWithTitle = new Diagram { DiagramType = "chevrons", Title = "Process" };
+        diagramWithTitle.AddNode(new Node("node_0", "A"))
+                        .AddNode(new Node("node_1", "B"));
+
+        _engine.Layout(diagramNoTitle, _theme);
+        _engine.Layout(diagramWithTitle, _theme);
+
+        double yNoTitle = diagramNoTitle.Nodes["node_0"].Y;
+        double yWithTitle = diagramWithTitle.Nodes["node_0"].Y;
+
+        Assert.True(yWithTitle > yNoTitle,
+            $"Titled chevron top node Y ({yWithTitle}) should be below untitled ({yNoTitle}) to avoid title overlap.");
+    }
+
+    [Fact]
+    public void Layout_Chevrons_AdjacentNodesHaveGapBetweenThem()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "Discover"))
+               .AddNode(new Node("node_1", "Build"));
+
+        _engine.Layout(diagram, _theme);
+
+        var first = diagram.Nodes["node_0"];
+        var second = diagram.Nodes["node_1"];
+
+        Assert.True(second.X > first.X + first.Width,
+            $"Expected a gap between chevron stages, but node_1.X ({second.X}) was not greater than node_0 right edge ({first.X + first.Width}).");
+    }
+
+    [Fact]
+    public void Layout_Chevrons_StoresChevronCount()
+    {
+        var diagram = new Diagram { DiagramType = "chevrons" };
+        diagram.AddNode(new Node("node_0", "A"))
+               .AddNode(new Node("node_1", "B"))
+               .AddNode(new Node("node_2", "C"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node => Assert.Equal(3, node.Metadata["conceptual:chevronCount"]));
+    }
 }
