@@ -35,6 +35,16 @@ public class Node
     /// <summary>Arbitrary metadata from the parser (e.g., Mermaid node type).</summary>
     public Dictionary<string, object> Metadata { get; } = new();
 
+    /// <summary>
+    /// Optional stereotype or annotation labels rendered above the node's primary title.
+    /// </summary>
+    public List<Label> Annotations { get; } = new();
+
+    /// <summary>
+    /// Optional ordered compartments rendered within the node body.
+    /// </summary>
+    public List<NodeCompartment> Compartments { get; } = new();
+
     /// <summary>Layout position computed by the layout engine.</summary>
     public double X { get; set; }
 
