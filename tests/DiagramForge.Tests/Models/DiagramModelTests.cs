@@ -80,6 +80,46 @@ public class DiagramModelTests
     }
 
     [Fact]
+    public void Node_NewClassDiagramCollections_DefaultToEmpty_WithoutChangingLegacyState()
+    {
+        var node = new Node("Customer", "Customer");
+
+        Assert.Equal("Customer", node.Label.Text);
+        Assert.Empty(node.Annotations);
+        Assert.Empty(node.Compartments);
+    }
+
+    [Fact]
+    public void Node_CompartmentsAndAnnotations_PreserveOrderAndContent()
+    {
+        var node = new Node("Order")
+        {
+            FillColor = "#ffeecc",
+        };
+
+        node.Annotations.Add(new Label("<<entity>>"));
+        node.Compartments.Add(new NodeCompartment("attributes", new[]
+        {
+            new Label("+Id: Guid"),
+            new Label("+Status: string"),
+        }));
+        node.Compartments.Add(new NodeCompartment("methods", new[]
+        {
+            new Label("+Submit()"),
+        }));
+
+        Assert.Single(node.Annotations);
+        Assert.Equal("<<entity>>", node.Annotations[0].Text);
+        Assert.Equal(2, node.Compartments.Count);
+        Assert.Equal("attributes", node.Compartments[0].Kind);
+        Assert.Equal("+Id: Guid", node.Compartments[0].Lines[0].Text);
+        Assert.Equal("+Status: string", node.Compartments[0].Lines[1].Text);
+        Assert.Equal("methods", node.Compartments[1].Kind);
+        Assert.Equal("+Submit()", node.Compartments[1].Lines[0].Text);
+        Assert.Equal("#ffeecc", node.FillColor);
+    }
+
+    [Fact]
     public void Edge_DefaultArrowHead_IsArrow()
     {
         var edge = new Edge("A", "B");
@@ -93,6 +133,34 @@ public class DiagramModelTests
         var edge = new Edge("A", "B");
 
         Assert.Equal(EdgeLineStyle.Solid, edge.LineStyle);
+    }
+
+    [Fact]
+    public void Edge_EndLabels_DefaultToNull_WithoutAffectingCenterLabel()
+    {
+        var edge = new Edge("A", "B")
+        {
+            Label = new Label("relates to"),
+        };
+
+        Assert.Equal("relates to", edge.Label?.Text);
+        Assert.Null(edge.SourceLabel);
+        Assert.Null(edge.TargetLabel);
+    }
+
+    [Fact]
+    public void Edge_CanStoreIndependentCenterSourceAndTargetLabels()
+    {
+        var edge = new Edge("Customer", "Ticket")
+        {
+            Label = new Label("owns"),
+            SourceLabel = new Label("1"),
+            TargetLabel = new Label("*"),
+        };
+
+        Assert.Equal("owns", edge.Label?.Text);
+        Assert.Equal("1", edge.SourceLabel?.Text);
+        Assert.Equal("*", edge.TargetLabel?.Text);
     }
 
     [Fact]

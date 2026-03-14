@@ -20,6 +20,12 @@ public class Edge
     /// <summary>Optional label displayed on the edge.</summary>
     public Label? Label { get; set; }
 
+    /// <summary>Optional label displayed near the source end of the edge.</summary>
+    public Label? SourceLabel { get; set; }
+
+    /// <summary>Optional label displayed near the target end of the edge.</summary>
+    public Label? TargetLabel { get; set; }
+
     /// <summary>Style of the edge line.</summary>
     public EdgeLineStyle LineStyle { get; set; } = EdgeLineStyle.Solid;
 
