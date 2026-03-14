@@ -28,6 +28,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
     private const double BlockVGapWide = 40;
     private const double PyramidLevelGap = 6;
     private const double DefaultLabelLineHeight = 1.15;
+    private const double AnnotationFontSizeRatio = 0.85;
 
     /// <summary>
     /// Average glyph advance as a fraction of font size (em-units) for typical
@@ -70,7 +71,12 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // produce skinny boxes.
 
         foreach (var node in diagram.Nodes.Values)
-            SizeStandardNode(node, theme, minW, nodeH);
+        {
+            if (node.Compartments.Count > 0 || node.Annotations.Count > 0)
+                SizeClassNode(node, theme, minW, nodeH);
+            else
+                SizeStandardNode(node, theme, minW, nodeH);
+        }
 
         // ── Positioning pass ──────────────────────────────────────────────────
         // Assign nodes to layers via BFS, then place them. Because widths are now
@@ -439,6 +445,43 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         node.Width = Math.Max(minWidth, textWidth + 2 * theme.NodePadding);
         node.Height = Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding);
+    }
+
+    private static void SizeClassNode(Node node, Theme theme, double minWidth, double minHeight)
+    {
+        double fontSize = node.Label.FontSize ?? theme.FontSize;
+        double annFontSize = fontSize * AnnotationFontSizeRatio;
+        double lineHeight = fontSize * DefaultLabelLineHeight;
+        double annLineHeight = annFontSize * DefaultLabelLineHeight;
+        double pad = theme.NodePadding;
+        double halfPad = pad / 2;
+
+        // Title section height: top-pad + annotations + gap + class name + bottom-pad
+        double annHeight = node.Annotations.Count > 0
+            ? node.Annotations.Count * annLineHeight + halfPad
+            : 0;
+        double titleSectionHeight = pad + annHeight + fontSize + pad;
+
+        // Compartments section height: each compartment = halfPad + lines + halfPad
+        double compartmentsHeight = 0;
+        foreach (var comp in node.Compartments)
+        {
+            int lineCount = comp.Lines.Count;
+            compartmentsHeight += halfPad + Math.Max(1, lineCount) * lineHeight + halfPad;
+        }
+
+        double totalHeight = titleSectionHeight + compartmentsHeight;
+
+        // Width: widest of class name, annotations, or any compartment line
+        double maxTextWidth = EstimateTextWidth(node.Label.Text, fontSize);
+        foreach (var ann in node.Annotations)
+            maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(ann.Text, annFontSize));
+        foreach (var comp in node.Compartments)
+            foreach (var line in comp.Lines)
+                maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(line.Text, fontSize));
+
+        node.Width = Math.Max(minWidth, maxTextWidth + 2 * pad);
+        node.Height = Math.Max(minHeight, totalHeight);
     }
 
     private static double EstimateTextWidth(Label label, double fontSize) =>

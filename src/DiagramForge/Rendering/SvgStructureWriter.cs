@@ -109,7 +109,20 @@ internal static class SvgStructureWriter
             _ => " ",
         };
         double strokeWidth = edge.LineStyle == EdgeLineStyle.Thick ? theme.StrokeWidth * 2 : theme.StrokeWidth;
-        string markerEnd = edge.ArrowHead != ArrowHeadStyle.None ? """ marker-end="url(#arrowhead)" """ : " ";
+        string markerEnd = edge.ArrowHead switch
+        {
+            ArrowHeadStyle.Arrow => """ marker-end="url(#arrowhead)" """,
+            ArrowHeadStyle.OpenArrow => """ marker-end="url(#arrowhead-open)" """,
+            ArrowHeadStyle.Diamond => """ marker-end="url(#arrowhead-filled-diamond)" """,
+            ArrowHeadStyle.Circle => """ marker-end="url(#arrowhead-open-diamond)" """,
+            _ => " ",
+        };
+        string markerStart = edge.SourceArrowHead switch
+        {
+            ArrowHeadStyle.Diamond => """ marker-start="url(#arrowhead-filled-diamond)" """,
+            ArrowHeadStyle.Circle => """ marker-start="url(#arrowhead-open-diamond)" """,
+            _ => " ",
+        };
 
         // Determine effective routing mode (per-edge override wins over diagram default).
         // Sequence edges always use Bezier to preserve their horizontal arrow style.
@@ -149,7 +162,7 @@ internal static class SvgStructureWriter
             }
         }
 
-        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerEnd}/>""");
+        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerStart}{markerEnd}/>""");
 
         if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
         {

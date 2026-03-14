@@ -3,6 +3,15 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#173F6D"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="560.00" height="205.60" fill="#FFFDF8" rx="12.00" ry="12.00"/>
   <g transform="translate(32.00,32.00)">

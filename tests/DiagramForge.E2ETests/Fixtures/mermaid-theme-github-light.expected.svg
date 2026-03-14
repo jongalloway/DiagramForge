@@ -3,6 +3,15 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#57606A"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFFFF" stroke="#57606A" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#57606A"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFFFF" stroke="#57606A" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="720.00" height="133.00" fill="#FFFFFF" rx="8.00" ry="8.00"/>
   <defs>
@@ -15,11 +24,11 @@
   <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="#D5DBE1" stroke-width="1.50"/>
   <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#FBFBFC" stroke="#DDE1E6" stroke-width="1.20"/>
   <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#1F2328" font-weight="bold">Design Loop</text>
-  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"   marker-end="url(#arrowhead)" />
   <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#59636E" font-style="italic">ship</text>
-  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#57606A" stroke-width="1.50"   marker-end="url(#arrowhead)" />
   <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#59636E" font-style="italic">revise</text>
   <g transform="translate(36.00,57.00)">
     <defs>

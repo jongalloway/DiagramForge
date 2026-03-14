@@ -3,6 +3,15 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="1092.00" height="223.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
   <defs>
@@ -61,11 +70,11 @@
   <rect x="192.00" y="90.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-3-fill-gradient)" stroke="url(#group-3-stroke-gradient)" stroke-width="1.50"/>
   <rect x="202.00" y="100.00" width="62.77" height="20.66" rx="10.33" ry="10.33" fill="#EFF2FC" stroke="#91ACF7" stroke-width="1.20"/>
   <text x="211.00" y="114.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#0F172A" font-weight="bold">Ingress</text>
-  <path d="M 324.00,143.00 C 348.00,143.00 360.00,143.00 384.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 504.00,143.00 C 528.00,143.00 540.00,143.00 564.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 864.00,143.00 C 888.00,143.00 900.00,143.00 924.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 684.00,143.00 C 708.00,143.00 720.00,143.00 744.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 144.00,143.00 C 168.00,143.00 180.00,143.00 204.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 324.00,143.00 C 348.00,143.00 360.00,143.00 384.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 504.00,143.00 C 528.00,143.00 540.00,143.00 564.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 864.00,143.00 C 888.00,143.00 900.00,143.00 924.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 684.00,143.00 C 708.00,143.00 720.00,143.00 744.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 144.00,143.00 C 168.00,143.00 180.00,143.00 204.00,143.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,123.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

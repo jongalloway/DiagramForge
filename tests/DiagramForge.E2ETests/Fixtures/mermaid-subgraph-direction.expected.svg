@@ -3,6 +3,15 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="540.00" height="213.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
   <defs>
@@ -19,8 +28,8 @@
   <rect x="24.00" y="24.00" width="144.00" height="165.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
   <rect x="34.00" y="34.00" width="62.77" height="20.66" rx="10.33" ry="10.33" fill="#EFF2FC" stroke="#91ACF7" stroke-width="1.20"/>
   <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#0F172A" font-weight="bold">Backend</text>
-  <path d="M 96.00,97.00 C 96.00,113.00 96.00,121.00 96.00,137.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 156.00,157.00 C 257.19,157.00 300.00,109.00 396.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 96.00,97.00 C 96.00,113.00 96.00,121.00 96.00,137.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 156.00,157.00 C 257.19,157.00 300.00,109.00 396.00,77.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
   <g transform="translate(36.00,57.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

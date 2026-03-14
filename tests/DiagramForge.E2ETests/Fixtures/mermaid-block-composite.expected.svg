@@ -3,6 +3,15 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="275.20" height="592.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
   <defs>
@@ -19,7 +28,7 @@
   <rect x="24.00" y="192.00" width="227.20" height="216.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
   <rect x="34.00" y="202.00" width="30.79" height="20.66" rx="10.33" ry="10.33" fill="#EFF2FC" stroke="#91ACF7" stroke-width="1.20"/>
   <text x="43.00" y="216.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#0F172A" font-weight="bold">ID</text>
-  <path d="M 137.60,400.00 C 137.60,451.20 137.60,476.80 137.60,528.00" fill="none" stroke="#516074" stroke-width="1.50"  marker-end="url(#arrowhead)" />
+  <path d="M 137.60,400.00 C 137.60,451.20 137.60,476.80 137.60,528.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
