@@ -433,12 +433,84 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
     private static void SizeStandardNode(Node node, Theme theme, double minWidth, double minHeight)
     {
+        if (node.Compartments.Count > 0)
+        {
+            SizeClassNode(node, theme, minWidth, minHeight);
+            return;
+        }
+
         double fontSize = node.Label.FontSize ?? theme.FontSize;
         double textWidth = EstimateTextWidth(node.Label, fontSize);
         double textBlockHeight = GetTextBlockHeight(node.Label, fontSize);
 
         node.Width = Math.Max(minWidth, textWidth + 2 * theme.NodePadding);
         node.Height = Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding);
+    }
+
+    /// <summary>
+    /// Sizes a class-diagram node that carries compartments (attributes, methods, etc.).
+    /// <para>
+    /// Width is the widest content across the class name, annotations, and all compartment
+    /// lines, plus horizontal padding. Height is the sum of the header section
+    /// (annotations + class name with top/bottom padding) and all compartment sections
+    /// (each preceded by a divider line and surrounded by compact vertical padding).
+    /// </para>
+    /// <para>
+    /// Stores <c>label:centerY</c> and <c>class:headerHeight</c> in
+    /// <see cref="Node.Metadata"/> so the renderer can position the class name label
+    /// inside the header and draw dividers at the correct Y offsets.
+    /// </para>
+    /// </summary>
+    private static void SizeClassNode(Node node, Theme theme, double minWidth, double minHeight)
+    {
+        double fontSize = node.Label.FontSize ?? theme.FontSize;
+        double pad = theme.NodePadding;
+        double compPad = pad / 2; // compact vertical padding within each compartment
+
+        // ── Width: max of (class name, annotations, compartment lines) + 2×padding ──
+        double maxTextWidth = EstimateTextWidth(node.Label, fontSize);
+
+        foreach (var ann in node.Annotations)
+        {
+            double annFontSize = ann.FontSize ?? fontSize;
+            maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(ann, annFontSize));
+        }
+
+        foreach (var compartment in node.Compartments)
+        {
+            foreach (var line in compartment.Lines)
+            {
+                double lineFontSize = line.FontSize ?? fontSize;
+                maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(line, lineFontSize));
+            }
+        }
+
+        // ── Header height: top pad + annotations + class name + bottom pad ──
+        // Use N × lineHeight per annotation for consistent inter-item spacing.
+        double annotationsHeight = node.Annotations.Count == 0
+            ? 0
+            : node.Annotations.Count * fontSize * DefaultLabelLineHeight;
+
+        double labelHeight = GetTextBlockHeight(node.Label, fontSize);
+        double headerHeight = pad + annotationsHeight + labelHeight + pad;
+
+        // Tell the renderer where to vertically center the class name within the header.
+        node.Metadata["label:centerY"] = pad + annotationsHeight + labelHeight / 2;
+        node.Metadata["class:headerHeight"] = headerHeight;
+
+        // ── Compartment heights: divider + compact pad + lines + compact pad ──
+        double compartmentsHeight = 0;
+        foreach (var compartment in node.Compartments)
+        {
+            compartmentsHeight += theme.StrokeWidth; // divider line
+            double linesHeight = compartment.Lines.Count == 0
+                ? 0
+                : compartment.Lines.Sum(l => (l.FontSize ?? fontSize) * DefaultLabelLineHeight);
+            compartmentsHeight += compPad + linesHeight + compPad;
+        }
+
+        node.Width = Math.Max(minWidth, maxTextWidth + 2 * pad);
+        node.Height = Math.Max(minHeight, headerHeight + compartmentsHeight);
     }
 
     private static double EstimateTextWidth(Label label, double fontSize) =>
