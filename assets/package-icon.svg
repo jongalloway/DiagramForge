@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" role="img" aria-labelledby="title desc">
+  <title id="title">DiagramForge Package Icon</title>
+  <desc id="desc">A square text-only DiagramForge brand card with title, tagline, and Mermaid support pill.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0F172A"/>
+      <stop offset="100%" stop-color="#1E293B"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#2563EB"/>
+      <stop offset="100%" stop-color="#6C8FF5"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="512" height="512" rx="56" fill="url(#bg)"/>
+
+  <g opacity="0.05" stroke="#6C8FF5" stroke-width="1">
+    <line x1="0" y1="64" x2="512" y2="64"/>
+    <line x1="0" y1="128" x2="512" y2="128"/>
+    <line x1="0" y1="192" x2="512" y2="192"/>
+    <line x1="0" y1="256" x2="512" y2="256"/>
+    <line x1="0" y1="320" x2="512" y2="320"/>
+    <line x1="0" y1="384" x2="512" y2="384"/>
+    <line x1="0" y1="448" x2="512" y2="448"/>
+    <line x1="64" y1="0" x2="64" y2="512"/>
+    <line x1="128" y1="0" x2="128" y2="512"/>
+    <line x1="192" y1="0" x2="192" y2="512"/>
+    <line x1="256" y1="0" x2="256" y2="512"/>
+    <line x1="320" y1="0" x2="320" y2="512"/>
+    <line x1="384" y1="0" x2="384" y2="512"/>
+    <line x1="448" y1="0" x2="448" y2="512"/>
+  </g>
+
+  <g transform="translate(36 50)">
+    <text x="220" y="70" text-anchor="middle" fill="#FCFCFD" font-family="Segoe UI, system-ui, sans-serif" font-size="64" font-weight="700" letter-spacing="-1.4">
+      Diagram
+    </text>
+
+    <text x="220" y="134" text-anchor="middle" fill="#FCFCFD" font-family="Segoe UI, system-ui, sans-serif" font-size="64" font-weight="700" letter-spacing="-1.4">
+      Forge
+    </text>
+
+    <rect x="116" y="164" width="208" height="8" rx="4" fill="url(#accent)"/>
+
+    <text x="220" y="236" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="40" font-weight="400" letter-spacing="0.1">
+      Beautiful diagrams.
+    </text>
+
+    <text x="220" y="290" text-anchor="middle" fill="#94A3B8" font-family="Segoe UI, system-ui, sans-serif" font-size="40" font-weight="400" letter-spacing="0.1">
+      Text in, SVG out.
+    </text>
+
+    <g transform="translate(42 328)">
+      <rect width="356" height="62" rx="31" fill="#1E293B" stroke="#6C8FF5" stroke-width="2"/>
+      <text x="22" y="41" font-size="31">🧜‍♀️</text>
+      <text x="62" y="39" fill="#E2E8F0" font-family="Segoe UI, system-ui, sans-serif" font-size="27" font-weight="600">
+        Mermaid supported!
+      </text>
+    </g>
+  </g>
+</svg>

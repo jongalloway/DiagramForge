@@ -4,6 +4,7 @@
     <None Include="..\..\README.md" Pack="true" PackagePath="" Link="README.md" />
     <None Include="..\..\doc\PackageReadme.md" Pack="true" PackagePath="" Link="PackageReadme.md" />
     <None Include="..\..\LICENSE" Pack="true" PackagePath="" Link="LICENSE" />
+    <None Include="..\..\assets\package-icon.png" Pack="true" PackagePath="" Link="package-icon.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,6 +22,7 @@
     <Description>Text-to-SVG diagram renderer for Mermaid subsets and conceptual diagrams.</Description>
     <Authors>Jon Galloway</Authors>
     <PackageTags>diagram svg mermaid rendering powerpoint</PackageTags>
+    <PackageIcon>package-icon.png</PackageIcon>
     <PackageReadmeFile>PackageReadme.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>
     <RepositoryUrl>https://github.com/jongalloway/DiagramForge</RepositoryUrl>
