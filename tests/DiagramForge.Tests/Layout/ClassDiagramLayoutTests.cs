@@ -370,4 +370,51 @@ public class ClassDiagramLayoutTests
             Assert.True(node.Height > 0, $"{id}.Height must be > 0");
         }
     }
+
+    // ── Multi-line compartment line labels ────────────────────────────────────
+
+    [Fact]
+    public void ClassNode_MultiLineCompartmentLabel_TallerThanSingleLine()
+    {
+        // A Line whose Text contains an embedded newline produces two rendered
+        // sub-lines. The resulting node must be taller than one with a single-line
+        // equivalent so that the sizing and renderer stay in sync.
+        var singleLine = new Diagram()
+            .AddNode(ClassNode("C", "X", Compartment("+a: int")));
+
+        var multiLineLabel = new Label("+a: int\n+b: string");
+        var compartmentWithMultiLine = new NodeCompartment(null, [multiLineLabel]);
+        var nodeMulti = new Node("C", "X");
+        nodeMulti.Compartments.Add(compartmentWithMultiLine);
+        var multiLine = new Diagram().AddNode(nodeMulti);
+
+        _engine.Layout(singleLine, _theme);
+        _engine.Layout(multiLine, _theme);
+
+        Assert.True(multiLine.Nodes["C"].Height > singleLine.Nodes["C"].Height,
+            "A compartment Line with an embedded newline should produce a taller node than one with a single rendered line");
+    }
+
+    [Fact]
+    public void ClassNode_MultiLineCompartmentLabel_HeightMatchesTwoSeparateLines()
+    {
+        // A single Label with an embedded newline should produce the same node height
+        // as two separate Label entries with the same text, because both produce the
+        // same number of rendered sub-lines.
+        var multiLineLabel = new Label("+a: int\n+b: string");
+        var compartmentCombined = new NodeCompartment(null, [multiLineLabel]);
+        var nodeCombined = new Node("Combined", "X");
+        nodeCombined.Compartments.Add(compartmentCombined);
+        var diagramCombined = new Diagram().AddNode(nodeCombined);
+
+        var diagramSplit = new Diagram()
+            .AddNode(ClassNode("Split", "X",
+                new NodeCompartment(null, [new Label("+a: int"), new Label("+b: string")])));
+
+        _engine.Layout(diagramCombined, _theme);
+        _engine.Layout(diagramSplit, _theme);
+
+        Assert.Equal(diagramCombined.Nodes["Combined"].Height,
+                     diagramSplit.Nodes["Split"].Height);
+    }
 }

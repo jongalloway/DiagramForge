@@ -505,7 +505,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             compartmentsHeight += theme.StrokeWidth; // divider line
             double linesHeight = compartment.Lines.Count == 0
                 ? 0
-                : compartment.Lines.Sum(l => (l.FontSize ?? fontSize) * DefaultLabelLineHeight);
+                : compartment.Lines.Sum(l => GetTextLineCount(l) * (l.FontSize ?? fontSize) * DefaultLabelLineHeight);
             compartmentsHeight += compPad + linesHeight + compPad;
         }
 

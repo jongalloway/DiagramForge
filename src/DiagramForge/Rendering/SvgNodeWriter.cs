@@ -350,12 +350,13 @@ internal static class SvgNodeWriter
                 double lineFontSize = line.FontSize ?? fontSize;
                 string lineColor = line.Color is null ? textColor : SvgRenderSupport.Escape(line.Color);
                 double lineBaseline = currentY + lineFontSize * 0.85;
-                foreach (var renderedLine in GetRenderedLabelLines(line))
+                var subLines = GetRenderedLabelLines(line);
+                foreach (var renderedLine in subLines)
                 {
                     sb.AppendLine($"""    <text x="{SvgRenderSupport.F(pad)}" y="{SvgRenderSupport.F(lineBaseline)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(lineFontSize)}" fill="{lineColor}">{SvgRenderSupport.Escape(renderedLine)}</text>""");
                     lineBaseline += lineFontSize * DefaultLabelLineHeight;
                 }
-                currentY += lineFontSize * DefaultLabelLineHeight;
+                currentY += subLines.Length * lineFontSize * DefaultLabelLineHeight;
             }
 
             currentY += compPad; // bottom padding for this compartment
