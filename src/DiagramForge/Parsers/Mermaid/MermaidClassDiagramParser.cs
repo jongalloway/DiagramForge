@@ -7,20 +7,22 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
 {
     // Relationship operators sorted so that longer tokens are tried first when positions tie.
     // Each entry: (token, relationshipType, isReversed).
-    // "isReversed" is not used for edge direction (we always keep source=left, target=right)
-    // but is stored in metadata for potential renderer use.
+    // isReversed=true means the written textual order is source-on-right / target-on-left,
+    // so SourceId and TargetId must be swapped relative to the left/right parse order.
+    // For example: "Animal <|-- Dog" → left=Animal, right=Dog, but Dog IS the child
+    // (semantic source), so isReversed=true causes Edge(Dog, Animal).
     private static readonly (string Token, string RelType, bool IsReversed)[] RelOperators =
     [
-        ("<|--", "inheritance", false),
-        ("--|>", "inheritance", true),
-        ("<|..", "realization", false),
-        ("..|>", "realization", true),
+        ("<|--", "inheritance", true),
+        ("--|>", "inheritance", false),
+        ("<|..", "realization", true),
+        ("..|>", "realization", false),
         ("*--",  "composition", false),
         ("--*",  "composition", true),
         ("o--",  "aggregation", false),
         ("--o",  "aggregation", true),
-        ("<..",  "dependency",  false),
-        ("..>",  "dependency",  true),
+        ("<..",  "dependency",  true),
+        ("..>",  "dependency",  false),
         ("<--",  "association", true),
         ("-->",  "association", false),
         ("..",   "link",        false),
@@ -83,7 +85,7 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
 
             // ── Explicit class declaration: "class ClassName" or
             //    "class ClassName[\"label\"]" or "class ClassName {"  ─────────
-            if (line.StartsWith("class ", StringComparison.Ordinal))
+            if (line.StartsWith("class ", StringComparison.OrdinalIgnoreCase))
             {
                 var rest = line[6..].Trim();
                 bool opensBrace = rest.EndsWith('{');
@@ -117,7 +119,7 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
 
             // ── Relationship line (try before colon-member to avoid false ────
             //    positives on "ClassName : member" that looks like a target)   ─
-            if (TryParseRelationship(line, builder, GetOrCreateNode, hints))
+            if (TryParseRelationship(line, builder, GetOrCreateNode))
                 continue;
 
             // ── Colon-member: "ClassName : memberDefinition" ─────────────────
@@ -211,8 +213,7 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
     private static bool TryParseRelationship(
         string line,
         IDiagramSemanticModelBuilder builder,
-        Func<string, Node> getOrCreate,
-        LayoutHints hints)
+        Func<string, Node> getOrCreate)
     {
         var found = FindRelationshipOp(line);
         if (found is null)
@@ -246,7 +247,13 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
         getOrCreate(leftId);
         getOrCreate(rightId);
 
-        var edge = new Edge(leftId, rightId);
+        // When isReversed=true the semantic "from" end is on the right side of the operator
+        // (e.g. "Animal <|-- Dog": Dog IS the child/source, Animal is the parent/target).
+        // Swap so that SourceId always represents the logical origin of the relationship.
+        string sourceId = isReversed ? rightId : leftId;
+        string targetId = isReversed ? leftId : rightId;
+
+        var edge = new Edge(sourceId, targetId);
         if (label is not null)
             edge.Label = new Label(label);
 
@@ -292,8 +299,10 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
         relType switch
         {
             "association" or "dependency" => ArrowHeadStyle.Arrow,
-            "composition" or "aggregation" => ArrowHeadStyle.Diamond,
-            _ => ArrowHeadStyle.None, // inheritance, realization, link
+            // Composition and aggregation use a diamond marker shape in UML, but the
+            // current renderer has no distinct diamond marker. Use None here and rely on
+            // class:relationshipType metadata for future renderer support.
+            _ => ArrowHeadStyle.None,
         };
 
     // ── Operator lookup ───────────────────────────────────────────────────────

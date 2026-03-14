@@ -361,11 +361,12 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Inheritance_ForwardOperator_CreatesEdge()
     {
+        // "Animal <|-- Dog": Dog is the child/source, Animal is the parent/target.
         var diagram = _parser.Parse("classDiagram\n    Animal <|-- Dog");
 
         var edge = Assert.Single(diagram.Edges);
-        Assert.Equal("Animal", edge.SourceId);
-        Assert.Equal("Dog", edge.TargetId);
+        Assert.Equal("Dog", edge.SourceId);
+        Assert.Equal("Animal", edge.TargetId);
         Assert.Equal("inheritance", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Solid, edge.LineStyle);
         Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
@@ -374,6 +375,7 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Inheritance_ReverseOperator_CreatesEdge()
     {
+        // "Dog --|> Animal": same relationship as <|--, Dog is still the child/source.
         var diagram = _parser.Parse("classDiagram\n    Dog --|> Animal");
 
         var edge = Assert.Single(diagram.Edges);
@@ -392,15 +394,18 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("Engine", edge.TargetId);
         Assert.Equal("composition", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Solid, edge.LineStyle);
-        Assert.Equal(ArrowHeadStyle.Diamond, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
     }
 
     [Fact]
     public void Parse_Composition_ReverseOperator_CreatesEdge()
     {
+        // "Engine --* Car": Car is still the whole/source, Engine is the part/target.
         var diagram = _parser.Parse("classDiagram\n    Engine --* Car");
 
         var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Car", edge.SourceId);
+        Assert.Equal("Engine", edge.TargetId);
         Assert.Equal("composition", edge.Metadata["class:relationshipType"]);
     }
 
@@ -413,15 +418,18 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("Zoo", edge.SourceId);
         Assert.Equal("Animal", edge.TargetId);
         Assert.Equal("aggregation", edge.Metadata["class:relationshipType"]);
-        Assert.Equal(ArrowHeadStyle.Diamond, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
     }
 
     [Fact]
     public void Parse_Aggregation_ReverseOperator_CreatesEdge()
     {
+        // "Animal --o Zoo": Zoo is still the whole/source, Animal is the aggregated/target.
         var diagram = _parser.Parse("classDiagram\n    Animal --o Zoo");
 
         var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Zoo", edge.SourceId);
+        Assert.Equal("Animal", edge.TargetId);
         Assert.Equal("aggregation", edge.Metadata["class:relationshipType"]);
     }
 
@@ -441,9 +449,12 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Association_ReverseOperator_CreatesEdge()
     {
+        // "Food <-- Animal": same as "Animal --> Food"; Animal is still the source.
         var diagram = _parser.Parse("classDiagram\n    Food <-- Animal");
 
         var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Animal", edge.SourceId);
+        Assert.Equal("Food", edge.TargetId);
         Assert.Equal("association", edge.Metadata["class:relationshipType"]);
     }
 
@@ -476,9 +487,12 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Dependency_ReverseOperator_CreatesEdge()
     {
+        // "Service <.. Client": same as "Client ..> Service"; Client is still the dependent/source.
         var diagram = _parser.Parse("classDiagram\n    Service <.. Client");
 
         var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Client", edge.SourceId);
+        Assert.Equal("Service", edge.TargetId);
         Assert.Equal("dependency", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Dashed, edge.LineStyle);
     }
@@ -486,11 +500,12 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Realization_ForwardOperator_CreatesEdge()
     {
+        // "IFlyable <|.. Bird": Bird is the implementer/source, IFlyable is the interface/target.
         var diagram = _parser.Parse("classDiagram\n    IFlyable <|.. Bird");
 
         var edge = Assert.Single(diagram.Edges);
-        Assert.Equal("IFlyable", edge.SourceId);
-        Assert.Equal("Bird", edge.TargetId);
+        Assert.Equal("Bird", edge.SourceId);
+        Assert.Equal("IFlyable", edge.TargetId);
         Assert.Equal("realization", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Dashed, edge.LineStyle);
         Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
@@ -499,9 +514,12 @@ public class MermaidClassDiagramParserTests
     [Fact]
     public void Parse_Realization_ReverseOperator_CreatesEdge()
     {
+        // "Bird ..|> IFlyable": same relationship; Bird is still the implementer/source.
         var diagram = _parser.Parse("classDiagram\n    Bird ..|> IFlyable");
 
         var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Bird", edge.SourceId);
+        Assert.Equal("IFlyable", edge.TargetId);
         Assert.Equal("realization", edge.Metadata["class:relationshipType"]);
     }
 
@@ -612,20 +630,22 @@ public class MermaidClassDiagramParserTests
     // ── Operator reversal metadata ────────────────────────────────────────────
 
     [Fact]
-    public void Parse_ForwardInheritanceOp_IsReversedIsFalse()
+    public void Parse_LeftArrowInheritanceOp_OperatorReversedIsTrue()
     {
+        // <|-- has the arrow on the left; isReversed=true causes SourceId/TargetId swap.
         var diagram = _parser.Parse("classDiagram\n    Animal <|-- Dog");
 
         var edge = Assert.Single(diagram.Edges);
-        Assert.Equal(false, edge.Metadata["class:operatorReversed"]);
+        Assert.Equal(true, edge.Metadata["class:operatorReversed"]);
     }
 
     [Fact]
-    public void Parse_ReverseInheritanceOp_IsReversedIsTrue()
+    public void Parse_RightArrowInheritanceOp_OperatorReversedIsFalse()
     {
+        // --|> has the arrow on the right; isReversed=false, no swap needed.
         var diagram = _parser.Parse("classDiagram\n    Dog --|> Animal");
 
         var edge = Assert.Single(diagram.Edges);
-        Assert.Equal(true, edge.Metadata["class:operatorReversed"]);
+        Assert.Equal(false, edge.Metadata["class:operatorReversed"]);
     }
 }
