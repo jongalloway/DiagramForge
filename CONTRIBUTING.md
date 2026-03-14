@@ -100,6 +100,17 @@ To add a package to a project:
 
 Permissive-OSS licenses only — MIT preferred, Apache-2.0 acceptable.
 
+### Local package troubleshooting
+
+If local testing behaves differently from the published NuGet package, check whether a stale local package source or cache is overriding the real package.
+
+- Clear caches with `dotnet nuget locals all --clear`
+- Remove stale package folders such as `%USERPROFILE%\.nuget\packages\diagramforge\1.0.0`
+- Be careful with local sources like `artifacts/nupkg`, `--add-source`, or custom `NuGet.Config` entries
+- If needed, validate the published package explicitly by running `dotnet restore -p:RestoreSources=https://api.nuget.org/v3/index.json -p:RestorePackagesPath=./artifacts/isolated-packages` (or a similar isolated folder)
+
+Matching package ID and version do not guarantee matching bits. When diagnosing package issues, compare package or DLL hashes before assuming the published package is wrong.
+
 ### Adding a parser
 
 Implement `IDiagramParser`:
