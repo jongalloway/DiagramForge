@@ -32,6 +32,9 @@ public class Edge
     /// <summary>Arrow head style at the target end.</summary>
     public ArrowHeadStyle ArrowHead { get; set; } = ArrowHeadStyle.Arrow;
 
+    /// <summary>Arrow head style at the source end (e.g. diamond for UML composition/aggregation).</summary>
+    public ArrowHeadStyle SourceArrowHead { get; set; } = ArrowHeadStyle.None;
+
     /// <summary>Whether the edge is bidirectional.</summary>
     public bool IsBidirectional { get; set; }
 

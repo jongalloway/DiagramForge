@@ -3,14 +3,23 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#173F6D"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="544.00" height="344.00" fill="#FFFDF8" rx="12.00" ry="12.00"/>
   <text x="272.00" y="28.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="20.00" font-weight="bold" fill="#111827">Product Roadmap</text>
-  <path d="M 92.00,108.00 C 92.00,124.00 92.00,132.00 92.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 92.00,108.00 C 92.00,159.20 92.00,184.80 92.00,236.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 272.00,108.00 C 272.00,124.00 272.00,132.00 272.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 452.00,108.00 C 452.00,124.00 452.00,132.00 452.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
-  <path d="M 452.00,108.00 C 452.00,159.20 452.00,184.80 452.00,236.00" fill="none" stroke="#173F6D" stroke-width="1.80"  marker-end="url(#arrowhead)" />
+  <path d="M 92.00,108.00 C 92.00,124.00 92.00,132.00 92.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 92.00,108.00 C 92.00,159.20 92.00,184.80 92.00,236.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 272.00,108.00 C 272.00,124.00 272.00,132.00 272.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 452.00,108.00 C 452.00,124.00 452.00,132.00 452.00,148.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 452.00,108.00 C 452.00,159.20 452.00,184.80 452.00,236.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
   <g transform="translate(32.00,60.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

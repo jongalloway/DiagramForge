@@ -10,9 +10,27 @@ internal static class SvgRenderSupport
     internal static void AppendDefs(StringBuilder sb, Theme theme)
     {
         sb.AppendLine("  <defs>");
+
+        // Standard filled triangle (used for Arrow / association)
         sb.AppendLine($"""    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">""");
         sb.AppendLine($"""      <polygon points="0 0, 10 3.5, 0 7" fill="{Escape(theme.EdgeColor)}"/>""");
         sb.AppendLine("    </marker>");
+
+        // Open (hollow) triangle — UML inheritance / realization (target end)
+        sb.AppendLine($"""    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">""");
+        sb.AppendLine($"""      <polygon points="0 0, 12 4.50, 0 9" fill="{Escape(theme.BackgroundColor)}" stroke="{Escape(theme.EdgeColor)}" stroke-width="1.50"/>""");
+        sb.AppendLine("    </marker>");
+
+        // Filled diamond — UML composition (source end, use marker-start)
+        sb.AppendLine($"""    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">""");
+        sb.AppendLine($"""      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="{Escape(theme.EdgeColor)}"/>""");
+        sb.AppendLine("    </marker>");
+
+        // Open (hollow) diamond — UML aggregation (source end, use marker-start)
+        sb.AppendLine($"""    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">""");
+        sb.AppendLine($"""      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="{Escape(theme.BackgroundColor)}" stroke="{Escape(theme.EdgeColor)}" stroke-width="1.50"/>""");
+        sb.AppendLine("    </marker>");
+
         sb.AppendLine("  </defs>");
     }
 

@@ -3,12 +3,21 @@
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
     </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#111827" stroke="#94A3B8" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#94A3B8"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#111827" stroke="#94A3B8" stroke-width="1.50"/>
+    </marker>
   </defs>
   <rect width="888.00" height="88.00" fill="#111827" rx="8.00" ry="8.00"/>
-  <path d="M 144.00,44.00 C 168.00,44.00 180.00,44.00 204.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  marker-end="url(#arrowhead)" />
-  <path d="M 324.00,44.00 C 348.00,44.00 360.00,44.00 384.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="2,3"  marker-end="url(#arrowhead)" />
-  <path d="M 504.00,44.00 C 528.00,44.00 540.00,44.00 564.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50"  />
-  <path d="M 684.00,44.00 C 708.00,44.00 720.00,44.00 744.00,44.00" fill="none" stroke="#94A3B8" stroke-width="3.00"  marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 C 168.00,44.00 180.00,44.00 204.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 324.00,44.00 C 348.00,44.00 360.00,44.00 384.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="2,3"   marker-end="url(#arrowhead)" />
+  <path d="M 504.00,44.00 C 528.00,44.00 540.00,44.00 564.00,44.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <path d="M 684.00,44.00 C 708.00,44.00 720.00,44.00 744.00,44.00" fill="none" stroke="#94A3B8" stroke-width="3.00"   marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

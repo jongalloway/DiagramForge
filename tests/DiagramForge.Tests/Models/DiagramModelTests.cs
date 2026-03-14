@@ -164,6 +164,14 @@ public class DiagramModelTests
     }
 
     [Fact]
+    public void Edge_SourceArrowHead_DefaultsToNone()
+    {
+        var edge = new Edge("A", "B");
+
+        Assert.Equal(ArrowHeadStyle.None, edge.SourceArrowHead);
+    }
+
+    [Fact]
     public void LayoutHints_Defaults_AreReasonable()
     {
         var hints = new LayoutHints();
