@@ -115,6 +115,13 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <br />
       <sub>Conceptual Funnel</sub>
     </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial.expected.svg" alt="Conceptual radial" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Radial</sub>
+    </td>
   </tr>
 </table>
 
@@ -557,8 +564,9 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Staged narrowing flow (awareness → conversion) | Conceptual DSL | `diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion` |
 | Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
+| Central concept with surrounding pillars / capabilities (3–8 items) | Conceptual DSL | `diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability` |
 
-Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as chevron process and radial / hub-and-spoke.
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as chevron process.
 
 #### matrix
 
@@ -627,6 +635,22 @@ pillars:
 ```
 
 Supported: 2-5 pillars, optional stacked `segments` per pillar. Segments are optional; a pillar with no `segments:` block renders as a single title block.
+
+#### radial
+
+Hub-and-spoke layout for strategy, architecture, and capability diagrams. One central concept is rendered as a circle, with 3–8 surrounding items connected by straight spoke connectors.
+
+```text
+diagram: radial
+center: Platform
+items:
+  - Security
+  - Reliability
+  - Developer Experience
+  - Observability
+```
+
+Supported: 3–8 items. Items are placed evenly around the center at equal angles, starting at the top (12 o'clock).
 
 ## Architecture
 
