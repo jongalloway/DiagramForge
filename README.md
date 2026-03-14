@@ -359,6 +359,7 @@ dnx DiagramForge.Tool <input-file> [options]
 | `--palette <json>` | Override the theme's node palette with a JSON array of hex colors. |
 | `--theme-file <path.json>` | Load a complete theme object from JSON. |
 | `--transparent` | Omit the SVG background rect for overlay/embed use. |
+| `--list-themes` | Print all built-in theme names (one per line) and exit. |
 | `-h`, `--help` | Show usage. |
 
 **Exit codes:** `0` success · `1` bad arguments / file not found · `2` parse error · `3` unexpected failure.

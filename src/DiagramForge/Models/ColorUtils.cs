@@ -113,6 +113,59 @@ public static class ColorUtils
     public static string ChooseTextColor(string backgroundHex, string lightTextHex = "#F8FAFC", string darkTextHex = "#0F172A") =>
         IsLight(backgroundHex) ? darkTextHex : lightTextHex;
 
+    /// <summary>
+    /// Computes the WCAG 2.1 relative luminance of a hex color.
+    /// Uses sRGB gamma correction and BT.709 coefficients.
+    /// Returns a value between 0 (black) and 1 (white).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Alpha channels (<c>#RGBA</c> / <c>#RRGGBBAA</c>) are silently discarded.
+    /// The luminance is computed for the opaque RGB values only; compositing against
+    /// a background is not performed.
+    /// </para>
+    /// <para>
+    /// See <see href="https://www.w3.org/TR/WCAG21/#dfn-relative-luminance">WCAG 2.1 § 1.4.3</see>.
+    /// </para>
+    /// </remarks>
+    public static double GetRelativeLuminance(string hex)
+    {
+        var (r, g, b) = ParseHex(hex);
+        return 0.2126 * LinearizeChannel(r / 255.0)
+             + 0.7152 * LinearizeChannel(g / 255.0)
+             + 0.0722 * LinearizeChannel(b / 255.0);
+    }
+
+    /// <summary>
+    /// Computes the WCAG 2.1 contrast ratio between two hex colors.
+    /// Returns a value between 1 (identical) and 21 (black on white).
+    /// </summary>
+    /// <remarks>
+    /// <para>
+    /// Alpha channels (<c>#RGBA</c> / <c>#RRGGBBAA</c>) are silently discarded.
+    /// The ratio is computed for the opaque RGB values only; compositing against
+    /// a background is not performed.
+    /// </para>
+    /// <para>
+    /// WCAG AA thresholds: 4.5:1 for normal text, 3.0:1 for large text (≥18 pt or ≥14 pt bold).
+    /// See <see href="https://www.w3.org/TR/WCAG21/#contrast-minimum">WCAG 2.1 § 1.4.3</see>.
+    /// </para>
+    /// </remarks>
+    public static double GetContrastRatio(string hex1, string hex2)
+    {
+        double l1 = GetRelativeLuminance(hex1);
+        double l2 = GetRelativeLuminance(hex2);
+        double lighter = Math.Max(l1, l2);
+        double darker = Math.Min(l1, l2);
+        return (lighter + 0.05) / (darker + 0.05);
+    }
+
+    // ── Private helpers ───────────────────────────────────────────────────────
+
+    /// <summary>Linearizes a single sRGB channel value for WCAG relative luminance calculation (IEC 61966-2-1).</summary>
+    private static double LinearizeChannel(double value) =>
+        value <= 0.04045 ? value / 12.92 : Math.Pow((value + 0.055) / 1.055, 2.4);
+
     // ── Parsing ───────────────────────────────────────────────────────────────
 
     /// <summary>
