@@ -74,6 +74,12 @@ internal static class SvgNodeWriter
             {
                 AppendFunnelSegmentNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
             }
+            else if (node.Metadata.TryGetValue("conceptual:chevronSegment", out var chevronSegObj)
+                && chevronSegObj is bool isChevronSegment
+                && isChevronSegment)
+            {
+                AppendChevronNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
+            }
             else
             {
                 switch (node.Shape)
@@ -215,6 +221,23 @@ internal static class SvgNodeWriter
         string points = topWidth <= 0.01
             ? $"{SvgRenderSupport.F(node.Width / 2)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}"
             : $"{SvgRenderSupport.F(topInset)},0 {SvgRenderSupport.F(topInset + topWidth)},0 {SvgRenderSupport.F(bottomInset + bottomWidth)},{SvgRenderSupport.F(node.Height)} {SvgRenderSupport.F(bottomInset)},{SvgRenderSupport.F(node.Height)}";
+
+        sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendChevronNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)
+    {
+        int index = node.Metadata.TryGetValue("conceptual:chevronIndex", out var idxObj) && idxObj is int idx ? idx : 0;
+        double tipDepth = SvgRenderSupport.GetMetadataDouble(node, "conceptual:chevronTipDepth") ?? (node.Height * 0.35);
+        double w = node.Width;
+        double h = node.Height;
+        double midY = h / 2;
+
+        // First chevron: flat left edge, pointed right – 5 points (pentagon).
+        // Subsequent chevrons: notched left edge matching previous arrow point, pointed right – 6 points (hexagon).
+        string points = index == 0
+            ? $"0,0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} 0,{SvgRenderSupport.F(h)}"
+            : $"0,{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(tipDepth)},0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} {SvgRenderSupport.F(tipDepth)},{SvgRenderSupport.F(h)}";
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }

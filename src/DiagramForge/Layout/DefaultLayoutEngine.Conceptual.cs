@@ -17,6 +17,7 @@ public sealed partial class DefaultLayoutEngine
     private static readonly FrozenDictionary<string, ConceptualLayoutHandler> ConceptualLayoutHandlers =
         new Dictionary<string, ConceptualLayoutHandler>(StringComparer.OrdinalIgnoreCase)
         {
+            ["chevrons"] = LayoutChevronDiagram,
             ["cycle"] = LayoutCycleDiagram,
             ["funnel"] = LayoutFunnelDiagram,
             ["matrix"] = LayoutMatrixDiagram,

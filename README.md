@@ -549,7 +549,7 @@ Not yet supported: class diagrams, ER diagrams, gantt, git graphs, requirement d
 
 A small YAML-ish format for presentation-native layouts that are awkward to express cleanly in Mermaid. First line is always `diagram: <type>`.
 
-Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix, segmented pyramid, funnel, or circular cycle.
+Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix, segmented pyramid, funnel, chevron process, or circular cycle.
 
 #### If You Want This, Use This
 
@@ -564,9 +564,25 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Staged narrowing flow (awareness → conversion) | Conceptual DSL | `diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion` |
 | Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
+| Sequential stage process (slide-style chevrons) | Conceptual DSL | `diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn` |
 | Central concept with surrounding pillars / capabilities (3–8 items) | Conceptual DSL | `diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability` |
 
-Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as chevron process.
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as tree hierarchies / org charts.
+
+#### chevrons
+
+Horizontal process diagram using chevron (arrow) shapes arranged in a seamless stage sequence. Ideal for sequential stage flows such as product discovery, delivery pipelines, or onboarding steps. Each step is rendered as a pointed chevron stage; the first stage has a flat left edge and subsequent stages have a notched left edge that abuts the tip of the preceding stage.
+
+```text
+diagram: chevrons
+steps:
+  - Discover
+  - Build
+  - Launch
+  - Learn
+```
+
+Requires at least 2 steps.
 
 #### matrix
 

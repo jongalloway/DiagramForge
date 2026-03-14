@@ -72,7 +72,8 @@ public sealed partial class ConceptualDslParser : IDiagramParser
         string[] lines,
         IDiagramSemanticModelBuilder builder,
         string sectionKey,
-        string diagramType)
+        string diagramType,
+        int minItems = 1)
     {
         int sectionLine = FindSectionLine(lines, sectionKey);
         if (sectionLine < 0)
@@ -81,6 +82,10 @@ public sealed partial class ConceptualDslParser : IDiagramParser
         var items = ReadListItems(lines, sectionLine + 1);
         if (items.Count == 0)
             throw new DiagramParseException($"Section '{sectionKey}' contains no items.");
+
+        if (items.Count < minItems)
+            throw new DiagramParseException(
+                $"{diagramType} diagram requires at least {minItems} {sectionKey}, but {items.Count} was provided.");
 
         for (int i = 0; i < items.Count; i++)
         {
