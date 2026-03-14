@@ -472,10 +472,12 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         double totalHeight = titleSectionHeight + compartmentsHeight;
 
-        // Width: widest of class name, annotations, or any compartment line
+        // Width: widest of class name, annotations, or any compartment line.
+        // Annotations are rendered with guillemet wrappers («...»), so include those two
+        // extra characters in the width estimate to prevent clipping.
         double maxTextWidth = EstimateTextWidth(node.Label.Text, fontSize);
         foreach (var ann in node.Annotations)
-            maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(ann.Text, annFontSize));
+            maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth($"\u00AB{ann.Text}\u00BB", annFontSize));
         foreach (var comp in node.Compartments)
             foreach (var line in comp.Lines)
                 maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(line.Text, fontSize));

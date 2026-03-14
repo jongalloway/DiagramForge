@@ -119,6 +119,8 @@ internal static class SvgStructureWriter
         };
         string markerStart = edge.SourceArrowHead switch
         {
+            ArrowHeadStyle.Arrow => """ marker-start="url(#arrowhead)" """,
+            ArrowHeadStyle.OpenArrow => """ marker-start="url(#arrowhead-open)" """,
             ArrowHeadStyle.Diamond => """ marker-start="url(#arrowhead-filled-diamond)" """,
             ArrowHeadStyle.Circle => """ marker-start="url(#arrowhead-open-diamond)" """,
             _ => " ",
