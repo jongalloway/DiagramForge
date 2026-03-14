@@ -1,0 +1,8 @@
+---
+theme: presentation
+---
+diagram: funnel
+stages:
+  - Awareness
+  - Evaluation
+  - Conversion

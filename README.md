@@ -107,6 +107,15 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <sub>Conceptual Pyramid</sub>
     </td>
   </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel.expected.svg" alt="Conceptual funnel" height="96" />
+      </a>
+      <br />
+      <sub>Conceptual Funnel</sub>
+    </td>
+  </tr>
 </table>
 
 <h3>Built-in Themes</h3>
@@ -533,7 +542,7 @@ Not yet supported: class diagrams, ER diagrams, gantt, git graphs, requirement d
 
 A small YAML-ish format for presentation-native layouts that are awkward to express cleanly in Mermaid. First line is always `diagram: <type>`.
 
-Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix, segmented pyramid, or circular cycle.
+Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermaid. Use the Conceptual DSL when the primary value is a slide-style visual form such as a matrix, segmented pyramid, funnel, or circular cycle.
 
 #### If You Want This, Use This
 
@@ -545,10 +554,11 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Timeline / phased milestones | Mermaid timeline | `timeline\n  title Launch\n  Q1 : Plan\n  Q2 : Build\n  Q3 : Release` |
 | 2x2 quadrant / prioritization matrix | Conceptual DSL | `diagram: matrix\nrows:\n  - Important\n  - Not Important\ncolumns:\n  - Urgent\n  - Not Urgent` |
 | Layered strategy / capability stack | Conceptual DSL | `diagram: pyramid\nlevels:\n  - Vision\n  - Strategy\n  - Tactics` |
+| Staged narrowing flow (awareness → conversion) | Conceptual DSL | `diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion` |
 | Parallel pillars / workstreams | Conceptual DSL | `diagram: pillars\npillars:\n  - title: People\n    segments:\n      - Skills\n  - title: Process` |
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 
-Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as funnel, chevron process, and radial / hub-and-spoke.
+Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as chevron process and radial / hub-and-spoke.
 
 #### matrix
 
@@ -570,6 +580,18 @@ levels:
   - Vision
   - Strategy
   - Tactics
+```
+
+#### funnel
+
+Vertical funnel layout for staged narrowing flows such as awareness → consideration → conversion, intake → review → approval, or backlog triage. Stages are listed top-to-bottom; each stage is rendered as a progressively narrowing trapezoid.
+
+```text
+diagram: funnel
+stages:
+  - Awareness
+  - Evaluation
+  - Conversion
 ```
 
 #### cycle

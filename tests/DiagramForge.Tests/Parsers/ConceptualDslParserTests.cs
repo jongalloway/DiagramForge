@@ -23,6 +23,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: pyramid\nlevels:\n  - L1")]
     [InlineData("diagram: pillars\npillars:\n  - title: A\n  - title: B")]
     [InlineData("diagram: cycle\nsteps:\n  - S1\n  - S2\n  - S3")]
+    [InlineData("diagram: funnel\nstages:\n  - Awareness\n  - Conversion")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -296,6 +297,78 @@ public class ConceptualDslParserTests
     {
         Assert.Throws<DiagramParseException>(() =>
             _parser.Parse("diagram: unknowntype\nitems:\n  - A"));
+    }
+
+    // ── Funnel ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForFunnel()
+    {
+        const string text = "diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Funnel_ProducesOneNodePerStage()
+    {
+        const string text = "diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Funnel_NodeLabelsMatchStageNames()
+    {
+        const string text = "diagram: funnel\nstages:\n  - Awareness\n  - Evaluation\n  - Conversion";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Awareness", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Evaluation", diagram.Nodes["node_1"].Label.Text);
+        Assert.Equal("Conversion", diagram.Nodes["node_2"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Funnel_SetsDiagramTypeToFunnel()
+    {
+        const string text = "diagram: funnel\nstages:\n  - A\n  - B\n  - C";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("funnel", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_Funnel_MissingStagesSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: funnel\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("stages:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Funnel_EmptyStagesSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: funnel\nstages:\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        Assert.Contains("stages", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Funnel_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: funnel\r\nstages:\r\n  - Awareness\r\n  - Evaluation\r\n  - Conversion\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+        Assert.Equal("Awareness", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Conversion", diagram.Nodes["node_2"].Label.Text);
     }
 
     // ── Cycle ─────────────────────────────────────────────────────────────────

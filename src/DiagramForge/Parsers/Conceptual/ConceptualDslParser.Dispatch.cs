@@ -13,6 +13,7 @@ public sealed partial class ConceptualDslParser
         new Dictionary<string, ConceptualDiagramParseHandler>(StringComparer.OrdinalIgnoreCase)
         {
             ["cycle"] = ParseCycleDiagram,
+            ["funnel"] = ParseFunnelDiagram,
             ["matrix"] = ParseMatrixDiagram,
             ["pillars"] = ParsePillarsDiagram,
             ["pyramid"] = ParsePyramidDiagram,

@@ -18,6 +18,7 @@ public sealed partial class DefaultLayoutEngine
         new Dictionary<string, ConceptualLayoutHandler>(StringComparer.OrdinalIgnoreCase)
         {
             ["cycle"] = LayoutCycleDiagram,
+            ["funnel"] = LayoutFunnelDiagram,
             ["matrix"] = LayoutMatrixDiagram,
             ["pillars"] = LayoutPillarsDiagram,
             ["pyramid"] = LayoutPyramidDiagram,

@@ -205,7 +205,7 @@ columns:
 ### 5.1 Detection
 
 `CanParse` checks whether the first content line matches
-`diagram: <known-type>`. Known types: `matrix`, `pyramid`.
+`diagram: <known-type>`. Known types: `matrix`, `pyramid`, `cycle`, `pillars`, `funnel`.
 
 ### 5.2 Parsing Strategy
 
@@ -215,7 +215,10 @@ directly on trimmed lines:
 | Diagram type | Section key | Structure |
 |-------------|------------|-----------|
 | `pyramid` | `levels:` | Nodes only |
+| `funnel` | `stages:` | Nodes only |
 | `matrix` | `rows:` + `columns:` | Specialized 2×2 quadrant nodes (`cell_{r}_{c}`) |
+| `cycle` | `steps:` | Nodes + closed edge loop |
+| `pillars` | `pillars:` | Nested title + segment nodes |
 
 The parser sets `LayoutDirection` to `LeftToRight` for all types.
 

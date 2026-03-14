@@ -17,7 +17,7 @@ namespace DiagramForge.Parsers.Conceptual;
 ///   - Now
 ///   - Next
 /// </code>
-/// <para>Supported diagram types: matrix, pyramid, cycle, pillars.</para>
+/// <para>Supported diagram types: matrix, pyramid, cycle, pillars, funnel.</para>
 /// </remarks>
 public sealed partial class ConceptualDslParser : IDiagramParser
 {

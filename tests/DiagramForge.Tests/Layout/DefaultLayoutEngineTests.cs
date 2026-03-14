@@ -336,6 +336,162 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
+    public void Layout_Funnel_AssignsTrapezoidSegmentMetadata()
+    {
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        var top = diagram.Nodes["node_0"];
+        var bottom = diagram.Nodes["node_2"];
+
+        Assert.Equal(top.X, bottom.X);
+        Assert.True(top.Y < bottom.Y);
+        Assert.All(diagram.Nodes.Values, node => Assert.True((bool)node.Metadata["conceptual:funnelSegment"]));
+    }
+
+    [Fact]
+    public void Layout_Funnel_ProgressivelyNarrows()
+    {
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        var top = diagram.Nodes["node_0"];
+        var middle = diagram.Nodes["node_1"];
+        var bottom = diagram.Nodes["node_2"];
+
+        double topTopWidth = Convert.ToDouble(top.Metadata["conceptual:funnelTopWidth"], System.Globalization.CultureInfo.InvariantCulture);
+        double topBottomWidth = Convert.ToDouble(top.Metadata["conceptual:funnelBottomWidth"], System.Globalization.CultureInfo.InvariantCulture);
+        double middleTopWidth = Convert.ToDouble(middle.Metadata["conceptual:funnelTopWidth"], System.Globalization.CultureInfo.InvariantCulture);
+        double bottomBottomWidth = Convert.ToDouble(bottom.Metadata["conceptual:funnelBottomWidth"], System.Globalization.CultureInfo.InvariantCulture);
+
+        // Top of funnel is widest
+        Assert.True(topTopWidth > topBottomWidth, "Top segment should narrow from top to bottom");
+        Assert.True(topTopWidth > middleTopWidth, "Second segment should be narrower than first");
+        Assert.True(middleTopWidth > bottomBottomWidth, "Bottom of funnel should be narrowest");
+    }
+
+    [Fact]
+    public void Layout_Funnel_FirstSegmentHasFullWidth()
+    {
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        var top = diagram.Nodes["node_0"];
+        double topTopWidth = Convert.ToDouble(top.Metadata["conceptual:funnelTopWidth"], System.Globalization.CultureInfo.InvariantCulture);
+
+        // The top segment's top width should equal the node bounding box width (full width)
+        Assert.Equal(top.Width, topTopWidth, precision: 6);
+    }
+
+    [Fact]
+    public void Layout_Funnel_VerticalOrderMatchesNodeIdOrder()
+    {
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        double y0 = diagram.Nodes["node_0"].Y;
+        double y1 = diagram.Nodes["node_1"].Y;
+        double y2 = diagram.Nodes["node_2"].Y;
+
+        Assert.True(y0 < y1, $"node_0.Y ({y0}) should be above node_1.Y ({y1})");
+        Assert.True(y1 < y2, $"node_1.Y ({y1}) should be above node_2.Y ({y2})");
+    }
+
+    [Fact]
+    public void Layout_Funnel_AdjacentSegmentsHaveGapBetweenThem()
+    {
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        var first = diagram.Nodes["node_0"];
+        var second = diagram.Nodes["node_1"];
+
+        Assert.True(second.Y > first.Y + first.Height,
+            $"Expected a gap between funnel stages, but node_1.Y ({second.Y}) was not greater than node_0 bottom ({first.Y + first.Height}).");
+    }
+
+    [Fact]
+    public void Layout_Funnel_AdjacentSegmentsConnectContinuously()
+    {
+        // Bottom width of stage N must equal top width of stage N+1 so the taper
+        // is a straight line across the gap rather than a staircase step.
+        var diagram = new Diagram { DiagramType = "funnel" };
+        diagram.AddNode(new Node("node_0", "Awareness"))
+               .AddNode(new Node("node_1", "Evaluation"))
+               .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagram, _theme);
+
+        double topBottom = Convert.ToDouble(diagram.Nodes["node_0"].Metadata["conceptual:funnelBottomWidth"], System.Globalization.CultureInfo.InvariantCulture);
+        double middleTop = Convert.ToDouble(diagram.Nodes["node_1"].Metadata["conceptual:funnelTopWidth"], System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.Equal(topBottom, middleTop, precision: 6);
+    }
+
+    [Fact]
+    public void Layout_Funnel_SortsMoreThanTenStagesNumerically()
+    {
+        // StringComparer.Ordinal would sort node_10 between node_1 and node_2;
+        // numeric-suffix ordering must produce the correct top-to-bottom sequence.
+        var diagram = new Diagram { DiagramType = "funnel" };
+        for (int i = 0; i < 12; i++)
+            diagram.AddNode(new Node($"node_{i}", $"Stage {i}"));
+
+        _engine.Layout(diagram, _theme);
+
+        // node_9 must be above node_10 and node_11
+        double y9 = diagram.Nodes["node_9"].Y;
+        double y10 = diagram.Nodes["node_10"].Y;
+        double y11 = diagram.Nodes["node_11"].Y;
+
+        Assert.True(y9 < y10, $"node_9.Y ({y9}) should be above node_10.Y ({y10})");
+        Assert.True(y10 < y11, $"node_10.Y ({y10}) should be above node_11.Y ({y11})");
+    }
+
+    [Fact]
+    public void Layout_Funnel_WithTitle_OffsetsNodesDownward()
+    {
+        var diagramNoTitle = new Diagram { DiagramType = "funnel" };
+        diagramNoTitle.AddNode(new Node("node_0", "Awareness"))
+                      .AddNode(new Node("node_1", "Evaluation"))
+                      .AddNode(new Node("node_2", "Conversion"));
+
+        var diagramWithTitle = new Diagram { DiagramType = "funnel", Title = "Sales Pipeline" };
+        diagramWithTitle.AddNode(new Node("node_0", "Awareness"))
+                        .AddNode(new Node("node_1", "Evaluation"))
+                        .AddNode(new Node("node_2", "Conversion"));
+
+        _engine.Layout(diagramNoTitle, _theme);
+        _engine.Layout(diagramWithTitle, _theme);
+
+        double yNoTitle = diagramNoTitle.Nodes["node_0"].Y;
+        double yWithTitle = diagramWithTitle.Nodes["node_0"].Y;
+
+        Assert.True(yWithTitle > yNoTitle,
+            $"Titled funnel top node Y ({yWithTitle}) should be below untitled ({yNoTitle}) to avoid title overlap.");
+    }
+
+    [Fact]
     public void Layout_PillarsDiagram_PlacesTitleNodesInConsistentColumns()
     {
         var diagram = new Diagram { DiagramType = "pillars" };
