@@ -439,6 +439,12 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
     private static void SizeStandardNode(Node node, Theme theme, double minWidth, double minHeight)
     {
+        if (node.Compartments.Count > 0 || node.Annotations.Count > 0)
+        {
+            SizeClassNode(node, theme, minWidth, minHeight);
+            return;
+        }
+
         double fontSize = node.Label.FontSize ?? theme.FontSize;
         double textWidth = EstimateTextWidth(node.Label, fontSize);
         double textBlockHeight = GetTextBlockHeight(node.Label, fontSize);
@@ -447,43 +453,78 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         node.Height = Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding);
     }
 
+    /// <summary>
+    /// Sizes a class-diagram node that carries compartments (attributes, methods, etc.).
+    /// <para>
+    /// Width is the widest content across the class name, annotations, and all compartment
+    /// lines, plus horizontal padding. Height is the sum of the header section
+    /// (annotations + class name with top/bottom padding) and all compartment sections
+    /// (each preceded by a divider line and surrounded by compact vertical padding).
+    /// </para>
+    /// <para>
+    /// Stores <c>label:centerY</c> and <c>class:headerHeight</c> in
+    /// <see cref="Node.Metadata"/> so the renderer can position the class name label
+    /// inside the header and draw dividers at the correct Y offsets.
+    /// </para>
+    /// </summary>
     private static void SizeClassNode(Node node, Theme theme, double minWidth, double minHeight)
     {
         double fontSize = node.Label.FontSize ?? theme.FontSize;
-        double annFontSize = fontSize * AnnotationFontSizeRatio;
-        double lineHeight = fontSize * DefaultLabelLineHeight;
-        double annLineHeight = annFontSize * DefaultLabelLineHeight;
+        double defaultAnnotationFontSize = fontSize * AnnotationFontSizeRatio;
         double pad = theme.NodePadding;
-        double halfPad = pad / 2;
+        double compPad = pad / 2; // compact vertical padding within each compartment
+        double defaultLineHeight = fontSize * DefaultLabelLineHeight;
 
-        // Title section height: top-pad + annotations + gap + class name + bottom-pad
-        double annHeight = node.Annotations.Count > 0
-            ? node.Annotations.Count * annLineHeight + halfPad
-            : 0;
-        double titleSectionHeight = pad + annHeight + fontSize + pad;
+        // ── Width: max of (class name, annotations, compartment lines) + 2×padding ──
+        double maxTextWidth = EstimateTextWidth(node.Label, fontSize);
 
-        // Compartments section height: each compartment = halfPad + lines + halfPad
-        double compartmentsHeight = 0;
-        foreach (var comp in node.Compartments)
+        foreach (var ann in node.Annotations)
         {
-            int lineCount = comp.Lines.Count;
-            compartmentsHeight += halfPad + Math.Max(1, lineCount) * lineHeight + halfPad;
+            double annFontSize = ann.FontSize ?? defaultAnnotationFontSize;
+            foreach (var annLine in GetLabelLines(ann))
+                maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth($"\u00AB{annLine}\u00BB", annFontSize));
         }
 
-        double totalHeight = titleSectionHeight + compartmentsHeight;
+        foreach (var compartment in node.Compartments)
+        {
+            foreach (var line in compartment.Lines)
+            {
+                double lineFontSize = line.FontSize ?? fontSize;
+                maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(line, lineFontSize));
+            }
+        }
 
-        // Width: widest of class name, annotations, or any compartment line.
-        // Annotations are rendered with guillemet wrappers («...»), so include those two
-        // extra characters in the width estimate to prevent clipping.
-        double maxTextWidth = EstimateTextWidth(node.Label.Text, fontSize);
-        foreach (var ann in node.Annotations)
-            maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth($"\u00AB{ann.Text}\u00BB", annFontSize));
-        foreach (var comp in node.Compartments)
-            foreach (var line in comp.Lines)
-                maxTextWidth = Math.Max(maxTextWidth, EstimateTextWidth(line.Text, fontSize));
+        // ── Header height: top pad + annotations + class name + bottom pad ──
+        double annotationsHeight = 0;
+        foreach (var annotation in node.Annotations)
+        {
+            double annotationFontSize = annotation.FontSize ?? defaultAnnotationFontSize;
+            annotationsHeight += GetTextLineCount(annotation) * annotationFontSize * DefaultLabelLineHeight;
+        }
+
+        if (node.Annotations.Count > 0)
+            annotationsHeight += compPad;
+
+        double labelHeight = GetTextBlockHeight(node.Label, fontSize);
+        double headerHeight = pad + annotationsHeight + labelHeight + pad;
+
+        // Tell the renderer where to vertically center the class name within the header.
+        node.Metadata["label:centerY"] = pad + annotationsHeight + labelHeight / 2;
+        node.Metadata["class:headerHeight"] = headerHeight;
+
+        // ── Compartment heights: divider + compact pad + lines + compact pad ──
+        double compartmentsHeight = 0;
+        foreach (var compartment in node.Compartments)
+        {
+            compartmentsHeight += theme.StrokeWidth; // divider line
+            double linesHeight = compartment.Lines.Count == 0
+                ? defaultLineHeight
+                : compartment.Lines.Sum(l => GetTextLineCount(l) * (l.FontSize ?? fontSize) * DefaultLabelLineHeight);
+            compartmentsHeight += compPad + linesHeight + compPad;
+        }
 
         node.Width = Math.Max(minWidth, maxTextWidth + 2 * pad);
-        node.Height = Math.Max(minHeight, totalHeight);
+        node.Height = Math.Max(minHeight, headerHeight + compartmentsHeight);
     }
 
     private static double EstimateTextWidth(Label label, double fontSize) =>
@@ -515,7 +556,6 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         label.Lines is { Length: > 0 }
             ? label.Lines
             : label.Text.Replace("\r", string.Empty, StringComparison.Ordinal).Split('\n');
-
     /// <summary>
     /// Shifts all nodes and groups so that every group's top-left corner is at least
     /// <paramref name="diagramPadding"/> units from the canvas origin, preserving the
