@@ -571,7 +571,7 @@ Planned conceptual additions are aimed at presentation-native graphics that Merm
 
 #### chevrons
 
-Horizontal process diagram using connected chevron (arrow) shapes. Ideal for sequential stage flows such as product discovery, delivery pipelines, or onboarding steps. Each step is rendered as a pointed chevron stage; the first stage has a flat left edge and subsequent stages have a notched left edge that visually connects to the previous arrow point.
+Horizontal process diagram using chevron (arrow) shapes arranged in a seamless stage sequence. Ideal for sequential stage flows such as product discovery, delivery pipelines, or onboarding steps. Each step is rendered as a pointed chevron stage; the first stage has a flat left edge and subsequent stages have a notched left edge that abuts the tip of the preceding stage.
 
 ```text
 diagram: chevrons

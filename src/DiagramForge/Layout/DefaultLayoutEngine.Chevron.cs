@@ -4,8 +4,6 @@ namespace DiagramForge.Layout;
 
 public sealed partial class DefaultLayoutEngine
 {
-    private const double ChevronStageGap = 6;
-
     private static void LayoutChevronDiagram(
         Diagram diagram,
         Theme theme,
@@ -39,7 +37,8 @@ public sealed partial class DefaultLayoutEngine
         {
             var node = orderedNodes[index];
 
-            node.X = pad + index * (nodeW + ChevronStageGap);
+            // Zero gap: bounding boxes abut so the tip of stage N meets the notch of stage N+1.
+            node.X = pad + index * nodeW;
             node.Y = pad + titleOffset;
             node.Width = nodeW;
             node.Height = nodeH;

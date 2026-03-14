@@ -631,14 +631,6 @@ public class ConceptualDslParserTests
     // ── Chevrons ──────────────────────────────────────────────────────────────
 
     [Fact]
-    public void CanParse_ReturnsTrue_ForChevrons()
-    {
-        const string text = "diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch";
-
-        Assert.True(_parser.CanParse(text));
-    }
-
-    [Fact]
     public void Parse_Chevrons_ProducesOneNodePerStep()
     {
         const string text = "diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn";

@@ -1351,7 +1351,7 @@ public class DefaultLayoutEngineTests
     }
 
     [Fact]
-    public void Layout_Chevrons_AdjacentNodesHaveGapBetweenThem()
+    public void Layout_Chevrons_AdjacentNodesAreImmediatelyAbutted()
     {
         var diagram = new Diagram { DiagramType = "chevrons" };
         diagram.AddNode(new Node("node_0", "Discover"))
@@ -1362,8 +1362,8 @@ public class DefaultLayoutEngineTests
         var first = diagram.Nodes["node_0"];
         var second = diagram.Nodes["node_1"];
 
-        Assert.True(second.X > first.X + first.Width,
-            $"Expected a gap between chevron stages, but node_1.X ({second.X}) was not greater than node_0 right edge ({first.X + first.Width}).");
+        // Zero gap: the tip of stage 0 meets the notch of stage 1 at their shared boundary.
+        Assert.Equal(first.X + first.Width, second.X, precision: 6);
     }
 
     [Fact]
