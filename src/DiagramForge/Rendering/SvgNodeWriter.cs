@@ -136,16 +136,20 @@ internal static class SvgNodeWriter
             sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(-width / 2)}" y="{SvgRenderSupport.F(top)}" width="{SvgRenderSupport.F(width)}" height="{SvgRenderSupport.F(height)}" rx="{SvgRenderSupport.F(fontSize * 0.35)}" ry="{SvgRenderSupport.F(fontSize * 0.35)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}/>""");
         }
 
+        string resolvedTextColor = SvgRenderSupport.Escape(
+            node.Label.Color ?? SvgRenderSupport.ResolveNodeTextColor(baseFill, theme));
+
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
-            string resolvedTextColor = node.Label.Color ?? SvgRenderSupport.ResolveNodeTextColor(baseFill, theme);
-            string textColor = SvgRenderSupport.Escape(resolvedTextColor);
             double fontSize = node.Label.FontSize ?? theme.FontSize;
             double textX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
             double textBaselineY = SvgRenderSupport.GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
 
-            AppendNodeLabel(sb, node.Label, theme, textX, textBaselineY, fontSize, textColor);
+            AppendNodeLabel(sb, node.Label, theme, textX, textBaselineY, fontSize, resolvedTextColor);
         }
+
+        if (node.Compartments.Count > 0 || node.Annotations.Count > 0)
+            AppendClassCompartments(sb, node, theme, resolvedTextColor, baseStroke);
 
         sb.AppendLine("  </g>");
     }
@@ -282,5 +286,80 @@ internal static class SvgNodeWriter
             $"A {SvgRenderSupport.F(r5)},{SvgRenderSupport.F(r5)} 0 0,1 {SvgRenderSupport.F(w * 0.92)},{SvgRenderSupport.F(flatBottomY)} " +
             "Z";
         sb.AppendLine($"""    <path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{shadowAttribute}/>""");
+    }
+
+    /// <summary>
+    /// Renders annotations (stereotypes), compartment divider lines, and compartment text
+    /// for class-diagram nodes that carry <see cref="Node.Compartments"/>.
+    /// </summary>
+    /// <remarks>
+    /// Coordinates are in the node's local space (origin = node top-left).
+    /// Annotations are centered horizontally above the class name; compartment lines are
+    /// left-aligned. Each compartment is preceded by a horizontal divider line at the
+    /// stroke width defined by the theme.
+    /// </remarks>
+    private static void AppendClassCompartments(
+        StringBuilder sb,
+        Node node,
+        Theme theme,
+        string textColor,
+        string strokeColor)
+    {
+        double fontSize = node.Label.FontSize ?? theme.FontSize;
+        double pad = theme.NodePadding;
+        double compPad = pad / 2;
+        double centerX = node.Width / 2;
+
+        // ── Annotations (rendered above the class-name label) ────────────────────
+        if (node.Annotations.Count > 0)
+        {
+            // First annotation baseline: pad + ascender + cap-height fraction
+            // (0.85 ≈ cap-height + ascender so the visible glyph top sits near pad).
+            double annBaseline = pad + fontSize * 0.85;
+            foreach (var ann in node.Annotations)
+            {
+                double annFontSize = ann.FontSize ?? fontSize;
+                string annColor = ann.Color is null ? textColor : SvgRenderSupport.Escape(ann.Color);
+                foreach (var annLine in GetRenderedLabelLines(ann))
+                {
+                    sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(annBaseline)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(annFontSize)}" fill="{annColor}">{SvgRenderSupport.Escape(annLine)}</text>""");
+                    annBaseline += annFontSize * DefaultLabelLineHeight;
+                }
+            }
+        }
+
+        if (node.Compartments.Count == 0)
+            return;
+
+        // ── Compartment sections ──────────────────────────────────────────────────
+        double headerHeight = SvgRenderSupport.GetMetadataDouble(node, "class:headerHeight")
+            ?? (pad + (node.Label.FontSize ?? fontSize) + pad);
+
+        double currentY = headerHeight;
+
+        foreach (var compartment in node.Compartments)
+        {
+            // Divider line spanning the full node width
+            sb.AppendLine($"""    <line x1="0" y1="{SvgRenderSupport.F(currentY)}" x2="{SvgRenderSupport.F(node.Width)}" y2="{SvgRenderSupport.F(currentY)}" stroke="{SvgRenderSupport.Escape(strokeColor)}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"/>""");
+            currentY += theme.StrokeWidth;
+
+            currentY += compPad; // top padding for this compartment
+
+            foreach (var line in compartment.Lines)
+            {
+                double lineFontSize = line.FontSize ?? fontSize;
+                string lineColor = line.Color is null ? textColor : SvgRenderSupport.Escape(line.Color);
+                double lineBaseline = currentY + lineFontSize * 0.85;
+                var subLines = GetRenderedLabelLines(line);
+                foreach (var renderedLine in subLines)
+                {
+                    sb.AppendLine($"""    <text x="{SvgRenderSupport.F(pad)}" y="{SvgRenderSupport.F(lineBaseline)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(lineFontSize)}" fill="{lineColor}">{SvgRenderSupport.Escape(renderedLine)}</text>""");
+                    lineBaseline += lineFontSize * DefaultLabelLineHeight;
+                }
+                currentY += subLines.Length * lineFontSize * DefaultLabelLineHeight;
+            }
+
+            currentY += compPad; // bottom padding for this compartment
+        }
     }
 }
