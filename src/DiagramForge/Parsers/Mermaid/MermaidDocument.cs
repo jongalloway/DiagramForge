@@ -82,7 +82,6 @@ internal sealed class MermaidDocument
     // MermaidParser emit a specific "unsupported type" error instead of a generic one.
     private static readonly FrozenSet<string> KnownUnsupportedMermaidKeywords = new[]
     {
-        "classdiagram",
         "erdiagram",
         "journey",
         "gantt",
@@ -196,6 +195,11 @@ internal sealed class MermaidDocument
             || normalizedHeader.Equals("xychart-beta", StringComparison.OrdinalIgnoreCase))
         {
             kind = MermaidDiagramKind.XyChart;
+            return true;
+        }
+        if (normalizedHeader.Equals("classdiagram", StringComparison.OrdinalIgnoreCase))
+        {
+            kind = MermaidDiagramKind.ClassDiagram;
             return true;
         }
         var spaceIndex = normalizedHeader.IndexOf(' ');

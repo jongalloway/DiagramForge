@@ -12,4 +12,5 @@ internal enum MermaidDiagramKind
     Timeline,
     ArchitectureDiagram,
     XyChart,
+    ClassDiagram,
 }

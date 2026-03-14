@@ -590,7 +590,7 @@ public class MermaidParserTests
     public void Parse_UnsupportedMermaidDiagramType_ThrowsDiagramParseException()
     {
         var ex = Assert.Throws<DiagramParseException>(() =>
-            _parser.Parse("classDiagram\n  A --> B"));
+            _parser.Parse("erDiagram\n  CUSTOMER ||--o{ ORDER : places"));
 
         Assert.Contains("unsupported Mermaid diagram type", ex.Message, StringComparison.OrdinalIgnoreCase);
     }
