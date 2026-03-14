@@ -23,6 +23,7 @@ public sealed partial class DefaultLayoutEngine
             ["matrix"] = LayoutMatrixDiagram,
             ["pillars"] = LayoutPillarsDiagram,
             ["pyramid"] = LayoutPyramidDiagram,
+            ["radial"] = LayoutRadialDiagram,
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     private static bool TryLayoutConceptualDiagram(

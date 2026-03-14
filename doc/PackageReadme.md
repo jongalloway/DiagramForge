@@ -57,7 +57,7 @@ dnx DiagramForge.Tool diagram.mmd --theme dracula --transparent -o overlay.svg
 ## Supported today
 
 - Mermaid subset: flowchart, block, sequence, state, mindmap, timeline, venn, architecture, and xychart
-- Conceptual DSL: matrix, pyramid, cycle, and pillars
+- Conceptual DSL: matrix, pyramid, cycle, pillars, funnel, and radial
 - Theme presets, theme JSON files, palette overrides, and frontmatter styling
 
 DiagramForge intentionally implements a focused Mermaid subset rather than full Mermaid.js parity.

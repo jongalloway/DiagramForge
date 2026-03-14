@@ -18,6 +18,7 @@ public sealed partial class ConceptualDslParser
             ["matrix"] = ParseMatrixDiagram,
             ["pillars"] = ParsePillarsDiagram,
             ["pyramid"] = ParsePyramidDiagram,
+            ["radial"] = ParseRadialDiagram,
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
     private static readonly FrozenSet<string> KnownTypes =

@@ -1189,6 +1189,133 @@ public class DefaultLayoutEngineTests
         });
     }
 
+    // ── Radial ────────────────────────────────────────────────────────────────
+
+    private static Diagram BuildRadialDiagram(string center, IEnumerable<string> items)
+    {
+        var diagram = new Diagram { DiagramType = "radial" };
+        var centerNode = new Node("center", center);
+        centerNode.Metadata["radial:isCenter"] = true;
+        diagram.AddNode(centerNode);
+
+        int i = 0;
+        foreach (var item in items)
+        {
+            var node = new Node($"item_{i}", item);
+            node.Metadata["radial:itemIndex"] = i;
+            diagram.AddNode(node);
+            i++;
+        }
+
+        return diagram;
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_CenterNodeIsCircle()
+    {
+        var diagram = BuildRadialDiagram("Platform", ["Security", "Reliability", "Observability", "Performance"]);
+
+        _engine.Layout(diagram, _theme);
+
+        var center = diagram.Nodes["center"];
+        Assert.Equal(Shape.Circle, center.Shape);
+        Assert.Equal(center.Width, center.Height);
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_ItemNodesArePlacedRadially()
+    {
+        var diagram = BuildRadialDiagram("Hub", ["A", "B", "C", "D"]);
+
+        _engine.Layout(diagram, _theme);
+
+        var center = diagram.Nodes["center"];
+        double cx = center.X + center.Width / 2;
+        double cy = center.Y + center.Height / 2;
+
+        var itemNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.ContainsKey("radial:itemIndex"))
+            .ToList();
+
+        var radii = itemNodes.Select(n =>
+        {
+            double dx = n.X + n.Width / 2 - cx;
+            double dy = n.Y + n.Height / 2 - cy;
+            return Math.Sqrt(dx * dx + dy * dy);
+        }).ToList();
+
+        double avgRadius = radii.Average();
+        Assert.All(radii, r =>
+            Assert.True(Math.Abs(r - avgRadius) < 1.0,
+                $"Expected all item radii ≈ {avgRadius:F2} but got {r:F2}"));
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_CenterNodeIsAtCanvasCenter()
+    {
+        var diagram = BuildRadialDiagram("Hub", ["A", "B", "C", "D"]);
+
+        _engine.Layout(diagram, _theme);
+
+        var center = diagram.Nodes["center"];
+        var items = diagram.Nodes.Values.Where(n => n.Metadata.ContainsKey("radial:itemIndex")).ToList();
+
+        double avgItemX = items.Average(n => n.X + n.Width / 2);
+        double avgItemY = items.Average(n => n.Y + n.Height / 2);
+        double centerX = center.X + center.Width / 2;
+        double centerY = center.Y + center.Height / 2;
+
+        Assert.True(Math.Abs(centerX - avgItemX) < 1.0,
+            $"Center X ({centerX:F2}) should align with average item X ({avgItemX:F2})");
+        Assert.True(Math.Abs(centerY - avgItemY) < 1.0,
+            $"Center Y ({centerY:F2}) should align with average item Y ({avgItemY:F2})");
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_FirstItemIsAtTop()
+    {
+        var diagram = BuildRadialDiagram("Hub", ["Top", "B", "C", "D"]);
+
+        _engine.Layout(diagram, _theme);
+
+        var item0 = diagram.Nodes["item_0"];
+        var otherItems = diagram.Nodes.Values
+            .Where(n => n.Metadata.ContainsKey("radial:itemIndex") && n.Id != "item_0")
+            .ToList();
+
+        Assert.All(otherItems, n =>
+            Assert.True(item0.Y <= n.Y + 1.0,
+                $"item_0.Y ({item0.Y:F2}) should be topmost but {n.Id}.Y = {n.Y:F2}"));
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_AllNodesHavePositiveSize()
+    {
+        var diagram = BuildRadialDiagram("Hub", ["A", "B", "C"]);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.Width > 0, $"{n.Id}.Width = {n.Width}");
+            Assert.True(n.Height > 0, $"{n.Id}.Height = {n.Height}");
+        });
+    }
+
+    [Fact]
+    public void Layout_RadialDiagram_AllPositionsNonNegative()
+    {
+        var diagram = BuildRadialDiagram("Hub", ["A", "B", "C"]);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, n =>
+        {
+            Assert.True(n.X >= 0, $"{n.Id}.X = {n.X}");
+            Assert.True(n.Y >= 0, $"{n.Id}.Y = {n.Y}");
+        });
+    }
+
     [Fact]
     public void Layout_Chevrons_FirstNodeHasNoLeftNotchByIndex()
     {

@@ -453,6 +453,181 @@ public class ConceptualDslParserTests
             _parser.Parse("diagram: cycle\n"));
     }
 
+    // ── Radial ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForRadial()
+    {
+        const string text = "diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Radial_ProducesCenterAndItemNodes()
+    {
+        const string text = """
+            diagram: radial
+            center: Platform
+            items:
+              - Security
+              - Reliability
+              - Developer Experience
+              - Observability
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(5, diagram.Nodes.Count); // center + 4 items
+        Assert.True(diagram.Nodes.ContainsKey("center"));
+        Assert.Equal("Platform", diagram.Nodes["center"].Label.Text);
+        Assert.True(diagram.Nodes.ContainsKey("item_0"));
+        Assert.Equal("Security", diagram.Nodes["item_0"].Label.Text);
+        Assert.True(diagram.Nodes.ContainsKey("item_3"));
+        Assert.Equal("Observability", diagram.Nodes["item_3"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Radial_SetsCorrectMetadata()
+    {
+        const string text = """
+            diagram: radial
+            center: Hub
+            items:
+              - A
+              - B
+              - C
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.True(diagram.Nodes["center"].Metadata.TryGetValue("radial:isCenter", out var isCenter));
+        Assert.True(isCenter is bool b && b);
+
+        Assert.Equal(0, diagram.Nodes["item_0"].Metadata["radial:itemIndex"]);
+        Assert.Equal(1, diagram.Nodes["item_1"].Metadata["radial:itemIndex"]);
+        Assert.Equal(2, diagram.Nodes["item_2"].Metadata["radial:itemIndex"]);
+    }
+
+    [Fact]
+    public void Parse_Radial_CreatesSpokeEdgesFromCenter()
+    {
+        const string text = """
+            diagram: radial
+            center: Hub
+            items:
+              - A
+              - B
+              - C
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Edges.Count);
+        Assert.All(diagram.Edges, e => Assert.Equal("center", e.SourceId));
+        Assert.Contains(diagram.Edges, e => e.TargetId == "item_0");
+        Assert.Contains(diagram.Edges, e => e.TargetId == "item_1");
+        Assert.Contains(diagram.Edges, e => e.TargetId == "item_2");
+    }
+
+    [Fact]
+    public void Parse_Radial_SpokeEdgesUseStraightRouting()
+    {
+        const string text = """
+            diagram: radial
+            center: Hub
+            items:
+              - A
+              - B
+              - C
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.All(diagram.Edges, e => Assert.Equal(EdgeRouting.Straight, e.Routing));
+    }
+
+    [Fact]
+    public void Parse_Radial_SetsDiagramTypeToRadial()
+    {
+        const string text = "diagram: radial\ncenter: Hub\nitems:\n  - A\n  - B\n  - C";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("radial", diagram.DiagramType);
+    }
+
+    [Theory]
+    [InlineData(2)]
+    [InlineData(9)]
+    public void Parse_Radial_WithInvalidItemCount_ThrowsDiagramParseException(int count)
+    {
+        var items = string.Join("\n", Enumerable.Range(0, count).Select(i => $"  - Item{i}"));
+        var text = $"diagram: radial\ncenter: Hub\nitems:\n{items}";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("between 3 and 8", ex.Message);
+    }
+
+    [Theory]
+    [InlineData(3)]
+    [InlineData(5)]
+    [InlineData(8)]
+    public void Parse_Radial_AcceptsValidItemCounts(int count)
+    {
+        var items = string.Join("\n", Enumerable.Range(0, count).Select(i => $"  - Item{i}"));
+        var text = $"diagram: radial\ncenter: Hub\nitems:\n{items}";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(count + 1, diagram.Nodes.Count); // items + center
+    }
+
+    [Fact]
+    public void Parse_Radial_MissingCenter_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: radial\nitems:\n  - A\n  - B\n  - C";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("center:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Radial_MissingItems_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: radial\ncenter: Hub";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("items:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Radial_EmptyCenterLabel_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: radial\ncenter:\nitems:\n  - A\n  - B\n  - C";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("center:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Radial_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: radial\r\ncenter: Hub\r\nitems:\r\n  - A\r\n  - B\r\n  - C\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal("Hub", diagram.Nodes["center"].Label.Text);
+        Assert.Equal("A", diagram.Nodes["item_0"].Label.Text);
+        Assert.Equal("Hub", diagram.Nodes["center"].Label.Text);
+        Assert.Equal("A", diagram.Nodes["item_0"].Label.Text);
+    }
+
     // ── Chevrons ──────────────────────────────────────────────────────────────
 
     [Fact]

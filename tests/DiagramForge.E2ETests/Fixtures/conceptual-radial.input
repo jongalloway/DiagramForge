@@ -1,0 +1,10 @@
+---
+theme: presentation
+---
+diagram: radial
+center: Platform
+items:
+  - Security
+  - Reliability
+  - Developer Experience
+  - Observability
