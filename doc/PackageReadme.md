@@ -1,5 +1,7 @@
 # DiagramForge
 
+![DiagramForge banner](https://raw.githubusercontent.com/jongalloway/DiagramForge/main/assets/social-preview.jpg)
+
 Text in, SVG out. DiagramForge is a .NET library and CLI for rendering diagram text to real SVG without a browser, JavaScript runtime, or headless Chrome.
 
 DiagramForge focuses on the cases where Mermaid-style diagram authoring is useful, but browser-generated SVG is not: PowerPoint decks, Keynote slides, Inkscape workflows, docs pipelines, and image conversion with tools like librsvg.
