@@ -296,6 +296,134 @@ public class ThemeTests
         Assert.Throws<ArgumentException>(() => Theme.FromJson(""));
     }
 
+    // ── Contrast / accessibility ──────────────────────────────────────────────
+
+    /// <summary>
+    /// Primary node text must be readable against the node fill.
+    /// Diagram labels are typically large/bold; WCAG AA large-text threshold (3.0:1) applied.
+    /// </summary>
+    [Theory]
+    [InlineData("default")]
+    [InlineData("dark")]
+    [InlineData("neutral")]
+    [InlineData("forest")]
+    [InlineData("presentation")]
+    [InlineData("github-light")]
+    [InlineData("github-dark")]
+    [InlineData("nord")]
+    [InlineData("nord-light")]
+    [InlineData("dracula")]
+    [InlineData("tokyo-night")]
+    [InlineData("tokyo-night-storm")]
+    [InlineData("tokyo-night-light")]
+    [InlineData("catppuccin-latte")]
+    [InlineData("catppuccin-mocha")]
+    [InlineData("solarized-light")]
+    [InlineData("solarized-dark")]
+    [InlineData("one-dark")]
+    [InlineData("zinc-light")]
+    [InlineData("zinc-dark")]
+    [InlineData("prism")]
+    [InlineData("angled-light")]
+    [InlineData("angled-dark")]
+    public void BuiltInTheme_TextColor_HasSufficientContrastAgainstNodeFill(string themeName)
+    {
+        var theme = Theme.GetByName(themeName)!;
+        double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.NodeFillColor);
+        Assert.True(ratio >= 3.0,
+            $"[{themeName}] TextColor={theme.TextColor} vs NodeFillColor={theme.NodeFillColor}: contrast ratio {ratio:F2}:1 is below WCAG AA large-text threshold (3.0:1)");
+    }
+
+    /// <summary>
+    /// Primary node text must be readable against the canvas background.
+    /// </summary>
+    [Theory]
+    [InlineData("default")]
+    [InlineData("dark")]
+    [InlineData("neutral")]
+    [InlineData("forest")]
+    [InlineData("presentation")]
+    [InlineData("github-light")]
+    [InlineData("github-dark")]
+    [InlineData("nord")]
+    [InlineData("dracula")]
+    [InlineData("tokyo-night")]
+    [InlineData("catppuccin-latte")]
+    [InlineData("catppuccin-mocha")]
+    [InlineData("solarized-light")]
+    [InlineData("solarized-dark")]
+    [InlineData("one-dark")]
+    public void BuiltInTheme_TextColor_HasSufficientContrastAgainstBackground(string themeName)
+    {
+        var theme = Theme.GetByName(themeName)!;
+        double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.BackgroundColor);
+        Assert.True(ratio >= 3.0,
+            $"[{themeName}] TextColor={theme.TextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below WCAG AA large-text threshold (3.0:1)");
+    }
+
+    [Theory]
+    [InlineData("default")]
+    [InlineData("dark")]
+    [InlineData("github-light")]
+    [InlineData("github-dark")]
+    [InlineData("tokyo-night")]
+    [InlineData("catppuccin-mocha")]
+    public void BuiltInTheme_TitleTextColor_HasSufficientContrastAgainstBackground(string themeName)
+    {
+        var theme = Theme.GetByName(themeName)!;
+        double ratio = ColorUtils.GetContrastRatio(theme.TitleTextColor, theme.BackgroundColor);
+        Assert.True(ratio >= 3.0,
+            $"[{themeName}] TitleTextColor={theme.TitleTextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below 3.0:1");
+    }
+
+    // ── FromColors contrast derivation ────────────────────────────────────────
+
+    [Fact]
+    public void FromColors_LightBackground_DerivedTextHasAdequateContrast()
+    {
+        var theme = Theme.FromColors(
+            backgroundColor: "#FFFFFF",
+            foregroundColor: "#1F2937",
+            accentColor: "#2563EB");
+
+        double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.BackgroundColor);
+        Assert.True(ratio >= 4.5,
+            $"Light theme: TextColor={theme.TextColor} contrast {ratio:F2}:1 is below WCAG AA 4.5:1");
+    }
+
+    [Fact]
+    public void FromColors_DarkBackground_DerivedTextHasAdequateContrast()
+    {
+        var theme = Theme.FromColors(
+            backgroundColor: "#0F172A",
+            foregroundColor: "#E2E8F0",
+            accentColor: "#38BDF8");
+
+        double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.BackgroundColor);
+        Assert.True(ratio >= 4.5,
+            $"Dark theme: TextColor={theme.TextColor} contrast {ratio:F2}:1 is below WCAG AA 4.5:1");
+    }
+
+    [Fact]
+    public void FromColors_GroupFillColor_TextColorHasAdequateContrast()
+    {
+        var theme = Theme.FromColors(
+            backgroundColor: "#FFFFFF",
+            foregroundColor: "#1F2937",
+            accentColor: "#2563EB");
+
+        // Strip the alpha byte so the contrast check compares fully-opaque channel values.
+        // GroupFillColor is semi-transparent; the opaque RGB channels reflect the worst-case
+        // contrast (i.e. the fill color without the transparency benefit of blending with white).
+        string opaqueGroupFill = theme.GroupFillColor.Length > 7
+            ? theme.GroupFillColor[..7]
+            : theme.GroupFillColor;
+
+        double ratio = ColorUtils.GetContrastRatio(theme.TextColor, opaqueGroupFill);
+        Assert.True(ratio >= 3.0,
+            $"TextColor={theme.TextColor} vs GroupFillColor={opaqueGroupFill}: contrast {ratio:F2}:1 is below 3.0:1");
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     private static void AssertValidTheme(Theme t, string name)

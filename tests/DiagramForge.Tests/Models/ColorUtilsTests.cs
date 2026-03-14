@@ -230,5 +230,126 @@ public class ColorUtilsTests
         string result = ColorUtils.Darken("#4F81BDFF", 0.5);
         Assert.Equal(7, result.Length);
     }
+
+    // ── GetRelativeLuminance ──────────────────────────────────────────────────
+
+    [Fact]
+    public void GetRelativeLuminance_White_ReturnsOne()
+    {
+        double l = ColorUtils.GetRelativeLuminance("#FFFFFF");
+        Assert.Equal(1.0, l, precision: 6);
+    }
+
+    [Fact]
+    public void GetRelativeLuminance_Black_ReturnsZero()
+    {
+        double l = ColorUtils.GetRelativeLuminance("#000000");
+        Assert.Equal(0.0, l, precision: 6);
+    }
+
+    [Fact]
+    public void GetRelativeLuminance_MidGray_IsApproximatelyHalf()
+    {
+        // sRGB #7F7F7F is not exactly 0.5 relative luminance due to gamma correction
+        double l = ColorUtils.GetRelativeLuminance("#7F7F7F");
+        Assert.InRange(l, 0.20, 0.25);
+    }
+
+    [Fact]
+    public void GetRelativeLuminance_IsHigherForLightColors()
+    {
+        double lLight = ColorUtils.GetRelativeLuminance("#F0F0F0");
+        double lDark = ColorUtils.GetRelativeLuminance("#202020");
+        Assert.True(lLight > lDark);
+    }
+
+    // ── GetContrastRatio ──────────────────────────────────────────────────────
+
+    [Fact]
+    public void GetContrastRatio_BlackOnWhite_Returns21()
+    {
+        double ratio = ColorUtils.GetContrastRatio("#000000", "#FFFFFF");
+        Assert.Equal(21.0, ratio, precision: 4);
+    }
+
+    [Fact]
+    public void GetContrastRatio_SameColor_Returns1()
+    {
+        double ratio = ColorUtils.GetContrastRatio("#4F81BD", "#4F81BD");
+        Assert.Equal(1.0, ratio, precision: 4);
+    }
+
+    [Fact]
+    public void GetContrastRatio_IsSymmetric()
+    {
+        double r1 = ColorUtils.GetContrastRatio("#1F2937", "#FFFFFF");
+        double r2 = ColorUtils.GetContrastRatio("#FFFFFF", "#1F2937");
+        Assert.Equal(r1, r2, precision: 6);
+    }
+
+    [Fact]
+    public void GetContrastRatio_DarkTextOnWhite_MeetsWcagAA()
+    {
+        // #1F2937 (very dark gray) on white should comfortably exceed 4.5:1
+        double ratio = ColorUtils.GetContrastRatio("#1F2937", "#FFFFFF");
+        Assert.True(ratio >= 4.5, $"Expected ≥4.5:1 WCAG AA contrast, got {ratio:F2}:1");
+    }
+
+    [Fact]
+    public void GetContrastRatio_LightTextOnDarkBackground_MeetsWcagAA()
+    {
+        // #E2E8F0 (near-white) on #0F172A (very dark navy) should exceed 4.5:1
+        double ratio = ColorUtils.GetContrastRatio("#E2E8F0", "#0F172A");
+        Assert.True(ratio >= 4.5, $"Expected ≥4.5:1 WCAG AA contrast, got {ratio:F2}:1");
+    }
+
+    [Fact]
+    public void GetContrastRatio_AlwaysReturnsValueBetween1And21()
+    {
+        double ratio = ColorUtils.GetContrastRatio("#4F81BD", "#E8F0FC");
+        Assert.InRange(ratio, 1.0, 21.0);
+    }
+
+    // ── IsLight / ChooseTextColor ─────────────────────────────────────────────
+
+    [Fact]
+    public void GetLuminance_White_ReturnsMaxBt601()
+    {
+        double l = ColorUtils.GetLuminance("#FFFFFF");
+        Assert.Equal(255.0, l, precision: 4);
+    }
+
+    [Fact]
+    public void GetLuminance_Black_ReturnsZero()
+    {
+        double l = ColorUtils.GetLuminance("#000000");
+        Assert.Equal(0.0, l, precision: 4);
+    }
+
+    [Fact]
+    public void IsLight_White_ReturnsTrue()
+    {
+        Assert.True(ColorUtils.IsLight("#FFFFFF"));
+    }
+
+    [Fact]
+    public void IsLight_Black_ReturnsFalse()
+    {
+        Assert.False(ColorUtils.IsLight("#000000"));
+    }
+
+    [Fact]
+    public void ChooseTextColor_DarkBackground_ReturnsLightText()
+    {
+        string chosen = ColorUtils.ChooseTextColor("#111827");
+        Assert.Equal("#F8FAFC", chosen);
+    }
+
+    [Fact]
+    public void ChooseTextColor_LightBackground_ReturnsDarkText()
+    {
+        string chosen = ColorUtils.ChooseTextColor("#FFFFFF");
+        Assert.Equal("#0F172A", chosen);
+    }
 }
 

@@ -4,11 +4,19 @@ using DiagramForge.Models;
 // DiagramForge CLI
 // Usage:
 //   diagramforge <input-file> [--output <output-file>] [--theme <name>] [--palette <json>] [--transparent]
+//   diagramforge --list-themes
 //   diagramforge --help
 
 if (args.Length == 0 || args[0] is "--help" or "-h")
 {
     PrintHelp();
+    return 0;
+}
+
+if (args[0] is "--list-themes")
+{
+    foreach (string name in Theme.BuiltInThemeNames)
+        Console.WriteLine(name);
     return 0;
 }
 
@@ -166,6 +174,7 @@ static void PrintHelp()
         string.Empty,
         "Usage:",
         "  dnx DiagramForge.Tool <input-file> [options]",
+        "  dnx DiagramForge.Tool --list-themes",
         "  dnx DiagramForge.Tool --help",
         string.Empty,
         "Arguments:",
@@ -179,6 +188,7 @@ static void PrintHelp()
         "                                Overrides the node palette of the selected theme.",
         "  --theme-file <path.json>      Load a complete theme from a JSON file.",
         "  --transparent                 Omit the SVG background rect for embedding on an existing surface.",
+        "  --list-themes                 Print all built-in theme names, one per line, and exit.",
         string.Empty,
         "Supported syntaxes:",
         "  mermaid                       Flowchart LR/TB (Mermaid subset)",
