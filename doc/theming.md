@@ -175,13 +175,15 @@ When `FromColors(...)` runs, each slot is filled using the first applicable rule
 
 ### 7.3 Accessibility notes
 
-DiagramForge built-in themes are designed so that `TextColor` has a WCAG 2.1 contrast ratio of at least 3.0:1 against both `NodeFillColor` and `BackgroundColor`. The WCAG AA large-text threshold (3.0:1) is appropriate for diagram labels, which are typically rendered at or above 13 px.
+DiagramForge built-in themes are designed so that `TextColor` has a contrast ratio of at least 3.0:1 against both `NodeFillColor` and `BackgroundColor`. This is a DiagramForge-specific readability target for diagram labels — it is stricter than the 1:1 baseline but is intentionally lower than the WCAG AA thresholds (4.5:1 for normal text at or below ~18 px, 3.0:1 for "large text" defined as ≥18 pt / ≈24 px or ≥14 pt bold / ≈18.7 px). DiagramForge's default `FontSize` of 13 px falls below the WCAG "large text" cutoff, so callers targeting strict WCAG AA compliance should verify that their custom themes produce a 4.5:1 ratio.
 
 `ColorUtils.GetContrastRatio(hex1, hex2)` is available for custom theme validation:
 
 ```csharp
 double ratio = ColorUtils.GetContrastRatio(myTheme.TextColor, myTheme.NodeFillColor);
-// WCAG AA normal text requires ≥ 4.5:1; large text requires ≥ 3.0:1.
+// DiagramForge readability target: ≥ 3.0:1
+// WCAG AA normal text (13 px): ≥ 4.5:1
+// WCAG AA large text (≥24 px or ≥18.7 px bold): ≥ 3.0:1
 ```
 
 ---

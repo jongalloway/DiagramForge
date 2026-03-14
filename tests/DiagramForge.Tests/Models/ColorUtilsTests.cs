@@ -248,9 +248,10 @@ public class ColorUtilsTests
     }
 
     [Fact]
-    public void GetRelativeLuminance_MidGray_IsApproximatelyHalf()
+    public void GetRelativeLuminance_MidGray_IsGammaCorrectedBelowLinearHalf()
     {
-        // sRGB #7F7F7F is not exactly 0.5 relative luminance due to gamma correction
+        // sRGB #7F7F7F encodes ~50% brightness, but sRGB gamma correction places
+        // its WCAG relative luminance around 0.216 — well below 0.5.
         double l = ColorUtils.GetRelativeLuminance("#7F7F7F");
         Assert.InRange(l, 0.20, 0.25);
     }

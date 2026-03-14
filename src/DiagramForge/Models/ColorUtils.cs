@@ -119,7 +119,14 @@ public static class ColorUtils
     /// Returns a value between 0 (black) and 1 (white).
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// Alpha channels (<c>#RGBA</c> / <c>#RRGGBBAA</c>) are silently discarded.
+    /// The luminance is computed for the opaque RGB values only; compositing against
+    /// a background is not performed.
+    /// </para>
+    /// <para>
     /// See <see href="https://www.w3.org/TR/WCAG21/#dfn-relative-luminance">WCAG 2.1 § 1.4.3</see>.
+    /// </para>
     /// </remarks>
     public static double GetRelativeLuminance(string hex)
     {
@@ -134,8 +141,15 @@ public static class ColorUtils
     /// Returns a value between 1 (identical) and 21 (black on white).
     /// </summary>
     /// <remarks>
-    /// WCAG AA thresholds: 4.5:1 for normal text, 3.0:1 for large text.
+    /// <para>
+    /// Alpha channels (<c>#RGBA</c> / <c>#RRGGBBAA</c>) are silently discarded.
+    /// The ratio is computed for the opaque RGB values only; compositing against
+    /// a background is not performed.
+    /// </para>
+    /// <para>
+    /// WCAG AA thresholds: 4.5:1 for normal text, 3.0:1 for large text (≥18 pt or ≥14 pt bold).
     /// See <see href="https://www.w3.org/TR/WCAG21/#contrast-minimum">WCAG 2.1 § 1.4.3</see>.
+    /// </para>
     /// </remarks>
     public static double GetContrastRatio(string hex1, string hex2)
     {

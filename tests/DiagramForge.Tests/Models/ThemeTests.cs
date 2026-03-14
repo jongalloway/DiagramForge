@@ -300,7 +300,9 @@ public class ThemeTests
 
     /// <summary>
     /// Primary node text must be readable against the node fill.
-    /// Diagram labels are typically large/bold; WCAG AA large-text threshold (3.0:1) applied.
+    /// A 3.0:1 minimum is used as a DiagramForge readability target for diagram labels,
+    /// which are typically styled at 13 px — below WCAG's formal "large text" definition
+    /// (18 pt / 24 px, or 14 pt bold / ~18.7 px).
     /// </summary>
     [Theory]
     [InlineData("default")]
@@ -331,11 +333,12 @@ public class ThemeTests
         var theme = Theme.GetByName(themeName)!;
         double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.NodeFillColor);
         Assert.True(ratio >= 3.0,
-            $"[{themeName}] TextColor={theme.TextColor} vs NodeFillColor={theme.NodeFillColor}: contrast ratio {ratio:F2}:1 is below WCAG AA large-text threshold (3.0:1)");
+            $"[{themeName}] TextColor={theme.TextColor} vs NodeFillColor={theme.NodeFillColor}: contrast ratio {ratio:F2}:1 is below the 3.0:1 readability target");
     }
 
     /// <summary>
     /// Primary node text must be readable against the canvas background.
+    /// A 3.0:1 minimum is used as a DiagramForge readability target for diagram labels.
     /// </summary>
     [Theory]
     [InlineData("default")]
@@ -358,7 +361,7 @@ public class ThemeTests
         var theme = Theme.GetByName(themeName)!;
         double ratio = ColorUtils.GetContrastRatio(theme.TextColor, theme.BackgroundColor);
         Assert.True(ratio >= 3.0,
-            $"[{themeName}] TextColor={theme.TextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below WCAG AA large-text threshold (3.0:1)");
+            $"[{themeName}] TextColor={theme.TextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below the 3.0:1 readability target");
     }
 
     [Theory]
@@ -373,7 +376,7 @@ public class ThemeTests
         var theme = Theme.GetByName(themeName)!;
         double ratio = ColorUtils.GetContrastRatio(theme.TitleTextColor, theme.BackgroundColor);
         Assert.True(ratio >= 3.0,
-            $"[{themeName}] TitleTextColor={theme.TitleTextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below 3.0:1");
+            $"[{themeName}] TitleTextColor={theme.TitleTextColor} vs BackgroundColor={theme.BackgroundColor}: contrast ratio {ratio:F2}:1 is below the 3.0:1 readability target");
     }
 
     // ── FromColors contrast derivation ────────────────────────────────────────
