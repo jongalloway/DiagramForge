@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="372.00" height="321.00" viewBox="0 0 372.00 321.00">
+<svg xmlns="http://www.w3.org/2000/svg" width="552.00" height="321.00" viewBox="0 0 552.00 321.00">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
@@ -13,7 +13,7 @@
       <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#111827" stroke="#94A3B8" stroke-width="1.50"/>
     </marker>
   </defs>
-  <rect width="372.00" height="321.00" fill="#111827" rx="8.00" ry="8.00"/>
+  <rect width="552.00" height="321.00" fill="#111827" rx="8.00" ry="8.00"/>
   <defs>
     <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#2F3845E0"/>
@@ -25,13 +25,14 @@
       <stop offset="100%" stop-color="#3AB5EC"/>
     </linearGradient>
   </defs>
-  <rect x="24.00" y="24.00" width="324.00" height="273.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
-  <rect x="34.00" y="34.00" width="37.19" height="20.66" rx="10.33" ry="10.33" fill="#193A52" stroke="#33A7DB" stroke-width="1.20"/>
-  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E5EEF9" font-weight="bold">API</text>
-  <path d="M 216.00,104.00 C 192.00,104.00 180.00,104.00 156.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <path d="M 96.00,191.00 C 96.00,175.00 96.00,167.00 96.00,151.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <path d="M 276.00,191.00 C 276.00,175.00 276.00,167.00 276.00,151.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <g transform="translate(216.00,57.00)">
+  <rect x="24.00" y="24.00" width="504.00" height="273.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
+  <rect x="34.00" y="34.00" width="107.54" height="20.66" rx="10.33" ry="10.33" fill="#193A52" stroke="#33A7DB" stroke-width="1.20"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E5EEF9" font-weight="bold">Infrastructure</text>
+  <path d="M 156.00,104.00 C 180.00,104.00 192.00,104.00 216.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <path d="M 336.00,104.00 C 360.00,104.00 372.00,104.00 396.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <path d="M 276.00,151.00 C 276.00,167.00 276.00,175.00 276.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <path d="M 96.00,151.00 C 96.00,167.00 96.00,175.00 96.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <g transform="translate(36.00,57.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#374C62"/>
@@ -46,12 +47,12 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5.5" rx="8" ry="3.5"/><path d="M4 5.5v13c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5v-13"/><path d="M4 12c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M4.93 5h14.14M4.93 19h14.14"/></g>
       </svg>
     </g>
-    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Database</text>
+    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Web Gateway</text>
   </g>
-  <g transform="translate(36.00,191.00)">
+  <g transform="translate(216.00,57.00)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#2C4D5E"/>
@@ -66,12 +67,12 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><circle cx="6" cy="6" r="1" fill="currentColor"/><circle cx="6" cy="18" r="1" fill="currentColor"/></g>
       </svg>
     </g>
-    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Storage</text>
+    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">App Server</text>
   </g>
-  <g transform="translate(216.00,191.00)">
+  <g transform="translate(396.00,57.00)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#435D93"/>
@@ -86,12 +87,12 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5.5" rx="8" ry="3.5"/><path d="M4 5.5v13c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5v-13"/><path d="M4 12c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5"/></g>
       </svg>
     </g>
-    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Storage</text>
+    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Data Store</text>
   </g>
-  <g transform="translate(36.00,57.00)">
+  <g transform="translate(216.00,191.00)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#365D61"/>
@@ -106,9 +107,29 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><circle cx="6" cy="6" r="1" fill="currentColor"/><circle cx="6" cy="18" r="1" fill="currentColor"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></g>
       </svg>
     </g>
-    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Server</text>
+    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">File Storage</text>
+  </g>
+  <g transform="translate(36.00,191.00)">
+    <defs>
+      <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#5C509A"/>
+        <stop offset="58%" stop-color="#4C3F91"/>
+        <stop offset="100%" stop-color="#473B88"/>
+      </linearGradient>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#43397A"/>
+        <stop offset="100%" stop-color="#423B7D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
+    <g transform="translate(36.00,12.00)">
+      <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
+        <path d="M18.74 10.04A6.87 6.87 0 0 0 12 4C9.34 4 7.05 5.64 5.9 8.04A5.5 5.5 0 0 0 1 14c0 3.31 2.47 6 5.5 6h11.93c2.53 0 4.58-2.24 4.58-5 0-2.64-1.88-4.78-4.27-4.96z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+    </g>
+    <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">CDN</text>
   </g>
 </svg>

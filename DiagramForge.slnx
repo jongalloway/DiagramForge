@@ -4,6 +4,7 @@
   </Folder>
   <Folder Name="/src/">
     <Project Path="src/DiagramForge.Cli/DiagramForge.Cli.csproj" />
+    <Project Path="src/DiagramForge.Icons.Heroicons/DiagramForge.Icons.Heroicons.csproj" />
     <Project Path="src/DiagramForge/DiagramForge.csproj" />
   </Folder>
   <Folder Name="/tests/">

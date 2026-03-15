@@ -7,6 +7,8 @@ internal static class SvgNodeWriter
 {
     private const double DefaultLabelLineHeight = 1.15;
     private const double AnnotationFontSizeRatio = 0.85;
+    internal const double DefaultIconSize = 48;
+    internal const double IconLabelGap = 6;
 
     internal static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
     {
@@ -144,12 +146,25 @@ internal static class SvgNodeWriter
         string resolvedTextColor = SvgRenderSupport.Escape(
             node.Label.Color ?? SvgRenderSupport.ResolveNodeTextColor(baseFill, theme));
 
+        // ── Icon rendering ────────────────────────────────────────────────────
+        bool hasIcon = node.ResolvedIcon is not null;
+        double iconAreaHeight = 0;
+        if (hasIcon && !textOnly)
+        {
+            AppendNodeIcon(sb, node, theme, resolvedTextColor);
+            iconAreaHeight = DefaultIconSize + IconLabelGap;
+        }
+
         if (!string.IsNullOrWhiteSpace(node.Label.Text)
             && node.Compartments.Count == 0 && node.Annotations.Count == 0)
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
             double textX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
             double textBaselineY = SvgRenderSupport.GetMetadataDouble(node, "label:centerY") ?? (textOnly ? 0 : (node.Height / 2));
+
+            // Shift label down when icon is present (icon sits in the upper area).
+            if (hasIcon && !textOnly)
+                textBaselineY += iconAreaHeight / 2;
 
             AppendNodeLabel(sb, node.Label, theme, textX, textBaselineY, fontSize, resolvedTextColor);
         }
@@ -183,6 +198,37 @@ internal static class SvgNodeWriter
             sb.AppendLine($"""      <tspan x="{SvgRenderSupport.F(centerX)}" dy="{SvgRenderSupport.F(lineHeight)}">{SvgRenderSupport.Escape(lines[i])}</tspan>""");
 
         sb.AppendLine("    </text>");
+    }
+
+    /// <summary>
+    /// Renders a resolved icon inside a node, centered horizontally and positioned
+    /// in the upper portion to leave room for the label below.
+    /// </summary>
+    /// <param name="resolvedTextColor">
+    /// The already-resolved text color for the node (same value used for the label),
+    /// ensuring icon and label use a consistent, contrast-aware color.
+    /// </param>
+    private static void AppendNodeIcon(StringBuilder sb, Node node, Theme theme, string resolvedTextColor)
+    {
+        var icon = node.ResolvedIcon;
+        if (icon is null)
+            return;
+
+        double iconSize = DefaultIconSize;
+        double iconX = (node.Width - iconSize) / 2;
+        double iconY = theme.NodePadding;
+
+        // Parse viewBox to get the source coordinate system.
+        string[] viewBoxParts = icon.ViewBox.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        string viewBox = viewBoxParts.Length == 4 ? icon.ViewBox : "0 0 24 24";
+
+        // Use the same resolved text color as the label so icon and label are always consistent,
+        // including when the node fill is sourced from a theme palette.
+        sb.AppendLine($"""    <g transform="translate({SvgRenderSupport.F(iconX)},{SvgRenderSupport.F(iconY)})">""");
+        sb.AppendLine($"""      <svg width="{SvgRenderSupport.F(iconSize)}" height="{SvgRenderSupport.F(iconSize)}" viewBox="{SvgRenderSupport.Escape(viewBox)}" overflow="visible" color="{resolvedTextColor}">""");
+        sb.AppendLine($"        {icon.SvgContent}");
+        sb.AppendLine("      </svg>");
+        sb.AppendLine("    </g>");
     }
 
     private static string[] GetRenderedLabelLines(Label label) =>

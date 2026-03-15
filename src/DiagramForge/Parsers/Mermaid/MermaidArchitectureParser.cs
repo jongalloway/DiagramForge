@@ -87,7 +87,7 @@ internal sealed partial class MermaidArchitectureParser : IMermaidDiagramParser
                 var icon = serviceMatch.Groups["icon"].Value;
                 var parent = serviceMatch.Groups["parent"].Value;
 
-                var node = new Node(id, label) { Shape = MapIconToShape(icon) };
+                var node = new Node(id, label) { Shape = MapIconToShape(icon), IconRef = icon };
                 diagram.AddNode(node);
 
                 if (!string.IsNullOrEmpty(parent) && groups.TryGetValue(parent, out var parentGroup))
@@ -132,16 +132,10 @@ internal sealed partial class MermaidArchitectureParser : IMermaidDiagramParser
         return diagram;
     }
 
-    private static Shape MapIconToShape(string icon) =>
-        icon.ToLowerInvariant() switch
-        {
-            "cloud" => Shape.Cloud,
-            "database" => Shape.Cylinder,
-            "disk" => Shape.Cylinder,
-            "server" => Shape.Rectangle,
-            "internet" => Shape.Cloud,
-            _ => Shape.Rectangle,
-        };
+    // In Mermaid architecture diagrams every service node renders as a rounded
+    // rectangle.  The icon token (cloud, database, server …) selects only the
+    // artwork drawn *inside* the node, not the container shape.
+    private static Shape MapIconToShape(string icon) => Shape.RoundedRectangle;
 
     private static void EnsureNode(Diagram diagram, string id)
     {
