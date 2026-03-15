@@ -231,7 +231,8 @@ internal static class SvgNodeWriter
     private static NodeIconLayout GetNodeIconLayout(Node node, Theme theme)
     {
         double size = SvgRenderSupport.GetMetadataDouble(node, "icon:size") ?? DefaultIconSize;
-        double x = SvgRenderSupport.GetMetadataDouble(node, "icon:x") ?? ((node.Width - size) / 2);
+        double defaultCenterX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (node.Width / 2);
+        double x = SvgRenderSupport.GetMetadataDouble(node, "icon:x") ?? (defaultCenterX - size / 2);
         double y = SvgRenderSupport.GetMetadataDouble(node, "icon:y") ?? theme.NodePadding;
         return new NodeIconLayout(x, y, size);
     }
