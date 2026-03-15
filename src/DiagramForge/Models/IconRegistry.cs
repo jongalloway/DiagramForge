@@ -27,14 +27,33 @@ public sealed class IconRegistry
 
     /// <summary>
     /// Registers an icon provider under both <paramref name="packName"/> and <paramref name="alias"/>.
+    /// Both names are validated before either is registered to ensure an atomic operation.
     /// </summary>
     public void RegisterPack(string packName, string alias, IIconProvider provider)
     {
-        RegisterPack(packName, provider);
-
+        ArgumentException.ThrowIfNullOrWhiteSpace(packName);
         ArgumentException.ThrowIfNullOrWhiteSpace(alias);
-        if (!_packs.TryAdd(alias, provider))
+        ArgumentNullException.ThrowIfNull(provider);
+
+        // Validate both names up-front before touching the registry to keep the
+        // operation atomic — partial registration is not observable to callers.
+        if (_packs.ContainsKey(packName))
+            throw new ArgumentException($"An icon pack named '{packName}' is already registered.", nameof(packName));
+        if (_packs.ContainsKey(alias))
             throw new ArgumentException($"An icon pack named '{alias}' is already registered.", nameof(alias));
+        if (string.Equals(packName, alias, StringComparison.OrdinalIgnoreCase))
+            throw new ArgumentException($"Pack name and alias must be different.", nameof(alias));
+
+        // TryAdd may still fail under concurrent load, but the existing single-name
+        // overload already throws in that case, so the behaviour is consistent.
+        if (!_packs.TryAdd(packName, provider))
+            throw new ArgumentException($"An icon pack named '{packName}' is already registered.", nameof(packName));
+
+        if (!_packs.TryAdd(alias, provider))
+        {
+            _packs.TryRemove(packName, out _);
+            throw new ArgumentException($"An icon pack named '{alias}' is already registered.", nameof(alias));
+        }
     }
 
     /// <summary>
@@ -62,10 +81,10 @@ public sealed class IconRegistry
             return null;
         }
 
-        // Bare name — search all packs.
-        foreach (var provider in _packs.Values)
+        // Bare name — search all packs in sorted name order for deterministic results.
+        foreach (var packName in _packs.Keys.OrderBy(k => k, StringComparer.OrdinalIgnoreCase))
         {
-            var icon = provider.GetIcon(reference);
+            var icon = _packs[packName].GetIcon(reference);
             if (icon is not null)
                 return icon;
         }

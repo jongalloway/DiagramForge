@@ -96,7 +96,7 @@ public class SvgIconSanitizerTests
     [Fact]
     public void Sanitize_Null_ReturnsNull()
     {
-        Assert.Null(SvgIconSanitizer.Sanitize(null!));
+        Assert.Null(SvgIconSanitizer.Sanitize(null));
     }
 
     [Fact]

@@ -210,7 +210,18 @@ public sealed class DiagramRenderer
         foreach (var node in diagram.Nodes.Values)
         {
             if (node.IconRef is not null)
-                node.ResolvedIcon = IconRegistry.Resolve(node.IconRef);
+            {
+                var icon = IconRegistry.Resolve(node.IconRef);
+                if (icon is not null)
+                {
+                    // Sanitize the SVG content before placing it into the output SVG
+                    // to prevent XSS / injection from untrusted diagram text or icon providers.
+                    string? sanitized = SvgIconSanitizer.Sanitize(icon.SvgContent);
+                    node.ResolvedIcon = sanitized is not null
+                        ? icon with { SvgContent = sanitized }
+                        : null;
+                }
+            }
         }
     }
 
