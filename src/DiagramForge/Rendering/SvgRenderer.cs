@@ -328,11 +328,11 @@ public sealed class SvgRenderer : ISvgRenderer
 
     private static double NormalizeAngle(double angle)
     {
-        double tau = Math.PI * 2;
-        while (angle < 0)
-            angle += tau;
-        while (angle >= tau)
-            angle -= tau;
+        const double Tau = Math.PI * 2;
+        while (angle <= 0)
+            angle += Tau;
+        while (angle > Tau)
+            angle -= Tau;
         return angle;
     }
 }

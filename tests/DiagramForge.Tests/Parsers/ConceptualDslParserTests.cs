@@ -211,29 +211,29 @@ public class ConceptualDslParserTests
         Assert.Equal("segment", segNode.Metadata["pillars:kind"]);
     }
 
-        [Fact]
-        public void Parse_Pillars_TitleAndSegmentsWithIconDirective_SetIconRefs()
-        {
-                const string text = """
-                        diagram: pillars
-                        pillars:
-                            - title: icon:builtin:cloud People
-                                segments:
-                                    - Skills [icon:heroicons:shield-check]
-                            - title: Process
-                                segments:
-                                    - icon:builtin:database Intake
-                        """;
+    [Fact]
+    public void Parse_Pillars_TitleAndSegmentsWithIconDirective_SetIconRefs()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: icon:builtin:cloud People
+                segments:
+                  - Skills [icon:heroicons:shield-check]
+              - title: Process
+                segments:
+                  - icon:builtin:database Intake
+            """;
 
-                var diagram = _parser.Parse(text);
+        var diagram = _parser.Parse(text);
 
-                Assert.Equal("builtin:cloud", diagram.Nodes["pillar_0"].IconRef);
-                Assert.Equal("People", diagram.Nodes["pillar_0"].Label.Text);
-                Assert.Equal("heroicons:shield-check", diagram.Nodes["pillar_0_segment_0"].IconRef);
-                Assert.Equal("Skills", diagram.Nodes["pillar_0_segment_0"].Label.Text);
-                Assert.Equal("builtin:database", diagram.Nodes["pillar_1_segment_0"].IconRef);
-                Assert.Equal("Intake", diagram.Nodes["pillar_1_segment_0"].Label.Text);
-        }
+        Assert.Equal("builtin:cloud", diagram.Nodes["pillar_0"].IconRef);
+        Assert.Equal("People", diagram.Nodes["pillar_0"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["pillar_0_segment_0"].IconRef);
+        Assert.Equal("Skills", diagram.Nodes["pillar_0_segment_0"].Label.Text);
+        Assert.Equal("builtin:database", diagram.Nodes["pillar_1_segment_0"].IconRef);
+        Assert.Equal("Intake", diagram.Nodes["pillar_1_segment_0"].Label.Text);
+    }
 
     [Fact]
     public void Parse_Pillars_WithNoSegments_ProducesOnlyTitleNodes()

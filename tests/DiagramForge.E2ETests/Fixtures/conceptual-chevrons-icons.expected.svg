@@ -41,7 +41,7 @@
       </filter>
     </defs>
     <polygon points="0,0 108.80,0 141.70,47.00 108.80,94.00 0,94.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <g transform="translate(46.85,16.00)">
+    <g transform="translate(30.40,16.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#111827">
         <path d="M18.74 10.04A6.87 6.87 0 0 0 12 4C9.34 4 7.05 5.64 5.9 8.04A5.5 5.5 0 0 0 1 14c0 3.31 2.47 6 5.5 6h11.93c2.53 0 4.58-2.24 4.58-5 0-2.64-1.88-4.78-4.27-4.96z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
       </svg>
