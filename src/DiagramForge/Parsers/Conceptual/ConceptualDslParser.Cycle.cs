@@ -22,7 +22,8 @@ public sealed partial class ConceptualDslParser
         for (int i = 0; i < items.Count; i++)
         {
             var nodeId = $"node_{i}";
-            var node = new Node(nodeId, items[i]);
+            var spec = ParseIconLabeledText(items[i]);
+            var node = new Node(nodeId, spec.Label) { IconRef = spec.IconRef };
             node.Metadata["cycle:stepIndex"] = i;
             builder.AddNode(node);
         }

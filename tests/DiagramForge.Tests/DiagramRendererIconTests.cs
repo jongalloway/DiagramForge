@@ -32,6 +32,27 @@ public class DiagramRendererIconTests
         Assert.Contains("<ellipse", svg);
     }
 
+    [Fact]
+    public void Render_FlowchartNodeWithBuiltInIcon_RendersIconSvg()
+    {
+        var renderer = new DiagramRenderer();
+        string svg = renderer.Render("flowchart LR\n  A[icon:builtin:cloud API] --> B[Worker]");
+
+        Assert.Contains("width=\"48.00\"", svg);
+        Assert.Contains("API", svg);
+    }
+
+    [Fact]
+    public void Render_ConceptualNodeWithBuiltInIcon_RendersIconSvg()
+    {
+        var renderer = new DiagramRenderer();
+
+        string svg = renderer.Render("diagram: cycle\nsteps:\n  - icon:builtin:cloud Discover\n  - Build\n  - Launch");
+
+        Assert.Contains("width=\"48.00\"", svg);
+        Assert.Contains("Discover", svg);
+    }
+
     // ── RegisterIconPack ─────────────────────────────────────────────────────
 
     [Fact]

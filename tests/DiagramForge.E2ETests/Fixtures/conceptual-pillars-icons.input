@@ -1,0 +1,17 @@
+---
+theme: presentation
+---
+diagram: pillars
+pillars:
+  - title: icon:builtin:cloud People
+    segments:
+      - Skills [icon:builtin:server]
+      - Roles
+  - title: icon:builtin:server Process
+    segments:
+      - Intake
+      - Delivery [icon:builtin:database]
+  - title: icon:builtin:database Technology
+    segments:
+      - Platform
+      - Tooling

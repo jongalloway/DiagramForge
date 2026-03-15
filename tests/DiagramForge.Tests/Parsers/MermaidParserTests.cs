@@ -77,6 +77,17 @@ public class MermaidParserTests
     }
 
     [Fact]
+    public void Parse_FlowchartNodeWithIconDirective_SetsIconRefAndTrimsLabel()
+    {
+        var diagram = _parser.Parse("flowchart LR\n  A[icon:builtin:cloud API] --> B[icon:heroicons:shield-check Gateway]");
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["A"].IconRef);
+        Assert.Equal("API", diagram.Nodes["A"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["B"].IconRef);
+        Assert.Equal("Gateway", diagram.Nodes["B"].Label.Text);
+    }
+
+    [Fact]
     public void Parse_MultipleEdges_ProducesCorrectEdgeCount()
     {
         const string text = """

@@ -21,6 +21,8 @@ namespace DiagramForge.Parsers.Conceptual;
 /// </remarks>
 public sealed partial class ConceptualDslParser : IDiagramParser
 {
+    private readonly record struct IconLabeledText(string Label, string? IconRef);
+
     public string SyntaxId => "conceptual";
 
     /// <inheritdoc/>
@@ -90,7 +92,8 @@ public sealed partial class ConceptualDslParser : IDiagramParser
         for (int i = 0; i < items.Count; i++)
         {
             var nodeId = $"node_{i}";
-            builder.AddNode(new Node(nodeId, items[i]));
+            var spec = ParseIconLabeledText(items[i]);
+            builder.AddNode(new Node(nodeId, spec.Label) { IconRef = spec.IconRef });
         }
 
         builder.WithLayoutHints(new LayoutHints { Direction = LayoutDirection.LeftToRight });
@@ -112,6 +115,12 @@ public sealed partial class ConceptualDslParser : IDiagramParser
 
     private static List<string> ReadListItems(string[] lines, int startIndex)
         => [.. EnumerateListItems(lines, startIndex)];
+
+    private static IconLabeledText ParseIconLabeledText(string rawText)
+    {
+        var (label, iconRef) = IconReferenceSyntax.Extract(rawText);
+        return new IconLabeledText(label, iconRef);
+    }
 
     private static string[] ReadLines(string text)
     {
@@ -196,9 +205,9 @@ public sealed partial class ConceptualDslParser : IDiagramParser
     /// <paramref name="startIndex"/>. Each pillar begins with <c>- title: X</c>
     /// and optionally contains a <c>segments:</c> sub-list.
     /// </summary>
-    private static List<(string Title, List<string> Segments)> ReadPillars(string[] lines, int startIndex)
+    private static List<(IconLabeledText Title, List<IconLabeledText> Segments)> ReadPillars(string[] lines, int startIndex)
     {
-        var result = new List<(string Title, List<string> Segments)>();
+        var result = new List<(IconLabeledText Title, List<IconLabeledText> Segments)>();
         int pillarEntryIndent = -1;
         int i = startIndex;
 
@@ -223,8 +232,8 @@ public sealed partial class ConceptualDslParser : IDiagramParser
             // Only process entries at the same indent level as the first one
             if (thisIndent != pillarEntryIndent) { i++; continue; }
 
-            string title = trimmed["- title:".Length..].Trim();
-            var segments = new List<string>();
+            var title = ParseIconLabeledText(trimmed["- title:".Length..].Trim());
+            var segments = new List<IconLabeledText>();
             i++;
 
             // Parse body of this pillar (lines indented deeper than the pillar marker)
@@ -261,7 +270,7 @@ public sealed partial class ConceptualDslParser : IDiagramParser
                             break;
 
                         if (segTrimmed.StartsWith('-'))
-                            segments.Add(segTrimmed[1..].Trim());
+                            segments.Add(ParseIconLabeledText(segTrimmed[1..].Trim()));
 
                         i++;
                     }

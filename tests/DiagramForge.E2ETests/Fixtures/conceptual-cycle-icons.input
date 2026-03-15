@@ -1,0 +1,8 @@
+---
+theme: presentation
+---
+diagram: cycle
+steps:
+  - icon:builtin:cloud Discover
+  - Build
+  - Launch

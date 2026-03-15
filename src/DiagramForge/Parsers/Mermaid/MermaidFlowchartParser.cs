@@ -133,12 +133,16 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
 
             var (srcId, srcLabel, srcShape) = ParseNodeDeclaration(left);
             var (tgtId, tgtLabel, tgtShape) = ParseNodeDeclaration(right);
+            var (srcDisplayLabel, srcIconRef) = IconReferenceSyntax.Extract(srcLabel);
+            var (tgtDisplayLabel, tgtIconRef) = IconReferenceSyntax.Extract(tgtLabel);
 
-            var srcNode = getOrCreate(srcId, srcLabel);
+            var srcNode = getOrCreate(srcId, srcDisplayLabel);
             if (srcShape.HasValue) srcNode.Shape = srcShape.Value;
+            if (srcIconRef is not null) srcNode.IconRef = srcIconRef;
 
-            var tgtNode = getOrCreate(tgtId, tgtLabel);
+            var tgtNode = getOrCreate(tgtId, tgtDisplayLabel);
             if (tgtShape.HasValue) tgtNode.Shape = tgtShape.Value;
+            if (tgtIconRef is not null) tgtNode.IconRef = tgtIconRef;
 
             var edge = new Edge(srcId, tgtId);
             if (edgeLabel is not null)
@@ -154,8 +158,10 @@ internal sealed class MermaidFlowchartParser : IMermaidDiagramParser
         var (id, label, shape) = ParseNodeDeclaration(line);
         if (!string.IsNullOrEmpty(id))
         {
-            var node = getOrCreate(id, label);
+            var (displayLabel, iconRef) = IconReferenceSyntax.Extract(label);
+            var node = getOrCreate(id, displayLabel);
             if (shape.HasValue) node.Shape = shape.Value;
+            if (iconRef is not null) node.IconRef = iconRef;
         }
     }
 

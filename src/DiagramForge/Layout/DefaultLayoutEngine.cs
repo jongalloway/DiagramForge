@@ -1,5 +1,6 @@
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
+using DiagramForge.Rendering;
 
 namespace DiagramForge.Layout;
 
@@ -470,9 +471,27 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         double textWidth = EstimateTextWidth(node.Label, fontSize);
         double textBlockHeight = GetTextBlockHeight(node.Label, fontSize);
 
-        node.Width = Math.Max(minWidth, textWidth + 2 * theme.NodePadding);
-        node.Height = Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding);
+        node.Width = GetRequiredNodeWidth(node, theme, textWidth, minWidth);
+        node.Height = GetRequiredNodeHeight(node, theme, textBlockHeight, minHeight);
     }
+
+    private static double GetRequiredNodeWidth(Node node, Theme theme, double textWidth, double minWidth)
+    {
+        double iconWidth = node.ResolvedIcon is null ? 0 : SvgNodeWriter.DefaultIconSize;
+        return Math.Max(minWidth, Math.Max(textWidth, iconWidth) + 2 * theme.NodePadding);
+    }
+
+    private static double GetRequiredNodeHeight(Node node, Theme theme, double textBlockHeight, double minHeight)
+        => Math.Max(minHeight, textBlockHeight + 2 * theme.NodePadding) + GetIconAreaHeight(node);
+
+    private static double GetIconAreaHeight(Node node)
+        => node.ResolvedIcon is null ? 0 : SvgNodeWriter.DefaultIconSize + SvgNodeWriter.IconLabelGap;
+
+    private static double EnsureIconWidth(Node node, Theme theme, double width)
+        => node.ResolvedIcon is null ? width : Math.Max(width, SvgNodeWriter.DefaultIconSize + 2 * theme.NodePadding);
+
+    private static double EnsureIconHeight(Node node, double height)
+        => node.ResolvedIcon is null ? height : height + GetIconAreaHeight(node);
 
     private static double EstimateTextWidth(Label label, double fontSize) =>
         EstimateTextWidth(string.Join('\n', GetLabelLines(label)), fontSize);

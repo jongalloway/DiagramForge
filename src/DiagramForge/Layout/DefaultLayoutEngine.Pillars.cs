@@ -28,11 +28,15 @@ public sealed partial class DefaultLayoutEngine
 
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
         double maxTextWidth = diagram.Nodes.Values.Max(n =>
-            EstimateTextWidth(n.Label.Text, n.Label.FontSize ?? theme.FontSize));
-        double colWidth = Math.Max(minW + 24, maxTextWidth + theme.NodePadding * 2.5);
+            EnsureIconWidth(n, theme, EstimateTextWidth(n.Label.Text, n.Label.FontSize ?? theme.FontSize) + theme.NodePadding * 2.5));
+        double colWidth = Math.Max(minW + 24, maxTextWidth);
 
-        double titleH = Math.Max(nodeH, (theme.FontSize * 1.15) + theme.NodePadding * 2.2);
-        double segH = nodeH;
+        double titleH = titleNodes.Max(node => EnsureIconHeight(node, Math.Max(nodeH, (theme.FontSize * 1.15) + theme.NodePadding * 2.2)));
+        double segH = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("pillars:kind", out var kind) && "segment".Equals(kind as string, StringComparison.Ordinal))
+            .Select(node => EnsureIconHeight(node, nodeH))
+            .DefaultIfEmpty(nodeH)
+            .Max();
         double colGap = Math.Max(theme.NodePadding * 2, 20);
         double segGap = 4;
 
