@@ -1,0 +1,5 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  class Square~Shape~

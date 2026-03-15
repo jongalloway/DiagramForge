@@ -5,6 +5,18 @@ namespace DiagramForge.Parsers.Mermaid;
 
 internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
 {
+    private sealed class GroupFrame
+    {
+        public GroupFrame(Group group)
+        {
+            Group = group;
+        }
+
+        public Group Group { get; }
+
+        public HashSet<string> Members { get; } = new(StringComparer.Ordinal);
+    }
+
     // Relationship operators sorted so that longer tokens are tried first when positions tie.
     // Each entry: (token, relationshipType, isReversed).
     // isReversed=true means the written textual order is source-on-right / target-on-left,
@@ -41,6 +53,9 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
             .WithLayoutHints(hints);
 
         var nodesSeen = new Dictionary<string, Node>(StringComparer.Ordinal);
+        var groupStack = new Stack<GroupFrame>();
+        var namespaceIdsSeen = new HashSet<string>(StringComparer.Ordinal);
+        int autoNamespaceId = 0;
 
         Node GetOrCreateNode(string id)
         {
@@ -52,7 +67,21 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
                 builder.AddNode(node);
             }
 
+            foreach (var frame in groupStack)
+                frame.Members.Add(id);
+
             return node;
+        }
+
+        void CloseNamespace()
+        {
+            var frame = groupStack.Pop();
+            frame.Group.ChildNodeIds.AddRange(frame.Members.OrderBy(member => member, StringComparer.Ordinal));
+
+            if (groupStack.Count > 0)
+                groupStack.Peek().Group.ChildGroupIds.Add(frame.Group.Id);
+
+            builder.AddGroup(frame.Group);
         }
 
         // Current class whose {} block is being parsed (null = top-level).
@@ -65,14 +94,36 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
             // ── Close brace ends a member block ─────────────────────────────
             if (line == "}")
             {
-                currentBlockNode = null;
+                if (currentBlockNode is not null)
+                {
+                    currentBlockNode = null;
+                }
+                else if (groupStack.Count > 0)
+                {
+                    CloseNamespace();
+                }
+
                 continue;
             }
 
             // ── Lines inside a member block ──────────────────────────────────
             if (currentBlockNode is not null)
             {
+                if (TryParseStandaloneAnnotation(line, out var blockAnnotation))
+                {
+                    AddAnnotation(currentBlockNode, blockAnnotation);
+                    continue;
+                }
+
                 AddMemberToNode(currentBlockNode, line);
+                continue;
+            }
+
+            // ── namespace ────────────────────────────────────────────────────
+            if (TryParseNamespaceStart(line, out var namespaceTitle))
+            {
+                string namespaceId = CreateNamespaceId(namespaceTitle, namespaceIdsSeen, ref autoNamespaceId);
+                groupStack.Push(new GroupFrame(new Group(namespaceId, namespaceTitle)));
                 continue;
             }
 
@@ -80,6 +131,13 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
             if (line.StartsWith("direction ", StringComparison.OrdinalIgnoreCase))
             {
                 hints.Direction = ParseDirection(line);
+                continue;
+            }
+
+            // ── Separate annotation line: "<<interface>> Shape" ────────────
+            if (TryParseAttachedAnnotation(line, out var annotationText, out var annotatedClassId))
+            {
+                AddAnnotation(GetOrCreateNode(annotatedClassId), annotationText);
                 continue;
             }
 
@@ -92,12 +150,15 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
                 if (opensBrace)
                     rest = rest[..^1].TrimEnd();
 
-                var (id, label) = ParseClassDeclaration(rest);
+                var (id, label, inlineAnnotation) = ParseClassDeclaration(rest);
                 if (!string.IsNullOrEmpty(id))
                 {
                     var node = GetOrCreateNode(id);
                     if (label is not null)
                         node.Label = new Label(label);
+
+                    if (inlineAnnotation is not null)
+                        AddAnnotation(node, inlineAnnotation);
 
                     if (opensBrace)
                         currentBlockNode = node;
@@ -127,6 +188,9 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
                 continue;
         }
 
+        while (groupStack.Count > 0)
+            CloseNamespace();
+
         return builder.Build();
     }
 
@@ -144,24 +208,30 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
     // ── Class declaration parsing ─────────────────────────────────────────────
 
     /// <summary>
-    /// Parses the part after "class ": returns (id, optionalLabel).
+    /// Parses the part after "class ": returns (id, optionalLabel, inlineAnnotation).
     /// Handles both plain IDs and <c>ClassName["A label"]</c> form.
     /// </summary>
-    private static (string Id, string? Label) ParseClassDeclaration(string token)
+    private static (string Id, string? Label, string? Annotation) ParseClassDeclaration(string token)
     {
         token = token.Trim();
+        string? annotation = null;
+
+        if (TryExtractTrailingAnnotation(ref token, out var inlineAnnotation))
+            annotation = inlineAnnotation;
+
         int bracketStart = token.IndexOf('[');
         if (bracketStart > 0 && token.EndsWith(']'))
         {
-            var id = token[..bracketStart].Trim();
+            var id = NormalizeClassId(token[..bracketStart].Trim());
             var labelRaw = token[(bracketStart + 1)..^1].Trim();
             // Strip surrounding quotes that Mermaid allows: ["My Label"]
             if (labelRaw.Length >= 2 && labelRaw[0] == '"' && labelRaw[^1] == '"')
                 labelRaw = labelRaw[1..^1];
-            return (id, labelRaw.Length > 0 ? labelRaw : null);
+            return (id, labelRaw.Length > 0 ? labelRaw : null, annotation);
         }
 
-        return (token, null);
+        token = NormalizeClassId(token);
+        return (token, null, annotation);
     }
 
     // ── Member handling ───────────────────────────────────────────────────────
@@ -237,9 +307,11 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
             }
         }
 
-        // Strip cardinality tokens (quoted strings adjacent to class names)
-        var leftId = ExtractClassId(leftRaw);
-        var rightId = ExtractClassId(rightRaw);
+        var leftEndpoint = ParseEndpoint(leftRaw);
+        var rightEndpoint = ParseEndpoint(rightRaw);
+
+        var leftId = leftEndpoint.ClassId;
+        var rightId = rightEndpoint.ClassId;
 
         if (string.IsNullOrEmpty(leftId) || string.IsNullOrEmpty(rightId))
             return false;
@@ -257,9 +329,23 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
         if (label is not null)
             edge.Label = new Label(label);
 
+        string? sourceMultiplicity = isReversed
+            ? rightEndpoint.TrailingCardinality ?? rightEndpoint.LeadingCardinality
+            : leftEndpoint.TrailingCardinality ?? leftEndpoint.LeadingCardinality;
+        string? targetMultiplicity = isReversed
+            ? leftEndpoint.LeadingCardinality ?? leftEndpoint.TrailingCardinality
+            : rightEndpoint.LeadingCardinality ?? rightEndpoint.TrailingCardinality;
+
+        if (sourceMultiplicity is not null)
+            edge.SourceLabel = new Label(sourceMultiplicity);
+
+        if (targetMultiplicity is not null)
+            edge.TargetLabel = new Label(targetMultiplicity);
+
         bool isDashed = token.Contains('.');
         edge.LineStyle = isDashed ? EdgeLineStyle.Dashed : EdgeLineStyle.Solid;
-        edge.ArrowHead = MapArrowHead(relType);
+        edge.ArrowHead = MapTargetArrowHead(relType);
+        edge.SourceArrowHead = MapSourceArrowHead(relType);
         edge.Metadata["class:relationshipType"] = relType;
         edge.Metadata["class:operatorReversed"] = isReversed;
 
@@ -267,41 +353,57 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
         return true;
     }
 
-    /// <summary>
-    /// Extracts the class name from an endpoint token, stripping any adjacent
-    /// quoted cardinality strings (e.g., <c>Animal "1"</c> → <c>Animal</c>;
-    /// <c>"0..*" Zoo</c> → <c>Zoo</c>).
-    /// </summary>
-    private static string ExtractClassId(string part)
+    private static (string ClassId, string? LeadingCardinality, string? TrailingCardinality) ParseEndpoint(string part)
     {
         part = part.Trim();
 
-        // Leading quoted cardinality: "0..*" Zoo
-        if (part.StartsWith('"'))
-        {
-            int end = part.IndexOf('"', 1);
-            if (end >= 0)
-                part = part[(end + 1)..].Trim();
-        }
+        var leading = TryExtractLeadingQuoted(ref part);
+        var trailing = TryExtractTrailingQuoted(ref part);
 
-        // Trailing quoted cardinality: Animal "1"
-        if (part.EndsWith('"'))
-        {
-            int start = part.LastIndexOf('"', part.Length - 2);
-            if (start >= 0)
-                part = part[..start].Trim();
-        }
-
-        return part;
+        return (NormalizeClassId(part), leading, trailing);
     }
 
-    private static ArrowHeadStyle MapArrowHead(string relType) =>
+    private static string? TryExtractLeadingQuoted(ref string part)
+    {
+        if (!part.StartsWith('"'))
+            return null;
+
+        int end = part.IndexOf('"', 1);
+        if (end < 0)
+            return null;
+
+        string cardinality = part[1..end].Trim();
+        part = part[(end + 1)..].Trim();
+        return cardinality.Length == 0 ? null : cardinality;
+    }
+
+    private static string? TryExtractTrailingQuoted(ref string part)
+    {
+        if (!part.EndsWith('"'))
+            return null;
+
+        int start = part.LastIndexOf('"', part.Length - 2);
+        if (start < 0)
+            return null;
+
+        string cardinality = part[(start + 1)..^1].Trim();
+        part = part[..start].Trim();
+        return cardinality.Length == 0 ? null : cardinality;
+    }
+
+    private static ArrowHeadStyle MapTargetArrowHead(string relType) =>
         relType switch
         {
             "association" or "dependency" => ArrowHeadStyle.Arrow,
-            // Composition and aggregation use a diamond marker shape in UML, but the
-            // current renderer has no distinct diamond marker. Use None here and rely on
-            // class:relationshipType metadata for future renderer support.
+            "inheritance" or "realization" => ArrowHeadStyle.OpenArrow,
+            _ => ArrowHeadStyle.None,
+        };
+
+    private static ArrowHeadStyle MapSourceArrowHead(string relType) =>
+        relType switch
+        {
+            "composition" => ArrowHeadStyle.Diamond,
+            "aggregation" => ArrowHeadStyle.Circle,
             _ => ArrowHeadStyle.None,
         };
 
@@ -314,19 +416,34 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
 
         foreach (var (token, relType, isReversed) in RelOperators)
         {
-            int idx = line.IndexOf(token, StringComparison.Ordinal);
-            if (idx < 0)
-                continue;
-
-            if (best is null
-                || idx < best.Value.Index
-                || (idx == best.Value.Index && token.Length > best.Value.Token.Length))
+            foreach (int idx in FindTokenIndicesOutsideQuotes(line, token))
             {
-                best = (token, relType, isReversed, idx);
+                if (best is null
+                    || idx < best.Value.Index
+                    || (idx == best.Value.Index && token.Length > best.Value.Token.Length))
+                {
+                    best = (token, relType, isReversed, idx);
+                }
             }
         }
 
         return best;
+    }
+
+    private static IEnumerable<int> FindTokenIndicesOutsideQuotes(string line, string token)
+    {
+        bool inQuotes = false;
+        for (int i = 0; i <= line.Length - token.Length; i++)
+        {
+            if (line[i] == '"')
+                inQuotes = !inQuotes;
+
+            if (inQuotes)
+                continue;
+
+            if (string.Compare(line, i, token, 0, token.Length, StringComparison.Ordinal) == 0)
+                yield return i;
+        }
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────────
@@ -340,4 +457,86 @@ internal sealed class MermaidClassDiagramParser : IMermaidDiagramParser
         s.Length > 0
         && (char.IsLetter(s[0]) || s[0] == '_')
         && s.All(c => char.IsLetterOrDigit(c) || c == '_');
+
+    private static bool TryParseNamespaceStart(string line, out string namespaceTitle)
+    {
+        namespaceTitle = string.Empty;
+        if (!line.StartsWith("namespace ", StringComparison.OrdinalIgnoreCase) || !line.EndsWith('{'))
+            return false;
+
+        namespaceTitle = line[10..^1].Trim();
+        return namespaceTitle.Length > 0;
+    }
+
+    private static string CreateNamespaceId(string namespaceTitle, HashSet<string> idsSeen, ref int autoNamespaceId)
+    {
+        string candidate = $"namespace:{namespaceTitle}";
+        while (!idsSeen.Add(candidate))
+            candidate = $"namespace:{namespaceTitle}:{autoNamespaceId++}";
+        return candidate;
+    }
+
+    private static bool TryExtractTrailingAnnotation(ref string token, out string annotation)
+    {
+        annotation = string.Empty;
+        if (!token.EndsWith(">>", StringComparison.Ordinal))
+            return false;
+
+        int start = token.LastIndexOf("<<", StringComparison.Ordinal);
+        if (start <= 0)
+            return false;
+
+        annotation = token[(start + 2)..^2].Trim();
+        if (annotation.Length == 0)
+            return false;
+
+        token = token[..start].TrimEnd();
+        return true;
+    }
+
+    private static bool TryParseStandaloneAnnotation(string line, out string annotation)
+    {
+        annotation = string.Empty;
+        line = line.Trim();
+        if (!line.StartsWith("<<", StringComparison.Ordinal) || !line.EndsWith(">>", StringComparison.Ordinal))
+            return false;
+
+        annotation = line[2..^2].Trim();
+        return annotation.Length > 0;
+    }
+
+    private static bool TryParseAttachedAnnotation(string line, out string annotation, out string classId)
+    {
+        annotation = string.Empty;
+        classId = string.Empty;
+
+        line = line.Trim();
+        if (!line.StartsWith("<<", StringComparison.Ordinal))
+            return false;
+
+        int end = line.IndexOf(">>", StringComparison.Ordinal);
+        if (end < 0)
+            return false;
+
+        annotation = line[2..end].Trim();
+        classId = NormalizeClassId(line[(end + 2)..].Trim());
+        return annotation.Length > 0 && IsValidClassId(classId);
+    }
+
+    private static void AddAnnotation(Node node, string annotation)
+    {
+        if (node.Annotations.Any(existing => string.Equals(existing.Text, annotation, StringComparison.Ordinal)))
+            return;
+
+        node.Annotations.Add(new Label(annotation));
+    }
+
+    private static string NormalizeClassId(string token)
+    {
+        token = token.Trim().Trim('`');
+        int genericStart = token.IndexOf('~');
+        if (genericStart > 0)
+            token = token[..genericStart];
+        return token;
+    }
 }

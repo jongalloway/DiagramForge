@@ -369,7 +369,7 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("Animal", edge.TargetId);
         Assert.Equal("inheritance", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Solid, edge.LineStyle);
-        Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.OpenArrow, edge.ArrowHead);
     }
 
     [Fact]
@@ -395,6 +395,7 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("composition", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Solid, edge.LineStyle);
         Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.Diamond, edge.SourceArrowHead);
     }
 
     [Fact]
@@ -419,6 +420,7 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("Animal", edge.TargetId);
         Assert.Equal("aggregation", edge.Metadata["class:relationshipType"]);
         Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.Circle, edge.SourceArrowHead);
     }
 
     [Fact]
@@ -508,7 +510,7 @@ public class MermaidClassDiagramParserTests
         Assert.Equal("IFlyable", edge.TargetId);
         Assert.Equal("realization", edge.Metadata["class:relationshipType"]);
         Assert.Equal(EdgeLineStyle.Dashed, edge.LineStyle);
-        Assert.Equal(ArrowHeadStyle.None, edge.ArrowHead);
+        Assert.Equal(ArrowHeadStyle.OpenArrow, edge.ArrowHead);
     }
 
     [Fact]
@@ -562,6 +564,159 @@ public class MermaidClassDiagramParserTests
 
         var edge = Assert.Single(diagram.Edges);
         Assert.Equal("enrolled in", edge.Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_CardinalityLabels_AreStoredOnEdgeEnds()
+    {
+        var diagram = _parser.Parse("classDiagram\n    Customer \"1\" --> \"*\" Ticket : owns");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("1", edge.SourceLabel?.Text);
+        Assert.Equal("*", edge.TargetLabel?.Text);
+        Assert.Equal("owns", edge.Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_CardinalityLabels_WithLeadingAndTrailingQuotes_AreNormalized()
+    {
+        var diagram = _parser.Parse("classDiagram\n    \"1\" Customer --> Ticket \"many\"");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("1", edge.SourceLabel?.Text);
+        Assert.Equal("many", edge.TargetLabel?.Text);
+        Assert.Equal("Customer", edge.SourceId);
+        Assert.Equal("Ticket", edge.TargetId);
+    }
+
+    [Fact]
+    public void Parse_CardinalityLabels_WithRangeMultiplicity_DoNotConfuseOperatorDetection()
+    {
+        var diagram = _parser.Parse("classDiagram\n    OrderDetail \"0..1\" --> \"1\" Discount : applies");
+
+        Assert.Equal(2, diagram.Nodes.Count);
+        Assert.True(diagram.Nodes.ContainsKey("OrderDetail"));
+        Assert.True(diagram.Nodes.ContainsKey("Discount"));
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("OrderDetail", edge.SourceId);
+        Assert.Equal("Discount", edge.TargetId);
+        Assert.Equal("0..1", edge.SourceLabel?.Text);
+        Assert.Equal("1", edge.TargetLabel?.Text);
+        Assert.Equal("applies", edge.Label?.Text);
+    }
+
+    // ── Annotations / stereotypes ───────────────────────────────────────────
+
+    [Fact]
+    public void Parse_InlineAnnotation_AddsNodeAnnotation()
+    {
+        var diagram = _parser.Parse("classDiagram\n    class Shape <<interface>>");
+
+        var node = diagram.Nodes["Shape"];
+        Assert.Single(node.Annotations);
+        Assert.Equal("interface", node.Annotations[0].Text);
+    }
+
+    [Fact]
+    public void Parse_SeparateAnnotationLine_AddsNodeAnnotation()
+    {
+        const string text = """
+            classDiagram
+                class Shape
+                <<interface>> Shape
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var node = diagram.Nodes["Shape"];
+        Assert.Single(node.Annotations);
+        Assert.Equal("interface", node.Annotations[0].Text);
+    }
+
+    [Fact]
+    public void Parse_BlockAnnotation_AddsNodeAnnotationInsteadOfMember()
+    {
+        const string text = """
+            classDiagram
+                class Shape {
+                    <<interface>>
+                    draw()
+                }
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var node = diagram.Nodes["Shape"];
+        Assert.Single(node.Annotations);
+        Assert.Equal("interface", node.Annotations[0].Text);
+        Assert.Single(node.Compartments);
+        Assert.Equal("methods", node.Compartments[0].Kind);
+        Assert.Equal("draw()", node.Compartments[0].Lines[0].Text);
+    }
+
+    // ── Namespaces ───────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_NamespaceBlock_CreatesGroupAndAssignsChildNodes()
+    {
+        const string text = """
+            classDiagram
+                namespace BaseShapes {
+                    class Triangle
+                    class Rectangle
+                }
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal("BaseShapes", group.Label.Text);
+        Assert.Equal(new[] { "Rectangle", "Triangle" }, group.ChildNodeIds.OrderBy(id => id).ToArray());
+    }
+
+    [Fact]
+    public void Parse_NestedNamespaces_CreateNestedGroups()
+    {
+        const string text = """
+            classDiagram
+                namespace Root {
+                    namespace Child {
+                        class Leaf
+                    }
+                }
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+        var root = diagram.Groups.Single(group => group.Label.Text == "Root");
+        var child = diagram.Groups.Single(group => group.Label.Text == "Child");
+        Assert.Contains(child.Id, root.ChildGroupIds);
+        Assert.Equal(new[] { "Leaf" }, child.ChildNodeIds);
+    }
+
+    // ── Generic class-name normalization ────────────────────────────────────
+
+    [Fact]
+    public void Parse_GenericClassDeclaration_NormalizesNodeIdAndDefaultLabel()
+    {
+        var diagram = _parser.Parse("classDiagram\n    class Square~Shape~");
+
+        Assert.True(diagram.Nodes.ContainsKey("Square"));
+        Assert.Equal("Square", diagram.Nodes["Square"].Label.Text);
+        Assert.False(diagram.Nodes.ContainsKey("Square~Shape~"));
+    }
+
+    [Fact]
+    public void Parse_GenericClassReferenceInRelationship_NormalizesEndpointIds()
+    {
+        var diagram = _parser.Parse("classDiagram\n    Shape <|-- Square~Shape~");
+
+        Assert.True(diagram.Nodes.ContainsKey("Square"));
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Square", edge.SourceId);
+        Assert.Equal("Shape", edge.TargetId);
     }
 
     // ── Complex diagrams ──────────────────────────────────────────────────────
