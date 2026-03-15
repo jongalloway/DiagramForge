@@ -1,0 +1,35 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  direction TB
+
+  class Entity {
+    +id: Guid
+  }
+
+  class Person {
+    +name: string
+  }
+
+  class Customer {
+    +email: string
+  }
+
+  class Employee {
+    +employeeNumber: string
+  }
+
+  class SalesRep {
+    +quota: decimal
+  }
+
+  class Manager {
+    +approveDiscount(): bool
+  }
+
+  Entity <|-- Person
+  Person <|-- Customer
+  Person <|-- Employee
+  Employee <|-- SalesRep
+  Employee <|-- Manager

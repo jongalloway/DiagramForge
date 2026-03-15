@@ -185,6 +185,29 @@ public class SvgClassDiagramRendererTests
         Assert.Contains("<rect ", svg);
     }
 
+    [Fact]
+    public void Render_ClassEdge_WithEndLabels_RendersCardinalityNearBothEnds()
+    {
+        var edge = new Edge("Customer", "Ticket")
+        {
+            Label = new Label("owns"),
+            SourceLabel = new Label("1"),
+            TargetLabel = new Label("*"),
+            ArrowHead = ArrowHeadStyle.Arrow,
+        };
+
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("Customer", "Customer"))
+            .AddNode(new Node("Ticket", "Ticket"))
+            .AddEdge(edge));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains(">1</text>", svg);
+        Assert.Contains(">*</text>", svg);
+        Assert.Contains(">owns</text>", svg);
+    }
+
     // ── Node sizing with compartments ─────────────────────────────────────────
 
     [Fact]

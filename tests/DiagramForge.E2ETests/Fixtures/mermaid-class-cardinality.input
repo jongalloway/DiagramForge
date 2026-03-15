@@ -1,0 +1,7 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  direction LR
+  Customer "1" --> "*" Ticket : owns
+  Student "1" --> "1..*" Course

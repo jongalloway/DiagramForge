@@ -245,6 +245,121 @@ public class ClassDiagramLayoutTests
             $"Header height {headerH} must be less than total node height {node.Height}");
     }
 
+    [Fact]
+    public void Layout_DisconnectedClassEdgesInLeftToRightDirection_PreserveComponentRowOrdering()
+    {
+        var diagram = new Diagram();
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        diagram
+            .AddNode(ClassNode("Customer", "Customer"))
+            .AddNode(ClassNode("Ticket", "Ticket"))
+            .AddNode(ClassNode("Student", "Student"))
+            .AddNode(ClassNode("Course", "Course"))
+            .AddEdge(new Edge("Customer", "Ticket"))
+            .AddEdge(new Edge("Student", "Course"));
+
+        _engine.Layout(diagram, _theme);
+
+        var customer = diagram.Nodes["Customer"];
+        var ticket = diagram.Nodes["Ticket"];
+        var student = diagram.Nodes["Student"];
+        var course = diagram.Nodes["Course"];
+
+        Assert.Equal(customer.Y, ticket.Y);
+        Assert.Equal(student.Y, course.Y);
+        Assert.True(customer.Y < student.Y,
+            $"Customer/Ticket row ({customer.Y}) should be above Student/Course row ({student.Y}) to avoid edge crossings.");
+    }
+
+    [Fact]
+    public void Layout_InheritanceInTopToBottomDirection_PlacesParentAboveChild()
+    {
+        var diagram = new Diagram();
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+
+        diagram
+            .AddNode(ClassNode("Animal", "Animal", Compartment("+name: string")))
+            .AddNode(ClassNode("Dog", "Dog", Compartment("+fetch(): void")))
+            .AddEdge(new Edge("Dog", "Animal")
+            {
+                ArrowHead = ArrowHeadStyle.OpenArrow,
+                LineStyle = EdgeLineStyle.Solid,
+                Metadata = { ["class:relationshipType"] = "inheritance" },
+            });
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(diagram.Nodes["Animal"].Y < diagram.Nodes["Dog"].Y,
+            $"Parent class should be above child class in TB layout. Animal.Y={diagram.Nodes["Animal"].Y}, Dog.Y={diagram.Nodes["Dog"].Y}");
+    }
+
+    [Fact]
+    public void Layout_InheritanceInLeftToRightDirection_PlacesParentLeftOfChild()
+    {
+        var diagram = new Diagram();
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        diagram
+            .AddNode(ClassNode("Animal", "Animal", Compartment("+name: string")))
+            .AddNode(ClassNode("Dog", "Dog", Compartment("+fetch(): void")))
+            .AddEdge(new Edge("Dog", "Animal")
+            {
+                ArrowHead = ArrowHeadStyle.OpenArrow,
+                LineStyle = EdgeLineStyle.Solid,
+                Metadata = { ["class:relationshipType"] = "inheritance" },
+            });
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(diagram.Nodes["Animal"].X < diagram.Nodes["Dog"].X,
+            $"Parent class should be left of child class in LR layout. Animal.X={diagram.Nodes["Animal"].X}, Dog.X={diagram.Nodes["Dog"].X}");
+    }
+
+    [Fact]
+    public void Layout_HierarchySingletonRows_AreCenteredOverWiderChildRows()
+    {
+        var diagram = new Diagram();
+        diagram.LayoutHints.Direction = LayoutDirection.TopToBottom;
+
+        diagram
+            .AddNode(ClassNode("Entity", "Entity", Compartment("+id: Guid")))
+            .AddNode(ClassNode("Person", "Person", Compartment("+name: string")))
+            .AddNode(ClassNode("Customer", "Customer", Compartment("+email: string")))
+            .AddNode(ClassNode("Employee", "Employee", Compartment("+employeeNumber: string")))
+            .AddEdge(new Edge("Person", "Entity")
+            {
+                ArrowHead = ArrowHeadStyle.OpenArrow,
+                Metadata = { ["class:relationshipType"] = "inheritance" },
+            })
+            .AddEdge(new Edge("Customer", "Person")
+            {
+                ArrowHead = ArrowHeadStyle.OpenArrow,
+                Metadata = { ["class:relationshipType"] = "inheritance" },
+            })
+            .AddEdge(new Edge("Employee", "Person")
+            {
+                ArrowHead = ArrowHeadStyle.OpenArrow,
+                Metadata = { ["class:relationshipType"] = "inheritance" },
+            });
+
+        _engine.Layout(diagram, _theme);
+
+        var entity = diagram.Nodes["Entity"];
+        var person = diagram.Nodes["Person"];
+        var customer = diagram.Nodes["Customer"];
+        var employee = diagram.Nodes["Employee"];
+
+        double entityCenterX = entity.X + (entity.Width / 2);
+        double personCenterX = person.X + (person.Width / 2);
+        double childBandCenterX = ((customer.X + (customer.Width / 2)) + (employee.X + (employee.Width / 2))) / 2;
+
+        Assert.True(Math.Abs(entityCenterX - personCenterX) < 4.0,
+            $"Singleton hierarchy rows should align. Entity center={entityCenterX:F2}, Person center={personCenterX:F2}");
+        Assert.True(Math.Abs(personCenterX - childBandCenterX) < 24.0,
+            $"Parent row should be centered over child row. Person center={personCenterX:F2}, child band center={childBandCenterX:F2}");
+    }
+
     // ── Standard (non-class) nodes unchanged ─────────────────────────────────
 
     [Fact]

@@ -27,7 +27,7 @@ internal static class SvgStructureWriter
         bool verticalOverlap = (dy >= 0 && source.Y + source.Height > target.Y)
                              || (dy < 0 && source.Y < target.Y + target.Height);
 
-        bool preferHorizontal = Math.Abs(dx) >= Math.Abs(dy);
+        bool preferHorizontal = PreferHorizontalForEdge(edge, hints, dx, dy);
         if (preferHorizontal && horizontalOverlap && !verticalOverlap)
             preferHorizontal = false;
         else if (!preferHorizontal && verticalOverlap && !horizontalOverlap)
@@ -166,11 +166,59 @@ internal static class SvgStructureWriter
 
         sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerStart}{markerEnd}/>""");
 
+        if (edge.SourceLabel is not null && !string.IsNullOrWhiteSpace(edge.SourceLabel.Text))
+        {
+            var (sourceLabelX, sourceLabelY) = ComputeEndLabelPosition(x1, y1, x2, y2, isSource: true);
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(sourceLabelX)}" y="{SvgRenderSupport.F(sourceLabelY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.FontSize * 0.8)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}">{SvgRenderSupport.Escape(edge.SourceLabel.Text)}</text>""");
+        }
+
+        if (edge.TargetLabel is not null && !string.IsNullOrWhiteSpace(edge.TargetLabel.Text))
+        {
+            var (targetLabelX, targetLabelY) = ComputeEndLabelPosition(x2, y2, x1, y1, isSource: false);
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(targetLabelX)}" y="{SvgRenderSupport.F(targetLabelY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.FontSize * 0.8)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}">{SvgRenderSupport.Escape(edge.TargetLabel.Text)}</text>""");
+        }
+
         if (edge.Label is not null && !string.IsNullOrWhiteSpace(edge.Label.Text))
         {
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(labelX)}" y="{SvgRenderSupport.F(labelY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.FontSize * 0.85)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}" font-style="italic">{SvgRenderSupport.Escape(edge.Label.Text)}</text>""");
         }
     }
+
+    private static (double X, double Y) ComputeEndLabelPosition(double x, double y, double otherX, double otherY, bool isSource)
+    {
+        double dx = otherX - x;
+        double dy = otherY - y;
+        double length = Math.Sqrt((dx * dx) + (dy * dy));
+        if (length < 0.001)
+            return (x, y - 10);
+
+        double ux = dx / length;
+        double uy = dy / length;
+        double nx = -uy;
+        double ny = ux;
+        double alongOffset = isSource ? 14 : 20;
+        double normalOffset = 10;
+
+        return (
+            x + (ux * alongOffset) + (nx * normalOffset),
+            y + (uy * alongOffset) + (ny * normalOffset));
+    }
+
+    private static bool PreferHorizontalForEdge(Edge edge, LayoutHints hints, double dx, double dy)
+    {
+        if (IsHierarchyEdge(edge))
+        {
+            return hints.Direction is LayoutDirection.LeftToRight or LayoutDirection.RightToLeft;
+        }
+
+        return Math.Abs(dx) >= Math.Abs(dy);
+    }
+
+    private static bool IsHierarchyEdge(Edge edge) =>
+        edge.Metadata.TryGetValue("class:relationshipType", out var relationshipType)
+        && relationshipType is string relType
+        && (string.Equals(relType, "inheritance", StringComparison.Ordinal)
+            || string.Equals(relType, "realization", StringComparison.Ordinal));
 
     /// <summary>
     /// Builds an orthogonal (rectilinear) SVG path with rounded corners between two anchor points.

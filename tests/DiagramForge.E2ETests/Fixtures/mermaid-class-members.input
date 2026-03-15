@@ -1,0 +1,11 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  class BankAccount {
+    <<service>>
+    +String owner
+    +BigDecimal balance
+    +deposit(amount) bool
+    +withdrawal(amount) int
+  }

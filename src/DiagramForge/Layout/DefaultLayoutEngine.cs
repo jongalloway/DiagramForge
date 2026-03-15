@@ -91,12 +91,20 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         //   own width + hGap.
 
         var layers = ComputeLayers(diagram);
+        bool centerHierarchyBands = ShouldCenterHierarchyBands(diagram);
 
         bool isHorizontal = hints.Direction is LayoutDirection.LeftToRight
                                                or LayoutDirection.RightToLeft;
 
         if (isHorizontal)
         {
+            double maxColumnHeight = centerHierarchyBands
+                ? layers.Where(layer => layer.Count > 0)
+                    .Select(layer => layer.Sum(node => node.Height) + (Math.Max(0, layer.Count - 1) * vGap))
+                    .DefaultIfEmpty(0)
+                    .Max()
+                : 0;
+
             double columnX = pad;
             foreach (var layer in layers)
             {
@@ -108,7 +116,10 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
                     continue;
 
                 double maxWidthInColumn = layer.Max(n => n.Width);
-                double runY = pad;
+                double columnHeight = layer.Sum(node => node.Height) + (Math.Max(0, layer.Count - 1) * vGap);
+                double runY = centerHierarchyBands
+                    ? pad + ((maxColumnHeight - columnHeight) / 2)
+                    : pad;
                 foreach (var node in layer)
                 {
                     node.X = columnX;
@@ -120,13 +131,23 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         }
         else
         {
+            double maxRowWidth = centerHierarchyBands
+                ? layers.Where(layer => layer.Count > 0)
+                    .Select(layer => layer.Sum(node => node.Width) + (Math.Max(0, layer.Count - 1) * hGap))
+                    .DefaultIfEmpty(0)
+                    .Max()
+                : 0;
+
             double rowY = pad;
             foreach (var layer in layers)
             {
                 if (layer.Count == 0)
                     continue;
 
-                double runX = pad;
+                double rowWidth = layer.Sum(node => node.Width) + (Math.Max(0, layer.Count - 1) * hGap);
+                double runX = centerHierarchyBands
+                    ? pad + ((maxRowWidth - rowWidth) / 2)
+                    : pad;
                 double rowHeight = layer.Max(node => node.Height);
                 foreach (var node in layer)
                 {
@@ -296,6 +317,13 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // including group extents.
         ShiftDiagramForGroupPadding(diagram, theme.DiagramPadding);
     }
+
+    private static bool ShouldCenterHierarchyBands(Diagram diagram)
+        => diagram.Edges.Any(edge =>
+            edge.Metadata.TryGetValue("class:relationshipType", out var relationshipType)
+            && relationshipType is string relType
+            && (string.Equals(relType, "inheritance", StringComparison.Ordinal)
+                || string.Equals(relType, "realization", StringComparison.Ordinal)));
 
     private static bool MetadataEquals(Node node, string key, string expected) =>
         node.Metadata.GetValueOrDefault(key) is string actual
@@ -614,9 +642,15 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         IReadOnlyCollection<string> nodeIds,
         IEnumerable<Edge> edges)
     {
+        var sortedNodeIds = nodeIds.OrderBy(id => id, StringComparer.Ordinal).ToList();
+        var layeringEdges = edges
+            .Select(GetLayeringEndpoints)
+            .Where(edge => nodeIds.Contains(edge.SourceId) && nodeIds.Contains(edge.TargetId))
+            .ToList();
+
         // Compute in-degree for each node
         var inDegree = nodeIds.ToDictionary(id => id, _ => 0, StringComparer.Ordinal);
-        foreach (var edge in edges)
+        foreach (var edge in layeringEdges)
         {
             if (inDegree.ContainsKey(edge.TargetId))
                 inDegree[edge.TargetId]++;
@@ -624,7 +658,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         // Build adjacency list
         var adj = nodeIds.ToDictionary(id => id, _ => new List<string>(), StringComparer.Ordinal);
-        foreach (var edge in edges)
+        foreach (var edge in layeringEdges)
         {
             if (adj.ContainsKey(edge.SourceId))
                 adj[edge.SourceId].Add(edge.TargetId);
@@ -632,14 +666,18 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
 
         // BFS / topological layering (Kahn's algorithm)
         var rank = new Dictionary<string, int>(StringComparer.Ordinal);
+        var order = new Dictionary<string, int>(StringComparer.Ordinal);
         var queue = new Queue<string>();
+        int nextOrder = 0;
 
-        foreach (var (id, deg) in inDegree)
+        foreach (var id in sortedNodeIds)
         {
+            int deg = inDegree[id];
             if (deg == 0)
             {
                 queue.Enqueue(id);
                 rank[id] = 0;
+                order[id] = nextOrder++;
             }
         }
 
@@ -650,11 +688,19 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             {
                 int newRank = rank[current] + 1;
                 if (!rank.TryGetValue(neighbor, out int existing) || newRank > existing)
+                {
                     rank[neighbor] = newRank;
+                    if (!order.ContainsKey(neighbor))
+                        order[neighbor] = nextOrder++;
+                }
 
                 inDegree[neighbor]--;
                 if (inDegree[neighbor] == 0)
+                {
                     queue.Enqueue(neighbor);
+                    if (!order.ContainsKey(neighbor))
+                        order[neighbor] = nextOrder++;
+                }
             }
         }
 
@@ -662,10 +708,13 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         // Iterate in stable order so layout is fully deterministic regardless of Dictionary
         // enumeration order.
         int maxRank = rank.Count > 0 ? rank.Values.Max() : 0;
-        foreach (var id in nodeIds.OrderBy(id => id, StringComparer.Ordinal))
+        foreach (var id in sortedNodeIds)
         {
             if (!rank.ContainsKey(id))
+            {
                 rank[id] = ++maxRank;
+                order[id] = nextOrder++;
+            }
         }
 
         // Group nodes by rank — iterate in key-sorted order so nodes within each layer
@@ -673,10 +722,23 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         int totalLayers = rank.Count > 0 ? rank.Values.Max() + 1 : 0;
         var layers = Enumerable.Range(0, totalLayers).Select(_ => new List<string>()).ToList();
 
-        foreach (var (id, r) in rank.OrderBy(kv => kv.Key, StringComparer.Ordinal))
-            layers[r].Add(id);
+        foreach (var item in rank.OrderBy(kv => kv.Value).ThenBy(kv => order[kv.Key]))
+            layers[item.Value].Add(item.Key);
 
         return layers;
+    }
+
+    private static (string SourceId, string TargetId) GetLayeringEndpoints(Edge edge)
+    {
+        if (edge.Metadata.TryGetValue("class:relationshipType", out var relationshipType)
+            && relationshipType is string relType
+            && (string.Equals(relType, "inheritance", StringComparison.Ordinal)
+                || string.Equals(relType, "realization", StringComparison.Ordinal)))
+        {
+            return (edge.TargetId, edge.SourceId);
+        }
+
+        return (edge.SourceId, edge.TargetId);
     }
 
     /// <summary>

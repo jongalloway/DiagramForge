@@ -1,0 +1,12 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  namespace BaseShapes {
+    class Triangle
+    class Rectangle {
+      <<enumeration>>
+      +double width
+      +double height
+    }
+  }

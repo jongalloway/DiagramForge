@@ -1,0 +1,57 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  direction TB
+
+  class Company {
+    +name: string
+  }
+
+  class Customer {
+    +email: string
+  }
+
+  class AccountRepresentative {
+    +employeeNumber: string
+  }
+
+  class Order {
+    +orderNumber: string
+    +placedAt(): DateTime
+  }
+
+  class PaymentMethod {
+    +kind: string
+    +last4: string
+  }
+
+  class OrderDetail {
+    +quantity: int
+    +unitPrice: decimal
+  }
+
+  class Product {
+    +sku: string
+    +name: string
+  }
+
+  class Discount {
+    +code: string
+    +amount: decimal
+  }
+
+  class TPSReport {
+    +coverSheet: bool
+    +revision: int
+    +submit(): void
+  }
+
+  Company "1" --> "*" Customer : serves
+  Customer "*" --> "1" AccountRepresentative : assigned to
+  Customer "1" --> "*" Order : places
+  Order "*" --> "1" PaymentMethod : paid with
+  Order "1" *-- "1..*" OrderDetail : contains
+  OrderDetail "*" --> "1" Product : references
+  OrderDetail "0..1" --> "1" Discount : applies
+  Order "1" --> "0..1" TPSReport : requires

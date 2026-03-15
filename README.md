@@ -394,6 +394,7 @@ DiagramForge intentionally implements a focused Mermaid subset rather than full 
 | Venn diagram | `venn-beta` | Sets, unions, nested text, basic styles |
 | Architecture diagram | `architecture-beta` | Groups, services, junctions, port-aware edges |
 | XY chart | `xychart-beta` | Title, x/y axes, bar series, line series |
+| Class diagram | `classDiagram` | Classes, members, UML relations, namespaces, stereotypes, cardinality |
 
 #### Flowchart
 
@@ -526,6 +527,32 @@ architecture-beta
   db:L -- R:server
 ```
 
+#### Class diagram
+
+Keyword: `classDiagram`.
+
+- **Classes** — `class Animal`, implicit classes via relationships, and bracket labels such as `class Animal["A base Animal"]`
+- **Members** — both `Animal : +String name` and `class Animal { +makeSound() void }`
+- **Stereotypes / annotations** — inline `class Shape <<interface>>`, separate-line `<<interface>> Shape`, or nested inside a class block
+- **Relationships** — inheritance, composition, aggregation, association, solid link, dependency, realization, and dashed link
+- **Namespaces** — `namespace BaseShapes { ... }`
+- **Cardinality / multiplicity** — quoted end labels such as `Customer "1" --> "*" Ticket`
+- **Direction** — `direction LR`, `RL`, `TB`, `BT`, `TD`
+
+```mermaid
+classDiagram
+  class Shape <<interface>>
+  class Rectangle {
+    +double width
+    +double height
+    +area() double
+  }
+  namespace BaseShapes {
+    Shape <|-- Rectangle
+  }
+  Customer "1" --> "*" Rectangle : owns
+```
+
 #### XY chart
 
 Keyword: `xychart-beta`.
@@ -544,7 +571,9 @@ xychart-beta
   line [20, 55, 80]
 ```
 
-Not yet supported: class diagrams, ER diagrams, gantt, git graphs, requirement diagrams, C4, sankey, `click` directives, ELK flowchart layout, and full Mermaid feature parity within every supported diagram family.
+Not yet supported: ER diagrams, gantt, git graphs, requirement diagrams, C4, sankey, `click` directives, ELK flowchart layout, and full Mermaid feature parity within every supported diagram family.
+
+Current class-diagram limitations: two-way relations (`<|--|>`), lollipop interfaces (`()--` / `--()`), notes, `style` / `classDef` / CSS classes, `click` interactions, and `hideEmptyMembersBox` configuration are not implemented yet.
 
 ### Conceptual DSL
 

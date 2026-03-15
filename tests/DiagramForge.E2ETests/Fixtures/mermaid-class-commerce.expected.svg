@@ -1,0 +1,211 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="630.00" height="622.05" viewBox="0 0 630.00 622.05">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="630.00" height="622.05" fill="#FCFCFD" rx="8.00" ry="8.00"/>
+  <path d="M 86.70,89.45 L 86.70,107.50 A 1.95,1.95 0 0 0 88.65,109.45 L 88.65,109.45 A 1.95,1.95 0 0 1 90.60,111.40 L 90.60,129.45" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="78.11" y="104.35" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="98.61" y="108.57" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
+  <text x="88.65" y="105.45" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">serves</text>
+  <path d="M 90.60,194.90 L 90.60,216.01 A 6.00,6.00 0 0 0 96.60,222.01 L 119.70,222.01 A 6.00,6.00 0 0 1 125.70,228.01 L 125.70,249.12" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="89.81" y="212.09" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
+  <text x="123.23" y="226.90" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="108.15" y="218.01" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">assigned to</text>
+  <path d="M 157.20,162.17 L 216.30,162.17 A 6.00,6.00 0 0 1 222.30,168.17 L 222.30,275.85 A 6.00,6.00 0 0 0 228.30,281.85 L 287.40,281.85" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="160.74" y="179.01" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="279.44" y="260.95" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
+  <text x="222.30" y="218.01" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">places</text>
+  <path d="M 287.40,281.85 L 228.30,281.85 A 6.00,6.00 0 0 0 222.30,287.85 L 222.30,417.22 A 6.00,6.00 0 0 1 216.30,423.22 L 157.20,423.22" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="270.56" y="285.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
+  <text x="178.10" y="415.29" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="222.30" y="348.54" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">paid with</text>
+  <path d="M 381.30,328.80 L 381.30,349.91 A 6.00,6.00 0 0 1 375.30,355.91 L 309.30,355.91 A 6.00,6.00 0 0 0 303.30,361.91 L 303.30,383.02" fill="none" stroke="#516074" stroke-width="1.50"  marker-start="url(#arrowhead-filled-diamond)"  />
+  <text x="364.10" y="328.58" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="325.43" y="379.82" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1..*</text>
+  <text x="342.30" y="351.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">contains</text>
+  <path d="M 217.20,423.22 L 189.30,423.22 A 6.00,6.00 0 0 0 183.30,429.22 L 183.30,551.85 A 6.00,6.00 0 0 1 177.30,557.85 L 149.40,557.85" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="201.97" y="431.23" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
+  <text x="167.33" y="544.49" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="183.30" y="486.54" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">references</text>
+  <path d="M 303.30,463.42 L 303.30,484.54 A 6.00,6.00 0 0 1 297.30,490.54 L 289.80,490.54 A 6.00,6.00 0 0 0 283.80,496.54 L 283.80,517.65" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="289.15" y="473.22" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">0..1</text>
+  <text x="299.98" y="502.21" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="293.55" y="486.54" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">applies</text>
+  <path d="M 381.30,328.80 L 381.30,342.80 A 6.00,6.00 0 0 0 387.30,348.80 L 521.70,348.80 A 6.00,6.00 0 0 1 527.70,354.80 L 527.70,368.80" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <text x="392.17" y="342.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
+  <text x="511.04" y="353.88" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">0..1</text>
+  <text x="454.50" y="344.80" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">requires</text>
+  <g transform="translate(24.00,24.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B3B9C2"/>
+        <stop offset="100%" stop-color="#AAB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="125.40" height="65.45" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="62.70" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">Company</text>
+    <line x1="0" y1="37.00" x2="125.40" y2="37.00" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+name: string</text>
+  </g>
+  <g transform="translate(24.00,129.45)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAF7F1"/>
+        <stop offset="58%" stop-color="#E8F7F0"/>
+        <stop offset="100%" stop-color="#DAE8E1"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B2BDB8"/>
+        <stop offset="100%" stop-color="#A9B6B8"/>
+      </linearGradient>
+    </defs>
+    <rect width="133.20" height="65.45" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="66.60" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">Customer</text>
+    <line x1="0" y1="37.00" x2="133.20" y2="37.00" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+email: string</text>
+  </g>
+  <g transform="translate(24.00,249.12)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF2E9"/>
+        <stop offset="58%" stop-color="#FFF1E7"/>
+        <stop offset="100%" stop-color="#EFE2D9"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B9B1"/>
+        <stop offset="100%" stop-color="#B9B2B1"/>
+      </linearGradient>
+    </defs>
+    <rect width="203.40" height="65.45" rx="0" ry="0" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="101.70" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">AccountRepresentative</text>
+    <line x1="0" y1="37.00" x2="203.40" y2="37.00" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+employeeNumber: string</text>
+  </g>
+  <g transform="translate(287.40,234.90)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5EBFE"/>
+        <stop offset="58%" stop-color="#F5EAFE"/>
+        <stop offset="100%" stop-color="#E6DBEE"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#BCB3C2"/>
+        <stop offset="100%" stop-color="#B2ADC2"/>
+      </linearGradient>
+    </defs>
+    <rect width="187.80" height="93.90" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="93.90" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">Order</text>
+    <line x1="0" y1="37.00" x2="187.80" y2="37.00" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+orderNumber: string</text>
+    <line x1="0" y1="65.45" x2="187.80" y2="65.45" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="82.70" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+placedAt(): DateTime</text>
+  </g>
+  <g transform="translate(24.00,383.02)">
+    <defs>
+      <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E8F7F7"/>
+        <stop offset="58%" stop-color="#E6F7F7"/>
+        <stop offset="100%" stop-color="#D8E8E8"/>
+      </linearGradient>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B0BDBD"/>
+        <stop offset="100%" stop-color="#A7B6BC"/>
+      </linearGradient>
+    </defs>
+    <rect width="133.20" height="80.40" rx="0" ry="0" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
+    <text x="66.60" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">PaymentMethod</text>
+    <line x1="0" y1="37.00" x2="133.20" y2="37.00" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+kind: string</text>
+    <text x="12.00" y="69.20" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+last4: string</text>
+  </g>
+  <g transform="translate(217.20,383.02)">
+    <defs>
+      <linearGradient id="node-5-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1F4"/>
+        <stop offset="58%" stop-color="#FFF0F3"/>
+        <stop offset="100%" stop-color="#EFE1E4"/>
+      </linearGradient>
+      <linearGradient id="node-5-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B8BA"/>
+        <stop offset="100%" stop-color="#B9B1BA"/>
+      </linearGradient>
+    </defs>
+    <rect width="172.20" height="80.40" rx="0" ry="0" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.50"/>
+    <text x="86.10" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">OrderDetail</text>
+    <line x1="0" y1="37.00" x2="172.20" y2="37.00" stroke="url(#node-5-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+quantity: int</text>
+    <text x="12.00" y="69.20" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+unitPrice: decimal</text>
+  </g>
+  <g transform="translate(24.00,517.65)">
+    <defs>
+      <linearGradient id="node-6-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EFF3FF"/>
+        <stop offset="58%" stop-color="#EEF2FF"/>
+        <stop offset="100%" stop-color="#DFE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-6-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B6B9C2"/>
+        <stop offset="100%" stop-color="#ADB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="125.40" height="80.40" rx="0" ry="0" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.50"/>
+    <text x="62.70" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">Product</text>
+    <line x1="0" y1="37.00" x2="125.40" y2="37.00" stroke="url(#node-6-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+sku: string</text>
+    <text x="12.00" y="69.20" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+name: string</text>
+  </g>
+  <g transform="translate(209.40,517.65)">
+    <defs>
+      <linearGradient id="node-7-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F7F4EB"/>
+        <stop offset="58%" stop-color="#F7F4EA"/>
+        <stop offset="100%" stop-color="#E8E5DB"/>
+      </linearGradient>
+      <linearGradient id="node-7-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#BDBBB3"/>
+        <stop offset="100%" stop-color="#B3B4B3"/>
+      </linearGradient>
+    </defs>
+    <rect width="148.80" height="80.40" rx="0" ry="0" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.50"/>
+    <text x="74.40" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">Discount</text>
+    <line x1="0" y1="37.00" x2="148.80" y2="37.00" stroke="url(#node-7-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+code: string</text>
+    <text x="12.00" y="69.20" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+amount: decimal</text>
+  </g>
+  <g transform="translate(449.40,368.80)">
+    <defs>
+      <linearGradient id="node-8-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-8-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B3B9C2"/>
+        <stop offset="100%" stop-color="#AAB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="156.60" height="108.85" rx="0" ry="0" fill="url(#node-8-fill-gradient)" stroke="url(#node-8-stroke-gradient)" stroke-width="1.50"/>
+    <text x="78.30" y="21.75" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" font-weight="bold" fill="#0F172A">TPSReport</text>
+    <line x1="0" y1="37.00" x2="156.60" y2="37.00" stroke="url(#node-8-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="54.25" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+coverSheet: bool</text>
+    <text x="12.00" y="69.20" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+revision: int</text>
+    <line x1="0" y1="80.40" x2="156.60" y2="80.40" stroke="url(#node-8-stroke-gradient)" stroke-width="1.50"/>
+    <text x="12.00" y="97.65" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">+submit(): void</text>
+  </g>
+</svg>

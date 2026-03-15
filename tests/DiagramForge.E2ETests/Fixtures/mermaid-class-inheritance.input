@@ -1,0 +1,16 @@
+---
+edgeRouting: orthogonal
+---
+classDiagram
+  class Animal {
+    +String name
+    +makeSound() void
+  }
+  class Dog {
+    +fetch() void
+  }
+  class Cat {
+    +purr() void
+  }
+  Animal <|-- Dog
+  Animal <|-- Cat
