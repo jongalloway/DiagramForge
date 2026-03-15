@@ -1362,8 +1362,11 @@ public class DefaultLayoutEngineTests
         var first = diagram.Nodes["node_0"];
         var second = diagram.Nodes["node_1"];
 
-        // Zero gap: the tip of stage 0 meets the notch of stage 1 at their shared boundary.
-        Assert.Equal(first.X + first.Width, second.X, precision: 6);
+        // Overlap layout: the right tip of stage 0 aligns with the inward notch of stage 1.
+        // second.X is inset by tipDepth so the tip (first.X + first.Width) coincides with
+        // the notch vertex (second.X + tipDepth).
+        double tipDepth = (double)second.Metadata["conceptual:chevronTipDepth"];
+        Assert.Equal(first.X + first.Width, second.X + tipDepth, precision: 6);
     }
 
     [Fact]

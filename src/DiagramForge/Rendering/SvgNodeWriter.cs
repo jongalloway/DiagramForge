@@ -287,10 +287,12 @@ internal static class SvgNodeWriter
         double midY = h / 2;
 
         // First chevron: flat left edge, pointed right – 5 points (pentagon).
-        // Subsequent chevrons: notched left edge matching previous arrow point, pointed right – 6 points (hexagon).
+        // Subsequent chevrons: inward V-notch on left matching previous arrow tip, pointed right – 6 points (hexagon).
+        // The notch vertex at (tipDepth, midY) aligns with the tip of the preceding stage because
+        // the layout overlaps bounding boxes by tipDepth.
         string points = index == 0
             ? $"0,0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} 0,{SvgRenderSupport.F(h)}"
-            : $"0,{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(tipDepth)},0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} {SvgRenderSupport.F(tipDepth)},{SvgRenderSupport.F(h)}";
+            : $"0,0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} 0,{SvgRenderSupport.F(h)} {SvgRenderSupport.F(tipDepth)},{SvgRenderSupport.F(midY)}";
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
