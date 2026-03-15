@@ -1,0 +1,9 @@
+---
+theme: presentation
+---
+diagram: chevrons
+steps:
+  - icon:builtin:cloud Discover
+  - icon:builtin:server Build
+  - icon:builtin:database Launch
+  - Learn

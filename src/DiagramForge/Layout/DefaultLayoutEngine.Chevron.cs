@@ -22,11 +22,13 @@ public sealed partial class DefaultLayoutEngine
         double widestLabel = orderedNodes.Max(node =>
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
-            return EstimateTextWidth(node.Label, fontSize) + 2 * theme.NodePadding;
+            return EnsureIconWidth(node, theme, EstimateTextWidth(node.Label, fontSize) + 2 * theme.NodePadding);
         });
 
+        double nodeHeight = orderedNodes.Max(node => EnsureIconHeight(node, nodeH));
+
         // Arrow tip depth is proportional to the node height so it scales with font size.
-        double tipDepth = nodeH * 0.35;
+        double tipDepth = nodeHeight * 0.35;
 
         // Each chevron's bounding-box width must accommodate both the label and the tip.
         double nodeW = Math.Max(widestLabel + tipDepth, minW);
@@ -42,7 +44,7 @@ public sealed partial class DefaultLayoutEngine
             node.X = pad + index * (nodeW - tipDepth);
             node.Y = pad + titleOffset;
             node.Width = nodeW;
-            node.Height = nodeH;
+            node.Height = nodeHeight;
 
             node.Metadata["conceptual:chevronSegment"] = true;
             node.Metadata["conceptual:chevronIndex"] = index;

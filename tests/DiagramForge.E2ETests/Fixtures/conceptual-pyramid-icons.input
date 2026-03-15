@@ -1,0 +1,9 @@
+---
+theme: presentation
+---
+diagram: pyramid
+levels:
+  - icon:builtin:cloud Vision
+  - icon:builtin:server Strategy
+  - icon:builtin:database Tactics
+  - Execution

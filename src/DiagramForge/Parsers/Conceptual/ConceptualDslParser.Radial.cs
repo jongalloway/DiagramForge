@@ -14,8 +14,9 @@ public sealed partial class ConceptualDslParser
         var centerTrimmed = lines[centerLine].Trim();
         var colonPos = centerTrimmed.IndexOf(':', StringComparison.Ordinal);
         var centerLabel = colonPos >= 0 ? centerTrimmed[(colonPos + 1)..].Trim() : string.Empty;
+        var centerSpec = ParseIconLabeledText(centerLabel);
 
-        if (string.IsNullOrWhiteSpace(centerLabel))
+        if (string.IsNullOrWhiteSpace(centerSpec.Label))
             throw new DiagramParseException("The 'center:' key must have a non-empty label in radial diagram.");
 
         int itemsLine = FindSectionLine(lines, "items");
@@ -30,14 +31,15 @@ public sealed partial class ConceptualDslParser
             throw new DiagramParseException(
                 $"Radial diagram requires between 3 and 8 items, but {items.Count} were provided.");
 
-        var centerNode = new Node("center", centerLabel);
+        var centerNode = new Node("center", centerSpec.Label) { IconRef = centerSpec.IconRef };
         centerNode.Metadata["radial:isCenter"] = true;
         builder.AddNode(centerNode);
 
         for (int i = 0; i < items.Count; i++)
         {
+            var itemSpec = ParseIconLabeledText(items[i]);
             var nodeId = $"item_{i}";
-            var node = new Node(nodeId, items[i]);
+            var node = new Node(nodeId, itemSpec.Label) { IconRef = itemSpec.IconRef };
             node.Metadata["radial:itemIndex"] = i;
             builder.AddNode(node);
 

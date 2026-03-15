@@ -24,14 +24,6 @@ public sealed partial class DefaultLayoutEngine
             else
             {
                 SizeStandardNode(node, theme, minW, nodeH);
-
-                // Add space for the icon above the label.
-                if (node.ResolvedIcon is not null)
-                {
-                    double iconArea = SvgNodeWriter.DefaultIconSize + SvgNodeWriter.IconLabelGap;
-                    node.Height += iconArea;
-                    node.Width = Math.Max(node.Width, SvgNodeWriter.DefaultIconSize + 2 * theme.NodePadding);
-                }
             }
         }
 

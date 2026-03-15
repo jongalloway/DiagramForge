@@ -1,0 +1,8 @@
+---
+theme: presentation
+---
+diagram: funnel
+stages:
+  - icon:builtin:cloud Awareness
+  - icon:builtin:server Evaluation
+  - icon:builtin:database Conversion

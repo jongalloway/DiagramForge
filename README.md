@@ -12,16 +12,16 @@ Representative snapshot fixtures from the E2E suite. Click any thumbnail to open
 <!-- markdownlint-disable MD033 -->
 <h3>Diagram Types</h3>
 
-DiagramForge currently supports more than a dozen diagram types across Mermaid and the conceptual DSL. This gallery is representative, not complete. See [Supported syntax](#supported-syntax) and [Conceptual DSL](#conceptual-dsl) below for the full set and syntax details.
+DiagramForge currently supports more than a dozen diagram types across Mermaid and the conceptual DSL. This gallery is representative, not complete, and includes a few icon-enabled examples. See [Supported syntax](#supported-syntax) and [Conceptual DSL](#conceptual-dsl) below for the full set and syntax details.
 
 <table cellpadding="12" width="100%">
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-edge-labels.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-edge-labels.expected.svg" alt="Flowchart" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-flowchart-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-flowchart-icons.expected.svg" alt="Flowchart with icons" height="96" />
       </a>
       <br />
-      <sub>Flowchart</sub>
+      <sub>Flowchart + Icons</sub>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-block.expected.svg">
@@ -40,11 +40,11 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
   </tr>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture.expected.svg" alt="Architecture" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-architecture-icons.expected.svg" alt="Architecture with icons" height="96" />
       </a>
       <br />
-      <sub>Architecture</sub>
+      <sub>Architecture + Icons</sub>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-mindmap.expected.svg">
@@ -77,11 +77,11 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <sub>XY Chart</sub>
     </td>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle.expected.svg" alt="Conceptual cycle" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-cycle-icons.expected.svg" alt="Conceptual cycle with icons" height="96" />
       </a>
       <br />
-      <sub>Conceptual Cycle</sub>
+      <sub>Conceptual Cycle + Icons</sub>
     </td>
   </tr>
   <tr>
@@ -93,11 +93,11 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <sub>Conceptual Matrix</sub>
     </td>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars.expected.svg" alt="Conceptual pillars" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars-icons.expected.svg" alt="Conceptual pillars with icons" height="96" />
       </a>
       <br />
-      <sub>Conceptual Pillars</sub>
+      <sub>Conceptual Pillars + Icons</sub>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pyramid.expected.svg">
@@ -109,18 +109,18 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
   </tr>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel.expected.svg" alt="Conceptual funnel" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-funnel-icons.expected.svg" alt="Conceptual funnel with icons" height="96" />
       </a>
       <br />
-      <sub>Conceptual Funnel</sub>
+      <sub>Conceptual Funnel + Icons</sub>
     </td>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial.expected.svg" alt="Conceptual radial" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-radial-icons.expected.svg" alt="Conceptual radial with icons" height="96" />
       </a>
       <br />
-      <sub>Conceptual Radial</sub>
+      <sub>Conceptual Radial + Icons</sub>
     </td>
   </tr>
 </table>
@@ -344,6 +344,132 @@ foreach (var id in renderer.RegisteredSyntaxes)
 ```
 
 Implement `IDiagramParser`. You get two methods: `CanParse(string)` for sniffing the input, and `Parse(string)` which produces the unified `Diagram` model. Layout and rendering are handled for you.
+
+### Icon support
+
+DiagramForge can render icons inside supported Mermaid flowchart nodes and supported Conceptual DSL nodes.
+
+The core package registers a built-in icon pack named `builtin` automatically. The built-in icons are:
+
+- `builtin:cloud`
+- `builtin:database`
+- `builtin:disk`
+- `builtin:internet`
+- `builtin:server`
+
+Icon references use the syntax `icon:pack:name` in diagram text.
+
+Supported icon-bearing diagram types today:
+
+- Mermaid flowchart
+- Conceptual cycle
+- Conceptual chevrons
+- Conceptual funnel
+- Conceptual pillars
+- Conceptual pyramid
+- Conceptual radial
+
+Not yet supported:
+
+- Conceptual matrix
+
+#### Registering an icon pack
+
+Use `RegisterIconPack()` to add your own pack, or install `DiagramForge.Icons.Heroicons` and call `UseHeroicons()`.
+
+```csharp
+using DiagramForge;
+using DiagramForge.Icons.Heroicons;
+
+var renderer = new DiagramRenderer()
+    .UseHeroicons();
+```
+
+If you want to register your own pack directly:
+
+```csharp
+using DiagramForge;
+using DiagramForge.Abstractions;
+using DiagramForge.Models;
+
+public sealed class CustomIcons : IIconProvider
+{
+    public DiagramIcon? GetIcon(string name)
+        => name == "rocket"
+            ? new DiagramIcon(
+                pack: "custom",
+                name: "rocket",
+                viewBox: "0 0 24 24",
+                svgContent: "<path d=\"M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9Z\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\"/>"
+            )
+            : null;
+
+    public IEnumerable<string> AvailableIcons => ["rocket"];
+}
+
+var renderer = new DiagramRenderer()
+    .RegisterIconPack("custom", new CustomIcons());
+```
+
+#### Mermaid flowchart syntax
+
+For flowcharts, place the icon reference directly in the node label.
+
+```mermaid
+flowchart LR
+  A[icon:builtin:cloud Gateway] --> B[icon:builtin:database Data Store]
+  B --> C[API]
+```
+
+#### Conceptual DSL syntax
+
+For conceptual diagrams, use either of these forms where the diagram type accepts labeled nodes:
+
+- Leading form: `icon:pack:name Label`
+- Trailing form: `Label [icon:pack:name]`
+
+Example cycle:
+
+```text
+diagram: cycle
+steps:
+  - icon:builtin:cloud Discover
+  - Build
+  - Launch
+```
+
+Example pillars:
+
+```text
+diagram: pillars
+pillars:
+  - title: icon:builtin:cloud People
+    segments:
+      - Skills [icon:builtin:server]
+      - Roles
+  - title: Process
+    segments:
+      - Intake
+      - Delivery [icon:builtin:database]
+```
+
+#### Heroicons pack
+
+The optional `DiagramForge.Icons.Heroicons` package registers the pack name `heroicons` via `UseHeroicons()`.
+
+After registration, diagram text can reference icons such as:
+
+- `icon:heroicons:shield-check`
+- `icon:heroicons:server-stack`
+
+#### Current behavior and limitations
+
+- Icons render above the label text using the shared node icon layout.
+- Flowchart nodes currently use the same above-label icon placement as other supported nodes.
+- Per-node icon color overrides are not supported.
+- Per-node icon size overrides are not supported in the public DSL.
+- Multiple icons per node are not supported.
+- Matrix icon support is tracked separately and not implemented yet.
 
 ## CLI usage
 

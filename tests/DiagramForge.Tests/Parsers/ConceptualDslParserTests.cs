@@ -105,6 +105,19 @@ public class ConceptualDslParserTests
         Assert.Equal(3, diagram.Nodes.Count);
     }
 
+    [Fact]
+    public void Parse_Pyramid_ItemsWithIconDirective_SetIconRefAndTrimLabel()
+    {
+        const string text = "diagram: pyramid\nlevels:\n  - icon:builtin:cloud Vision\n  - Strategy [icon:heroicons:shield-check]";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["node_0"].IconRef);
+        Assert.Equal("Vision", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["node_1"].IconRef);
+        Assert.Equal("Strategy", diagram.Nodes["node_1"].Label.Text);
+    }
+
     // ── Pillars ───────────────────────────────────────────────────────────────
 
     [Fact]
@@ -196,6 +209,30 @@ public class ConceptualDslParserTests
         Assert.Equal(0, segNode.Metadata["pillars:pillarIndex"]);
         Assert.Equal(0, segNode.Metadata["pillars:segmentIndex"]);
         Assert.Equal("segment", segNode.Metadata["pillars:kind"]);
+    }
+
+    [Fact]
+    public void Parse_Pillars_TitleAndSegmentsWithIconDirective_SetIconRefs()
+    {
+        const string text = """
+            diagram: pillars
+            pillars:
+              - title: icon:builtin:cloud People
+                segments:
+                  - Skills [icon:heroicons:shield-check]
+              - title: Process
+                segments:
+                  - icon:builtin:database Intake
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["pillar_0"].IconRef);
+        Assert.Equal("People", diagram.Nodes["pillar_0"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["pillar_0_segment_0"].IconRef);
+        Assert.Equal("Skills", diagram.Nodes["pillar_0_segment_0"].Label.Text);
+        Assert.Equal("builtin:database", diagram.Nodes["pillar_1_segment_0"].IconRef);
+        Assert.Equal("Intake", diagram.Nodes["pillar_1_segment_0"].Label.Text);
     }
 
     [Fact]
@@ -416,6 +453,29 @@ public class ConceptualDslParserTests
         Assert.Contains(diagram.Edges, e => e.SourceId == "node_0" && e.TargetId == "node_1");
         Assert.Contains(diagram.Edges, e => e.SourceId == "node_1" && e.TargetId == "node_2");
         Assert.Contains(diagram.Edges, e => e.SourceId == "node_2" && e.TargetId == "node_0");
+    }
+
+    [Fact]
+    public void Parse_Radial_CenterAndItemsWithIconDirective_SetIconRefs()
+    {
+        const string text = """
+            diagram: radial
+            center: icon:builtin:cloud Platform
+            items:
+              - icon:heroicons:shield-check Secure
+              - Fast [icon:builtin:database]
+              - Reliable
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["center"].IconRef);
+        Assert.Equal("Platform", diagram.Nodes["center"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["item_0"].IconRef);
+        Assert.Equal("Secure", diagram.Nodes["item_0"].Label.Text);
+        Assert.Equal("builtin:database", diagram.Nodes["item_1"].IconRef);
+        Assert.Equal("Fast", diagram.Nodes["item_1"].Label.Text);
+        Assert.Null(diagram.Nodes["item_2"].IconRef);
     }
 
     [Theory]

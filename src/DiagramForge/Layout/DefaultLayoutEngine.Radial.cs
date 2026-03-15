@@ -1,4 +1,5 @@
 using DiagramForge.Models;
+using DiagramForge.Rendering;
 
 namespace DiagramForge.Layout;
 
@@ -25,12 +26,25 @@ public sealed partial class DefaultLayoutEngine
         int n = itemNodes.Count;
 
         double fontSize = theme.FontSize;
-        double itemNodeW = Math.Max(minW,
-            itemNodes.Max(node => EstimateTextWidth(node.Label.Text, node.Label.FontSize ?? fontSize) + theme.NodePadding * 2));
-        double itemNodeH = nodeH;
+        double itemNodeW = itemNodes.Max(node =>
+            EnsureIconWidth(node, theme, Math.Max(minW, EstimateTextWidth(node.Label.Text, node.Label.FontSize ?? fontSize) + theme.NodePadding * 2)));
+        double itemNodeH = itemNodes.Max(node => EnsureIconHeight(node, nodeH));
 
         double centerLabelW = EstimateTextWidth(centerNode.Label.Text, centerNode.Label.FontSize ?? fontSize);
-        double centerDiameter = Math.Max(minW * 1.5, centerLabelW + theme.NodePadding * 3);
+        double centerDiameter = Math.Max(minW * 1.5, EnsureIconWidth(centerNode, theme, centerLabelW + theme.NodePadding * 3));
+        centerDiameter = EnsureIconHeight(centerNode, centerDiameter);
+        double centerIconSize = Math.Min(88, Math.Max(SvgNodeWriter.DefaultIconSize, centerDiameter * 0.34));
+        if (centerNode.ResolvedIcon is not null)
+        {
+            double centerScale = centerIconSize / SvgNodeWriter.DefaultIconSize;
+            centerNode.Label.FontSize = Math.Round((centerNode.Label.FontSize ?? fontSize) * centerScale, 2);
+            PrepareLabelLines(centerNode.Label, theme, diagram.LayoutHints);
+
+            centerLabelW = EstimateTextWidth(centerNode.Label.Text, centerNode.Label.FontSize ?? fontSize);
+            centerDiameter = Math.Max(minW * 1.5, EnsureIconWidth(centerNode, theme, centerLabelW + theme.NodePadding * 3.2));
+            centerDiameter = EnsureIconHeight(centerNode, centerDiameter);
+            centerDiameter = Math.Max(centerDiameter, centerIconSize + theme.NodePadding * 3.5);
+        }
 
         // Radius: large enough so item nodes don't overlap and leave a gap from the center.
         double itemDiagonal = Math.Sqrt(itemNodeW * itemNodeW + itemNodeH * itemNodeH);
@@ -52,6 +66,11 @@ public sealed partial class DefaultLayoutEngine
         centerNode.X = cx - centerDiameter / 2;
         centerNode.Y = cy - centerDiameter / 2;
         SetLabelCenter(centerNode, centerDiameter / 2, centerDiameter / 2);
+        if (centerNode.ResolvedIcon is not null)
+        {
+            centerNode.Metadata["icon:size"] = centerIconSize;
+            centerNode.Metadata["icon:y"] = Math.Max(theme.NodePadding, centerDiameter * 0.18);
+        }
 
         // Color center node with the first palette entry (or default fill)
         string[] palette = theme.NodePalette is { Count: > 0 }

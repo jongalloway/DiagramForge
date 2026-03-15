@@ -138,6 +138,8 @@ public sealed class SvgRenderer : ISvgRenderer
         // without this, the group's right edge is clipped at the canvas boundary.
         if (diagram.Groups.Count > 0)
             maxX = Math.Max(maxX, diagram.Groups.Max(g => g.X + g.Width));
+        if (TryGetCycleArcBounds(diagram, out var cycleMinX, out var cycleMaxX, out _, out _))
+            maxX = Math.Max(maxX, cycleMaxX);
         return maxX + theme.DiagramPadding;
     }
 
@@ -157,7 +159,180 @@ public sealed class SvgRenderer : ISvgRenderer
         double maxY = diagram.Nodes.Values.Max(n => n.Y + n.Height);
         if (diagram.Groups.Count > 0)
             maxY = Math.Max(maxY, diagram.Groups.Max(g => g.Y + g.Height));
+        if (TryGetCycleArcBounds(diagram, out _, out _, out _, out var cycleMaxY))
+            maxY = Math.Max(maxY, cycleMaxY);
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
         return maxY + theme.DiagramPadding + titleOffset;
+    }
+
+    private static bool TryGetCycleArcBounds(Diagram diagram, out double minX, out double maxX, out double minY, out double maxY)
+    {
+        minX = double.PositiveInfinity;
+        maxX = double.NegativeInfinity;
+        minY = double.PositiveInfinity;
+        maxY = double.NegativeInfinity;
+
+        bool found = false;
+
+        foreach (var edge in diagram.Edges)
+        {
+            if (!TryGetCycleArcBounds(edge, diagram, out var edgeMinX, out var edgeMaxX, out var edgeMinY, out var edgeMaxY))
+                continue;
+
+            found = true;
+            minX = Math.Min(minX, edgeMinX);
+            maxX = Math.Max(maxX, edgeMaxX);
+            minY = Math.Min(minY, edgeMinY);
+            maxY = Math.Max(maxY, edgeMaxY);
+        }
+
+        return found;
+    }
+
+    private static bool TryGetCycleArcBounds(Edge edge, Diagram diagram, out double minX, out double maxX, out double minY, out double maxY)
+    {
+        minX = maxX = minY = maxY = 0;
+
+        if (!edge.Metadata.TryGetValue("conceptual:cycleArc", out var isCycleArc) || isCycleArc is not true)
+            return false;
+
+        if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
+            || !diagram.Nodes.TryGetValue(edge.TargetId, out var target))
+            return false;
+
+        if (!edge.Metadata.TryGetValue("cycle:centerX", out var centerXObj)
+            || !edge.Metadata.TryGetValue("cycle:centerY", out var centerYObj)
+            || !edge.Metadata.TryGetValue("cycle:radius", out var radiusObj))
+            return false;
+
+        double centerX = Convert.ToDouble(centerXObj, System.Globalization.CultureInfo.InvariantCulture);
+        double centerY = Convert.ToDouble(centerYObj, System.Globalization.CultureInfo.InvariantCulture);
+        double radius = Convert.ToDouble(radiusObj, System.Globalization.CultureInfo.InvariantCulture);
+
+        double sourceCenterX = source.X + source.Width / 2;
+        double sourceCenterY = source.Y + source.Height / 2;
+        double targetCenterX = target.X + target.Width / 2;
+        double targetCenterY = target.Y + target.Height / 2;
+
+        double sourceAngle = Math.Atan2(sourceCenterY - centerY, sourceCenterX - centerX);
+        double targetAngle = Math.Atan2(targetCenterY - centerY, targetCenterX - centerX);
+        double sweepAngle = NormalizeAngle(targetAngle - sourceAngle);
+        if (sweepAngle <= 0)
+            return false;
+
+        double midAngle = sourceAngle + sweepAngle / 2;
+        double midX = centerX + radius * Math.Cos(midAngle);
+        double midY = centerY + radius * Math.Sin(midAngle);
+
+        double startTangentX = -Math.Sin(sourceAngle);
+        double startTangentY = Math.Cos(sourceAngle);
+        double endTangentX = Math.Sin(targetAngle);
+        double endTangentY = -Math.Cos(targetAngle);
+
+        var (startX, startY) = ProjectPointToNodeBoundary(source, startTangentX, startTangentY);
+        var (endX, endY) = ProjectPointToNodeBoundary(target, endTangentX, endTangentY);
+
+        if (!TryGetArcBounds(startX, startY, midX, midY, endX, endY, out minX, out maxX, out minY, out maxY))
+            return false;
+
+        const double markerAllowance = 10.0;
+        maxX += markerAllowance;
+        maxY += markerAllowance;
+        minX -= markerAllowance;
+        minY -= markerAllowance;
+
+        return true;
+    }
+
+    private static (double X, double Y) ProjectPointToNodeBoundary(Node node, double directionX, double directionY)
+    {
+        double centerX = node.X + node.Width / 2;
+        double centerY = node.Y + node.Height / 2;
+
+        if (Math.Abs(directionX) < double.Epsilon && Math.Abs(directionY) < double.Epsilon)
+            return (centerX, centerY);
+
+        double halfWidth = node.Width / 2;
+        double halfHeight = node.Height / 2;
+        double scale = 1 / Math.Max(Math.Abs(directionX) / halfWidth, Math.Abs(directionY) / halfHeight);
+        return (centerX + directionX * scale, centerY + directionY * scale);
+    }
+
+    private static bool TryGetArcBounds(double startX, double startY, double midX, double midY, double endX, double endY, out double minX, out double maxX, out double minY, out double maxY)
+    {
+        minX = maxX = minY = maxY = 0;
+
+        double determinant = 2 * (
+            startX * (midY - endY)
+            + midX * (endY - startY)
+            + endX * (startY - midY));
+
+        if (Math.Abs(determinant) < 0.001)
+            return false;
+
+        double startSquared = startX * startX + startY * startY;
+        double midSquared = midX * midX + midY * midY;
+        double endSquared = endX * endX + endY * endY;
+
+        double centerX = (
+            startSquared * (midY - endY)
+            + midSquared * (endY - startY)
+            + endSquared * (startY - midY)) / determinant;
+        double centerY = (
+            startSquared * (endX - midX)
+            + midSquared * (startX - endX)
+            + endSquared * (midX - startX)) / determinant;
+
+        double radius = Math.Sqrt(Math.Pow(startX - centerX, 2) + Math.Pow(startY - centerY, 2));
+        if (radius <= 0)
+            return false;
+
+        double startAngle = Math.Atan2(startY - centerY, startX - centerX);
+        double middleAngle = Math.Atan2(midY - centerY, midX - centerX);
+        double endAngle = Math.Atan2(endY - centerY, endX - centerX);
+
+        double forwardSweep = NormalizeAngle(endAngle - startAngle);
+        double middleSweep = NormalizeAngle(middleAngle - startAngle);
+        bool useForwardSweep = middleSweep <= forwardSweep;
+        double selectedSweep = useForwardSweep ? forwardSweep : NormalizeAngle(startAngle - endAngle);
+
+        var points = new List<(double X, double Y)>
+        {
+            (startX, startY),
+            (midX, midY),
+            (endX, endY),
+        };
+
+        foreach (double cardinal in new[] { 0d, Math.PI / 2, Math.PI, 3 * Math.PI / 2 })
+        {
+            if (IsAngleOnArc(cardinal, startAngle, selectedSweep, useForwardSweep))
+                points.Add((centerX + radius * Math.Cos(cardinal), centerY + radius * Math.Sin(cardinal)));
+        }
+
+        minX = points.Min(point => point.X);
+        maxX = points.Max(point => point.X);
+        minY = points.Min(point => point.Y);
+        maxY = points.Max(point => point.Y);
+        return true;
+    }
+
+    private static bool IsAngleOnArc(double angle, double startAngle, double sweep, bool useForwardSweep)
+    {
+        const double epsilon = 0.0001;
+        double delta = useForwardSweep
+            ? NormalizeAngle(angle - startAngle)
+            : NormalizeAngle(startAngle - angle);
+
+        return delta <= sweep + epsilon;
+    }
+
+    private static double NormalizeAngle(double angle)
+    {
+        const double Tau = Math.PI * 2;
+        while (angle <= 0)
+            angle += Tau;
+        while (angle > Tau)
+            angle -= Tau;
+        return angle;
     }
 }

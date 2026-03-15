@@ -23,14 +23,14 @@ public sealed partial class ConceptualDslParser
         {
             var (title, segments) = pillars[i];
 
-            var titleNode = new Node($"pillar_{i}", title);
+            var titleNode = new Node($"pillar_{i}", title.Label) { IconRef = title.IconRef };
             titleNode.Metadata["pillars:pillarIndex"] = i;
             titleNode.Metadata["pillars:kind"] = "title";
             builder.AddNode(titleNode);
 
             for (int j = 0; j < segments.Count; j++)
             {
-                var segNode = new Node($"pillar_{i}_segment_{j}", segments[j]);
+                var segNode = new Node($"pillar_{i}_segment_{j}", segments[j].Label) { IconRef = segments[j].IconRef };
                 segNode.Metadata["pillars:pillarIndex"] = i;
                 segNode.Metadata["pillars:segmentIndex"] = j;
                 segNode.Metadata["pillars:kind"] = "segment";

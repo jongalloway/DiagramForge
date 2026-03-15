@@ -1,0 +1,10 @@
+---
+theme: presentation
+---
+diagram: radial
+center: icon:builtin:cloud Platform
+items:
+  - icon:builtin:server Security
+  - icon:builtin:database Reliability
+  - Developer Experience
+  - Observability [icon:builtin:cloud]

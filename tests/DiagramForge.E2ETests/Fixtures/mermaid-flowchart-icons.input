@@ -1,0 +1,6 @@
+---
+theme: github-dark
+---
+flowchart LR
+  A[icon:builtin:cloud Gateway] --> B[icon:builtin:database Data Store]
+  B --> C[API]

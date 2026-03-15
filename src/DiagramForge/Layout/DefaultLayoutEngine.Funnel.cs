@@ -29,17 +29,18 @@ public sealed partial class DefaultLayoutEngine
         double widestLabel = orderedNodes.Max(node =>
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
-            return EstimateTextWidth(node.Label, fontSize) + 2 * theme.NodePadding;
+            return EnsureIconWidth(node, theme, EstimateTextWidth(node.Label, fontSize) + 2 * theme.NodePadding);
         });
 
         int stageCount = orderedNodes.Count;
+        double nodeHeight = orderedNodes.Max(node => EnsureIconHeight(node, nodeH));
         double fullWidth = Math.Max(widestLabel, minW * 1.9);
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
 
         for (int index = 0; index < orderedNodes.Count; index++)
         {
             var node = orderedNodes[index];
-            double yTop = index * (nodeH + FunnelLevelGap);
+            double yTop = index * (nodeHeight + FunnelLevelGap);
 
             // Compute widths from stage fraction, not from pixel Y position, so
             // that the gap between segments doesn't widen adjacent trapezoid edges.
@@ -50,7 +51,7 @@ public sealed partial class DefaultLayoutEngine
             node.X = pad;
             node.Y = pad + titleOffset + yTop;
             node.Width = fullWidth;
-            node.Height = nodeH;
+            node.Height = nodeHeight;
             node.Metadata["conceptual:funnelSegment"] = true;
             node.Metadata["conceptual:funnelTopWidth"] = topWidth;
             node.Metadata["conceptual:funnelBottomWidth"] = segmentBottomWidth;

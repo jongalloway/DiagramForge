@@ -151,8 +151,9 @@ internal static class SvgNodeWriter
         double iconAreaHeight = 0;
         if (hasIcon && !textOnly)
         {
-            AppendNodeIcon(sb, node, theme, resolvedTextColor);
-            iconAreaHeight = DefaultIconSize + IconLabelGap;
+            var iconLayout = GetNodeIconLayout(node, theme);
+            AppendNodeIcon(sb, node, resolvedTextColor, iconLayout);
+            iconAreaHeight = iconLayout.Size + IconLabelGap;
         }
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text)
@@ -208,15 +209,11 @@ internal static class SvgNodeWriter
     /// The already-resolved text color for the node (same value used for the label),
     /// ensuring icon and label use a consistent, contrast-aware color.
     /// </param>
-    private static void AppendNodeIcon(StringBuilder sb, Node node, Theme theme, string resolvedTextColor)
+    private static void AppendNodeIcon(StringBuilder sb, Node node, string resolvedTextColor, NodeIconLayout iconLayout)
     {
         var icon = node.ResolvedIcon;
         if (icon is null)
             return;
-
-        double iconSize = DefaultIconSize;
-        double iconX = (node.Width - iconSize) / 2;
-        double iconY = theme.NodePadding;
 
         // Parse viewBox to get the source coordinate system.
         string[] viewBoxParts = icon.ViewBox.Split(' ', StringSplitOptions.RemoveEmptyEntries);
@@ -224,12 +221,23 @@ internal static class SvgNodeWriter
 
         // Use the same resolved text color as the label so icon and label are always consistent,
         // including when the node fill is sourced from a theme palette.
-        sb.AppendLine($"""    <g transform="translate({SvgRenderSupport.F(iconX)},{SvgRenderSupport.F(iconY)})">""");
-        sb.AppendLine($"""      <svg width="{SvgRenderSupport.F(iconSize)}" height="{SvgRenderSupport.F(iconSize)}" viewBox="{SvgRenderSupport.Escape(viewBox)}" overflow="visible" color="{resolvedTextColor}">""");
+        sb.AppendLine($"""    <g transform="translate({SvgRenderSupport.F(iconLayout.X)},{SvgRenderSupport.F(iconLayout.Y)})">""");
+        sb.AppendLine($"""      <svg width="{SvgRenderSupport.F(iconLayout.Size)}" height="{SvgRenderSupport.F(iconLayout.Size)}" viewBox="{SvgRenderSupport.Escape(viewBox)}" overflow="visible" color="{resolvedTextColor}">""");
         sb.AppendLine($"        {icon.SvgContent}");
         sb.AppendLine("      </svg>");
         sb.AppendLine("    </g>");
     }
+
+    private static NodeIconLayout GetNodeIconLayout(Node node, Theme theme)
+    {
+        double size = SvgRenderSupport.GetMetadataDouble(node, "icon:size") ?? DefaultIconSize;
+        double defaultCenterX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (node.Width / 2);
+        double x = SvgRenderSupport.GetMetadataDouble(node, "icon:x") ?? (defaultCenterX - size / 2);
+        double y = SvgRenderSupport.GetMetadataDouble(node, "icon:y") ?? theme.NodePadding;
+        return new NodeIconLayout(x, y, size);
+    }
+
+    private readonly record struct NodeIconLayout(double X, double Y, double Size);
 
     private static string[] GetRenderedLabelLines(Label label) =>
         label.Lines is { Length: > 0 }
