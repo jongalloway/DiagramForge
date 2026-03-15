@@ -18,8 +18,8 @@ public class DiagramRendererIconTests
         var renderer = new DiagramRenderer();
         string svg = renderer.Render($"architecture-beta\n  service svc({icon})[Label]");
 
-        // The SVG should contain the icon content rendered inside the node.
-        Assert.Contains("viewBox", svg);
+        // The SVG should contain an icon <svg> element with the 48px icon size.
+        Assert.Contains("width=\"48.00\"", svg);
     }
 
     [Fact]
@@ -49,11 +49,12 @@ public class DiagramRendererIconTests
         var renderer = new DiagramRenderer();
         renderer.RegisterIconPack("custom", new StubIconProvider("myicon"));
 
-        // Architecture diagram referencing custom:myicon — the parser treats
-        // the icon keyword as a string, so the reference stays as-is.
-        // For now, built-in architecture icons use bare names.
-        // Custom pack icons would be used via future parser support for pack:name syntax.
-        Assert.Contains("custom", renderer.IconRegistry.RegisteredPacks);
+        // Architecture diagram referencing "custom:myicon" — parser captures the
+        // pack:name token verbatim, so the registry resolves it during rendering.
+        string svg = renderer.Render("architecture-beta\n  service svc(custom:myicon)[Label]");
+
+        // The stub icon's path content must appear in the rendered SVG.
+        Assert.Contains("d=\"M0 0\"", svg);
     }
 
     [Fact]

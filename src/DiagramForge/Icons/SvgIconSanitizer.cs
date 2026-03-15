@@ -30,12 +30,13 @@ internal static class SvgIconSanitizer
     /// Sanitizes an SVG fragment, removing unsafe elements and attributes.
     /// Returns <see langword="null"/> if the content is entirely unsafe or cannot be parsed.
     /// </summary>
-    public static string? Sanitize(string svgContent)
+    public static string? Sanitize(string? svgContent)
     {
         if (string.IsNullOrWhiteSpace(svgContent))
             return null;
 
         XElement root;
+        bool addedWrapper = false;
         try
         {
             // Wrap bare fragments in <svg> if needed for parsing.
@@ -50,7 +51,7 @@ internal static class SvgIconSanitizer
                 XmlResolver = null,
             };
 
-            // Try parsing as-is; if that fails, wrap in an svg element.
+            // Try parsing as-is; if that fails, wrap in a <g> for multi-element fragments.
             try
             {
                 using var reader = XmlReader.Create(new System.IO.StringReader(svgContent), settings);
@@ -58,6 +59,7 @@ internal static class SvgIconSanitizer
             }
             catch (XmlException)
             {
+                addedWrapper = true;
                 using var reader = XmlReader.Create(new System.IO.StringReader($"<g>{svgContent}</g>"), settings);
                 root = XElement.Load(reader, LoadOptions.PreserveWhitespace);
             }
@@ -81,11 +83,15 @@ internal static class SvgIconSanitizer
             ConformanceLevel = ConformanceLevel.Fragment,
         }))
         {
-            // Write the inner content only (skip the wrapper if we added one).
-            if (root.Name.LocalName.Equals("svg", StringComparison.OrdinalIgnoreCase)
-                || root.Name.LocalName.Equals("g", StringComparison.OrdinalIgnoreCase))
+            // Strip the outer <svg> wrapper to prevent nested <svg> in the rendered output
+            // (DiagramIcon.SvgContent contract: no outer <svg>).
+            // Also strip the internal parser-added <g> wrapper — it was not part of the
+            // original content. Original <g> elements from the input are preserved as-is
+            // so that attributes like fill="none" stroke="currentColor" are not lost.
+            if (root.Name.LocalName.Equals("svg", StringComparison.OrdinalIgnoreCase) || addedWrapper)
             {
-                root.WriteTo(writer);
+                foreach (var child in root.Nodes())
+                    child.WriteTo(writer);
             }
             else
             {
