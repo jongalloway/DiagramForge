@@ -1,0 +1,16 @@
+---
+theme: dark
+---
+architecture-beta
+    group infra(cloud)[Infrastructure]
+
+    service web(internet)[Web Gateway] in infra
+    service app(server)[App Server] in infra
+    service store(database)[Data Store] in infra
+    service files(disk)[File Storage] in infra
+    service cdn(cloud)[CDN] in infra
+
+    web:R -- L:app
+    app:R -- L:store
+    app:B -- T:files
+    web:B -- T:cdn

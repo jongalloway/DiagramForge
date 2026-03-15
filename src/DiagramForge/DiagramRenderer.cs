@@ -1,5 +1,6 @@
 using System.Text.Json;
 using DiagramForge.Abstractions;
+using DiagramForge.Icons;
 using DiagramForge.Layout;
 using DiagramForge.Models;
 using DiagramForge.Parsers.Conceptual;
@@ -30,6 +31,12 @@ public sealed class DiagramRenderer
     private readonly Theme _defaultTheme;
 
     /// <summary>
+    /// Icon registry used to resolve <see cref="Node.IconRef"/> references to
+    /// <see cref="DiagramIcon"/> instances before rendering.
+    /// </summary>
+    public IconRegistry IconRegistry { get; } = new();
+
+    /// <summary>
     /// Creates a <see cref="DiagramRenderer"/> with the default parser set, layout engine, and theme.
     /// </summary>
     public DiagramRenderer()
@@ -58,9 +65,23 @@ public sealed class DiagramRenderer
         _layoutEngine = layoutEngine;
         _svgRenderer = svgRenderer;
         _defaultTheme = defaultTheme;
+
+        // Register built-in Mermaid architecture icons (cloud, database, disk, internet, server).
+        IconRegistry.RegisterPack("builtin", new BuiltInArchitectureIconProvider());
     }
 
     // ── Public API ────────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Registers a named icon pack. Icons can then be referenced in diagrams as
+    /// <c>packName:icon-name</c>.
+    /// </summary>
+    /// <returns>This renderer, for fluent chaining.</returns>
+    public DiagramRenderer RegisterIconPack(string packName, IIconProvider provider)
+    {
+        IconRegistry.RegisterPack(packName, provider);
+        return this;
+    }
 
     /// <summary>
     /// Converts <paramref name="diagramText"/> to an SVG string using the default theme.
@@ -161,6 +182,7 @@ public sealed class DiagramRenderer
             diagram.LayoutHints.EdgeRouting = frontmatter.EdgeRouting.Value;
         }
 
+        ResolveIcons(diagram);
         _layoutEngine.Layout(diagram, effectiveTheme);
         return _svgRenderer.Render(diagram, effectiveTheme);
     }
@@ -182,6 +204,15 @@ public sealed class DiagramRenderer
         _parsers.Select(p => p.SyntaxId).ToList().AsReadOnly();
 
     // ── Private helpers ───────────────────────────────────────────────────────
+
+    private void ResolveIcons(Diagram diagram)
+    {
+        foreach (var node in diagram.Nodes.Values)
+        {
+            if (node.IconRef is not null)
+                node.ResolvedIcon = IconRegistry.Resolve(node.IconRef);
+        }
+    }
 
     private IDiagramParser? FindParser(string diagramText)
     {

@@ -35,21 +35,43 @@ public class MermaidArchitectureParserTests
 
         Assert.True(diagram.Nodes.ContainsKey("db"));
         Assert.Equal("Database", diagram.Nodes["db"].Label.Text);
-        Assert.Equal(Shape.Cylinder, diagram.Nodes["db"].Shape);
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["db"].Shape);
+    }
+
+    [Fact]
+    public void Parse_Service_SetsIconRef()
+    {
+        var diagram = _parser.Parse("architecture-beta\n  service db(database)[Database]");
+
+        Assert.Equal("database", diagram.Nodes["db"].IconRef);
     }
 
     [Theory]
-    [InlineData("cloud", Shape.Cloud)]
-    [InlineData("database", Shape.Cylinder)]
-    [InlineData("disk", Shape.Cylinder)]
-    [InlineData("server", Shape.Rectangle)]
-    [InlineData("internet", Shape.Cloud)]
-    [InlineData("unknown", Shape.Rectangle)]
-    public void Parse_Service_MapsIconToShape(string icon, Shape expectedShape)
+    [InlineData("cloud")]
+    [InlineData("database")]
+    [InlineData("server")]
+    [InlineData("internet")]
+    [InlineData("disk")]
+    [InlineData("unknown")]
+    public void Parse_Service_IconRefMatchesIconKeyword(string icon)
     {
         var diagram = _parser.Parse($"architecture-beta\n  service svc({icon})[Label]");
 
-        Assert.Equal(expectedShape, diagram.Nodes["svc"].Shape);
+        Assert.Equal(icon, diagram.Nodes["svc"].IconRef);
+    }
+
+    [Theory]
+    [InlineData("cloud")]
+    [InlineData("database")]
+    [InlineData("disk")]
+    [InlineData("server")]
+    [InlineData("internet")]
+    [InlineData("unknown")]
+    public void Parse_Service_AlwaysMapsToRoundedRectangleShape(string icon)
+    {
+        var diagram = _parser.Parse($"architecture-beta\n  service svc({icon})[Label]");
+
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["svc"].Shape);
     }
 
     [Fact]
@@ -313,10 +335,10 @@ public class MermaidArchitectureParserTests
         Assert.Equal("api", group.Id);
         Assert.Equal(4, group.ChildNodeIds.Count);
 
-        // Check node shapes
-        Assert.Equal(Shape.Cylinder, diagram.Nodes["db"].Shape);
-        Assert.Equal(Shape.Cylinder, diagram.Nodes["disk1"].Shape);
-        Assert.Equal(Shape.Cylinder, diagram.Nodes["disk2"].Shape);
-        Assert.Equal(Shape.Rectangle, diagram.Nodes["server"].Shape);
+        // Check node shapes – all architecture service nodes are rounded rectangles
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["db"].Shape);
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["disk1"].Shape);
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["disk2"].Shape);
+        Assert.Equal(Shape.RoundedRectangle, diagram.Nodes["server"].Shape);
     }
 }

@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\DiagramForge\DiagramForge.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\..\LICENSE" Pack="true" PackagePath="" Link="LICENSE" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" PrivateAssets="All" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="IconData\heroicons.json" LogicalName="heroicons.json" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+
+    <PackageId>DiagramForge.Icons.Heroicons</PackageId>
+    <Title>DiagramForge Heroicons Icon Pack</Title>
+    <Description>Heroicons SVG icon pack for DiagramForge. MIT-licensed outline icons from the Heroicons project.</Description>
+    <Authors>Jon Galloway</Authors>
+    <PackageTags>diagram svg icons heroicons diagramforge</PackageTags>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <RepositoryUrl>https://github.com/jongalloway/DiagramForge</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageProjectUrl>https://github.com/jongalloway/DiagramForge</PackageProjectUrl>
+  </PropertyGroup>
+
+</Project>

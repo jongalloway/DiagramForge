@@ -32,6 +32,18 @@ public class Node
     /// <summary>Override stroke color (null = inherit from theme).</summary>
     public string? StrokeColor { get; set; }
 
+    /// <summary>
+    /// Raw icon reference from the parser, e.g. <c>"cloud"</c> or <c>"heroicons:shield-check"</c>.
+    /// Follows Mermaid's <c>pack:icon-name</c> convention.
+    /// </summary>
+    public string? IconRef { get; set; }
+
+    /// <summary>
+    /// Resolved icon ready for rendering. Populated by the renderer from the
+    /// <see cref="IconRef"/> via the <see cref="IconRegistry"/>.
+    /// </summary>
+    public DiagramIcon? ResolvedIcon { get; set; }
+
     /// <summary>Arbitrary metadata from the parser (e.g., Mermaid node type).</summary>
     public Dictionary<string, object> Metadata { get; } = new();
 

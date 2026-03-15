@@ -1,4 +1,5 @@
 using DiagramForge.Models;
+using DiagramForge.Rendering;
 
 namespace DiagramForge.Layout;
 
@@ -23,6 +24,14 @@ public sealed partial class DefaultLayoutEngine
             else
             {
                 SizeStandardNode(node, theme, minW, nodeH);
+
+                // Add space for the icon above the label.
+                if (node.ResolvedIcon is not null)
+                {
+                    double iconArea = SvgNodeWriter.DefaultIconSize + 6; // icon + gap
+                    node.Height += iconArea;
+                    node.Width = Math.Max(node.Width, SvgNodeWriter.DefaultIconSize + 2 * theme.NodePadding);
+                }
             }
         }
 

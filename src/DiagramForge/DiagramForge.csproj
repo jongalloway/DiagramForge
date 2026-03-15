@@ -11,6 +11,10 @@
     <PackageReference Include="MinVer" PrivateAssets="All" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="DiagramForge.Tests" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
