@@ -37,8 +37,9 @@ public sealed partial class DefaultLayoutEngine
         {
             var node = orderedNodes[index];
 
-            // Zero gap: bounding boxes abut so the tip of stage N meets the notch of stage N+1.
-            node.X = pad + index * nodeW;
+            // Overlap layout: each stage overlaps the previous by tipDepth so the right tip of
+            // stage N aligns exactly with the inward notch of stage N+1.
+            node.X = pad + index * (nodeW - tipDepth);
             node.Y = pad + titleOffset;
             node.Width = nodeW;
             node.Height = nodeH;
