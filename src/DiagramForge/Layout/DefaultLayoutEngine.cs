@@ -645,7 +645,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         var sortedNodeIds = nodeIds.OrderBy(id => id, StringComparer.Ordinal).ToList();
         var layeringEdges = edges
             .Select(GetLayeringEndpoints)
-            .Where(edge => nodeIds.Contains(edge.SourceId) || nodeIds.Contains(edge.TargetId))
+            .Where(edge => nodeIds.Contains(edge.SourceId) && nodeIds.Contains(edge.TargetId))
             .ToList();
 
         // Compute in-degree for each node
