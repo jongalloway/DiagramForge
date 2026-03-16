@@ -483,7 +483,21 @@ After registration, diagram text can reference icons such as:
 - Per-node icon color overrides are not supported.
 - Per-node icon size overrides are not supported in the public DSL.
 - Multiple icons per node are not supported.
-- Matrix icon support is tracked separately and not implemented yet.
+
+### Example Copilot skills
+
+If you want end-user workflow assets for AI-assisted diagram authoring and publishing, see:
+
+- [doc/copilot-skills.md](doc/copilot-skills.md)
+- [examples/copilot-skills](examples/copilot-skills/README.md)
+
+These example skills show how to:
+
+- generate Mermaid or Conceptual DSL source from prose or bullets,
+- render diagram fences in markdown to SVG in bulk,
+- optionally rewrite markdown to published SVG image references while preserving source.
+
+The companion script for the render/publish workflow is [scripts/Render-MarkdownDiagrams.ps1](scripts/Render-MarkdownDiagrams.ps1).
 
 ## CLI usage
 
