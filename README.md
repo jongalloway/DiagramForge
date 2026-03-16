@@ -86,11 +86,11 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
   </tr>
   <tr>
     <td align="center" valign="top" width="33%">
-      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix.expected.svg">
-        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix.expected.svg" alt="Conceptual matrix" height="96" />
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix-icons.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-matrix-icons.expected.svg" alt="Conceptual matrix with icons" height="96" />
       </a>
       <br />
-      <sub>Conceptual Matrix</sub>
+      <sub>Conceptual Matrix + Icons</sub>
     </td>
     <td align="center" valign="top" width="33%">
       <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-pillars-icons.expected.svg">
@@ -365,13 +365,27 @@ Supported icon-bearing diagram types today:
 - Conceptual cycle
 - Conceptual chevrons
 - Conceptual funnel
+- Conceptual matrix
 - Conceptual pillars
 - Conceptual pyramid
 - Conceptual radial
 
-Not yet supported:
+For conceptual matrix diagrams, icons are attached per cell through an optional `cells:` list in row-major order. Non-empty cell entries must contain an icon directive; use a blank `-` to leave a cell without an icon.
 
-- Conceptual matrix
+```yaml
+diagram: matrix
+rows:
+  - Important
+  - Not Important
+columns:
+  - Urgent
+  - Not Urgent
+cells:
+  - icon:builtin:cloud
+  -
+  - Lower-left [icon:heroicons:shield-check]
+  - [icon:builtin:database]
+```
 
 #### Registering an icon pack
 

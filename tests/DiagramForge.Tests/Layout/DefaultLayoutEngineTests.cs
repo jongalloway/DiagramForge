@@ -1,5 +1,6 @@
 using DiagramForge.Layout;
 using DiagramForge.Models;
+using DiagramForge.Rendering;
 
 namespace DiagramForge.Tests.Layout;
 
@@ -307,6 +308,30 @@ public class DefaultLayoutEngineTests
         Assert.True(bottomLeft.X < bottomRight.X);
         Assert.Equal(topLeft.Width / 2, Convert.ToDouble(topLeft.Metadata["label:centerX"], System.Globalization.CultureInfo.InvariantCulture));
         Assert.Equal(topLeft.Height / 2, Convert.ToDouble(topLeft.Metadata["label:centerY"], System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Layout_MatrixDiagram_WithIcons_MakesCellsLargeEnoughForIconArea()
+    {
+        var diagram = new Diagram { DiagramType = "matrix" };
+
+        var withIcon = MatrixCell("cell_0_0", "Urgent\nImportant", 0, 0);
+        withIcon.ResolvedIcon = new DiagramIcon("builtin", "cloud", "0 0 24 24", "<path d=\"M0 0h24v24H0z\" />");
+
+        diagram.AddNode(withIcon)
+               .AddNode(MatrixCell("cell_0_1", "Not Urgent\nImportant", 0, 1))
+               .AddNode(MatrixCell("cell_1_0", "Urgent\nNot Important", 1, 0))
+               .AddNode(MatrixCell("cell_1_1", "Not Urgent\nNot Important", 1, 1));
+
+        _engine.Layout(diagram, _theme);
+
+        double minIconWidth = SvgNodeWriter.DefaultIconSize + (2 * _theme.NodePadding);
+        double minIconHeight = SvgNodeWriter.DefaultIconSize + SvgNodeWriter.IconLabelGap;
+
+        Assert.True(withIcon.Width >= minIconWidth,
+            $"Expected icon-bearing matrix cell width {withIcon.Width} to be >= {minIconWidth}.");
+        Assert.True(withIcon.Height >= diagram.LayoutHints.MinNodeHeight + minIconHeight,
+            $"Expected icon-bearing matrix cell height {withIcon.Height} to include icon area of at least {minIconHeight}.");
     }
 
     [Fact]

@@ -22,12 +22,16 @@ public sealed partial class DefaultLayoutEngine
 
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
         double baseFontSize = cells.Max(node => node.Label.FontSize ?? theme.FontSize);
-        int maxLineCount = cells.Max(node => GetTextLineCount(node.Label));
-        double maxTextWidth = cells.Max(node => EstimateTextWidth(node.Label, node.Label.FontSize ?? theme.FontSize));
-
-        double cellWidth = Math.Max(minW + 24, maxTextWidth + theme.NodePadding * 2.5);
-        double textBlockHeight = Math.Max(1, maxLineCount) * baseFontSize * 1.15;
-        double cellHeight = Math.Max(nodeH + baseFontSize * 0.7, textBlockHeight + theme.NodePadding * 2.6);
+        double cellWidth = cells.Max(node =>
+            EnsureIconWidth(node, theme, Math.Max(minW + 24, EstimateTextWidth(node.Label, node.Label.FontSize ?? theme.FontSize) + theme.NodePadding * 2.5)));
+        double cellHeight = cells.Max(node =>
+        {
+            double fontSize = node.Label.FontSize ?? theme.FontSize;
+            int lineCount = Math.Max(1, GetTextLineCount(node.Label));
+            double textBlockHeight = lineCount * fontSize * 1.15;
+            double baseHeight = Math.Max(nodeH + baseFontSize * 0.7, textBlockHeight + theme.NodePadding * 2.6);
+            return EnsureIconHeight(node, baseHeight);
+        });
         double gap = Math.Max(theme.NodePadding, 18);
 
         string[] palette = theme.NodePalette is { Count: > 0 }
