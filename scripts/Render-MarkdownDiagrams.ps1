@@ -8,8 +8,9 @@
     and writes the outputs to a mirror directory under OutputRoot.
 
     Optionally rewrites markdown to replace fenced diagrams with image references.
-    By default, rewrite mode preserves the original diagram source in an HTML
-    comment so the markdown file retains an editable source-of-truth.
+    By default, rewrite mode preserves the original diagram source inside a
+    collapsible `<details>` block so the markdown file retains an editable
+    source-of-truth without risking broken HTML comment syntax.
 
 .PARAMETER RootPath
     Root directory to scan for markdown files. Defaults to the repository root.
@@ -29,14 +30,14 @@
 
 .PARAMETER SourceHandling
     Controls rewrite behavior when -RewriteMarkdown is used:
-    - comment: preserve the original fence in an HTML comment and add an image reference
+    - details: preserve the original fence in a collapsible <details> block and add an image reference
     - remove: replace the original fence with an image reference only
 
 .EXAMPLE
     pwsh scripts/Render-MarkdownDiagrams.ps1 -RootPath docs -OutputRoot docs/generated/diagrams
 
 .EXAMPLE
-    pwsh scripts/Render-MarkdownDiagrams.ps1 -RootPath docs -OutputRoot docs/generated/diagrams -RewriteMarkdown -SourceHandling comment
+    pwsh scripts/Render-MarkdownDiagrams.ps1 -RootPath docs -OutputRoot docs/generated/diagrams -RewriteMarkdown -SourceHandling details
 #>
 [CmdletBinding()]
 param(
@@ -45,8 +46,8 @@ param(
     [ValidateSet('project', 'dnx')]
     [string]$Mode = 'project',
     [switch]$RewriteMarkdown,
-    [ValidateSet('comment', 'remove')]
-    [string]$SourceHandling = 'comment'
+    [ValidateSet('details', 'remove')]
+    [string]$SourceHandling = 'details'
 )
 
 Set-StrictMode -Version Latest
@@ -141,7 +142,11 @@ function Invoke-DiagramRender {
         [Parameter(Mandatory = $true)]
         [string]$InputPath,
         [Parameter(Mandatory = $true)]
-        [string]$OutputPath
+        [string]$OutputPath,
+        [Parameter(Mandatory = $true)]
+        [string]$SourceMarkdownPath,
+        [Parameter(Mandatory = $true)]
+        [int]$SourceFenceIndex
     )
 
     Ensure-Directory -Path (Split-Path -Path $OutputPath -Parent)
@@ -154,7 +159,7 @@ function Invoke-DiagramRender {
     }
 
     if ($LASTEXITCODE -ne 0) {
-        throw "Diagram render failed for '$InputPath' with exit code $LASTEXITCODE."
+        throw "Diagram render failed for fence $SourceFenceIndex in '$SourceMarkdownPath' with exit code $LASTEXITCODE."
     }
 }
 
@@ -193,12 +198,18 @@ function Get-RewriteContent {
         return $imageLine
     }
 
+    $fenceStart = '```' + $Fence.Language
+    $fenceEnd = '```'
     $originalFence = @(
-        '<!-- diagramforge:source',
-        "```$($Fence.Language)",
+        '<details>',
+        '<summary>diagram source</summary>',
+        '',
+        $fenceStart,
         $Fence.Body,
-        '```',
-        '-->',
+        $fenceEnd,
+        '',
+        '</details>',
+        '',
         $imageLine
     ) -join [Environment]::NewLine
 
@@ -222,12 +233,13 @@ function Process-MarkdownFile {
     $replacements = @()
     foreach ($fence in $fences) {
         $tempExtension = if ($fence.Language -eq 'mermaid') { '.mmd' } else { '.txt' }
-        $tempPath = [System.IO.Path]::ChangeExtension([System.IO.Path]::GetTempFileName(), $tempExtension)
+        $tempBaseName = [System.IO.Path]::GetFileNameWithoutExtension([IO.Path]::GetRandomFileName())
+        $tempPath = Join-Path ([IO.Path]::GetTempPath()) ($tempBaseName + $tempExtension)
         Set-Content -LiteralPath $tempPath -Value $fence.Body -Encoding UTF8 -NoNewline
 
         try {
             $svgPath = Get-OutputPathForFence -MarkdownPath $File.FullName -FenceIndex $fence.Index
-            Invoke-DiagramRender -InputPath $tempPath -OutputPath $svgPath
+            Invoke-DiagramRender -InputPath $tempPath -OutputPath $svgPath -SourceMarkdownPath $File.FullName -SourceFenceIndex $fence.Index
             $script:renderedFenceCount++
 
             if ($RewriteMarkdown) {

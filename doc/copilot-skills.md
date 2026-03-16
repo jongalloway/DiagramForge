@@ -33,7 +33,7 @@ The companion script is [scripts/Render-MarkdownDiagrams.ps1](../scripts/Render-
 
 Advanced optional workflow that rewrites markdown to use rendered SVGs instead of inline diagram fences.
 
-This example is intentionally conservative: it recommends preserving the original source either in HTML comments or elsewhere rather than deleting it outright.
+This example is intentionally conservative: it recommends preserving the original source in a collapsible `<details>` block rather than deleting it outright.
 
 ## Recommended Workflow
 
@@ -89,12 +89,12 @@ pwsh scripts/Render-MarkdownDiagrams.ps1 \
   -RootPath docs \
   -OutputRoot docs/generated/diagrams \
   -RewriteMarkdown \
-  -SourceHandling comment
+  -SourceHandling details
 ```
 
 Recommended source handling:
 
-- `comment`: replaces the fence with an image reference and preserves the original diagram source in an HTML comment.
+- `details`: replaces the fence with an image reference and preserves the original diagram source in a collapsible `<details>` block. Safe for any diagram syntax, including Mermaid (which uses `--` and `-->`).
 - `remove`: replaces the fence with an image reference and removes the inline source. Use only if your source is preserved somewhere else.
 
 ## Why Preserve Source?

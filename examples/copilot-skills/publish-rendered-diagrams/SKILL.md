@@ -21,7 +21,7 @@ pwsh scripts/Render-MarkdownDiagrams.ps1 \
   -RootPath <docs-root> \
   -OutputRoot <svg-output-root> \
   -RewriteMarkdown \
-  -SourceHandling comment
+  -SourceHandling details
 ```
 
 More aggressive mode:
@@ -38,12 +38,12 @@ pwsh scripts/Render-MarkdownDiagrams.ps1 \
 
 1. Render diagrams to SVG.
 2. Rewrite markdown to use image references.
-3. Preserve original source in HTML comments unless the user explicitly wants removal.
+3. Preserve original source in a collapsible `<details>` block unless the user explicitly wants removal.
 4. Report what changed.
 
 ## Safety Rules
 
-- Prefer `comment` mode.
+- Prefer `details` mode.
 - Use `remove` only if the user explicitly wants destructive rewriting or already stores source elsewhere.
 - Do not silently delete diagram source.
 - Tell the user where rendered assets were written.
