@@ -206,7 +206,7 @@ internal static class SvgStructureWriter
 
     private static bool PreferHorizontalForEdge(Edge edge, LayoutHints hints, double dx, double dy)
     {
-        if (IsHierarchyEdge(edge))
+        if (IsHierarchyEdge(edge) || IsTreeEdge(edge))
         {
             return hints.Direction is LayoutDirection.LeftToRight or LayoutDirection.RightToLeft;
         }
@@ -219,6 +219,9 @@ internal static class SvgStructureWriter
         && relationshipType is string relType
         && (string.Equals(relType, "inheritance", StringComparison.Ordinal)
             || string.Equals(relType, "realization", StringComparison.Ordinal));
+
+    private static bool IsTreeEdge(Edge edge) =>
+        edge.Metadata.ContainsKey("tree:edge");
 
     /// <summary>
     /// Builds an orthogonal (rectilinear) SVG path with rounded corners between two anchor points.

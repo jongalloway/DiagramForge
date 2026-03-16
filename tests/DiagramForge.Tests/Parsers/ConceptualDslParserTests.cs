@@ -1085,4 +1085,50 @@ public class ConceptualDslParserTests
         Assert.Equal("Mammals", diagram.Nodes["node_1"].Label.Text);
         Assert.Equal("Dogs", diagram.Nodes["node_2"].Label.Text);
     }
+
+    [Fact]
+    public void Parse_Tree_EdgesUseOrthogonalRouting()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                Child1
+                Child2
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.All(diagram.Edges, e => Assert.Equal(EdgeRouting.Orthogonal, e.Routing));
+    }
+
+    [Fact]
+    public void Parse_Tree_EdgesHaveNoArrowHead()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                Child
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.All(diagram.Edges, e => Assert.Equal(ArrowHeadStyle.None, e.ArrowHead));
+    }
+
+    [Fact]
+    public void Parse_Tree_EdgesHaveTreeEdgeMetadata()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                Child
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.All(diagram.Edges, e => Assert.True(e.Metadata.ContainsKey("tree:edge")));
+    }
 }

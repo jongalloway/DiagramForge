@@ -111,7 +111,15 @@ public sealed partial class ConceptualDslParser
                 stack.Pop();
 
             if (stack.Count > 0)
-                builder.AddEdge(new Edge(stack.Peek().nodeId, nodeId));
+            {
+                var edge = new Edge(stack.Peek().nodeId, nodeId)
+                {
+                    Routing = EdgeRouting.Orthogonal,
+                    ArrowHead = ArrowHeadStyle.None,
+                };
+                edge.Metadata["tree:edge"] = true;
+                builder.AddEdge(edge);
+            }
 
             stack.Push((relIndent, nodeId));
         }
