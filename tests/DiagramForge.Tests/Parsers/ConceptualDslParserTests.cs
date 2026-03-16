@@ -25,6 +25,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: cycle\nsteps:\n  - S1\n  - S2\n  - S3")]
     [InlineData("diagram: funnel\nstages:\n  - Awareness\n  - Conversion")]
     [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
+    [InlineData("diagram: tree\ntree:\n  Root\n    Child")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -883,5 +884,205 @@ public class ConceptualDslParserTests
         Assert.Equal(3, diagram.Nodes.Count);
         Assert.Equal("Discover", diagram.Nodes["node_0"].Label.Text);
         Assert.Equal("Launch", diagram.Nodes["node_2"].Label.Text);
+    }
+
+    // ── Tree ──────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForTree()
+    {
+        const string text = "diagram: tree\ntree:\n  Animals\n    Mammals";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Tree_PlainTree_ProducesCorrectNodeCount()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Animals
+                Mammals
+                  Dogs
+                  Cats
+                Birds
+                  Eagles
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(6, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Tree_PlainTree_ProducesCorrectEdges()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Animals
+                Mammals
+                  Dogs
+                  Cats
+                Birds
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Edges.Count);
+        // Animals -> Mammals, Animals -> Birds
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_0" && e.TargetId == "node_1");
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_0" && e.TargetId == "node_4");
+        // Mammals -> Dogs, Mammals -> Cats
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_1" && e.TargetId == "node_2");
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_1" && e.TargetId == "node_3");
+    }
+
+    [Fact]
+    public void Parse_Tree_SetsDiagramTypeToTree()
+    {
+        const string text = "diagram: tree\ntree:\n  Root\n    Child";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("tree", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_Tree_SetsTopToBottomDirection()
+    {
+        const string text = "diagram: tree\ntree:\n  Root\n    Child";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(LayoutDirection.TopToBottom, diagram.LayoutHints.Direction);
+    }
+
+    [Fact]
+    public void Parse_Tree_SetsDepthMetadata()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                Child
+                  Grandchild
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(0, diagram.Nodes["node_0"].Metadata["tree:depth"]);
+        Assert.Equal(1, diagram.Nodes["node_1"].Metadata["tree:depth"]);
+        Assert.Equal(2, diagram.Nodes["node_2"].Metadata["tree:depth"]);
+    }
+
+    [Fact]
+    public void Parse_Tree_MultiRoot_ProducesMultipleRoots()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              TreeA
+                ChildA
+              TreeB
+                ChildB
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal(2, diagram.Edges.Count);
+        // TreeA -> ChildA, TreeB -> ChildB (no edge between TreeA and TreeB)
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_0" && e.TargetId == "node_1");
+        Assert.Contains(diagram.Edges, e => e.SourceId == "node_2" && e.TargetId == "node_3");
+    }
+
+    [Fact]
+    public void Parse_Tree_ColorGroups_ApplyFillColor()
+    {
+        const string text = """
+            diagram: tree
+            style: orgchart
+            colors:
+              executive: "#f8d7da"
+              engineering: "#d4edda"
+            tree:
+              CEO [executive]
+                CTO [engineering]
+                  Dev [engineering]
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("#f8d7da", diagram.Nodes["node_0"].FillColor);
+        Assert.Equal("#d4edda", diagram.Nodes["node_1"].FillColor);
+        Assert.Equal("#d4edda", diagram.Nodes["node_2"].FillColor);
+    }
+
+    [Fact]
+    public void Parse_Tree_OrgChartStyle_SetsOrgChartMetadata()
+    {
+        const string text = """
+            diagram: tree
+            style: orgchart
+            tree:
+              CEO
+                CTO
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.True(diagram.Nodes["node_0"].Metadata.ContainsKey("tree:orgchart"));
+        Assert.True(diagram.Nodes["node_1"].Metadata.ContainsKey("tree:orgchart"));
+    }
+
+    [Fact]
+    public void Parse_Tree_NoStyle_DoesNotSetOrgChartMetadata()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                Child
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.False(diagram.Nodes["node_0"].Metadata.ContainsKey("tree:orgchart"));
+    }
+
+    [Fact]
+    public void Parse_Tree_MissingTreeSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: tree\nstyle: orgchart";
+
+        Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+    }
+
+    [Fact]
+    public void Parse_Tree_EmptyTreeSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: tree\ntree:";
+
+        Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+    }
+
+    [Fact]
+    public void Parse_Tree_NodeLabelsAreCorrect()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Animals
+                Mammals
+                  Dogs
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Animals", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Mammals", diagram.Nodes["node_1"].Label.Text);
+        Assert.Equal("Dogs", diagram.Nodes["node_2"].Label.Text);
     }
 }

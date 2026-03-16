@@ -1,0 +1,13 @@
+diagram: tree
+tree:
+  Animals
+    Mammals
+      Dogs
+      Cats
+      Whales
+    Birds
+      Eagles
+      Penguins
+    Reptiles
+      Snakes
+      Lizards

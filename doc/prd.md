@@ -135,7 +135,6 @@ Examples that should use Mermaid rather than the Conceptual DSL:
 
 - Venn / overlapping sets
 - Generic relationship diagrams
-- Hierarchy / org-chart-style trees
 - Timelines and simple roadmaps
 
 Examples that remain good candidates for the Conceptual DSL:
@@ -143,6 +142,7 @@ Examples that remain good candidates for the Conceptual DSL:
 - Matrix
 - Pyramid
 - Cycle ✓ (implemented)
+- Tree / hierarchy / org chart (indent-based syntax with optional `style: orgchart` preset; Mermaid flowchart/mindmap produces materially worse results for formal tree structures)
 - Funnel
 - Chevron process
 - Radial / hub-and-spoke

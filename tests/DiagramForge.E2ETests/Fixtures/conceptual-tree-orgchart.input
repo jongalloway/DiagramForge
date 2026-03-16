@@ -1,0 +1,21 @@
+diagram: tree
+style: orgchart
+
+colors:
+  executive: "#f8d7da"
+  finance: "#ffeeba"
+  engineering: "#d4edda"
+  content: "#cce5ff"
+
+tree:
+  CEO [executive]
+    COO [executive]
+      CFO [finance]
+        HR [finance]
+        Admin [finance]
+      CTO [engineering]
+        Lead Front-End [engineering]
+        Lead Back-End [engineering]
+      CCO [content]
+        Content Specialist [content]
+        Content Specialist [content]

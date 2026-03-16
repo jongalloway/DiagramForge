@@ -1406,4 +1406,92 @@ public class DefaultLayoutEngineTests
 
         Assert.All(diagram.Nodes.Values, node => Assert.Equal(3, node.Metadata["conceptual:chevronCount"]));
     }
+
+    // ── Tree ──────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Layout_Tree_ChildrenCenteredUnderParent()
+    {
+        var diagram = new Diagram { DiagramType = "tree" };
+        var root = new Node("node_0", "Root");
+        root.Metadata["tree:depth"] = 0;
+        var child1 = new Node("node_1", "Child1");
+        child1.Metadata["tree:depth"] = 1;
+        var child2 = new Node("node_2", "Child2");
+        child2.Metadata["tree:depth"] = 1;
+        diagram.AddNode(root)
+               .AddNode(child1)
+               .AddNode(child2)
+               .AddEdge(new Edge("node_0", "node_1"))
+               .AddEdge(new Edge("node_0", "node_2"));
+
+        _engine.Layout(diagram, _theme);
+
+        // Root should be centered over its children
+        double rootCenter = root.X + root.Width / 2;
+        double childrenCenter = (child1.X + child1.Width / 2 + child2.X + child2.Width / 2) / 2;
+        Assert.True(Math.Abs(rootCenter - childrenCenter) < 1.0,
+            $"Root center ({rootCenter}) should be close to children center ({childrenCenter}).");
+    }
+
+    [Fact]
+    public void Layout_Tree_ChildrenBelowParent()
+    {
+        var diagram = new Diagram { DiagramType = "tree" };
+        var root = new Node("node_0", "Root");
+        root.Metadata["tree:depth"] = 0;
+        var child = new Node("node_1", "Child");
+        child.Metadata["tree:depth"] = 1;
+        diagram.AddNode(root)
+               .AddNode(child)
+               .AddEdge(new Edge("node_0", "node_1"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(child.Y > root.Y,
+            $"Child Y ({child.Y}) should be below root Y ({root.Y}).");
+    }
+
+    [Fact]
+    public void Layout_Tree_MultiRoot_SideBySide()
+    {
+        var diagram = new Diagram { DiagramType = "tree" };
+        var root1 = new Node("node_0", "Root1");
+        root1.Metadata["tree:depth"] = 0;
+        var root2 = new Node("node_1", "Root2");
+        root2.Metadata["tree:depth"] = 0;
+        diagram.AddNode(root1)
+               .AddNode(root2);
+
+        _engine.Layout(diagram, _theme);
+
+        // Both roots at the same Y level
+        Assert.Equal(root1.Y, root2.Y, precision: 1);
+        // Root2 is to the right of Root1
+        Assert.True(root2.X > root1.X,
+            $"Root2 X ({root2.X}) should be to the right of Root1 X ({root1.X}).");
+    }
+
+    [Fact]
+    public void Layout_Tree_AllNodesHavePositiveDimensions()
+    {
+        var diagram = new Diagram { DiagramType = "tree" };
+        var root = new Node("node_0", "Root");
+        root.Metadata["tree:depth"] = 0;
+        var child = new Node("node_1", "Child");
+        child.Metadata["tree:depth"] = 1;
+        diagram.AddNode(root)
+               .AddNode(child)
+               .AddEdge(new Edge("node_0", "node_1"));
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.True(node.Width > 0, $"Node {node.Id} Width should be > 0");
+            Assert.True(node.Height > 0, $"Node {node.Id} Height should be > 0");
+            Assert.True(node.X >= 0, $"Node {node.Id} X should be >= 0");
+            Assert.True(node.Y >= 0, $"Node {node.Id} Y should be >= 0");
+        });
+    }
 }

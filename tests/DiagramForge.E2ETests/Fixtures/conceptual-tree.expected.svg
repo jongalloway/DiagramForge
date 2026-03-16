@@ -1,0 +1,192 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1068.00" height="268.00" viewBox="0 0 1068.00 268.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="1068.00" height="268.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
+  <path d="M 474.00,44.00 C 393.50,44.00 366.00,98.00 294.00,134.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 174.00,134.00 C 136.05,134.00 156.00,188.00 144.00,224.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 234.00,154.00 C 234.00,174.00 234.00,184.00 234.00,204.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 294.00,134.00 C 331.95,134.00 312.00,188.00 324.00,224.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 534.00,64.00 C 534.00,100.06 579.00,94.00 609.00,114.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 609.00,154.00 C 609.00,190.06 564.00,184.00 534.00,204.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 609.00,154.00 C 609.00,190.06 654.00,184.00 684.00,204.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 594.00,44.00 C 702.17,44.00 747.00,98.00 849.00,134.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 909.00,154.00 C 909.00,190.06 864.00,184.00 834.00,204.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 909.00,154.00 C 909.00,190.06 954.00,184.00 984.00,204.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <g transform="translate(474.00,24.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B3B9C2"/>
+        <stop offset="100%" stop-color="#AAB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Animals</text>
+  </g>
+  <g transform="translate(174.00,114.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAF7F1"/>
+        <stop offset="58%" stop-color="#E8F7F0"/>
+        <stop offset="100%" stop-color="#DAE8E1"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B2BDB8"/>
+        <stop offset="100%" stop-color="#A9B6B8"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Mammals</text>
+  </g>
+  <g transform="translate(24.00,204.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF2E9"/>
+        <stop offset="58%" stop-color="#FFF1E7"/>
+        <stop offset="100%" stop-color="#EFE2D9"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B9B1"/>
+        <stop offset="100%" stop-color="#B9B2B1"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Dogs</text>
+  </g>
+  <g transform="translate(174.00,204.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F5EBFE"/>
+        <stop offset="58%" stop-color="#F5EAFE"/>
+        <stop offset="100%" stop-color="#E6DBEE"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#BCB3C2"/>
+        <stop offset="100%" stop-color="#B2ADC2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Cats</text>
+  </g>
+  <g transform="translate(324.00,204.00)">
+    <defs>
+      <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E8F7F7"/>
+        <stop offset="58%" stop-color="#E6F7F7"/>
+        <stop offset="100%" stop-color="#D8E8E8"/>
+      </linearGradient>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B0BDBD"/>
+        <stop offset="100%" stop-color="#A7B6BC"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Whales</text>
+  </g>
+  <g transform="translate(549.00,114.00)">
+    <defs>
+      <linearGradient id="node-5-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1F4"/>
+        <stop offset="58%" stop-color="#FFF0F3"/>
+        <stop offset="100%" stop-color="#EFE1E4"/>
+      </linearGradient>
+      <linearGradient id="node-5-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B8BA"/>
+        <stop offset="100%" stop-color="#B9B1BA"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Birds</text>
+  </g>
+  <g transform="translate(474.00,204.00)">
+    <defs>
+      <linearGradient id="node-6-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EFF3FF"/>
+        <stop offset="58%" stop-color="#EEF2FF"/>
+        <stop offset="100%" stop-color="#DFE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-6-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B6B9C2"/>
+        <stop offset="100%" stop-color="#ADB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Eagles</text>
+  </g>
+  <g transform="translate(624.00,204.00)">
+    <defs>
+      <linearGradient id="node-7-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F7F4EB"/>
+        <stop offset="58%" stop-color="#F7F4EA"/>
+        <stop offset="100%" stop-color="#E8E5DB"/>
+      </linearGradient>
+      <linearGradient id="node-7-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#BDBBB3"/>
+        <stop offset="100%" stop-color="#B3B4B3"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Penguins</text>
+  </g>
+  <g transform="translate(849.00,114.00)">
+    <defs>
+      <linearGradient id="node-8-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EBF3FF"/>
+        <stop offset="58%" stop-color="#EAF2FF"/>
+        <stop offset="100%" stop-color="#DBE3EF"/>
+      </linearGradient>
+      <linearGradient id="node-8-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B3B9C2"/>
+        <stop offset="100%" stop-color="#AAB2C2"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-8-fill-gradient)" stroke="url(#node-8-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Reptiles</text>
+  </g>
+  <g transform="translate(774.00,204.00)">
+    <defs>
+      <linearGradient id="node-9-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#EAF7F1"/>
+        <stop offset="58%" stop-color="#E8F7F0"/>
+        <stop offset="100%" stop-color="#DAE8E1"/>
+      </linearGradient>
+      <linearGradient id="node-9-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#B2BDB8"/>
+        <stop offset="100%" stop-color="#A9B6B8"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-9-fill-gradient)" stroke="url(#node-9-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Snakes</text>
+  </g>
+  <g transform="translate(924.00,204.00)">
+    <defs>
+      <linearGradient id="node-10-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF2E9"/>
+        <stop offset="58%" stop-color="#FFF1E7"/>
+        <stop offset="100%" stop-color="#EFE2D9"/>
+      </linearGradient>
+      <linearGradient id="node-10-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C2B9B1"/>
+        <stop offset="100%" stop-color="#B9B2B1"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="8.00" ry="8.00" fill="url(#node-10-fill-gradient)" stroke="url(#node-10-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#0F172A">Lizards</text>
+  </g>
+</svg>
