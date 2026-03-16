@@ -47,7 +47,7 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><ellipse cx="12" cy="12" rx="4" ry="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M4.93 5h14.14M4.93 19h14.14"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" /><ellipse cx="12" cy="12" rx="4" ry="10" /><line x1="2" y1="12" x2="22" y2="12" /><path d="M4.93 5h14.14M4.93 19h14.14" /></g>
       </svg>
     </g>
     <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Web Gateway</text>
@@ -67,7 +67,7 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"/><rect x="2" y="14" width="20" height="8" rx="2" ry="2"/><circle cx="6" cy="6" r="1" fill="currentColor"/><circle cx="6" cy="18" r="1" fill="currentColor"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="8" rx="2" ry="2" /><rect x="2" y="14" width="20" height="8" rx="2" ry="2" /><circle cx="6" cy="6" r="1" fill="currentColor" /><circle cx="6" cy="18" r="1" fill="currentColor" /></g>
       </svg>
     </g>
     <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">App Server</text>
@@ -87,7 +87,7 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5.5" rx="8" ry="3.5"/><path d="M4 5.5v13c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5v-13"/><path d="M4 12c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><ellipse cx="12" cy="5.5" rx="8" ry="3.5" /><path d="M4 5.5v13c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5v-13" /><path d="M4 12c0 1.93 3.58 3.5 8 3.5s8-1.57 8-3.5" /></g>
       </svg>
     </g>
     <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Data Store</text>
@@ -107,7 +107,7 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="3"/><line x1="12" y1="2" x2="12" y2="9"/></g>
+        <g fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="10" /><circle cx="12" cy="12" r="3" /><line x1="12" y1="2" x2="12" y2="9" /></g>
       </svg>
     </g>
     <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">File Storage</text>
@@ -127,7 +127,7 @@
     <rect width="120.00" height="94.00" rx="8.00" ry="8.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
     <g transform="translate(36.00,12.00)">
       <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#E5EEF9">
-        <path d="M18.74 10.04A6.87 6.87 0 0 0 12 4C9.34 4 7.05 5.64 5.9 8.04A5.5 5.5 0 0 0 1 14c0 3.31 2.47 6 5.5 6h11.93c2.53 0 4.58-2.24 4.58-5 0-2.64-1.88-4.78-4.27-4.96z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+        <path d="M18.74 10.04A6.87 6.87 0 0 0 12 4C9.34 4 7.05 5.64 5.9 8.04A5.5 5.5 0 0 0 1 14c0 3.31 2.47 6 5.5 6h11.93c2.53 0 4.58-2.24 4.58-5 0-2.64-1.88-4.78-4.27-4.96z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
       </svg>
     </g>
     <text x="60.00" y="78.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">CDN</text>
