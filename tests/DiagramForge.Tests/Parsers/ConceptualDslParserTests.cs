@@ -1131,4 +1131,22 @@ public class ConceptualDslParserTests
 
         Assert.All(diagram.Edges, e => Assert.True(e.Metadata.ContainsKey("tree:edge")));
     }
+
+    [Fact]
+    public void Parse_Tree_FourSpaceIndent_SetsCorrectDepth()
+    {
+        const string text = """
+            diagram: tree
+            tree:
+              Root
+                  Child
+                      Grandchild
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(0, diagram.Nodes["node_0"].Metadata["tree:depth"]);
+        Assert.Equal(1, diagram.Nodes["node_1"].Metadata["tree:depth"]);
+        Assert.Equal(2, diagram.Nodes["node_2"].Metadata["tree:depth"]);
+    }
 }

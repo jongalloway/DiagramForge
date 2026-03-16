@@ -37,11 +37,11 @@ public sealed partial class DefaultLayoutEngine
             hasParent.Add(edge.TargetId);
         }
 
-        // Roots are nodes with no incoming edges, ordered by their ID to preserve
-        // the parser's insertion order.
+        // Roots are nodes with no incoming edges, ordered by their numeric suffix
+        // to preserve the parser's insertion order (node_0, node_1, …, node_10, …).
         var roots = diagram.Nodes.Values
             .Where(n => !hasParent.Contains(n.Id))
-            .OrderBy(n => n.Id, StringComparer.Ordinal)
+            .OrderBy(n => TryParseNodeIndex(n.Id))
             .ToList();
 
         if (roots.Count == 0)

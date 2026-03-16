@@ -99,8 +99,9 @@ public sealed partial class ConceptualDslParser
             if (colorGroup is not null && colorMap.TryGetValue(colorGroup, out var color))
                 node.FillColor = color;
 
-            // Store tree metadata
-            node.Metadata["tree:depth"] = relIndent / 2; // 2 spaces per indent level
+            // Store tree metadata – depth equals the current ancestor count
+            // (i.e. the stack size after popping), which is independent of indent width.
+            node.Metadata["tree:depth"] = stack.Count;
             if (isOrgChart)
                 node.Metadata["tree:orgchart"] = true;
 
