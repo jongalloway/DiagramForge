@@ -93,118 +93,118 @@ public class ConceptualDslParserTests
         Assert.Equal("Col 2\nRow B", diagram.Nodes["cell_1_1"].Label.Text);
     }
 
-        [Fact]
-        public void Parse_Matrix_CellsWithIconDirective_SetIconRefOnNodes()
-        {
-                const string text = """
-                        diagram: matrix
-                        rows:
-                            - Important
-                            - Not Important
-                        columns:
-                            - Urgent
-                            - Not Urgent
-                        cells:
-                            - icon:builtin:cloud
-                            -
-                            - icon:heroicons:shield-check
-                            - [icon:builtin:database]
-                        """;
+    [Fact]
+    public void Parse_Matrix_CellsWithIconDirective_SetIconRefOnNodes()
+    {
+        const string text = """
+                diagram: matrix
+                rows:
+                    - Important
+                    - Not Important
+                columns:
+                    - Urgent
+                    - Not Urgent
+                cells:
+                    - icon:builtin:cloud
+                    -
+                    - icon:heroicons:shield-check
+                    - [icon:builtin:database]
+                """;
 
-                var diagram = _parser.Parse(text);
+        var diagram = _parser.Parse(text);
 
-                Assert.Equal("builtin:cloud", diagram.Nodes["cell_0_0"].IconRef);
-                Assert.Null(diagram.Nodes["cell_0_1"].IconRef);
-                Assert.Equal("heroicons:shield-check", diagram.Nodes["cell_1_0"].IconRef);
-                Assert.Equal("builtin:database", diagram.Nodes["cell_1_1"].IconRef);
-                Assert.Equal("Urgent\nImportant", diagram.Nodes["cell_0_0"].Label.Text);
-        }
+        Assert.Equal("builtin:cloud", diagram.Nodes["cell_0_0"].IconRef);
+        Assert.Null(diagram.Nodes["cell_0_1"].IconRef);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["cell_1_0"].IconRef);
+        Assert.Equal("builtin:database", diagram.Nodes["cell_1_1"].IconRef);
+        Assert.Equal("Urgent\nImportant", diagram.Nodes["cell_0_0"].Label.Text);
+    }
 
-        [Fact]
-        public void Parse_Matrix_WithoutCellsSection_LeavesIconRefsUnset()
-        {
-                const string text = """
-                        diagram: matrix
-                        rows:
-                            - Important
-                            - Not Important
-                        columns:
-                            - Urgent
-                            - Not Urgent
-                        """;
+    [Fact]
+    public void Parse_Matrix_WithoutCellsSection_LeavesIconRefsUnset()
+    {
+        const string text = """
+                diagram: matrix
+                rows:
+                    - Important
+                    - Not Important
+                columns:
+                    - Urgent
+                    - Not Urgent
+                """;
 
-                var diagram = _parser.Parse(text);
+        var diagram = _parser.Parse(text);
 
-                Assert.All(diagram.Nodes.Values, node => Assert.Null(node.IconRef));
-        }
+        Assert.All(diagram.Nodes.Values, node => Assert.Null(node.IconRef));
+    }
 
-        [Fact]
-        public void Parse_Matrix_PartialCellsList_LeavesRemainingCellsWithoutIcons()
-        {
-                const string text = """
-                        diagram: matrix
-                        rows:
-                            - Important
-                            - Not Important
-                        columns:
-                            - Urgent
-                            - Not Urgent
-                        cells:
-                            - icon:builtin:cloud
-                            - icon:builtin:database
-                        """;
+    [Fact]
+    public void Parse_Matrix_PartialCellsList_LeavesRemainingCellsWithoutIcons()
+    {
+        const string text = """
+                diagram: matrix
+                rows:
+                    - Important
+                    - Not Important
+                columns:
+                    - Urgent
+                    - Not Urgent
+                cells:
+                    - icon:builtin:cloud
+                    - icon:builtin:database
+                """;
 
-                var diagram = _parser.Parse(text);
+        var diagram = _parser.Parse(text);
 
-                Assert.Equal("builtin:cloud", diagram.Nodes["cell_0_0"].IconRef);
-                Assert.Equal("builtin:database", diagram.Nodes["cell_0_1"].IconRef);
-                Assert.Null(diagram.Nodes["cell_1_0"].IconRef);
-                Assert.Null(diagram.Nodes["cell_1_1"].IconRef);
-        }
+        Assert.Equal("builtin:cloud", diagram.Nodes["cell_0_0"].IconRef);
+        Assert.Equal("builtin:database", diagram.Nodes["cell_0_1"].IconRef);
+        Assert.Null(diagram.Nodes["cell_1_0"].IconRef);
+        Assert.Null(diagram.Nodes["cell_1_1"].IconRef);
+    }
 
-        [Fact]
-        public void Parse_Matrix_NonEmptyCellWithoutIconDirective_ThrowsDiagramParseException()
-        {
-                const string text = """
-                        diagram: matrix
-                        rows:
-                            - Important
-                            - Not Important
-                        columns:
-                            - Urgent
-                            - Not Urgent
-                        cells:
-                            - cloud
-                        """;
+    [Fact]
+    public void Parse_Matrix_NonEmptyCellWithoutIconDirective_ThrowsDiagramParseException()
+    {
+        const string text = """
+                diagram: matrix
+                rows:
+                    - Important
+                    - Not Important
+                columns:
+                    - Urgent
+                    - Not Urgent
+                cells:
+                    - cloud
+                """;
 
-                var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
 
-                Assert.Contains("must be blank or contain an icon directive", ex.Message);
-        }
+        Assert.Contains("must be blank or contain an icon directive", ex.Message);
+    }
 
-        [Fact]
-        public void Parse_Matrix_WithTooManyCellsEntries_ThrowsDiagramParseException()
-        {
-                const string text = """
-                        diagram: matrix
-                        rows:
-                            - Important
-                            - Not Important
-                        columns:
-                            - Urgent
-                            - Not Urgent
-                        cells:
-                            - icon:builtin:cloud
-                            - icon:builtin:database
-                            - icon:heroicons:shield-check
-                            - icon:builtin:server
-                            - icon:builtin:fire
-                        """;
+    [Fact]
+    public void Parse_Matrix_WithTooManyCellsEntries_ThrowsDiagramParseException()
+    {
+        const string text = """
+                diagram: matrix
+                rows:
+                    - Important
+                    - Not Important
+                columns:
+                    - Urgent
+                    - Not Urgent
+                cells:
+                    - icon:builtin:cloud
+                    - icon:builtin:database
+                    - icon:heroicons:shield-check
+                    - icon:builtin:server
+                    - icon:builtin:fire
+                """;
 
-                var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
 
-                Assert.Contains("at most 4 'cells' entries", ex.Message);
-        }
+        Assert.Contains("at most 4 'cells' entries", ex.Message);
+    }
 
     // ── Pyramid ───────────────────────────────────────────────────────────────
 
