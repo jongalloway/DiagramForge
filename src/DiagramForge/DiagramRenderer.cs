@@ -37,6 +37,21 @@ public sealed class DiagramRenderer
     public IconRegistry IconRegistry { get; } = new();
 
     /// <summary>
+    /// Optional callback invoked when a non-fatal warning is raised during rendering
+    /// (e.g. a missing icon pack). The argument is the complete warning message text.
+    /// When <see langword="null"/> (the default) warnings are silently suppressed so
+    /// that the library does not produce unsolicited console output.
+    /// </summary>
+    /// <example>
+    /// Wire up to standard error in a CLI host:
+    /// <code>
+    /// var renderer = new DiagramRenderer();
+    /// renderer.WarningHandler = msg => Console.Error.WriteLine(msg);
+    /// </code>
+    /// </example>
+    public Action<string>? WarningHandler { get; set; }
+
+    /// <summary>
     /// Creates a <see cref="DiagramRenderer"/> with the default parser set, layout engine, and theme.
     /// </summary>
     public DiagramRenderer()
@@ -226,17 +241,13 @@ public sealed class DiagramRenderer
                 else if (!warnedHeroicons && IsHeroiconsReference(node.IconRef))
                 {
                     warnedHeroicons = true;
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Error.WriteLine(
-                        $"Warning: Icon reference '{node.IconRef}' looks like a Heroicons icon, " +
-                        "but the Heroicons pack is not registered.");
-                    Console.Error.WriteLine(
-                        "  Install the NuGet package and call .UseHeroicons():");
-                    Console.Error.WriteLine(
-                        "    dotnet add package DiagramForge.Icons.Heroicons");
-                    Console.Error.WriteLine(
-                        "    https://www.nuget.org/packages/DiagramForge.Icons.Heroicons");
-                    Console.ResetColor();
+                    WarningHandler?.Invoke(
+                        $"""
+                        Warning: Icon reference '{node.IconRef}' looks like a Heroicons icon, but the Heroicons pack is not registered.
+                          Install the NuGet package and call .UseHeroicons():
+                            dotnet add package DiagramForge.Icons.Heroicons
+                            https://www.nuget.org/packages/DiagramForge.Icons.Heroicons
+                        """);
                 }
             }
         }

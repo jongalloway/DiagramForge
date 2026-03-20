@@ -59,7 +59,11 @@ public sealed partial class DefaultLayoutEngine
         // Set a generous minimum circle diameter first, then derive font size from it.
         double minCircleDiameter = fontSize * 10;
         double circleDiameter = Math.Max(minCircleDiameter, Math.Max(minW, nodeH));
-        circleDiameter = Math.Max(circleDiameter, EnsureIconHeight(orderedNodes[0], circleDiameter));
+        double maxIconCircleDiameter = orderedNodes
+            .Select(node => EnsureIconHeight(node, circleDiameter))
+            .DefaultIfEmpty(circleDiameter)
+            .Max();
+        circleDiameter = Math.Max(circleDiameter, maxIconCircleDiameter);
 
         // Derive label font size from circle diameter so text fills the circle.
         // For two-line labels the inscribed width at ~60% height is ~0.8 × diameter.
@@ -136,8 +140,8 @@ public sealed partial class DefaultLayoutEngine
         double centerY = pad + titleOffset + descSpace + arcRadius + circleDiameter / 2;
 
         // ── Palette ───────────────────────────────────────────────────────────
-        // For the snake diagram we want vibrant, saturated colors for the circles.
-        // Use the node palette colors but boost their saturation for this diagram type.
+        // For the snake diagram we use the node palette colors for circle fills,
+        // falling back to the single node fill color when no palette is defined.
         string[] palette = theme.NodePalette is { Count: > 0 }
             ? [.. theme.NodePalette]
             : [theme.NodeFillColor];
@@ -147,10 +151,13 @@ public sealed partial class DefaultLayoutEngine
             : palette.Select(c => ColorUtils.Darken(c, 0.18)).ToArray();
 
         // ── Position circles ──────────────────────────────────────────────────
+        // Circle centres are spaced hSpacing = 2·arcRadius apart, starting at
+        // pad + arcRadius so the path's left endpoint lands exactly at x = pad
+        // (avoiding negative coordinates when arcGap > 0).
         for (int i = 0; i < orderedNodes.Count; i++)
         {
             var node = orderedNodes[i];
-            double cx = pad + circleDiameter / 2 + i * hSpacing;
+            double cx = pad + arcRadius + i * hSpacing;
             double cy = centerY;
 
             node.Shape = Shape.Circle;
@@ -221,8 +228,8 @@ public sealed partial class DefaultLayoutEngine
         diagram.Metadata["snake:descFontSize"] = descFontSize;
         if (hasTitle)
         {
-            diagram.Metadata["titleFontSize"] = snakeTitleFontSize;
-            diagram.Metadata["titleY"] = pad + snakeTitleFontSize;
+            diagram.Metadata["diagram:titleFontSize"] = snakeTitleFontSize;
+            diagram.Metadata["diagram:titleY"] = pad + snakeTitleFontSize;
         }
 
         // ── Store description text positions ──────────────────────────────────
@@ -247,12 +254,16 @@ public sealed partial class DefaultLayoutEngine
             node.Metadata["snake:descMaxWidth"] = descMaxWidth;
         }
 
-        // ── Set canvas height to account for all elements ─────────────────────
+        // ── Set canvas dimensions to account for all elements ─────────────────
+        // Width: path spans from pad (left endpoint) to pad + 2·n·arcRadius (right endpoint);
+        // add one pad on each side so the stroke caps are never clipped.
+        double lastCx = pad + arcRadius + (n - 1) * hSpacing;
+        double canvasWidth = lastCx + arcRadius + pad;
         double canvasBottom = centerY + circleDiameter / 2 + arcRadius + descSpace + pad;
-        double canvasTop = pad;
         double totalHeight = canvasBottom + pad;
 
-        // Store so ComputeHeight can use the full extent
+        // Store so ComputeWidth / ComputeHeight can use the full extent
+        diagram.Metadata["snake:canvasWidth"] = canvasWidth;
         diagram.Metadata["snake:canvasHeight"] = totalHeight;
     }
 

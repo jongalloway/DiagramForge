@@ -36,15 +36,24 @@ public sealed class SvgRenderer : ISvgRenderer
             sb.AppendLine($"""  <rect width="{SvgRenderSupport.F(width)}" height="{SvgRenderSupport.F(height)}" fill="{SvgRenderSupport.Escape(theme.BackgroundColor)}" rx="{SvgRenderSupport.F(theme.BorderRadius)}" ry="{SvgRenderSupport.F(theme.BorderRadius)}"/>""");
         }
 
-        // Title — diagram-type layouts may override font size / position via metadata
+        // Title — diagram-type layouts may override font size / position via metadata.
+        // Prefer the namespaced "diagram:titleFontSize" / "diagram:titleY" keys; fall back
+        // to the legacy un-namespaced keys for backward compatibility.
         if (!string.IsNullOrWhiteSpace(diagram.Title))
         {
-            double titleFontSize = diagram.Metadata.TryGetValue("titleFontSize", out var tfsObj)
-                ? Convert.ToDouble(tfsObj, System.Globalization.CultureInfo.InvariantCulture)
-                : theme.TitleFontSize;
-            double titleY = diagram.Metadata.TryGetValue("titleY", out var tyObj)
-                ? Convert.ToDouble(tyObj, System.Globalization.CultureInfo.InvariantCulture)
-                : theme.DiagramPadding - 4;
+            double titleFontSize;
+            if (diagram.Metadata.TryGetValue("diagram:titleFontSize", out var tfsObj) ||
+                diagram.Metadata.TryGetValue("titleFontSize", out tfsObj))
+                titleFontSize = Convert.ToDouble(tfsObj, System.Globalization.CultureInfo.InvariantCulture);
+            else
+                titleFontSize = theme.TitleFontSize;
+
+            double titleY;
+            if (diagram.Metadata.TryGetValue("diagram:titleY", out var tyObj) ||
+                diagram.Metadata.TryGetValue("titleY", out tyObj))
+                titleY = Convert.ToDouble(tyObj, System.Globalization.CultureInfo.InvariantCulture);
+            else
+                titleY = theme.DiagramPadding - 4;
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(titleY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
         }
 
@@ -142,6 +151,9 @@ public sealed class SvgRenderer : ISvgRenderer
 
         if (diagram.Metadata.TryGetValue("xychart:canvasWidth", out var xcW))
             return Convert.ToDouble(xcW, System.Globalization.CultureInfo.InvariantCulture);
+
+        if (diagram.Metadata.TryGetValue("snake:canvasWidth", out var snakeW))
+            return Convert.ToDouble(snakeW, System.Globalization.CultureInfo.InvariantCulture);
 
         double maxX = diagram.Nodes.Values.Max(n => n.X + n.Width);
         // Group rects extend beyond their member nodes by their own padding;

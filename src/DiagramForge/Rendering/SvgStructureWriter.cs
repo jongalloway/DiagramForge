@@ -672,8 +672,31 @@ internal static class SvgStructureWriter
         foreach (var word in words)
         {
             double wordWidth = word.Length * charWidth;
-            double spaceWidth = currentLine.Length > 0 ? charWidth : 0;
 
+            // If the word itself is wider than maxWidth, hard-break it into chunks.
+            if (wordWidth > maxWidth)
+            {
+                // Flush any pending line first.
+                if (currentLine.Length > 0)
+                {
+                    lines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    currentWidth = 0;
+                }
+
+                int maxCharsPerLine = Math.Max(1, (int)(maxWidth / charWidth));
+                var remaining = word;
+                while (remaining.Length > 0)
+                {
+                    int take = Math.Min(maxCharsPerLine, remaining.Length);
+                    lines.Add(remaining[..take]);
+                    remaining = remaining[take..];
+                }
+                continue;
+            }
+
+            // Normal word: wrap at word boundary.
+            double spaceWidth = currentLine.Length > 0 ? charWidth : 0;
             if (currentWidth + spaceWidth + wordWidth > maxWidth && currentLine.Length > 0)
             {
                 lines.Add(currentLine.ToString());
