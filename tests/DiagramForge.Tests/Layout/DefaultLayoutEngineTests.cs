@@ -1494,4 +1494,154 @@ public class DefaultLayoutEngineTests
             Assert.True(node.Y >= 0, $"Node {node.Id} Y should be >= 0");
         });
     }
+
+    // ── Snake ─────────────────────────────────────────────────────────────────
+
+    private static Diagram CreateSnakeDiagram(int stepCount, bool withDescriptions = false)
+    {
+        var diagram = new Diagram { DiagramType = "snake", SourceSyntax = "conceptual" };
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        for (int i = 0; i < stepCount; i++)
+        {
+            var node = new Node($"node_{i}", $"Step {i + 1}");
+            node.Metadata["snake:stepIndex"] = i;
+            if (withDescriptions)
+                node.Metadata["snake:description"] = $"Description for step {i + 1}";
+            diagram.AddNode(node);
+        }
+
+        return diagram;
+    }
+
+    [Fact]
+    public void Layout_Snake_AllNodesGetPositiveSize()
+    {
+        var diagram = CreateSnakeDiagram(5);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.True(node.Width > 0, $"Node {node.Id} Width should be > 0");
+            Assert.True(node.Height > 0, $"Node {node.Id} Height should be > 0");
+        });
+    }
+
+    [Fact]
+    public void Layout_Snake_NodesArrangedLeftToRight()
+    {
+        var diagram = CreateSnakeDiagram(5);
+
+        _engine.Layout(diagram, _theme);
+
+        var ordered = diagram.Nodes.Values
+            .OrderBy(n => (int)n.Metadata["snake:stepIndex"])
+            .ToList();
+
+        for (int i = 1; i < ordered.Count; i++)
+        {
+            Assert.True(ordered[i].X > ordered[i - 1].X,
+                $"Node {ordered[i].Id}.X ({ordered[i].X}) should be > {ordered[i - 1].Id}.X ({ordered[i - 1].X})");
+        }
+    }
+
+    [Fact]
+    public void Layout_Snake_NodesAreCircles()
+    {
+        var diagram = CreateSnakeDiagram(4);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.Equal(Shape.Circle, node.Shape);
+        });
+    }
+
+    [Fact]
+    public void Layout_Snake_StoresPathDataInMetadata()
+    {
+        var diagram = CreateSnakeDiagram(4);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(diagram.Metadata.ContainsKey("snake:pathData"));
+        var pathData = diagram.Metadata["snake:pathData"] as string;
+        Assert.NotNull(pathData);
+        Assert.StartsWith("M ", pathData);
+        Assert.Contains("A ", pathData);
+    }
+
+    [Fact]
+    public void Layout_Snake_StoresStrokeWidthInMetadata()
+    {
+        var diagram = CreateSnakeDiagram(3);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(diagram.Metadata.ContainsKey("snake:strokeWidth"));
+        var strokeWidth = Convert.ToDouble(diagram.Metadata["snake:strokeWidth"]);
+        Assert.True(strokeWidth > 0);
+    }
+
+    [Fact]
+    public void Layout_Snake_StoresSegmentColorsInMetadata()
+    {
+        var diagram = CreateSnakeDiagram(5);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.True(diagram.Metadata.ContainsKey("snake:segmentColors"));
+        var colors = diagram.Metadata["snake:segmentColors"] as List<string>;
+        Assert.NotNull(colors);
+        Assert.Equal(5, colors.Count); // one color per circle
+    }
+
+    [Fact]
+    public void Layout_Snake_WithDescriptions_StoresDescriptionPositions()
+    {
+        var diagram = CreateSnakeDiagram(4, withDescriptions: true);
+
+        _engine.Layout(diagram, _theme);
+
+        foreach (var node in diagram.Nodes.Values)
+        {
+            Assert.True(node.Metadata.ContainsKey("snake:descX"));
+            Assert.True(node.Metadata.ContainsKey("snake:descY"));
+            Assert.True(node.Metadata.ContainsKey("snake:descBelow"));
+        }
+    }
+
+    [Fact]
+    public void Layout_Snake_DescriptionsAlternateBelowAndAbove()
+    {
+        var diagram = CreateSnakeDiagram(4, withDescriptions: true);
+
+        _engine.Layout(diagram, _theme);
+
+        var ordered = diagram.Nodes.Values
+            .OrderBy(n => (int)n.Metadata["snake:stepIndex"])
+            .ToList();
+
+        // Even index = below, Odd index = above
+        Assert.True((bool)ordered[0].Metadata["snake:descBelow"]);
+        Assert.False((bool)ordered[1].Metadata["snake:descBelow"]);
+        Assert.True((bool)ordered[2].Metadata["snake:descBelow"]);
+        Assert.False((bool)ordered[3].Metadata["snake:descBelow"]);
+    }
+
+    [Fact]
+    public void Layout_Snake_AssignsFillColorsFromPalette()
+    {
+        var diagram = CreateSnakeDiagram(3);
+
+        _engine.Layout(diagram, _theme);
+
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.NotNull(node.FillColor);
+            Assert.NotNull(node.StrokeColor);
+        });
+    }
 }

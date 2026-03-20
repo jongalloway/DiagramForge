@@ -1,0 +1,223 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1573.98" height="907.20" viewBox="0 0 1573.98 907.20">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#173F6D"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="1573.98" height="907.20" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <text x="786.99" y="28.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="20.00" font-weight="bold" fill="#111827">The Fellowship's Journey</text>
+  <defs>
+    <linearGradient id="snake-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="3.33%" stop-color="#E7F0FF"/>
+      <stop offset="16.67%" stop-color="#E7F0FF"/>
+      <stop offset="23.33%" stop-color="#FFE6D8"/>
+      <stop offset="36.67%" stop-color="#FFE6D8"/>
+      <stop offset="43.33%" stop-color="#FFF0C7"/>
+      <stop offset="56.67%" stop-color="#FFF0C7"/>
+      <stop offset="63.33%" stop-color="#DCF5E8"/>
+      <stop offset="76.67%" stop-color="#DCF5E8"/>
+      <stop offset="83.33%" stop-color="#EFE3FF"/>
+      <stop offset="96.67%" stop-color="#EFE3FF"/>
+    </linearGradient>
+  </defs>
+  <path d="M -21.93,457.60 A 161.78 161.78 0 0 1 301.64,457.60 A 161.78 161.78 0 0 0 625.21,457.60 A 161.78 161.78 0 0 1 948.78,457.60 A 161.78 161.78 0 0 0 1272.34,457.60 A 161.78 161.78 0 0 1 1595.91,457.60" fill="none" stroke="#FFFDF8" stroke-width="53.46" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M -21.93,457.60 A 161.78 161.78 0 0 1 301.64,457.60 A 161.78 161.78 0 0 0 625.21,457.60 A 161.78 161.78 0 0 1 948.78,457.60 A 161.78 161.78 0 0 0 1272.34,457.60 A 161.78 161.78 0 0 1 1595.91,457.60" fill="none" stroke="url(#snake-gradient)" stroke-width="47.46" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="139.86" y="631.39" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Bilbo's farewell party and</text>
+  <text x="139.86" y="664.76" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Frodo inherits the One Ring</text>
+  <text x="463.42" y="250.45" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">The Council of Elrond forms</text>
+  <text x="463.42" y="283.82" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">the Fellowship of the Ring</text>
+  <text x="786.99" y="631.39" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Gandalf falls battling the</text>
+  <text x="786.99" y="664.76" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Balrog on the Bridge of</text>
+  <text x="786.99" y="698.13" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Khazad-dum</text>
+  <text x="1110.56" y="217.08" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">The Fellowship breaks as</text>
+  <text x="1110.56" y="250.45" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Boromir falls defending the</text>
+  <text x="1110.56" y="283.82" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">hobbits</text>
+  <text x="1434.13" y="631.39" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Frodo and Sam destroy the</text>
+  <text x="1434.13" y="664.76" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Ring in the fires of Mount</text>
+  <text x="1434.13" y="698.13" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="25.67" fill="#4B5563">Doom</text>
+  <g transform="translate(32.00,349.75)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#E9F1FF"/>
+        <stop offset="58%" stop-color="#E7F0FF"/>
+        <stop offset="100%" stop-color="#D6DEEC"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="107.86" cy="107.86" rx="107.86" ry="107.86" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
+    <g transform="translate(75.50,38.61)">
+      <svg width="64.71" height="64.71" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M12 21a9.004 9.004 0 0 0 8.716-6.747M12 21a9.004 9.004 0 0 1-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 0 1 7.843 4.582M12 3a8.997 8.997 0 0 0-7.843 4.582m15.686 0A11.953 11.953 0 0 1 12 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0 1 21 12c0 .778-.099 1.533-.284 2.253m0 0A17.919 17.919 0 0 1 12 16.5c-3.162 0-6.133-.815-8.716-2.247m0 0A9.015 9.015 0 0 1 3 12c0-1.605.42-3.113 1.157-4.418" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="107.86" y="136.42" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="30.20" fill="#111827">
+      <tspan x="107.86" y="136.42">The</tspan>
+      <tspan x="107.86" dy="34.73">Shire</tspan>
+    </text>
+  </g>
+  <g transform="translate(355.57,349.75)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFE8DC"/>
+        <stop offset="58%" stop-color="#FFE6D8"/>
+        <stop offset="100%" stop-color="#ECD5C8"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-1-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="107.86" cy="107.86" rx="107.86" ry="107.86" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <g transform="translate(75.50,38.61)">
+      <svg width="64.71" height="64.71" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M18 18.72a9.094 9.094 0 0 0 3.741-.479 3 3 0 0 0-4.682-2.72m.94 3.198.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0 1 12 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 0 1 6 18.719m12 0a5.971 5.971 0 0 0-.941-3.197m0 0A5.995 5.995 0 0 0 12 12.75a5.995 5.995 0 0 0-5.058 2.772m0 0a3 3 0 0 0-4.681 2.72 8.986 8.986 0 0 0 3.74.477m.94-3.197a5.971 5.971 0 0 0-.94 3.197M15 6.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm6 3a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Zm-13.5 0a2.25 2.25 0 1 1-4.5 0 2.25 2.25 0 0 1 4.5 0Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="107.86" y="153.78" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="30.20" fill="#111827">Rivendell</text>
+  </g>
+  <g transform="translate(679.14,349.75)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#FFF1CD"/>
+        <stop offset="58%" stop-color="#FFF0C7"/>
+        <stop offset="100%" stop-color="#ECDEB8"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-2-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="107.86" cy="107.86" rx="107.86" ry="107.86" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <g transform="translate(75.50,38.61)">
+      <svg width="64.71" height="64.71" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="107.86" y="153.78" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="30.20" fill="#111827">Moria</text>
+  </g>
+  <g transform="translate(1002.70,349.75)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#DFF6EA"/>
+        <stop offset="58%" stop-color="#DCF5E8"/>
+        <stop offset="100%" stop-color="#CCE3D7"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="107.86" cy="107.86" rx="107.86" ry="107.86" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
+    <g transform="translate(75.50,38.61)">
+      <svg width="64.71" height="64.71" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="107.86" y="136.42" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="30.20" fill="#111827">
+      <tspan x="107.86" y="136.42">Amon</tspan>
+      <tspan x="107.86" dy="34.73">Hen</tspan>
+    </text>
+  </g>
+  <g transform="translate(1326.27,349.75)">
+    <defs>
+      <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#F0E6FF"/>
+        <stop offset="58%" stop-color="#EFE3FF"/>
+        <stop offset="100%" stop-color="#DDD2EC"/>
+      </linearGradient>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#C0C6D3"/>
+        <stop offset="33%" stop-color="#D3C6A6"/>
+        <stop offset="67%" stop-color="#B9C8D3"/>
+        <stop offset="100%" stop-color="#C1CAC1"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-4-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
+        <feOffset in="shadow-blur" dx="0.00" dy="1.55" result="shadow-offset"/>
+        <feFlood flood-color="#0F172A" flood-opacity="0.16" result="shadow-color"/>
+        <feComposite in="shadow-color" in2="shadow-offset" operator="in" result="shadow"/>
+        <feMerge>
+          <feMergeNode in="shadow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <ellipse cx="107.86" cy="107.86" rx="107.86" ry="107.86" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
+    <g transform="translate(75.50,38.61)">
+      <svg width="64.71" height="64.71" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="107.86" y="153.78" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="30.20" fill="#111827">Mordor</text>
+  </g>
+</svg>

@@ -110,8 +110,13 @@
       </filter>
     </defs>
     <rect width="164.80" height="132.40" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="82.40" y="62.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
-      <tspan x="82.40" y="62.60">Urgent</tspan>
+    <g transform="translate(58.40,16.00)">
+      <svg width="48.00" height="48.00" viewBox="0 0 24 24" overflow="visible" color="#111827">
+        <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="82.40" y="89.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="82.40" y="89.60">Urgent</tspan>
       <tspan x="82.40" dy="18.40">Not Important</tspan>
     </text>
   </g>

@@ -1,5 +1,6 @@
 using System.Xml.Linq;
 using DiagramForge;
+using DiagramForge.Icons.Heroicons;
 using DiagramForge.Models;
 
 namespace DiagramForge.E2ETests;
@@ -35,7 +36,7 @@ namespace DiagramForge.E2ETests;
 /// </remarks>
 public class SnapshotTests
 {
-    private static readonly DiagramRenderer Renderer = new();
+    private static readonly DiagramRenderer Renderer = new DiagramRenderer().UseHeroicons();
 
     // Fixture directory as copied to the build output.
     private static readonly string RuntimeFixturesDir =

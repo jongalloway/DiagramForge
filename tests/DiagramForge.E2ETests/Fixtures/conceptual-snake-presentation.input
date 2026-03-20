@@ -1,0 +1,11 @@
+---
+theme: presentation
+---
+diagram: snake
+title: The Fellowship's Journey
+steps:
+  - icon:heroicons:globe-alt The Shire: Bilbo's farewell party and Frodo inherits the One Ring
+  - icon:heroicons:user-group Rivendell: The Council of Elrond forms the Fellowship of the Ring
+  - icon:heroicons:fire Moria: Gandalf falls battling the Balrog on the Bridge of Khazad-dum
+  - icon:heroicons:shield-check Amon Hen: The Fellowship breaks as Boromir falls defending the hobbits
+  - icon:heroicons:eye Mordor: Frodo and Sam destroy the Ring in the fires of Mount Doom

@@ -122,6 +122,22 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       <br />
       <sub>Conceptual Radial + Icons</sub>
     </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-snake-presentation.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-snake-presentation.expected.svg" alt="Snake timeline (Presentation)" height="96" />
+      </a>
+      <br />
+      <sub>Snake Timeline</sub>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-snake-dracula.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/conceptual-snake-dracula.expected.svg" alt="Snake timeline (Dracula)" height="96" />
+      </a>
+      <br />
+      <sub>Snake Timeline (Dracula)</sub>
+    </td>
   </tr>
 </table>
 
@@ -750,6 +766,7 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 | Sequential stage process (slide-style chevrons) | Conceptual DSL | `diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn` |
 | Central concept with surrounding pillars / capabilities (3–8 items) | Conceptual DSL | `diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability` |
+| Visual step-by-step journey / snake timeline (3+ steps) | Conceptual DSL | `diagram: snake\ntitle: Journey\nsteps:\n  - Start: Begin here\n  - Middle: Keep going\n  - End: Arrive` |
 
 Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as tree hierarchies / org charts.
 
@@ -851,6 +868,23 @@ items:
 ```
 
 Supported: 3–8 items. Items are placed evenly around the center at equal angles, starting at the top (12 o'clock).
+
+#### snake
+
+Snake timeline layout for journeys, processes, and step-by-step narratives. Steps are rendered as large circles connected by a weaving semicircular path that alternates above and below. Each step supports an optional icon and description.
+
+```text
+diagram: snake
+title: The Fellowship's Journey
+steps:
+  - icon:heroicons:globe-alt The Shire: Bilbo's farewell party and Frodo inherits the One Ring
+  - icon:heroicons:user-group Rivendell: The Council of Elrond forms the Fellowship of the Ring
+  - icon:heroicons:fire Moria: Gandalf falls battling the Balrog on the Bridge of Khazad-dum
+  - icon:heroicons:shield-check Amon Hen: The Fellowship breaks as Boromir falls defending the hobbits
+  - icon:heroicons:eye Mordor: Frodo and Sam destroy the Ring in the fires of Mount Doom
+```
+
+Requires at least 3 steps. Each step follows the format `Label: Description` — the description is optional. Icons use the standard `icon:pack:name` prefix.
 
 ## Architecture
 

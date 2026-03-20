@@ -1,0 +1,11 @@
+---
+theme: dracula
+---
+diagram: snake
+title: The Incredibles Arc
+steps:
+  - icon:heroicons:star Glory Days: Mr. Incredible is the world's top superhero
+  - icon:heroicons:home Forced Retirement: Supers are banned and Bob sells insurance
+  - icon:heroicons:exclamation-triangle Secret Mission: Syndrome lures Bob to Nomanisan Island
+  - icon:heroicons:user-group Family Assembled: The whole Parr family suits up together
+  - icon:heroicons:shield-check Saving Metroville: The Incredibles defeat the Omnidroid

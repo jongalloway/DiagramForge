@@ -104,6 +104,10 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.ContainsKey("xychart:chartX"))
             SvgStructureWriter.AppendXyChartAxes(sb, diagram, theme);
 
+        // Snake timeline: sinusoidal connector path drawn behind nodes.
+        if (diagram.Metadata.ContainsKey("snake:pathData"))
+            SvgStructureWriter.AppendSnakePath(sb, diagram, theme);
+
         // Edges (render behind nodes)
         foreach (var edge in diagram.Edges)
         {
@@ -155,6 +159,9 @@ public sealed class SvgRenderer : ISvgRenderer
 
         if (diagram.Metadata.TryGetValue("xychart:canvasHeight", out var xcH))
             return Convert.ToDouble(xcH, System.Globalization.CultureInfo.InvariantCulture);
+
+        if (diagram.Metadata.TryGetValue("snake:canvasHeight", out var snakeH))
+            return Convert.ToDouble(snakeH, System.Globalization.CultureInfo.InvariantCulture);
 
         double maxY = diagram.Nodes.Values.Max(n => n.Y + n.Height);
         if (diagram.Groups.Count > 0)

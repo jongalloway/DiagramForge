@@ -184,9 +184,18 @@ function Write-GallerySvg {
         $inner = $inner -replace '<\?xml[^?]*\?>\s*', ''
         $inner = $inner -replace '<svg[^>]*>', ''
         $inner = $inner -replace '</svg>\s*$', ''
+
+        # Namespace all IDs to avoid cross-fixture collisions in the combined SVG.
+        # Arrowhead markers:
         $inner = $inner -replace 'id="arrowhead"', "id=`"arrowhead-$i`""
         $inner = $inner -replace 'url\(#arrowhead\)', "url(#arrowhead-$i)"
         $inner = $inner -replace '#arrowhead"', "#arrowhead-$i`""
+        # Node gradients/filters (node-0-fill-gradient, node-0-soft-shadow, etc.):
+        $inner = $inner -replace 'id="(node-\d+)', "id=`"g${i}-`$1"
+        $inner = $inner -replace 'url\(#(node-\d+)', "url(#g${i}-`$1"
+        # Snake path gradient:
+        $inner = $inner -replace 'id="snake-gradient"', "id=`"snake-gradient-$i`""
+        $inner = $inner -replace 'url\(#snake-gradient\)', "url(#snake-gradient-$i)"
 
         [void]$sb.AppendLine($inner.Trim())
         [void]$sb.AppendLine("  </svg>")

@@ -207,6 +207,8 @@ public sealed class DiagramRenderer
 
     private void ResolveIcons(Diagram diagram)
     {
+        bool warnedHeroicons = false;
+
         foreach (var node in diagram.Nodes.Values)
         {
             if (node.IconRef is not null)
@@ -221,9 +223,27 @@ public sealed class DiagramRenderer
                         ? icon with { SvgContent = sanitized }
                         : null;
                 }
+                else if (!warnedHeroicons && IsHeroiconsReference(node.IconRef))
+                {
+                    warnedHeroicons = true;
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Error.WriteLine(
+                        $"Warning: Icon reference '{node.IconRef}' looks like a Heroicons icon, " +
+                        "but the Heroicons pack is not registered.");
+                    Console.Error.WriteLine(
+                        "  Install the NuGet package and call .UseHeroicons():");
+                    Console.Error.WriteLine(
+                        "    dotnet add package DiagramForge.Icons.Heroicons");
+                    Console.Error.WriteLine(
+                        "    https://www.nuget.org/packages/DiagramForge.Icons.Heroicons");
+                    Console.ResetColor();
+                }
             }
         }
     }
+
+    private static bool IsHeroiconsReference(string iconRef) =>
+        iconRef.StartsWith("heroicons:", StringComparison.OrdinalIgnoreCase);
 
     private IDiagramParser? FindParser(string diagramText)
     {
