@@ -22,6 +22,9 @@ public class Label
     /// <summary>Override font size (null = inherit from theme).</summary>
     public double? FontSize { get; set; }
 
+    /// <summary>Override font weight, e.g. "bold" (null = inherit normal).</summary>
+    public string? FontWeight { get; set; }
+
     /// <summary>Override text color (null = inherit from theme).</summary>
     public string? Color { get; set; }
 }

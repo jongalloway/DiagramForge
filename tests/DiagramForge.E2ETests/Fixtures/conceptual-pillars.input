@@ -3,15 +3,15 @@ theme: presentation
 ---
 diagram: pillars
 pillars:
-  - title: People
+  - title: Stark
     segments:
-      - Skills
-      - Roles
-  - title: Process
+      - Winter is Coming
+      - The North Remembers
+  - title: Targaryen
     segments:
-      - Intake
-      - Delivery
-  - title: Technology
+      - Fire and Blood
+      - Dracarys
+  - title: Lannister
     segments:
-      - Platform
-      - Tooling
+      - Hear Me Roar
+      - A Lannister Always Pays His Debts

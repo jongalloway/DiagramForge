@@ -59,7 +59,17 @@ internal static class SvgNodeWriter
 
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
 
-        SvgRenderSupport.AppendGradientDefs(sb, "    ", $"node-{nodeIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
+        // Per-node gradient opt-out (e.g. pillars title nodes use a solid saturated fill).
+        string fill, stroke;
+        if (node.Metadata.TryGetValue("render:noGradient", out var ngVal) && ngVal is true)
+        {
+            fill = SvgRenderSupport.Escape(baseFill);
+            stroke = SvgRenderSupport.Escape(baseStroke);
+        }
+        else
+        {
+            SvgRenderSupport.AppendGradientDefs(sb, "    ", $"node-{nodeIndex}", baseFill, baseStroke, theme, out fill, out stroke);
+        }
         SvgRenderSupport.AppendShadowFilterDefs(sb, "    ", $"node-{nodeIndex}", theme, out string? nodeShadowFilterId, applyNodeShadow);
         string nodeShadowAttribute = nodeShadowFilterId is null ? string.Empty : $" filter=\"url(#{nodeShadowFilterId})\"";
 
@@ -186,13 +196,15 @@ internal static class SvgNodeWriter
         double lineHeight = fontSize * DefaultLabelLineHeight;
         double firstBaselineY = centerY + fontSize * 0.35 - ((lines.Length - 1) * lineHeight / 2);
 
+        string fontWeightAttr = !string.IsNullOrEmpty(label.FontWeight) ? $" font-weight=\"{SvgRenderSupport.Escape(label.FontWeight)}\"" : "";
+
         if (lines.Length == 1)
         {
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{textColor}">{SvgRenderSupport.Escape(lines[0])}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}"{fontWeightAttr} fill="{textColor}">{SvgRenderSupport.Escape(lines[0])}</text>""");
             return;
         }
 
-        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{textColor}">""");
+        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}"{fontWeightAttr} fill="{textColor}">""");
         sb.AppendLine($"""      <tspan x="{SvgRenderSupport.F(centerX)}" y="{SvgRenderSupport.F(firstBaselineY)}">{SvgRenderSupport.Escape(lines[0])}</tspan>""");
 
         for (int i = 1; i < lines.Length; i++)
@@ -321,8 +333,9 @@ internal static class SvgNodeWriter
 
     private static void AppendRoundedRectNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, double radius, string shadowAttribute)
     {
+        double strokeWidth = SvgRenderSupport.GetMetadataDouble(node, "render:strokeWidth") ?? theme.StrokeWidth;
         string formattedRadius = radius == 0 ? "0" : SvgRenderSupport.F(radius);
-        sb.AppendLine($"""    <rect width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+        sb.AppendLine($"""    <rect width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{formattedRadius}" ry="{formattedRadius}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
     }
 
     private static void AppendCloudPath(StringBuilder sb, double width, double height, string fill, string stroke, Theme theme, string shadowAttribute)

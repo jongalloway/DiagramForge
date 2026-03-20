@@ -222,13 +222,31 @@ public static class ColorUtils
         };
     }
 
+    /// <summary>
+    /// Derives a vibrant, medium-dark color from a pastel by amplifying the hue
+    /// (removing the shared "whiteness") and adding a small brightness floor.
+    /// Useful when a pastel palette needs a bold accent variant (e.g. pillar titles).
+    /// </summary>
+    /// <param name="hex">Hex color string (typically a pastel).</param>
+    /// <param name="amplify">How much to amplify the hue deviation (default 3).</param>
+    public static string Vibrant(string hex, double amplify = 3.0)
+    {
+        var (r, g, b, a) = ParseHexWithAlpha(hex);
+        int min = Math.Min(r, Math.Min(g, b));
+        return ToHex(
+            Clamp((int)((r - min) * amplify + min / 4.0)),
+            Clamp((int)((g - min) * amplify + min / 4.0)),
+            Clamp((int)((b - min) * amplify + min / 4.0)),
+            a);
+    }
+
     private static int Clamp(int value) => Math.Max(0, Math.Min(255, value));
 
     /// <summary>
     /// Formats RGB(A) channels back to a hex color string.
     /// Omits the alpha byte when <paramref name="a"/> is 255 (fully opaque).
     /// </summary>
-    private static string ToHex(int r, int g, int b, int a = 255) =>
+    public static string ToHex(int r, int g, int b, int a = 255) =>
         a == 255
             ? $"#{r:X2}{g:X2}{b:X2}"
             : $"#{r:X2}{g:X2}{b:X2}{a:X2}";

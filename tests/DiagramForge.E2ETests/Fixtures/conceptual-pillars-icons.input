@@ -3,15 +3,15 @@ theme: presentation
 ---
 diagram: pillars
 pillars:
-  - title: icon:builtin:cloud People
+  - title: icon:heroicons:fire Power
     segments:
-      - Skills [icon:builtin:server]
-      - Roles
-  - title: icon:builtin:server Process
+      - It's over 9000!
+      - Limit Break
+  - title: icon:heroicons:shield-check Defense
     segments:
-      - Intake
-      - Delivery [icon:builtin:database]
-  - title: icon:builtin:database Technology
+      - Hyrule Shield
+      - Barrel Roll [icon:heroicons:arrow-path]
+  - title: icon:heroicons:bolt Stealth
     segments:
-      - Platform
-      - Tooling
+      - Cardboard Box
+      - Assassin's Creed
