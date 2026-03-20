@@ -561,4 +561,162 @@ internal static class SvgStructureWriter
             sb.AppendLine($"""  <polyline points="{string.Join(" ", points)}" fill="none" stroke="{lineColor}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth * 1.5)}" stroke-linejoin="round" stroke-linecap="round"/>""");
         }
     }
+
+    internal static void AppendSnakePath(StringBuilder sb, Diagram diagram, Theme theme)
+    {
+        if (!diagram.Metadata.TryGetValue("snake:pathData", out var pathDataObj)
+            || pathDataObj is not string pathData)
+            return;
+
+        double strokeWidth = diagram.Metadata.TryGetValue("snake:strokeWidth", out var swObj)
+            ? Convert.ToDouble(swObj, System.Globalization.CultureInfo.InvariantCulture) : 8;
+
+        var segmentColors = diagram.Metadata.TryGetValue("snake:segmentColors", out var scObj)
+            ? scObj as List<string> : null;
+        var segmentStops = diagram.Metadata.TryGetValue("snake:segmentStops", out var ssObj)
+            ? ssObj as List<(double Start, double End)> : null;
+
+        int nodeCount = diagram.Metadata.TryGetValue("snake:nodeCount", out var ncObj)
+            ? Convert.ToInt32(ncObj, System.Globalization.CultureInfo.InvariantCulture) : 0;
+
+        // Render the snake as a gradient path using a linearGradient.
+        // Each circle gets a solid-color band (paired stops at the same color)
+        // spanning the circle's width, with smooth transitions in the gaps.
+        if (segmentColors is { Count: > 0 } && nodeCount > 1)
+        {
+            string gradientId = "snake-gradient";
+            sb.AppendLine("  <defs>");
+            sb.AppendLine($"""    <linearGradient id="{gradientId}" x1="0%" y1="0%" x2="100%" y2="0%">""");
+
+            for (int i = 0; i < segmentColors.Count; i++)
+            {
+                string color = SvgRenderSupport.Escape(segmentColors[i]);
+                if (segmentStops is { Count: > 0 } && i < segmentStops.Count)
+                {
+                    var (start, end) = segmentStops[i];
+                    sb.AppendLine($"""      <stop offset="{SvgRenderSupport.F(start)}%" stop-color="{color}"/>""");
+                    sb.AppendLine($"""      <stop offset="{SvgRenderSupport.F(end)}%" stop-color="{color}"/>""");
+                }
+                else
+                {
+                    double pct = segmentColors.Count == 1 ? 50 : (double)i / (segmentColors.Count - 1) * 100;
+                    sb.AppendLine($"""      <stop offset="{SvgRenderSupport.F(pct)}%" stop-color="{color}"/>""");
+                }
+            }
+
+            sb.AppendLine("    </linearGradient>");
+            sb.AppendLine("  </defs>");
+
+            // Outline stroke for definition against background
+            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{SvgRenderSupport.Escape(theme.BackgroundColor)}" stroke-width="{SvgRenderSupport.F(strokeWidth + 6)}" stroke-linecap="round" stroke-linejoin="round"/>""");
+            // Main gradient path — fully opaque for visual impact
+            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="url(#{gradientId})" stroke-width="{SvgRenderSupport.F(strokeWidth)}" stroke-linecap="round" stroke-linejoin="round"/>""");
+        }
+
+        // Render description text for each node
+        string fontFamily = SvgRenderSupport.Escape(theme.FontFamily);
+        double descFontSize = diagram.Metadata.TryGetValue("snake:descFontSize", out var dfsObj)
+            ? Convert.ToDouble(dfsObj, System.Globalization.CultureInfo.InvariantCulture)
+            : theme.FontSize;
+
+        foreach (var node in diagram.Nodes.Values)
+        {
+            if (!node.Metadata.TryGetValue("snake:description", out var descObj) || descObj is not string desc)
+                continue;
+            if (!node.Metadata.TryGetValue("snake:descX", out var dxObj)
+                || !node.Metadata.TryGetValue("snake:descY", out var dyObj))
+                continue;
+
+            double descX = Convert.ToDouble(dxObj, System.Globalization.CultureInfo.InvariantCulture);
+            double descY = Convert.ToDouble(dyObj, System.Globalization.CultureInfo.InvariantCulture);
+            bool descBelow = node.Metadata.TryGetValue("snake:descBelow", out var dbObj) && dbObj is true;
+            double descMaxWidth = node.Metadata.TryGetValue("snake:descMaxWidth", out var dmwObj)
+                ? Convert.ToDouble(dmwObj, System.Globalization.CultureInfo.InvariantCulture) : 120;
+
+            string textColor = SvgRenderSupport.Escape(theme.SubtleTextColor);
+            string anchor = "middle";
+            double lineHeight = descFontSize * 1.3;
+
+            // Wrap description text
+            var words = desc.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+            var lines = WrapText(words, descFontSize, descMaxWidth);
+
+            if (descBelow)
+            {
+                // Text below: baseline starts at descY
+                for (int li = 0; li < lines.Count; li++)
+                {
+                    double ly = descY + li * lineHeight;
+                    sb.AppendLine($"""  <text x="{SvgRenderSupport.F(descX)}" y="{SvgRenderSupport.F(ly)}" text-anchor="{anchor}" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{textColor}">{SvgRenderSupport.Escape(lines[li])}</text>""");
+                }
+            }
+            else
+            {
+                // Text above: last line aligns at descY, earlier lines go up
+                for (int li = 0; li < lines.Count; li++)
+                {
+                    double ly = descY - (lines.Count - 1 - li) * lineHeight;
+                    sb.AppendLine($"""  <text x="{SvgRenderSupport.F(descX)}" y="{SvgRenderSupport.F(ly)}" text-anchor="{anchor}" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{textColor}">{SvgRenderSupport.Escape(lines[li])}</text>""");
+                }
+            }
+        }
+    }
+
+    private static List<string> WrapText(string[] words, double fontSize, double maxWidth)
+    {
+        var lines = new List<string>();
+        double charWidth = fontSize * 0.6; // Approximate average glyph advance
+        var currentLine = new System.Text.StringBuilder();
+        double currentWidth = 0;
+
+        foreach (var word in words)
+        {
+            double wordWidth = word.Length * charWidth;
+
+            // If the word itself is wider than maxWidth, hard-break it into chunks.
+            if (wordWidth > maxWidth)
+            {
+                // Flush any pending line first.
+                if (currentLine.Length > 0)
+                {
+                    lines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    currentWidth = 0;
+                }
+
+                int maxCharsPerLine = Math.Max(1, (int)(maxWidth / charWidth));
+                var remaining = word;
+                while (remaining.Length > 0)
+                {
+                    int take = Math.Min(maxCharsPerLine, remaining.Length);
+                    lines.Add(remaining[..take]);
+                    remaining = remaining[take..];
+                }
+                continue;
+            }
+
+            // Normal word: wrap at word boundary.
+            double spaceWidth = currentLine.Length > 0 ? charWidth : 0;
+            if (currentWidth + spaceWidth + wordWidth > maxWidth && currentLine.Length > 0)
+            {
+                lines.Add(currentLine.ToString());
+                currentLine.Clear();
+                currentWidth = 0;
+            }
+
+            if (currentLine.Length > 0)
+            {
+                currentLine.Append(' ');
+                currentWidth += charWidth;
+            }
+
+            currentLine.Append(word);
+            currentWidth += wordWidth;
+        }
+
+        if (currentLine.Length > 0)
+            lines.Add(currentLine.ToString());
+
+        return lines.Count > 0 ? lines : [""];
+    }
 }

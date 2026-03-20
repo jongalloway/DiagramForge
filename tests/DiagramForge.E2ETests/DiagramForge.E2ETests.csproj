@@ -35,6 +35,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\src\DiagramForge\DiagramForge.csproj" />
+    <ProjectReference Include="..\..\src\DiagramForge.Icons.Heroicons\DiagramForge.Icons.Heroicons.csproj" />
   </ItemGroup>
 
   <!--

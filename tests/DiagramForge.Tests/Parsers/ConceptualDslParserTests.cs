@@ -26,6 +26,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: funnel\nstages:\n  - Awareness\n  - Conversion")]
     [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
     [InlineData("diagram: tree\ntree:\n  Root\n    Child")]
+    [InlineData("diagram: snake\nsteps:\n  - Step 1\n  - Step 2\n  - Step 3")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -1148,5 +1149,132 @@ public class ConceptualDslParserTests
         Assert.Equal(0, diagram.Nodes["node_0"].Metadata["tree:depth"]);
         Assert.Equal(1, diagram.Nodes["node_1"].Metadata["tree:depth"]);
         Assert.Equal(2, diagram.Nodes["node_2"].Metadata["tree:depth"]);
+    }
+
+    // ── Snake ─────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForSnake()
+    {
+        const string text = "diagram: snake\nsteps:\n  - 2020\n  - 2021\n  - 2022";
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Snake_ProducesOneNodePerStep()
+    {
+        const string text = "diagram: snake\nsteps:\n  - 2020\n  - 2021\n  - 2022";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Snake_NodeLabelsMatchStepNames()
+    {
+        const string text = "diagram: snake\nsteps:\n  - 2020\n  - 2021\n  - 2022";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("2020", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("2021", diagram.Nodes["node_1"].Label.Text);
+        Assert.Equal("2022", diagram.Nodes["node_2"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Snake_SetsDiagramTypeToSnake()
+    {
+        const string text = "diagram: snake\nsteps:\n  - A\n  - B\n  - C";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("snake", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_Snake_WithDescriptions_SetsDescriptionMetadata()
+    {
+        const string text = "diagram: snake\nsteps:\n  - 2020: Research phase\n  - 2021: Development\n  - 2022: Launch";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("2020", diagram.Nodes["node_0"].Label.Text);
+        Assert.Equal("Research phase", diagram.Nodes["node_0"].Metadata["snake:description"]);
+        Assert.Equal("2021", diagram.Nodes["node_1"].Label.Text);
+        Assert.Equal("Development", diagram.Nodes["node_1"].Metadata["snake:description"]);
+    }
+
+    [Fact]
+    public void Parse_Snake_StepsWithoutDescriptions_HaveNoDescriptionMetadata()
+    {
+        const string text = "diagram: snake\nsteps:\n  - Step 1\n  - Step 2\n  - Step 3";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.False(diagram.Nodes["node_0"].Metadata.ContainsKey("snake:description"));
+    }
+
+    [Fact]
+    public void Parse_Snake_MissingStepsSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: snake\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("steps", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Snake_TooFewSteps_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: snake\nsteps:\n  - A\n  - B";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("3", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Snake_SetsStepIndexMetadata()
+    {
+        const string text = "diagram: snake\nsteps:\n  - A\n  - B\n  - C";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(0, diagram.Nodes["node_0"].Metadata["snake:stepIndex"]);
+        Assert.Equal(1, diagram.Nodes["node_1"].Metadata["snake:stepIndex"]);
+        Assert.Equal(2, diagram.Nodes["node_2"].Metadata["snake:stepIndex"]);
+    }
+
+    [Fact]
+    public void Parse_Snake_WithTitle_SetsTitle()
+    {
+        const string text = "diagram: snake\ntitle: Product Roadmap\nsteps:\n  - 2020\n  - 2021\n  - 2022";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Product Roadmap", diagram.Title);
+    }
+
+    [Fact]
+    public void Parse_Snake_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: snake\r\nsteps:\r\n  - 2020\r\n  - 2021\r\n  - 2022\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_Snake_WithIconDirective_SetsIconRef()
+    {
+        const string text = "diagram: snake\nsteps:\n  - icon:builtin:cloud Step 1\n  - Step 2\n  - Step 3";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["node_0"].IconRef);
+        Assert.Equal("Step 1", diagram.Nodes["node_0"].Label.Text);
     }
 }

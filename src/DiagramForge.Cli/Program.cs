@@ -101,6 +101,12 @@ try
 {
     string diagramText = await File.ReadAllTextAsync(inputPath);
     var renderer = new DiagramRenderer();
+    renderer.WarningHandler = msg =>
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.Error.WriteLine(msg);
+        Console.ResetColor();
+    };
     string svg = renderer.Render(diagramText, theme, paletteJson, transparentBackgroundOverride: transparentBackground ? true : null);
 
     if (outputPath is not null)
