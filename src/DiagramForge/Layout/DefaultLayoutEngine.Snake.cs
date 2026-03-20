@@ -20,7 +20,13 @@ public sealed partial class DefaultLayoutEngine
             return;
 
         double fontSize = theme.FontSize;
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize * 1.4 + 12 : 0;
+
+        // Snake title uses a font size proportional to the circles (set below
+        // once snakeFontSize is known).  Reserve a placeholder offset here;
+        // it is updated after sizing.
+        bool hasTitle = !string.IsNullOrWhiteSpace(diagram.Title);
+        double snakeTitleFontSize = 0;
+        double titleOffset = 0;
 
         // ── Wrap all multi-word labels to two lines for larger text ───────────
         foreach (var node in orderedNodes)
@@ -87,6 +93,10 @@ public sealed partial class DefaultLayoutEngine
             double iconY = circleDiameter / 2 - iconSize - iconGap;
             node.Metadata["icon:y"] = iconY;
         }
+
+        // Snake title size — match the circle labels so it reads well
+        snakeTitleFontSize = snakeFontSize;
+        titleOffset = hasTitle ? snakeTitleFontSize * 1.4 + pad : 0;
 
         // Description text blocks — proportional to circle size for readability
         double descFontSize = snakeFontSize * 0.85;
@@ -209,6 +219,11 @@ public sealed partial class DefaultLayoutEngine
         diagram.Metadata["snake:segmentStops"] = segmentStops;
         diagram.Metadata["snake:nodeCount"] = n;
         diagram.Metadata["snake:descFontSize"] = descFontSize;
+        if (hasTitle)
+        {
+            diagram.Metadata["titleFontSize"] = snakeTitleFontSize;
+            diagram.Metadata["titleY"] = pad + snakeTitleFontSize;
+        }
 
         // ── Store description text positions ──────────────────────────────────
         for (int i = 0; i < orderedNodes.Count; i++)

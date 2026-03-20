@@ -36,10 +36,16 @@ public sealed class SvgRenderer : ISvgRenderer
             sb.AppendLine($"""  <rect width="{SvgRenderSupport.F(width)}" height="{SvgRenderSupport.F(height)}" fill="{SvgRenderSupport.Escape(theme.BackgroundColor)}" rx="{SvgRenderSupport.F(theme.BorderRadius)}" ry="{SvgRenderSupport.F(theme.BorderRadius)}"/>""");
         }
 
-        // Title
+        // Title — diagram-type layouts may override font size / position via metadata
         if (!string.IsNullOrWhiteSpace(diagram.Title))
         {
-            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(theme.DiagramPadding - 4)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(theme.TitleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
+            double titleFontSize = diagram.Metadata.TryGetValue("titleFontSize", out var tfsObj)
+                ? Convert.ToDouble(tfsObj, System.Globalization.CultureInfo.InvariantCulture)
+                : theme.TitleFontSize;
+            double titleY = diagram.Metadata.TryGetValue("titleY", out var tyObj)
+                ? Convert.ToDouble(tyObj, System.Globalization.CultureInfo.InvariantCulture)
+                : theme.DiagramPadding - 4;
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(titleY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
         }
 
         // Groups (render behind nodes). Parents render first so nested child groups

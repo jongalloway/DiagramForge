@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1490.56" height="776.63" viewBox="0 0 1490.56 776.63">
+<svg xmlns="http://www.w3.org/2000/svg" width="1490.56" height="808.02" viewBox="0 0 1490.56 808.02">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#FF79C6"/>
@@ -13,8 +13,8 @@
       <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#282A36" stroke="#FF79C6" stroke-width="1.50"/>
     </marker>
   </defs>
-  <rect width="1490.56" height="776.63" fill="#282A36" rx="8.00" ry="8.00"/>
-  <text x="745.28" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#F8F8F2">The Incredibles Arc</text>
+  <rect width="1490.56" height="808.02" fill="#282A36" rx="8.00" ry="8.00"/>
+  <text x="745.28" y="52.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="28.85" font-weight="bold" fill="#F8F8F2">The Incredibles Arc</text>
   <defs>
     <linearGradient id="snake-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
       <stop offset="3.33%" stop-color="#343746"/>
@@ -29,19 +29,19 @@
       <stop offset="96.67%" stop-color="#4E546A"/>
     </linearGradient>
   </defs>
-  <path d="M -27.52,392.81 A 154.56 154.56 0 0 1 281.60,392.81 A 154.56 154.56 0 0 0 590.72,392.81 A 154.56 154.56 0 0 1 899.84,392.81 A 154.56 154.56 0 0 0 1208.96,392.81 A 154.56 154.56 0 0 1 1518.08,392.81" fill="none" stroke="#282A36" stroke-width="51.34" stroke-linecap="round" stroke-linejoin="round"/>
-  <path d="M -27.52,392.81 A 154.56 154.56 0 0 1 281.60,392.81 A 154.56 154.56 0 0 0 590.72,392.81 A 154.56 154.56 0 0 1 899.84,392.81 A 154.56 154.56 0 0 0 1208.96,392.81 A 154.56 154.56 0 0 1 1518.08,392.81" fill="none" stroke="url(#snake-gradient)" stroke-width="45.34" stroke-linecap="round" stroke-linejoin="round"/>
-  <text x="127.04" y="559.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Mr. Incredible is the</text>
-  <text x="127.04" y="591.25" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">world's top superhero</text>
-  <text x="436.16" y="194.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Supers are banned and Bob</text>
-  <text x="436.16" y="226.25" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">sells insurance</text>
-  <text x="745.28" y="559.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Syndrome lures Bob to</text>
-  <text x="745.28" y="591.25" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Nomanisan Island</text>
-  <text x="1054.40" y="194.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">The whole Parr family suits</text>
-  <text x="1054.40" y="226.25" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">up together</text>
-  <text x="1363.52" y="559.37" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">The Incredibles defeat the</text>
-  <text x="1363.52" y="591.25" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Omnidroid</text>
-  <g transform="translate(24.00,289.77)">
+  <path d="M -27.52,424.21 A 154.56 154.56 0 0 1 281.60,424.21 A 154.56 154.56 0 0 0 590.72,424.21 A 154.56 154.56 0 0 1 899.84,424.21 A 154.56 154.56 0 0 0 1208.96,424.21 A 154.56 154.56 0 0 1 1518.08,424.21" fill="none" stroke="#282A36" stroke-width="51.34" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M -27.52,424.21 A 154.56 154.56 0 0 1 281.60,424.21 A 154.56 154.56 0 0 0 590.72,424.21 A 154.56 154.56 0 0 1 899.84,424.21 A 154.56 154.56 0 0 0 1208.96,424.21 A 154.56 154.56 0 0 1 1518.08,424.21" fill="none" stroke="url(#snake-gradient)" stroke-width="45.34" stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="127.04" y="590.77" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Mr. Incredible is the</text>
+  <text x="127.04" y="622.65" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">world's top superhero</text>
+  <text x="436.16" y="225.76" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Supers are banned and Bob</text>
+  <text x="436.16" y="257.65" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">sells insurance</text>
+  <text x="745.28" y="590.77" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Syndrome lures Bob to</text>
+  <text x="745.28" y="622.65" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Nomanisan Island</text>
+  <text x="1054.40" y="225.76" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">The whole Parr family suits</text>
+  <text x="1054.40" y="257.65" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">up together</text>
+  <text x="1363.52" y="590.77" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">The Incredibles defeat the</text>
+  <text x="1363.52" y="622.65" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="24.52" fill="#B2B6C8">Omnidroid</text>
+  <g transform="translate(24.00,321.17)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#484A58"/>
@@ -66,7 +66,7 @@
       <tspan x="103.04" dy="33.18">Days</tspan>
     </text>
   </g>
-  <g transform="translate(333.12,289.77)">
+  <g transform="translate(333.12,321.17)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#505270"/>
@@ -91,7 +91,7 @@
       <tspan x="103.04" dy="33.18">Retirement</tspan>
     </text>
   </g>
-  <g transform="translate(642.24,289.77)">
+  <g transform="translate(642.24,321.17)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#5C527F"/>
@@ -116,7 +116,7 @@
       <tspan x="103.04" dy="33.18">Mission</tspan>
     </text>
   </g>
-  <g transform="translate(951.36,289.77)">
+  <g transform="translate(951.36,321.17)">
     <defs>
       <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#4F6676"/>
@@ -141,7 +141,7 @@
       <tspan x="103.04" dy="33.18">Assembled</tspan>
     </text>
   </g>
-  <g transform="translate(1260.48,289.77)">
+  <g transform="translate(1260.48,321.17)">
     <defs>
       <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#5F6478"/>
