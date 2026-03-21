@@ -1,0 +1,27 @@
+---
+theme: dracula
+---
+diagram: tablist
+layout: stacked
+title: The Grand Heist Plan
+categories:
+  - title: icon:heroicons:eye Reconnaissance
+    items:
+      - Map guard patrol routes
+      - Identify camera blind spots
+      - Befriend the night janitor
+  - title: icon:heroicons:key Infiltration
+    items:
+      - Acquire matching uniforms
+      - Clone the keycard signal
+      - Disable the laser grid
+  - title: icon:heroicons:bolt The Grab
+    items:
+      - Crack the vault in 90 seconds
+      - Swap the diamond with a decoy
+      - Signal the rooftop extraction
+  - title: icon:heroicons:arrow-path Getaway
+    items:
+      - Escape via laundry chute
+      - Rendezvous at the safe house
+      - Celebrate with tiny sandwiches

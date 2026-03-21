@@ -1,0 +1,26 @@
+---
+theme: catppuccin-mocha
+---
+diagram: tablist
+title: RPG Character Classes
+categories:
+  - title: icon:heroicons:shield-check Warrior
+    items:
+      - Heavy Armor Proficiency
+      - Berserker Rage
+      - Shield Wall
+  - title: icon:heroicons:fire Mage
+    items:
+      - Arcane Mastery
+      - Mana Regeneration
+      - Elemental Attunement
+  - title: icon:heroicons:eye Rogue
+    items:
+      - Stealth & Evasion
+      - Critical Strike Bonus
+      - Lockpicking Expert
+  - title: icon:heroicons:heart Healer
+    items:
+      - Restoration Magic
+      - Party-wide Buffs
+      - Resurrection Ritual

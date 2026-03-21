@@ -20,6 +20,7 @@ public sealed partial class ConceptualDslParser
             ["pyramid"] = ParsePyramidDiagram,
             ["radial"] = ParseRadialDiagram,
             ["snake"] = ParseSnakeDiagram,
+            ["tablist"] = ParseTabListDiagram,
             ["tree"] = ParseTreeDiagram,
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 
