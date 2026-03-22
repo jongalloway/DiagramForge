@@ -12,6 +12,10 @@ internal static class SvgNodeWriter
 
     internal static void AppendNode(StringBuilder sb, Node node, Theme theme, int nodeIndex = 0)
     {
+        // Hidden nodes (e.g. tablist items merged into parent band) produce no SVG output.
+        if (node.Metadata.TryGetValue("render:hidden", out var hiddenVal) && hiddenVal is true)
+            return;
+
         string? xyChartKind = node.Metadata.TryGetValue("xychart:kind", out var xyKindObj) ? xyKindObj as string : null;
         string baseFill;
         string baseStroke;
@@ -93,6 +97,11 @@ internal static class SvgNodeWriter
             {
                 AppendChevronNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
             }
+            else if (node.Metadata.TryGetValue("tablist:band", out var tablistBandObj)
+                && tablistBandObj is true)
+            {
+                AppendTabListBandNode(sb, node, fill, stroke, theme, nodeShadowAttribute);
+            }
             else if (node.Compartments.Count > 0 || node.Annotations.Count > 0)
             {
                 AppendClassNode(sb, node, fill, stroke, baseFill, theme, nodeShadowAttribute);
@@ -157,9 +166,10 @@ internal static class SvgNodeWriter
             node.Label.Color ?? SvgRenderSupport.ResolveNodeTextColor(baseFill, theme));
 
         // ── Icon rendering ────────────────────────────────────────────────────
+        bool isTabListBand = node.Metadata.TryGetValue("tablist:band", out var tlbObj) && tlbObj is true;
         bool hasIcon = node.ResolvedIcon is not null;
         double iconAreaHeight = 0;
-        if (hasIcon && !textOnly)
+        if (hasIcon && !textOnly && !isTabListBand)
         {
             var iconLayout = GetNodeIconLayout(node, theme);
             AppendNodeIcon(sb, node, resolvedTextColor, iconLayout);
@@ -167,7 +177,8 @@ internal static class SvgNodeWriter
         }
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text)
-            && node.Compartments.Count == 0 && node.Annotations.Count == 0)
+            && node.Compartments.Count == 0 && node.Annotations.Count == 0
+            && !(node.Metadata.TryGetValue("render:suppressLabel", out var suppressObj) && suppressObj is true))
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;
             double textX = SvgRenderSupport.GetMetadataDouble(node, "label:centerX") ?? (textOnly ? 0 : (node.Width / 2));
@@ -315,6 +326,187 @@ internal static class SvgNodeWriter
             : $"0,0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} 0,{SvgRenderSupport.F(h)} {SvgRenderSupport.F(tipDepth)},{SvgRenderSupport.F(midY)}";
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    /// <summary>
+    /// Renders a tab-list card or stacked band. Dispatches to the appropriate
+    /// sub-renderer based on the <c>tablist:layout</c> metadata value.
+    /// </summary>
+    private static void AppendTabListBandNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        string layout = node.Metadata.TryGetValue("tablist:layout", out var lo) ? lo as string ?? "cards" : "cards";
+
+        if (layout == "stacked")
+            AppendTabListStackedBand(sb, node, fill, stroke, theme, shadowAttribute);
+        else if (layout == "flat")
+            AppendTabListFlatBand(sb, node, fill, stroke, theme, shadowAttribute);
+        else
+            AppendTabListCardBand(sb, node, fill, stroke, theme, shadowAttribute);
+
+        // Render right-edge icon if present
+        if (node.ResolvedIcon is not null)
+        {
+            var iconLayout = GetNodeIconLayout(node, theme);
+            // Determine icon color from the content area fill for best contrast
+            string iconFill = layout switch
+            {
+                "stacked" => node.Metadata.TryGetValue("tablist:barTextColor", out var btc) ? btc as string ?? "#FFFFFF" : "#FFFFFF",
+                "flat" => node.Label.Color ?? ColorUtils.ChooseTextColor(fill),
+                _ => ColorUtils.ChooseTextColor(
+                    node.Metadata.TryGetValue("tablist:contentFill", out var cf) ? cf as string ?? theme.NodeFillColor : theme.NodeFillColor),
+            };
+            AppendNodeIcon(sb, node, SvgRenderSupport.Escape(iconFill), iconLayout);
+        }
+    }
+
+    /// <summary>
+    /// Cards variant: rounded content card behind, bold colored accent block on the left,
+    /// bulleted description items left-aligned in the content area.
+    /// </summary>
+    private static void AppendTabListCardBand(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        double accentWidth = SvgRenderSupport.GetMetadataDouble(node, "tablist:accentWidth") ?? (node.Width * 0.25);
+        string contentFill = node.Metadata.TryGetValue("tablist:contentFill", out var cfObj) ? cfObj as string ?? theme.NodeFillColor : theme.NodeFillColor;
+        string contentStroke = node.Metadata.TryGetValue("tablist:contentStroke", out var csObj) ? csObj as string ?? theme.NodeStrokeColor : theme.NodeStrokeColor;
+        double descFontSize = SvgRenderSupport.GetMetadataDouble(node, "tablist:descFontSize") ?? theme.FontSize;
+        double borderRadius = theme.BorderRadius;
+        double w = node.Width;
+        double h = node.Height;
+        double sw = theme.StrokeWidth;
+
+        // Content card: full-width rounded rect (drawn first, behind accent)
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{SvgRenderSupport.Escape(contentFill)}" stroke="{SvgRenderSupport.Escape(contentStroke)}" stroke-width="{SvgRenderSupport.F(sw)}"{shadowAttribute}/>""");
+
+        // Accent block: vibrant rounded rect on the left
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(accentWidth)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(sw)}"/>""");
+
+        // Bulleted description text – left-aligned in the content area
+        if (node.Metadata.TryGetValue("tablist:description", out var descObj) && descObj is string description && !string.IsNullOrWhiteSpace(description))
+        {
+            var descLines = description.Split('\n');
+            double lineHeight = descFontSize * 1.5;
+            double textBlockHeight = descLines.Length * lineHeight;
+            double textX = accentWidth + theme.NodePadding * 2;
+            double startY = (h - textBlockHeight) / 2 + descFontSize * 0.9;
+
+            string descTextColor = SvgRenderSupport.Escape(
+                ColorUtils.ChooseTextColor(contentFill));
+
+            for (int i = 0; i < descLines.Length; i++)
+            {
+                double lineY = startY + i * lineHeight;
+                sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(lineY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{descTextColor}">{SvgRenderSupport.Escape("\u2022  " + descLines[i])}</text>""");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Stacked variant: compact colored content bar with a bold number tab on the left.
+    /// Title text is rendered bold on the first line within the content bar, followed
+    /// by description text on subsequent lines.
+    /// </summary>
+    private static void AppendTabListStackedBand(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        double tabWidth = SvgRenderSupport.GetMetadataDouble(node, "tablist:accentWidth") ?? (node.Width * 0.15);
+        string barFill = node.Metadata.TryGetValue("tablist:contentFill", out var cfObj) ? cfObj as string ?? theme.NodeFillColor : theme.NodeFillColor;
+        string barStroke = node.Metadata.TryGetValue("tablist:contentStroke", out var csObj) ? csObj as string ?? "none" : "none";
+        string tabStroke = node.Metadata.TryGetValue("tablist:tabStroke", out var tsObj) ? tsObj as string ?? "none" : "none";
+        string barTextColor = node.Metadata.TryGetValue("tablist:barTextColor", out var btObj) ? btObj as string ?? "#FFFFFF" : "#FFFFFF";
+        double descFontSize = SvgRenderSupport.GetMetadataDouble(node, "tablist:descFontSize") ?? theme.FontSize;
+        double titleFontSize = SvgRenderSupport.GetMetadataDouble(node, "tablist:titleFontSize") ?? (theme.FontSize * 1.1);
+        double borderRadius = theme.BorderRadius;
+        double w = node.Width;
+        double h = node.Height;
+        double subtleStrokeWidth = 0.75;
+
+        // Content bar: full-width colored rect with subtle border for definition
+        string strokeAttr = barStroke == "none"
+            ? " stroke=\"none\""
+            : $" stroke=\"{SvgRenderSupport.Escape(barStroke)}\" stroke-width=\"{SvgRenderSupport.F(subtleStrokeWidth)}\"";
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(tabWidth - borderRadius)}" y="0" width="{SvgRenderSupport.F(w - tabWidth + borderRadius)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{SvgRenderSupport.Escape(barFill)}"{strokeAttr}{shadowAttribute}/>""");
+
+        // Number tab: vivid accent block on left
+        string tabStrokeAttr = tabStroke == "none"
+            ? " stroke=\"none\""
+            : $" stroke=\"{SvgRenderSupport.Escape(tabStroke)}\" stroke-width=\"{SvgRenderSupport.F(subtleStrokeWidth)}\"";
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(tabWidth)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}"{tabStrokeAttr}/>""");
+
+        // Number text centered in the tab
+        string catNumber = node.Metadata.TryGetValue("tablist:categoryNumber", out var numObj) ? numObj as string ?? "" : "";
+        if (!string.IsNullOrEmpty(catNumber))
+        {
+            string numColor = SvgRenderSupport.Escape(node.Label.Color ?? ColorUtils.ChooseTextColor(fill));
+            double numFontSize = node.Label.FontSize ?? theme.FontSize * 1.8;
+            double numY = h / 2 + numFontSize * 0.35;
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(tabWidth / 2)}" y="{SvgRenderSupport.F(numY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(numFontSize)}" font-weight="bold" fill="{numColor}">{SvgRenderSupport.Escape(catNumber)}</text>""");
+        }
+
+        // Title text (bold) + description lines in the content bar
+        string barTextColorEscaped = SvgRenderSupport.Escape(barTextColor);
+        double textX = tabWidth + theme.NodePadding * 2;
+        double curY = theme.NodePadding + titleFontSize * 1.0;
+
+        // Title line – bold, larger
+        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(curY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{barTextColorEscaped}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+
+        // Description lines – normal weight, smaller
+        if (node.Metadata.TryGetValue("tablist:description", out var descObj) && descObj is string description && !string.IsNullOrWhiteSpace(description))
+        {
+            var descLines = description.Split('\n');
+            double lineHeight = descFontSize * 1.4;
+            curY += titleFontSize * 0.6 + descFontSize * 0.8;
+
+            for (int i = 0; i < descLines.Length; i++)
+            {
+                double lineY = curY + i * lineHeight;
+                sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(lineY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{barTextColorEscaped}">{SvgRenderSupport.Escape(descLines[i])}</text>""");
+            }
+        }
+    }
+
+    /// <summary>
+    /// Flat variant: a thin vertical accent line on the left, followed by a colored title bar
+    /// with bulleted description items beneath it in plain text — clean, modern whitespace-heavy style.
+    /// </summary>
+    private static void AppendTabListFlatBand(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        double accentLineWidth = SvgRenderSupport.GetMetadataDouble(node, "tablist:accentLineWidth") ?? 5;
+        double accentLineGap = SvgRenderSupport.GetMetadataDouble(node, "tablist:accentLineGap") ?? 12;
+        string accentColor = node.Metadata.TryGetValue("tablist:accentColor", out var acObj) ? acObj as string ?? fill : fill;
+        double barWidth = SvgRenderSupport.GetMetadataDouble(node, "tablist:barWidth") ?? (node.Width - accentLineWidth - accentLineGap);
+        double titleBarHeight = SvgRenderSupport.GetMetadataDouble(node, "tablist:titleBarHeight") ?? (node.Height * 0.3);
+        double descFontSize = SvgRenderSupport.GetMetadataDouble(node, "tablist:descFontSize") ?? theme.FontSize;
+        double titleFontSize = node.Label.FontSize ?? (theme.FontSize * 1.15);
+        double borderRadius = theme.BorderRadius;
+        double h = node.Height;
+        double barX = accentLineWidth + accentLineGap;
+
+        // Vertical accent line (full height of this category section)
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(accentLineWidth)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(accentLineWidth / 2)}" ry="{SvgRenderSupport.F(accentLineWidth / 2)}" fill="{SvgRenderSupport.Escape(accentColor)}" stroke="none"/>""");
+
+        // Colored title bar
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(barX)}" y="0" width="{SvgRenderSupport.F(barWidth)}" height="{SvgRenderSupport.F(titleBarHeight)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}" stroke="none"{shadowAttribute}/>""");
+
+        // Title text left-aligned inside the bar
+        string titleColor = SvgRenderSupport.Escape(node.Label.Color ?? ColorUtils.ChooseTextColor(fill));
+        double titleTextX = barX + theme.NodePadding * 1.5;
+        double titleTextY = titleBarHeight / 2 + titleFontSize * 0.35;
+        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(titleTextX)}" y="{SvgRenderSupport.F(titleTextY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{titleColor}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+
+        // Bulleted description items beneath the title bar
+        if (node.Metadata.TryGetValue("tablist:description", out var descObj) && descObj is string description && !string.IsNullOrWhiteSpace(description))
+        {
+            var descLines = description.Split('\n');
+            double lineHeight = descFontSize * 1.6;
+            double startY = titleBarHeight + theme.NodePadding * 0.8 + descFontSize;
+            string descTextColor = SvgRenderSupport.Escape(theme.TextColor);
+
+            for (int i = 0; i < descLines.Length; i++)
+            {
+                double lineY = startY + i * lineHeight;
+                sb.AppendLine($"""    <text x="{SvgRenderSupport.F(titleTextX)}" y="{SvgRenderSupport.F(lineY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{descTextColor}">{SvgRenderSupport.Escape("\u2022  " + descLines[i])}</text>""");
+            }
+        }
     }
 
     private static void AppendFunnelSegmentNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string fillOpacityAttribute, string shadowAttribute)

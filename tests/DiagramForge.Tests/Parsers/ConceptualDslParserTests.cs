@@ -27,6 +27,8 @@ public class ConceptualDslParserTests
     [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
     [InlineData("diagram: tree\ntree:\n  Root\n    Child")]
     [InlineData("diagram: snake\nsteps:\n  - Step 1\n  - Step 2\n  - Step 3")]
+    [InlineData("diagram: tablist\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
+    [InlineData("diagram: tablist\nlayout: flat\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
     {
         Assert.True(_parser.CanParse(text));
@@ -1276,5 +1278,342 @@ public class ConceptualDslParserTests
 
         Assert.Equal("builtin:cloud", diagram.Nodes["node_0"].IconRef);
         Assert.Equal("Step 1", diagram.Nodes["node_0"].Label.Text);
+    }
+
+    // ── TabList ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForTabList()
+    {
+        const string text = "diagram: tablist\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_TabList_ProducesTitleAndItemNodes()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: Security
+                items:
+                  - Encryption
+                  - MFA
+              - title: Performance
+                items:
+                  - CDN
+                  - Caching
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(6, diagram.Nodes.Count); // 2 titles + 4 items
+        Assert.True(diagram.Nodes.ContainsKey("tab_0"));
+        Assert.True(diagram.Nodes.ContainsKey("tab_1"));
+        Assert.True(diagram.Nodes.ContainsKey("tab_0_item_0"));
+        Assert.True(diagram.Nodes.ContainsKey("tab_0_item_1"));
+        Assert.True(diagram.Nodes.ContainsKey("tab_1_item_0"));
+        Assert.True(diagram.Nodes.ContainsKey("tab_1_item_1"));
+    }
+
+    [Fact]
+    public void Parse_TabList_TitleLabelsAreCorrect()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: Security
+                items:
+                  - Encryption
+              - title: Performance
+                items:
+                  - CDN
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Security", diagram.Nodes["tab_0"].Label.Text);
+        Assert.Equal("Performance", diagram.Nodes["tab_1"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_TabList_ItemLabelsAreCorrect()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: Security
+                items:
+                  - Encryption
+                  - MFA
+              - title: Performance
+                items:
+                  - CDN
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Encryption", diagram.Nodes["tab_0_item_0"].Label.Text);
+        Assert.Equal("MFA", diagram.Nodes["tab_0_item_1"].Label.Text);
+        Assert.Equal("CDN", diagram.Nodes["tab_1_item_0"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_TabList_SetsCorrectMetadata()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: Security
+                items:
+                  - Encryption
+              - title: Performance
+                items:
+                  - CDN
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var titleNode = diagram.Nodes["tab_0"];
+        Assert.Equal(0, titleNode.Metadata["tablist:categoryIndex"]);
+        Assert.Equal("title", titleNode.Metadata["tablist:kind"]);
+        Assert.Equal("cards", titleNode.Metadata["tablist:layout"]);
+
+        var itemNode = diagram.Nodes["tab_0_item_0"];
+        Assert.Equal(0, itemNode.Metadata["tablist:categoryIndex"]);
+        Assert.Equal(0, itemNode.Metadata["tablist:itemIndex"]);
+        Assert.Equal("item", itemNode.Metadata["tablist:kind"]);
+    }
+
+    [Fact]
+    public void Parse_TabList_DefaultLayout_IsCards()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: A
+                items:
+                  - X
+              - title: B
+                items:
+                  - Y
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("cards", diagram.Nodes["tab_0"].Metadata["tablist:layout"]);
+    }
+
+    [Fact]
+    public void Parse_TabList_ExplicitStackedLayout_SetsLayout()
+    {
+        const string text = """
+            diagram: tablist
+            layout: stacked
+            categories:
+              - title: A
+                items:
+                  - X
+              - title: B
+                items:
+                  - Y
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("stacked", diagram.Nodes["tab_0"].Metadata["tablist:layout"]);
+        Assert.Equal("stacked", diagram.Nodes["tab_0_item_0"].Metadata["tablist:layout"]);
+    }
+
+    [Fact]
+    public void Parse_TabList_ExplicitCardsLayout_SetsLayout()
+    {
+        const string text = """
+            diagram: tablist
+            layout: cards
+            categories:
+              - title: A
+                items:
+                  - X
+              - title: B
+                items:
+                  - Y
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("cards", diagram.Nodes["tab_0"].Metadata["tablist:layout"]);
+    }
+
+    [Fact]
+    public void Parse_TabList_UnknownLayout_ThrowsDiagramParseException()
+    {
+        const string text = """
+            diagram: tablist
+            layout: grid
+            categories:
+              - title: A
+                items:
+                  - X
+              - title: B
+                items:
+                  - Y
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("grid", ex.Message);
+        Assert.Contains("cards, stacked, flat", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_TabList_ExplicitFlatLayout_SetsLayout()
+    {
+        const string text = """
+            diagram: tablist
+            layout: flat
+            categories:
+              - title: A
+                items:
+                  - X
+              - title: B
+                items:
+                  - Y
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("flat", diagram.Nodes["tab_0"].Metadata["tablist:layout"]);
+        Assert.Equal("flat", diagram.Nodes["tab_0_item_0"].Metadata["tablist:layout"]);
+    }
+
+    [Fact]
+    public void Parse_TabList_SetsDiagramTypeToTabList()
+    {
+        const string text = "diagram: tablist\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("tablist", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_TabList_WithTitle_SetsTitle()
+    {
+        const string text = """
+            diagram: tablist
+            title: Platform Features
+            categories:
+              - title: Security
+                items:
+                  - Encryption
+              - title: Performance
+                items:
+                  - CDN
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Platform Features", diagram.Title);
+    }
+
+    [Fact]
+    public void Parse_TabList_WithNoItems_ProducesOnlyTitleNodes()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: Security
+              - title: Performance
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Nodes.Count);
+        Assert.All(diagram.Nodes.Values, n =>
+            Assert.Equal("title", n.Metadata["tablist:kind"]));
+    }
+
+    [Fact]
+    public void Parse_TabList_TitleAndItemsWithIconDirective_SetIconRefs()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: icon:builtin:cloud Security
+                items:
+                  - Encryption [icon:heroicons:shield-check]
+              - title: Performance
+                items:
+                  - icon:builtin:database CDN
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("builtin:cloud", diagram.Nodes["tab_0"].IconRef);
+        Assert.Equal("Security", diagram.Nodes["tab_0"].Label.Text);
+        Assert.Equal("heroicons:shield-check", diagram.Nodes["tab_0_item_0"].IconRef);
+        Assert.Equal("Encryption", diagram.Nodes["tab_0_item_0"].Label.Text);
+        Assert.Equal("builtin:database", diagram.Nodes["tab_1_item_0"].IconRef);
+        Assert.Equal("CDN", diagram.Nodes["tab_1_item_0"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_TabList_MissingCategoriesSection_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: tablist\n";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("categories:", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_TabList_TooFewCategories_ThrowsDiagramParseException()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: OnlyOne
+                items:
+                  - X
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("2 and 6", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_TabList_TooManyCategories_ThrowsDiagramParseException()
+    {
+        const string text = """
+            diagram: tablist
+            categories:
+              - title: A
+              - title: B
+              - title: C
+              - title: D
+              - title: E
+              - title: F
+              - title: G
+            """;
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("2 and 6", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_TabList_WithCrLfLineEndings_ParsesCorrectly()
+    {
+        const string text = "diagram: tablist\r\ncategories:\r\n  - title: Security\r\n    items:\r\n      - Encryption\r\n  - title: Performance\r\n    items:\r\n      - CDN\r\n";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(4, diagram.Nodes.Count);
+        Assert.Equal("Security", diagram.Nodes["tab_0"].Label.Text);
+        Assert.Equal("Encryption", diagram.Nodes["tab_0_item_0"].Label.Text);
     }
 }
