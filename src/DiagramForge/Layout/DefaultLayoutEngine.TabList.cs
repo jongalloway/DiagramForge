@@ -329,7 +329,6 @@ public sealed partial class DefaultLayoutEngine
             : [theme.NodeFillColor];
 
         double curY = pad + titleOffset;
-        double barX = pad + accentLineWidth + accentLineGap;
 
         for (int i = 0; i < titleNodes.Count; i++)
         {

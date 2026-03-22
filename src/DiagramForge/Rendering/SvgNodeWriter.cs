@@ -478,7 +478,6 @@ internal static class SvgNodeWriter
         double descFontSize = SvgRenderSupport.GetMetadataDouble(node, "tablist:descFontSize") ?? theme.FontSize;
         double titleFontSize = node.Label.FontSize ?? (theme.FontSize * 1.15);
         double borderRadius = theme.BorderRadius;
-        double w = node.Width;
         double h = node.Height;
         double barX = accentLineWidth + accentLineGap;
 
