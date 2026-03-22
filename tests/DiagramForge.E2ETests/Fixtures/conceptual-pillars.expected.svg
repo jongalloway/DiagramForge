@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="560.00" height="205.60" viewBox="0 0 560.00 205.60">
+<svg xmlns="http://www.w3.org/2000/svg" width="1198.40" height="209.28" viewBox="0 0 1198.40 209.28">
   <defs>
     <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
       <polygon points="0 0, 10 3.5, 0 7" fill="#173F6D"/>
@@ -13,21 +13,8 @@
       <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFDF8" stroke="#173F6D" stroke-width="1.50"/>
     </marker>
   </defs>
-  <rect width="560.00" height="205.60" fill="#FFFDF8" rx="12.00" ry="12.00"/>
+  <rect width="1198.40" height="209.28" fill="#FFFDF8" rx="12.00" ry="12.00"/>
   <g transform="translate(32.00,32.00)">
-    <defs>
-      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#E9F1FF"/>
-        <stop offset="58%" stop-color="#E7F0FF"/>
-        <stop offset="100%" stop-color="#D6DEEC"/>
-      </linearGradient>
-      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#C0C6D3"/>
-        <stop offset="33%" stop-color="#D3C6A6"/>
-        <stop offset="67%" stop-color="#B9C8D3"/>
-        <stop offset="100%" stop-color="#C1CAC1"/>
-      </linearGradient>
-    </defs>
     <defs>
       <filter id="node-0-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
         <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
@@ -40,10 +27,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-soft-shadow)"/>
-    <text x="72.00" y="32.40" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">People</text>
+    <rect width="356.80" height="57.28" rx="12.00" ry="12.00" fill="#909EB4" stroke="#737E90" stroke-width="4.50" filter="url(#node-0-soft-shadow)"/>
+    <text x="178.40" y="35.36" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="19.20" font-weight="bold" fill="#0F172A">Stark</text>
   </g>
-  <g transform="translate(32.00,89.60)">
+  <g transform="translate(32.00,93.28)">
     <defs>
       <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#EEF4FF"/>
@@ -69,10 +56,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Skills</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-soft-shadow)"/>
+    <text x="178.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Winter is Coming</text>
   </g>
-  <g transform="translate(32.00,133.60)">
+  <g transform="translate(32.00,137.28)">
     <defs>
       <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#EEF4FF"/>
@@ -98,23 +85,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Roles</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-soft-shadow)"/>
+    <text x="178.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">The North Remembers</text>
   </g>
-  <g transform="translate(208.00,32.00)">
-    <defs>
-      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#FFE8DC"/>
-        <stop offset="58%" stop-color="#FFE6D8"/>
-        <stop offset="100%" stop-color="#ECD5C8"/>
-      </linearGradient>
-      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#C0C6D3"/>
-        <stop offset="33%" stop-color="#D3C6A6"/>
-        <stop offset="67%" stop-color="#B9C8D3"/>
-        <stop offset="100%" stop-color="#C1CAC1"/>
-      </linearGradient>
-    </defs>
+  <g transform="translate(420.80,32.00)">
     <defs>
       <filter id="node-3-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
         <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
@@ -127,10 +101,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-soft-shadow)"/>
-    <text x="72.00" y="32.40" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Process</text>
+    <rect width="356.80" height="57.28" rx="12.00" ry="12.00" fill="#C29C87" stroke="#9B7C6C" stroke-width="4.50" filter="url(#node-3-soft-shadow)"/>
+    <text x="178.40" y="35.36" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="19.20" font-weight="bold" fill="#0F172A">Targaryen</text>
   </g>
-  <g transform="translate(208.00,89.60)">
+  <g transform="translate(420.80,93.28)">
     <defs>
       <linearGradient id="node-4-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFEEE4"/>
@@ -156,10 +130,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Intake</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-4-fill-gradient)" stroke="url(#node-4-stroke-gradient)" stroke-width="1.80" filter="url(#node-4-soft-shadow)"/>
+    <text x="178.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Fire and Blood</text>
   </g>
-  <g transform="translate(208.00,133.60)">
+  <g transform="translate(420.80,137.28)">
     <defs>
       <linearGradient id="node-5-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFEEE4"/>
@@ -185,23 +159,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.80" filter="url(#node-5-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Delivery</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-5-fill-gradient)" stroke="url(#node-5-stroke-gradient)" stroke-width="1.80" filter="url(#node-5-soft-shadow)"/>
+    <text x="178.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Dracarys</text>
   </g>
-  <g transform="translate(384.00,32.00)">
-    <defs>
-      <linearGradient id="node-6-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#FFF1CD"/>
-        <stop offset="58%" stop-color="#FFF0C7"/>
-        <stop offset="100%" stop-color="#ECDEB8"/>
-      </linearGradient>
-      <linearGradient id="node-6-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#C0C6D3"/>
-        <stop offset="33%" stop-color="#D3C6A6"/>
-        <stop offset="67%" stop-color="#B9C8D3"/>
-        <stop offset="100%" stop-color="#C1CAC1"/>
-      </linearGradient>
-    </defs>
+  <g transform="translate(809.60,32.00)">
     <defs>
       <filter id="node-6-soft-shadow" x="-8%" y="-8%" width="124%" height="136%" color-interpolation-filters="sRGB">
         <feGaussianBlur in="SourceAlpha" stdDeviation="1.65" result="shadow-blur"/>
@@ -214,10 +175,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="53.60" rx="12.00" ry="12.00" fill="url(#node-6-fill-gradient)" stroke="url(#node-6-stroke-gradient)" stroke-width="1.80" filter="url(#node-6-soft-shadow)"/>
-    <text x="72.00" y="32.40" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Technology</text>
+    <rect width="356.80" height="57.28" rx="12.00" ry="12.00" fill="#D0BA7C" stroke="#A69463" stroke-width="4.50" filter="url(#node-6-soft-shadow)"/>
+    <text x="178.40" y="35.36" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="19.20" font-weight="bold" fill="#0F172A">Lannister</text>
   </g>
-  <g transform="translate(384.00,89.60)">
+  <g transform="translate(809.60,93.28)">
     <defs>
       <linearGradient id="node-7-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFF4D9"/>
@@ -243,10 +204,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.80" filter="url(#node-7-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Platform</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-7-fill-gradient)" stroke="url(#node-7-stroke-gradient)" stroke-width="1.80" filter="url(#node-7-soft-shadow)"/>
+    <text x="178.40" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Hear Me Roar</text>
   </g>
-  <g transform="translate(384.00,133.60)">
+  <g transform="translate(809.60,137.28)">
     <defs>
       <linearGradient id="node-8-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
         <stop offset="0%" stop-color="#FFF4D9"/>
@@ -272,7 +233,10 @@
         </feMerge>
       </filter>
     </defs>
-    <rect width="144.00" height="40.00" rx="12.00" ry="12.00" fill="url(#node-8-fill-gradient)" stroke="url(#node-8-stroke-gradient)" stroke-width="1.80" filter="url(#node-8-soft-shadow)"/>
-    <text x="72.00" y="25.60" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">Tooling</text>
+    <rect width="356.80" height="40.00" rx="12.00" ry="12.00" fill="url(#node-8-fill-gradient)" stroke="url(#node-8-stroke-gradient)" stroke-width="1.80" filter="url(#node-8-soft-shadow)"/>
+    <text x="178.40" y="16.40" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" fill="#111827">
+      <tspan x="178.40" y="16.40">A Lannister Always</tspan>
+      <tspan x="178.40" dy="18.40">Pays His Debts</tspan>
+    </text>
   </g>
 </svg>

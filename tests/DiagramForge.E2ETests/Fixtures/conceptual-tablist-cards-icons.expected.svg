@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="648.00" height="589.60" viewBox="0 0 648.00 589.60">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#74C7EC"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#1E1E2E" stroke="#74C7EC" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#74C7EC"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#1E1E2E" stroke="#74C7EC" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="648.00" height="589.60" fill="#1E1E2E" rx="8.00" ry="8.00"/>
+  <text x="324.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#CDD6F4">RPG Character Classes</text>
+  <g transform="translate(24.00,47.00)">
+    <rect x="0" y="0" width="600.00" height="109.50" rx="8.00" ry="8.00" fill="#E6E6E8" stroke="#A2A2AA" stroke-width="1.50"/>
+    <rect x="0" y="0" width="120.00" height="109.50" rx="8.00" ry="8.00" fill="#0C0E3B" stroke="#484A6C" stroke-width="1.50"/>
+    <text x="144.00" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Heavy Armor Proficiency</text>
+    <text x="144.00" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Berserker Rage</text>
+    <text x="144.00" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Shield Wall</text>
+    <g transform="translate(507.00,21.75)">
+      <svg width="66.00" height="66.00" viewBox="0 0 24 24" overflow="visible" color="#0F172A">
+        <path d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="60.00" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Warrior</text>
+  </g>
+  <g transform="translate(24.00,175.70)">
+    <rect x="0" y="0" width="600.00" height="109.50" rx="8.00" ry="8.00" fill="#E7E6EA" stroke="#A6A4B1" stroke-width="1.50"/>
+    <rect x="0" y="0" width="120.00" height="109.50" rx="8.00" ry="8.00" fill="#1C0D55" stroke="#54497F" stroke-width="1.50"/>
+    <text x="144.00" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Arcane Mastery</text>
+    <text x="144.00" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Mana Regeneration</text>
+    <text x="144.00" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Elemental Attunement</text>
+    <g transform="translate(507.00,21.75)">
+      <svg width="66.00" height="66.00" viewBox="0 0 24 24" overflow="visible" color="#0F172A">
+        <path d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.867 8.21 8.21 0 0 0 3 2.48Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="60.00" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Mage</text>
+  </g>
+  <g transform="translate(24.00,304.40)">
+    <rect x="0" y="0" width="600.00" height="109.50" rx="8.00" ry="8.00" fill="#E7E9EC" stroke="#A5AEB9" stroke-width="1.50"/>
+    <rect x="0" y="0" width="120.00" height="109.50" rx="8.00" ry="8.00" fill="#0E3B7C" stroke="#4A6C9C" stroke-width="1.50"/>
+    <text x="144.00" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Stealth &amp; Evasion</text>
+    <text x="144.00" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Critical Strike Bonus</text>
+    <text x="144.00" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Lockpicking Expert</text>
+    <g transform="translate(507.00,21.75)">
+      <svg width="66.00" height="66.00" viewBox="0 0 24 24" overflow="visible" color="#0F172A">
+        <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="60.00" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Rogue</text>
+  </g>
+  <g transform="translate(24.00,433.10)">
+    <rect x="0" y="0" width="600.00" height="109.50" rx="8.00" ry="8.00" fill="#E6EBEC" stroke="#A4B6BA" stroke-width="1.50"/>
+    <rect x="0" y="0" width="120.00" height="109.50" rx="8.00" ry="8.00" fill="#0D7185" stroke="#4994A3" stroke-width="1.50"/>
+    <text x="144.00" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Restoration Magic</text>
+    <text x="144.00" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Party-wide Buffs</text>
+    <text x="144.00" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Resurrection Ritual</text>
+    <g transform="translate(507.00,21.75)">
+      <svg width="66.00" height="66.00" viewBox="0 0 24 24" overflow="visible" color="#0F172A">
+        <path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+    <text x="60.00" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Healer</text>
+  </g>
+</svg>

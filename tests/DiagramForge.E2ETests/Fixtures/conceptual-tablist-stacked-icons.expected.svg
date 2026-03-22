@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620.88" height="579.08" viewBox="0 0 620.88 579.08">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FF79C6"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#282A36" stroke="#FF79C6" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FF79C6"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#282A36" stroke="#FF79C6" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="620.88" height="579.08" fill="#282A36" rx="8.00" ry="8.00"/>
+  <text x="310.44" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#F8F8F2">The Grand Heist Plan</text>
+  <g transform="translate(24.00,47.00)">
+    <rect x="68.44" y="0" width="504.44" height="116.77" rx="8.00" ry="8.00" fill="#1B1F36" stroke="#545768" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="116.77" rx="8.00" ry="8.00" fill="#0D143A" stroke="#494E6B" stroke-width="0.75"/>
+    <text x="38.22" y="67.94" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">01</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Reconnaissance</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Map guard patrol routes</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Identify camera blind spots</text>
+    <text x="100.44" y="89.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Befriend the night janitor</text>
+    <g transform="translate(513.64,37.36)">
+      <svg width="42.04" height="42.04" viewBox="0 0 24 24" overflow="visible" color="#F8FAFC">
+        <path d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" /><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(24.00,169.77)">
+    <rect x="68.44" y="0" width="504.44" height="116.77" rx="8.00" ry="8.00" fill="#1F2356" stroke="#575A80" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="116.77" rx="8.00" ry="8.00" fill="#0F1669" stroke="#4B508E" stroke-width="0.75"/>
+    <text x="38.22" y="67.94" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">02</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Infiltration</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Acquire matching uniforms</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Clone the keycard signal</text>
+    <text x="100.44" y="89.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Disable the laser grid</text>
+    <g transform="translate(513.64,37.36)">
+      <svg width="42.04" height="42.04" viewBox="0 0 24 24" overflow="visible" color="#F8FAFC">
+        <path d="M15.75 5.25a3 3 0 0 1 3 3m3 0a6 6 0 0 1-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1 1 21.75 8.25Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(24.00,292.54)">
+    <rect x="68.44" y="0" width="504.44" height="116.77" rx="8.00" ry="8.00" fill="#32206D" stroke="#655791" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="116.77" rx="8.00" ry="8.00" fill="#2D0F8F" stroke="#614BAB" stroke-width="0.75"/>
+    <text x="38.22" y="67.94" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">03</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">The Grab</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Crack the vault in 90 seconds</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Swap the diamond with a decoy</text>
+    <text x="100.44" y="89.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Signal the rooftop extraction</text>
+    <g transform="translate(513.64,37.36)">
+      <svg width="42.04" height="42.04" viewBox="0 0 24 24" overflow="visible" color="#F8FAFC">
+        <path d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+  </g>
+  <g transform="translate(24.00,415.31)">
+    <rect x="68.44" y="0" width="504.44" height="116.77" rx="8.00" ry="8.00" fill="#1F4662" stroke="#577489" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="116.77" rx="8.00" ry="8.00" fill="#0F507D" stroke="#4B7B9D" stroke-width="0.75"/>
+    <text x="38.22" y="67.94" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">04</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Getaway</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Escape via laundry chute</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Rendezvous at the safe house</text>
+    <text x="100.44" y="89.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Celebrate with tiny sandwiches</text>
+    <g transform="translate(513.64,37.36)">
+      <svg width="42.04" height="42.04" viewBox="0 0 24 24" overflow="visible" color="#F8FAFC">
+        <path d="M7.5 21 3 16.5m0 0L7.5 12M3 16.5h13.5m0-13.5L21 7.5m0 0L16.5 12M21 7.5H7.5" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </g>
+  </g>
+</svg>

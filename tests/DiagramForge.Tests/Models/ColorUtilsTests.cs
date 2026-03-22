@@ -352,5 +352,111 @@ public class ColorUtilsTests
         string chosen = ColorUtils.ChooseTextColor("#FFFFFF");
         Assert.Equal("#0F172A", chosen);
     }
+
+    // ── ToHex ─────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void ToHex_OpaqueChannels_ReturnsRrggbbFormat()
+    {
+        string result = ColorUtils.ToHex(0x4F, 0x81, 0xBD);
+        Assert.Equal("#4F81BD", result, ignoreCase: true);
+        Assert.Equal(7, result.Length);
+    }
+
+    [Fact]
+    public void ToHex_WithNonOpaqueAlpha_ReturnsRrggbbaaFormat()
+    {
+        string result = ColorUtils.ToHex(0x4F, 0x81, 0xBD, 0xCC);
+        Assert.Equal("#4F81BDCC", result, ignoreCase: true);
+        Assert.Equal(9, result.Length);
+    }
+
+    [Fact]
+    public void ToHex_OpaqueAlpha255_OmitsAlphaByte()
+    {
+        string result = ColorUtils.ToHex(100, 150, 200, 255);
+        Assert.Equal(7, result.Length); // #RRGGBB only
+    }
+
+    [Fact]
+    public void ToHex_OverflowChannels_ClampsTo255()
+    {
+        // Values above 255 should clamp — not produce out-of-range hex
+        string result = ColorUtils.ToHex(300, 400, 500);
+        Assert.Equal("#FFFFFF", result, ignoreCase: true);
+    }
+
+    [Fact]
+    public void ToHex_NegativeChannels_ClampsToZero()
+    {
+        string result = ColorUtils.ToHex(-10, -50, -100);
+        Assert.Equal("#000000", result, ignoreCase: true);
+    }
+
+    [Fact]
+    public void ToHex_MixedOutOfRangeChannels_ClampedIndividually()
+    {
+        // r=300→FF, g=0x81 stays, b=-1→00
+        string result = ColorUtils.ToHex(300, 0x81, -1);
+        Assert.Equal("#FF8100", result, ignoreCase: true);
+    }
+
+    // ── Vibrant ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Vibrant_PastelInput_ProducesMoreSaturatedResult()
+    {
+        // A pastel blue with clear hue deviation across channels
+        string pastel = "#AACCEE";
+        string vibrant = ColorUtils.Vibrant(pastel);
+        var (pr, pg, pb) = ColorUtils.ParseHex(pastel);
+        var (vr, vg, vb) = ColorUtils.ParseHex(vibrant);
+
+        // The max-min spread (saturation proxy) should be larger after vibrant
+        int pastelSpread = Math.Max(pr, Math.Max(pg, pb)) - Math.Min(pr, Math.Min(pg, pb));
+        int vibrantSpread = Math.Max(vr, Math.Max(vg, vb)) - Math.Min(vr, Math.Min(vg, vb));
+        Assert.True(vibrantSpread > pastelSpread, $"Expected vibrant spread ({vibrantSpread}) > pastel spread ({pastelSpread}).");
+    }
+
+    [Fact]
+    public void Vibrant_PreservesAlphaChannel()
+    {
+        string result = ColorUtils.Vibrant("#AACCEECC");
+        var (_, _, _, a) = ColorUtils.ParseHexWithAlpha(result);
+        Assert.Equal(0xCC, a);
+        Assert.Equal(9, result.Length); // #RRGGBBAA
+    }
+
+    [Fact]
+    public void Vibrant_OpaqueInput_OutputHasNoAlphaSuffix()
+    {
+        string result = ColorUtils.Vibrant("#AACCEE");
+        Assert.Equal(7, result.Length); // #RRGGBB
+    }
+
+    [Fact]
+    public void Vibrant_ReturnsValidHexString()
+    {
+        string result = ColorUtils.Vibrant("#B3D9F2");
+        // Should start with # and be parseable
+        Assert.StartsWith("#", result);
+        var (r, g, b) = ColorUtils.ParseHex(result); // must not throw
+        Assert.InRange(r, 0, 255);
+        Assert.InRange(g, 0, 255);
+        Assert.InRange(b, 0, 255);
+    }
+
+    [Fact]
+    public void Vibrant_HigherAmplify_ProducesMoreIntenseResult()
+    {
+        string pastel = "#AACCEE";
+        string vibrant1 = ColorUtils.Vibrant(pastel, amplify: 2.0);
+        string vibrant2 = ColorUtils.Vibrant(pastel, amplify: 4.0);
+        var (r1, g1, b1) = ColorUtils.ParseHex(vibrant1);
+        var (r2, g2, b2) = ColorUtils.ParseHex(vibrant2);
+        int spread1 = Math.Max(r1, Math.Max(g1, b1)) - Math.Min(r1, Math.Min(g1, b1));
+        int spread2 = Math.Max(r2, Math.Max(g2, b2)) - Math.Min(r2, Math.Min(g2, b2));
+        Assert.True(spread2 >= spread1, "Higher amplify should produce equal or greater channel spread.");
+    }
 }
 

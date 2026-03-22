@@ -1,0 +1,22 @@
+---
+theme: nord-light
+---
+diagram: tablist
+layout: flat
+title: Sci-Fi Book Recommendations
+categories:
+  - title: icon:heroicons:star Space Opera
+    items:
+      - Dune by Frank Herbert
+      - The Expanse by James S.A. Corey
+      - Hyperion by Dan Simmons
+  - title: icon:heroicons:computer-desktop Cyberpunk
+    items:
+      - Neuromancer by William Gibson
+      - Snow Crash by Neal Stephenson
+      - Do Androids Dream of Electric Sheep?
+  - title: icon:heroicons:bolt Hard Science Fiction
+    items:
+      - The Martian by Andy Weir
+      - Rendezvous with Rama by Arthur C. Clarke
+      - Project Hail Mary by Andy Weir
