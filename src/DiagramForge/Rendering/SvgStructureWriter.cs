@@ -5,7 +5,16 @@ namespace DiagramForge.Rendering;
 
 internal static class SvgStructureWriter
 {
+    internal enum EdgeRenderPass
+    {
+        Underlay,
+        Overlay,
+    }
+
     internal static void AppendEdge(StringBuilder sb, Edge edge, Node source, Node target, Theme theme, LayoutHints hints)
+        => AppendEdge(sb, edge, source, target, theme, hints, EdgeRenderPass.Underlay);
+
+    internal static void AppendEdge(StringBuilder sb, Edge edge, Node source, Node target, Theme theme, LayoutHints hints, EdgeRenderPass renderPass)
     {
         double sourceCenterX = source.X + source.Width / 2;
         double sourceCenterY = source.Y + source.Height / 2;
@@ -65,26 +74,43 @@ internal static class SvgStructureWriter
             y2 = target.Y + target.Height;
         }
 
+        if (TryGetMetadataDouble(edge.Metadata, "render:sourceAnchorX", out var sourceAnchorX))
+            x1 = sourceAnchorX;
+        if (TryGetMetadataDouble(edge.Metadata, "render:sourceAnchorY", out var sourceAnchorY))
+            y1 = sourceAnchorY;
+        if (TryGetMetadataDouble(edge.Metadata, "render:targetAnchorX", out var targetAnchorX))
+            x2 = targetAnchorX;
+        if (TryGetMetadataDouble(edge.Metadata, "render:targetAnchorY", out var targetAnchorY))
+            y2 = targetAnchorY;
+
         double edgeDx = x2 - x1;
         double edgeDy = y2 - y1;
         double edgeLen = Math.Sqrt(edgeDx * edgeDx + edgeDy * edgeDy);
+        bool subtleTargetBezier = edge.Metadata.TryGetValue("target:subtleBezier", out var subtleBezierObj)
+            && subtleBezierObj is true;
+        cp1 = $"{SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)}";
+        cp2 = $"{SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
         double cpDist = edgeLen * 0.4;
         if (edgeLen > 0)
         {
             double ux = edgeDx / edgeLen;
             double uy = edgeDy / edgeLen;
 
-            if (preferHorizontal)
+            if (subtleTargetBezier)
+            {
+                double handleX = Math.Clamp(Math.Abs(edgeDx) * 0.22, 20, 42);
+                double cp1X = x1 + (edgeDx >= 0 ? handleX : -handleX);
+                double cp2X = x2 - (edgeDx >= 0 ? handleX : -handleX);
+                cp1 = $"{SvgRenderSupport.F(cp1X)},{SvgRenderSupport.F(y1)}";
+                cp2 = $"{SvgRenderSupport.F(cp2X)},{SvgRenderSupport.F(y2)}";
+            }
+            else if (preferHorizontal)
                 cp1 = $"{SvgRenderSupport.F(x1 + (dx >= 0 ? cpDist : -cpDist))},{SvgRenderSupport.F(y1)}";
             else
                 cp1 = $"{SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1 + (dy >= 0 ? cpDist : -cpDist))}";
 
-            cp2 = $"{SvgRenderSupport.F(x2 - ux * cpDist)},{SvgRenderSupport.F(y2 - uy * cpDist)}";
-        }
-        else
-        {
-            cp1 = $"{SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)}";
-            cp2 = $"{SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
+            if (!subtleTargetBezier)
+                cp2 = $"{SvgRenderSupport.F(x2 - ux * cpDist)},{SvgRenderSupport.F(y2 - uy * cpDist)}";
         }
 
         bool isSequenceEdge = false;
@@ -164,7 +190,60 @@ internal static class SvgStructureWriter
             }
         }
 
-        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{strokeDash}{markerStart}{markerEnd}/>""");
+        bool outlinedTargetConnector = edge.Metadata.TryGetValue("target:outlinedConnector", out var outlinedObj)
+            && outlinedObj is true;
+        bool overlayEdge = edge.Metadata.TryGetValue("render:overlay", out var overlayObj)
+            && overlayObj is true;
+        double underlayStartLength = 0;
+        double underlayEndLength = 0;
+        bool splitTargetConnector = outlinedTargetConnector
+            && overlayEdge
+            && TryGetMetadataDouble(edge.Metadata, "target:underlayStartLength", out underlayStartLength)
+            && TryGetMetadataDouble(edge.Metadata, "target:underlayEndLength", out underlayEndLength);
+
+        string overlaySegmentAttributes = string.Empty;
+        if (splitTargetConnector)
+        {
+            double totalDx = x2 - x1;
+            double totalDy = y2 - y1;
+            double totalLength = Math.Sqrt((totalDx * totalDx) + (totalDy * totalDy));
+            double visibleStart = Math.Min(underlayStartLength, totalLength * 0.4);
+            double visibleEnd = Math.Min(underlayEndLength, totalLength * 0.35);
+            double overlayLength = totalLength - visibleStart - visibleEnd;
+
+            if (totalLength > 0.001 && overlayLength > 8)
+            {
+                double startPercent = (visibleStart / totalLength) * 100;
+                double middlePercent = (overlayLength / totalLength) * 100;
+                double endPercent = 100 - startPercent - middlePercent;
+                overlaySegmentAttributes = $" pathLength=\"100\" stroke-dasharray=\"0 {SvgRenderSupport.F(startPercent)} {SvgRenderSupport.F(middlePercent)} {SvgRenderSupport.F(endPercent)}\"";
+            }
+            else
+            {
+                splitTargetConnector = false;
+            }
+        }
+
+        if (overlayEdge)
+        {
+            if (renderPass == EdgeRenderPass.Underlay)
+            {
+                double underlayStrokeWidth = GetTargetConnectorStrokeWidth(strokeWidth, theme);
+                AppendConnectorPath(sb, pathData, strokeColor, strokeDash, outlinedTargetConnector: false, theme, includeMarkers: false, baseStrokeWidth: underlayStrokeWidth);
+                return;
+            }
+
+            if (splitTargetConnector)
+            {
+                AppendConnectorPath(sb, pathData, strokeColor, strokeDash, outlinedTargetConnector, theme, includeMarkers: false, lineCap: "butt", extraAttributes: overlaySegmentAttributes);
+                return;
+            }
+        }
+
+        if (renderPass == EdgeRenderPass.Overlay)
+            return;
+
+        AppendConnectorPath(sb, pathData, strokeColor, strokeDash, outlinedTargetConnector, theme, includeMarkers: true, markerStart, markerEnd, strokeWidth);
 
         if (edge.SourceLabel is not null && !string.IsNullOrWhiteSpace(edge.SourceLabel.Text))
         {
@@ -212,6 +291,64 @@ internal static class SvgStructureWriter
         }
 
         return Math.Abs(dx) >= Math.Abs(dy);
+    }
+
+    private static string GetTargetConnectorOutlineColor(Theme theme)
+        => ColorUtils.IsLight(theme.BackgroundColor)
+            ? "#FFFFFF"
+            : "#0F172A";
+
+    private static double GetTargetConnectorStrokeWidth(double strokeWidth, Theme theme)
+        => Math.Max(strokeWidth + 0.9, theme.StrokeWidth * 1.75);
+
+    private static void AppendConnectorPath(
+        StringBuilder sb,
+        string pathData,
+        string strokeColor,
+        string strokeDash,
+        bool outlinedTargetConnector,
+        Theme theme,
+        bool includeMarkers,
+        string markerStart = " ",
+        string markerEnd = " ",
+        double? baseStrokeWidth = null,
+        string lineCap = "round",
+        string extraAttributes = "")
+    {
+        double strokeWidth = baseStrokeWidth ?? theme.StrokeWidth;
+
+        if (outlinedTargetConnector)
+        {
+            string outlineColor = SvgRenderSupport.Escape(GetTargetConnectorOutlineColor(theme));
+            double connectorStrokeWidth = GetTargetConnectorStrokeWidth(strokeWidth, theme);
+            double haloPerSide = Math.Max(0.55, theme.StrokeWidth * 0.45);
+            double outlineWidth = connectorStrokeWidth + (haloPerSide * 2);
+            string appliedMarkerStart = includeMarkers ? markerStart : " ";
+            string appliedMarkerEnd = includeMarkers ? markerEnd : " ";
+            string escapedLineCap = SvgRenderSupport.Escape(lineCap);
+            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineWidth)}" stroke-linecap="{escapedLineCap}" stroke-linejoin="round"{extraAttributes}{strokeDash}/>""");
+            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(connectorStrokeWidth)}" stroke-linecap="{escapedLineCap}" stroke-linejoin="round"{extraAttributes}{strokeDash}{appliedMarkerStart}{appliedMarkerEnd}/>""");
+            return;
+        }
+
+        string startMarker = includeMarkers ? markerStart : " ";
+        string endMarker = includeMarkers ? markerEnd : " ";
+        string lineCapAttribute = string.Equals(lineCap, "round", StringComparison.Ordinal)
+            ? string.Empty
+            : $" stroke-linecap=\"{SvgRenderSupport.Escape(lineCap)}\"";
+        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{lineCapAttribute}{extraAttributes}{strokeDash}{startMarker}{endMarker}/>""");
+    }
+
+    private static bool TryGetMetadataDouble(IReadOnlyDictionary<string, object> metadata, string key, out double value)
+    {
+        if (metadata.TryGetValue(key, out var rawValue))
+        {
+            value = Convert.ToDouble(rawValue, System.Globalization.CultureInfo.InvariantCulture);
+            return true;
+        }
+
+        value = 0;
+        return false;
     }
 
     private static bool IsHierarchyEdge(Edge edge) =>

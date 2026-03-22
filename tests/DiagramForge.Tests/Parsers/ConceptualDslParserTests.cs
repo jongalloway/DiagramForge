@@ -27,6 +27,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
     [InlineData("diagram: tree\ntree:\n  Root\n    Child")]
     [InlineData("diagram: snake\nsteps:\n  - Step 1\n  - Step 2\n  - Step 3")]
+    [InlineData("diagram: target\ncenter: Launch\nrings:\n  - Inner: Focus\n  - Outer: Reach")]
     [InlineData("diagram: tablist\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
     [InlineData("diagram: tablist\nlayout: flat\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
@@ -1278,6 +1279,81 @@ public class ConceptualDslParserTests
 
         Assert.Equal("builtin:cloud", diagram.Nodes["node_0"].IconRef);
         Assert.Equal("Step 1", diagram.Nodes["node_0"].Label.Text);
+    }
+
+    // ── Target ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void CanParse_ReturnsTrue_ForTarget()
+    {
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+
+        Assert.True(_parser.CanParse(text));
+    }
+
+    [Fact]
+    public void Parse_Target_ProducesCenterRingAndCardNodes()
+    {
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner: Pricing\n  - Middle: Programs\n  - Outer: Reach";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(7, diagram.Nodes.Count);
+        Assert.True(diagram.Nodes.ContainsKey("center"));
+        Assert.True(diagram.Nodes.ContainsKey("ring_0"));
+        Assert.True(diagram.Nodes.ContainsKey("ring_1"));
+        Assert.True(diagram.Nodes.ContainsKey("ring_2"));
+        Assert.True(diagram.Nodes.ContainsKey("card_0"));
+        Assert.True(diagram.Nodes.ContainsKey("card_1"));
+        Assert.True(diagram.Nodes.ContainsKey("card_2"));
+        Assert.Equal(3, diagram.Edges.Count);
+    }
+
+    [Fact]
+    public void Parse_Target_SetsRingMetadataAndDescriptions()
+    {
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner ring: Pricing and messaging\n  - Outer ring: Audience reach";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("ring", diagram.Nodes["ring_0"].Metadata["target:kind"]);
+        Assert.Equal(0, diagram.Nodes["ring_0"].Metadata["target:ringIndex"]);
+        Assert.Equal("Pricing and messaging", diagram.Nodes["ring_0"].Metadata["target:description"]);
+        Assert.Equal("card", diagram.Nodes["card_0"].Metadata["target:kind"]);
+        Assert.Equal("Pricing and messaging", diagram.Nodes["card_0"].Metadata["target:description"]);
+    }
+
+    [Fact]
+    public void Parse_Target_WithTitleAndCenterIcon_SetsMetadata()
+    {
+        const string text = "diagram: target\ntitle: Launch Focus\ncenter: icon:builtin:cloud Launch\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Launch Focus", diagram.Title);
+        Assert.Equal("builtin:cloud", diagram.Nodes["center"].IconRef);
+        Assert.Equal("Launch", diagram.Nodes["center"].Label.Text);
+        Assert.Equal("target", diagram.DiagramType);
+    }
+
+    [Fact]
+    public void Parse_Target_MissingCenter_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: target\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("center", ex.Message);
+    }
+
+    [Fact]
+    public void Parse_Target_TooFewRings_ThrowsDiagramParseException()
+    {
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Only one";
+
+        var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
+
+        Assert.Contains("between 2 and 5", ex.Message);
     }
 
     // ── TabList ───────────────────────────────────────────────────────────────

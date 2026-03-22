@@ -1,0 +1,7 @@
+diagram: target
+title: Galactic Launch Plan
+center: Ship It
+rings:
+  - Outer ring: Cantina buzz, holo-posters, and sector-wide hype
+  - Middle ring: Crew sync, fuel checks, and bug hunts
+  - Inner ring: Feature flags, rollback plans, and one last deploy
