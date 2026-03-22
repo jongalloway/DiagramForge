@@ -244,11 +244,18 @@ public static class ColorUtils
 
     /// <summary>
     /// Formats RGB(A) channels back to a hex color string.
+    /// Channels are clamped to the valid byte range (0–255) before formatting.
     /// Omits the alpha byte when <paramref name="a"/> is 255 (fully opaque).
     /// </summary>
-    public static string ToHex(int r, int g, int b, int a = 255) =>
-        a == 255
-            ? $"#{r:X2}{g:X2}{b:X2}"
-            : $"#{r:X2}{g:X2}{b:X2}{a:X2}";
+    public static string ToHex(int r, int g, int b, int a = 255)
+    {
+        int cr = Clamp(r);
+        int cg = Clamp(g);
+        int cb = Clamp(b);
+        int ca = Clamp(a);
+        return ca == 255
+            ? $"#{cr:X2}{cg:X2}{cb:X2}"
+            : $"#{cr:X2}{cg:X2}{cb:X2}{ca:X2}";
+    }
 }
 
