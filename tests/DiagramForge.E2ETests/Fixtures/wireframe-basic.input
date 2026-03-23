@@ -1,8 +1,0 @@
-wireframe: Login Screen
-::: HEADER :::
-  # Login
---- END ---
-[ text: Username ]
-[ text: Password ]
-[ ] Remember me
-[ Login ](#login)

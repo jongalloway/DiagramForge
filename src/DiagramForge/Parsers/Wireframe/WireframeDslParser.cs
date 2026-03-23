@@ -63,9 +63,8 @@ public sealed class WireframeDslParser : IDiagramParser
         if (rawLines.Length == 0)
             throw new DiagramParseException("Diagram text is empty.");
 
-        // Locate the header line ("wireframe [: title]") and parse the optional title.
+        // Locate the header line ("wireframe [: title]") to find where the body starts.
         int startLine = 0;
-        string? title = null;
 
         for (int i = 0; i < rawLines.Length; i++)
         {
@@ -77,14 +76,6 @@ public sealed class WireframeDslParser : IDiagramParser
                 throw new DiagramParseException(
                     "Wireframe DSL must begin with 'wireframe' or 'wireframe: <title>'.");
 
-            int colonPos = trimmed.IndexOf(':', StringComparison.Ordinal);
-            if (colonPos >= 0)
-            {
-                var titlePart = trimmed[(colonPos + 1)..].Trim();
-                if (!string.IsNullOrEmpty(titlePart))
-                    title = titlePart;
-            }
-
             startLine = i + 1;
             break;
         }
@@ -93,8 +84,8 @@ public sealed class WireframeDslParser : IDiagramParser
             .WithSourceSyntax(SyntaxId)
             .WithDiagramType("wireframe");
 
-        if (title is not null)
-            builder.WithTitle(title);
+        // The wireframe declaration line ("wireframe: Title") identifies the diagram
+        // but does not render a visible title. Use ::: HEADER ::: for visual headers.
 
         ParseBody(rawLines, startLine, builder);
 
@@ -144,6 +135,32 @@ public sealed class WireframeDslParser : IDiagramParser
             {
                 if (containerStack.Count > 1)
                     containerStack.Pop();
+                continue;
+            }
+
+            // Inline badge+text: "(( Label )) trailing text" → implicit row with badge + text.
+            if (TrySplitInlineBadge(trimmed, out var badgeLabel, out var trailingText))
+            {
+                // Wrap in an implicit row so badge and text render side-by-side.
+                var rowId = $"wf_{nodeCounter++}";
+                var rowNode = new Node(rowId, string.Empty);
+                rowNode.Metadata["wireframe:kind"] = "row";
+                builder.AddNode(rowNode);
+                if (containerStack.TryPeek(out var rp))
+                    AddContainmentEdge(builder, rp, rowId);
+
+                var badgeNode = new Node($"wf_{nodeCounter++}", badgeLabel);
+                badgeNode.Metadata["wireframe:kind"] = "badge";
+                builder.AddNode(badgeNode);
+                AddContainmentEdge(builder, rowId, badgeNode.Id);
+
+                if (!string.IsNullOrWhiteSpace(trailingText))
+                {
+                    var textNode = new Node($"wf_{nodeCounter++}", trailingText);
+                    textNode.Metadata["wireframe:kind"] = "text";
+                    builder.AddNode(textNode);
+                    AddContainmentEdge(builder, rowId, textNode.Id);
+                }
                 continue;
             }
 
@@ -469,6 +486,32 @@ public sealed class WireframeDslParser : IDiagramParser
         var textNode = new Node(nodeId, line);
         textNode.Metadata["wireframe:kind"] = "text";
         return textNode;
+    }
+
+    /// <summary>
+    /// Detects "(( Label )) trailing text" on a single line and splits it into
+    /// a badge label and optional trailing text so the body parser can emit two nodes.
+    /// </summary>
+    private static bool TrySplitInlineBadge(string line, out string badgeLabel, out string trailingText)
+    {
+        badgeLabel = string.Empty;
+        trailingText = string.Empty;
+
+        if (!line.StartsWith("((", StringComparison.Ordinal))
+            return false;
+
+        int closeIdx = line.IndexOf("))", 2, StringComparison.Ordinal);
+        if (closeIdx < 0)
+            return false;
+
+        // Only split when there is content after the closing "))"
+        // (standalone badges are handled by ParseParenComponent).
+        if (closeIdx + 2 >= line.Length)
+            return false;
+
+        badgeLabel = line[2..closeIdx].Trim();
+        trailingText = line[(closeIdx + 2)..].Trim();
+        return badgeLabel.Length > 0;
     }
 
     private static Node? ParseTabBar(string line, string nodeId)

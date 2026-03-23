@@ -51,18 +51,13 @@ public class WireframeDslParserTests
         Assert.Equal("wireframe", diagram.DiagramType);
     }
 
-    [Fact]
-    public void Parse_Header_WithTitle_SetsTitle()
+    [Theory]
+    [InlineData("wireframe: Login Screen")]
+    [InlineData("wireframe")]
+    public void Parse_Header_TitleIsAlwaysNull(string input)
     {
-        var diagram = _parser.Parse("wireframe: Login Screen");
-
-        Assert.Equal("Login Screen", diagram.Title);
-    }
-
-    [Fact]
-    public void Parse_Header_WithoutTitle_TitleIsNull()
-    {
-        var diagram = _parser.Parse("wireframe");
+        // Wireframes use ::: HEADER ::: for visual titles, not diagram.Title.
+        var diagram = _parser.Parse(input);
 
         Assert.Null(diagram.Title);
     }
@@ -100,7 +95,7 @@ public class WireframeDslParserTests
     [InlineData("=== ROW ===", "row")]
     [InlineData("=== ROW: Layout ===", "row")]
     [InlineData("::: CARD :::", "card")]
-    [InlineData("::: CARD: Profile :::","card")]
+    [InlineData("::: CARD: Profile :::", "card")]
     [InlineData("::: HEADER :::", "header")]
     [InlineData("::: HEADER: Top Bar :::", "header")]
     [InlineData("::: FOOTER :::", "footer")]
@@ -540,5 +535,46 @@ public class WireframeDslParserTests
         var svg = renderer.Render(text);
 
         Assert.Contains("<svg", svg);
+    }
+
+    // ── Parse — inline badge with trailing text ───────────────────────────────
+
+    [Fact]
+    public void Parse_InlineBadgeWithTrailingText_CreatesRowWithBadgeAndText()
+    {
+        var diagram = _parser.Parse("wireframe\n(( New )) Welcome!");
+
+        // Should create an implicit row containing a badge and text node.
+        var row = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "row"
+            && !n.Metadata.ContainsKey("wireframe:isRoot"));
+        Assert.NotNull(row);
+
+        var badge = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "badge");
+        Assert.NotNull(badge);
+        Assert.Equal("New", badge!.Label.Text);
+
+        var text = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "text"
+            && n.Label.Text == "Welcome!");
+        Assert.NotNull(text);
+
+        // Badge and text should be contained by the implicit row.
+        Assert.Contains(diagram.Edges, e =>
+            e.SourceId == row!.Id && e.TargetId == badge.Id);
+        Assert.Contains(diagram.Edges, e =>
+            e.SourceId == row!.Id && e.TargetId == text!.Id);
+    }
+
+    [Fact]
+    public void Parse_StandaloneBadge_StillWorks()
+    {
+        var diagram = _parser.Parse("wireframe\n(( Info ))");
+
+        var badge = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "badge");
+        Assert.NotNull(badge);
+        Assert.Equal("Info", badge!.Label.Text);
     }
 }

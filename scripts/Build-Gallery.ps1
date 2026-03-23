@@ -112,7 +112,7 @@ foreach ($file in $svgFiles) {
         $label = Get-FriendlyLabel $themeName
     }
     else {
-        $labelSeed = $fixtureName -replace '^mermaid-', '' -replace '^conceptual-', 'Conceptual '
+        $labelSeed = $fixtureName -replace '^mermaid-', '' -replace '^conceptual-', 'Conceptual ' -replace '^wireframe-', 'Wireframe '
         $label = (($labelSeed -split '-') | ForEach-Object {
                 if ($_.Length -le 2) {
                     $_.ToUpperInvariant()
@@ -124,13 +124,13 @@ foreach ($file in $svgFiles) {
     }
 
     $entries += [PSCustomObject]@{
-        File = $file
-        Width = $width
-        Height = $height
-        Label = $label
-        Theme = $themeName
+        File            = $file
+        Width           = $width
+        Height          = $height
+        Label           = $label
+        Theme           = $themeName
         IsThemeShowcase = $isThemeShowcase
-        Content = (Get-Content -LiteralPath $file.FullName -Raw)
+        Content         = (Get-Content -LiteralPath $file.FullName -Raw)
     }
 }
 

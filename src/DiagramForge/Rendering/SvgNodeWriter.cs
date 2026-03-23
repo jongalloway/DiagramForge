@@ -737,39 +737,98 @@ internal static class SvgNodeWriter
 
     // ── Wireframe rendering ───────────────────────────────────────────────────
 
-    // Fixed wireframe grayscale palette — independent of the diagram theme so
-    // wireframes always look like traditional low-fidelity mockups.
-    private const string WfCardFill = "#FAFAFA";
-    private const string WfCardBorder = "#C8C8C8";
-    private const string WfHeaderFill = "#EBEBEB";
-    private const string WfButtonFill = "#3A3A3A";
-    private const string WfButtonText = "#FFFFFF";
-    private const string WfInputBorder = "#9A9A9A";
-    private const string WfInputBg = "#FFFFFF";
-    private const string WfInputPlaceholder = "#B0B0B0";
-    private const string WfTextColor = "#1A1A1A";
-    private const string WfSubtleText = "#707070";
-    private const string WfDividerColor = "#D4D4D4";
-    private const string WfBadgeFill = "#E0E0E0";
-    private const string WfBadgeBorder = "#AAAAAA";
-    private const string WfBadgeText = "#3A3A3A";
-    private const string WfImageBg = "#E8E8E8";
-    private const string WfImageBorder = "#B0B0B0";
-    private const string WfImageX = "#AAAAAA";
-    private const string WfTabActiveFill = "#FFFFFF";
-    private const string WfTabInactiveFill = "#EBEBEB";
-    private const string WfTabBorder = "#C0C0C0";
-    private const string WfTabActiveText = "#1A1A1A";
-    private const string WfTabInactiveText = "#707070";
-    private const string WfCheckboxBorder = "#808080";
-    private const string WfCheckColor = "#2A2A2A";
     private const double WfStroke = 1.2;
     private const double WfRadius = 4.0;
     private const double WfCheckmarkInsetRatio = 0.2;  // relative inset for tick path endpoints
     private const double WfDropdownChevronSize = 4.5;  // half-width of the dropdown chevron arrow
 
+    /// <summary>
+    /// Wireframe color palette derived from four semantic theme colors:
+    /// <see cref="Theme.BackgroundColor"/>, <see cref="Theme.TextColor"/>,
+    /// <see cref="Theme.AccentColor"/>, and <see cref="Theme.SubtleTextColor"/>.
+    /// </summary>
+    private readonly record struct WireframePalette
+    {
+        public string CardFill { get; init; }
+        public string CardBorder { get; init; }
+        public string HeaderFill { get; init; }
+        public string ButtonFill { get; init; }
+        public string ButtonText { get; init; }
+        public string InputBorder { get; init; }
+        public string InputBg { get; init; }
+        public string InputPlaceholder { get; init; }
+        public string TextColor { get; init; }
+        public string SubtleText { get; init; }
+        public string DividerColor { get; init; }
+        public string BadgeFill { get; init; }
+        public string BadgeBorder { get; init; }
+        public string BadgeText { get; init; }
+        public string ImageBg { get; init; }
+        public string ImageBorder { get; init; }
+        public string ImageX { get; init; }
+        public string TabActiveFill { get; init; }
+        public string TabInactiveFill { get; init; }
+        public string TabBorder { get; init; }
+        public string TabActiveText { get; init; }
+        public string TabInactiveText { get; init; }
+        public string CheckboxBorder { get; init; }
+        public string CheckColor { get; init; }
+        public string ToggleOnFill { get; init; }
+        public string ToggleOffFill { get; init; }
+        public string KnobFill { get; init; }
+
+        public static WireframePalette FromTheme(Theme theme)
+        {
+            string bg = theme.BackgroundColor;
+            string fg = theme.TextColor;
+            string muted = theme.SubtleTextColor;
+            string accent = theme.AccentColor;
+            bool isLight = ColorUtils.IsLight(bg);
+
+            // Strong foreground (buttons, check marks)
+            string strong = ColorUtils.Blend(fg, bg, 0.15);
+            // Inverse text (button labels, toggle knob)
+            string inverse = isLight
+                ? ColorUtils.Blend(bg, "#FFFFFF", 0.05)
+                : ColorUtils.Blend(bg, "#000000", 0.05);
+
+            return new WireframePalette
+            {
+                CardFill = ColorUtils.Blend(bg, fg, isLight ? 0.02 : 0.06),
+                CardBorder = ColorUtils.Blend(muted, bg, 0.40),
+                HeaderFill = ColorUtils.Blend(bg, fg, isLight ? 0.08 : 0.12),
+                ButtonFill = strong,
+                ButtonText = inverse,
+                InputBorder = muted,
+                InputBg = isLight ? ColorUtils.Blend(bg, "#FFFFFF", 0.30) : ColorUtils.Blend(bg, fg, 0.06),
+                InputPlaceholder = ColorUtils.Blend(muted, bg, 0.20),
+                TextColor = fg,
+                SubtleText = muted,
+                DividerColor = ColorUtils.Blend(muted, bg, 0.55),
+                BadgeFill = ColorUtils.Blend(bg, accent, isLight ? 0.12 : 0.18),
+                BadgeBorder = ColorUtils.Blend(accent, bg, 0.40),
+                BadgeText = ColorUtils.Blend(accent, fg, 0.30),
+                ImageBg = ColorUtils.Blend(bg, muted, 0.15),
+                ImageBorder = ColorUtils.Blend(muted, bg, 0.20),
+                ImageX = ColorUtils.Blend(muted, bg, 0.30),
+                TabActiveFill = bg,
+                TabInactiveFill = ColorUtils.Blend(bg, fg, isLight ? 0.08 : 0.12),
+                TabBorder = ColorUtils.Blend(muted, bg, 0.35),
+                TabActiveText = fg,
+                TabInactiveText = muted,
+                CheckboxBorder = ColorUtils.Blend(fg, bg, 0.50),
+                CheckColor = ColorUtils.Blend(fg, bg, 0.10),
+                ToggleOnFill = ColorUtils.Blend(fg, bg, 0.35),
+                ToggleOffFill = ColorUtils.Blend(muted, bg, 0.40),
+                KnobFill = inverse,
+            };
+        }
+    }
+
     private static void AppendWireframeNode(StringBuilder sb, Node node, string kind, Theme theme)
     {
+        var p = WireframePalette.FromTheme(theme);
+
         switch (kind)
         {
             case "column":
@@ -781,70 +840,70 @@ internal static class SvgNodeWriter
                 return;
 
             case "card":
-                AppendWfCard(sb, node, theme, WfCardFill, WfCardBorder, isHeader: false);
+                AppendWfCard(sb, node, theme, p.CardFill, p.CardBorder, p, isHeader: false);
                 break;
 
             case "header":
-                AppendWfCard(sb, node, theme, WfHeaderFill, WfCardBorder, isHeader: true);
+                AppendWfCard(sb, node, theme, p.HeaderFill, p.CardBorder, p, isHeader: true);
                 break;
 
             case "footer":
-                AppendWfCard(sb, node, theme, WfHeaderFill, WfCardBorder, isHeader: false);
+                AppendWfCard(sb, node, theme, p.HeaderFill, p.CardBorder, p, isHeader: false);
                 break;
 
             case "button":
-                AppendWfButton(sb, node, theme);
+                AppendWfButton(sb, node, theme, p);
                 break;
 
             case "textinput":
-                AppendWfTextInput(sb, node, theme);
+                AppendWfTextInput(sb, node, theme, p);
                 break;
 
             case "checkbox":
-                AppendWfCheckbox(sb, node, theme);
+                AppendWfCheckbox(sb, node, theme, p);
                 break;
 
             case "radio":
-                AppendWfRadio(sb, node, theme);
+                AppendWfRadio(sb, node, theme, p);
                 break;
 
             case "toggle":
-                AppendWfToggle(sb, node, theme);
+                AppendWfToggle(sb, node, theme, p);
                 break;
 
             case "dropdown":
-                AppendWfDropdown(sb, node, theme);
+                AppendWfDropdown(sb, node, theme, p);
                 break;
 
             case "tabs":
-                AppendWfTabs(sb, node, theme);
+                AppendWfTabs(sb, node, theme, p);
                 break;
 
             case "badge":
-                AppendWfBadge(sb, node, theme);
+                AppendWfBadge(sb, node, theme, p);
                 break;
 
             case "image":
-                AppendWfImage(sb, node, theme);
+                AppendWfImage(sb, node, theme, p);
                 break;
 
             case "divider":
-                AppendWfDivider(sb, node, theme);
+                AppendWfDivider(sb, node, theme, p);
                 break;
 
             case "heading":
-                AppendWfHeading(sb, node, theme);
+                AppendWfHeading(sb, node, theme, p);
                 break;
 
             case "text":
-                AppendWfText(sb, node, theme);
+                AppendWfText(sb, node, theme, p);
                 break;
         }
     }
 
     // Card / Header / Footer surface
 
-    private static void AppendWfCard(StringBuilder sb, Node node, Theme theme, string fill, string border, bool isHeader)
+    private static void AppendWfCard(StringBuilder sb, Node node, Theme theme, string fill, string border, WireframePalette p, bool isHeader)
     {
         string rx = SvgRenderSupport.F(isHeader ? 0 : WfRadius);
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
@@ -855,7 +914,7 @@ internal static class SvgNodeWriter
             double fontSize = theme.FontSize * 0.9;
             double labelY = fontSize + 8;
             double labelX = 12;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(labelX)}" y="{SvgRenderSupport.F(labelY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(WfSubtleText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(labelX)}" y="{SvgRenderSupport.F(labelY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(p.SubtleText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -863,17 +922,17 @@ internal static class SvgNodeWriter
 
     // Button
 
-    private static void AppendWfButton(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfButton(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
-        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(WfButtonFill)}" stroke="none"/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(p.ButtonFill)}" stroke="none"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize;
             double textX = node.Width / 2;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfButtonText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.ButtonText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -881,16 +940,16 @@ internal static class SvgNodeWriter
 
     // Text input
 
-    private static void AppendWfTextInput(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfTextInput(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
-        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(WfInputBg)}" stroke="{SvgRenderSupport.Escape(WfInputBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(p.InputBg)}" stroke="{SvgRenderSupport.Escape(p.InputBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.9;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="8" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfInputPlaceholder)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="8" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.InputPlaceholder)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -898,7 +957,7 @@ internal static class SvgNodeWriter
 
     // Checkbox
 
-    private static void AppendWfCheckbox(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfCheckbox(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         const double boxSize = 14;
         bool isChecked = node.Metadata.TryGetValue("wireframe:checked", out var cv) && cv is true;
@@ -906,7 +965,7 @@ internal static class SvgNodeWriter
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
 
         double topY = (node.Height - boxSize) / 2;
-        sb.AppendLine($"""    <rect x="0" y="{SvgRenderSupport.F(topY)}" width="{SvgRenderSupport.F(boxSize)}" height="{SvgRenderSupport.F(boxSize)}" rx="2" ry="2" fill="{SvgRenderSupport.Escape(WfInputBg)}" stroke="{SvgRenderSupport.Escape(WfCheckboxBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <rect x="0" y="{SvgRenderSupport.F(topY)}" width="{SvgRenderSupport.F(boxSize)}" height="{SvgRenderSupport.F(boxSize)}" rx="2" ry="2" fill="{SvgRenderSupport.Escape(p.InputBg)}" stroke="{SvgRenderSupport.Escape(p.CheckboxBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         if (isChecked)
         {
@@ -914,14 +973,14 @@ internal static class SvgNodeWriter
             double cy = topY + boxSize / 2;
             // Checkmark tick: two-segment polyline (left-bottom valley → right-top peak)
             double inset = boxSize * WfCheckmarkInsetRatio;
-            sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(inset)},{SvgRenderSupport.F(cy)} {SvgRenderSupport.F(cx * 0.75)},{SvgRenderSupport.F(topY + boxSize - inset)} {SvgRenderSupport.F(boxSize - inset)},{SvgRenderSupport.F(topY + inset)}" fill="none" stroke="{SvgRenderSupport.Escape(WfCheckColor)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
+            sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(inset)},{SvgRenderSupport.F(cy)} {SvgRenderSupport.F(cx * 0.75)},{SvgRenderSupport.F(topY + boxSize - inset)} {SvgRenderSupport.F(boxSize - inset)},{SvgRenderSupport.F(topY + inset)}" fill="none" stroke="{SvgRenderSupport.Escape(p.CheckColor)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
         }
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.9;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(boxSize + 6)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfTextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(boxSize + 6)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.TextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -929,7 +988,7 @@ internal static class SvgNodeWriter
 
     // Radio button
 
-    private static void AppendWfRadio(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfRadio(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         const double circleR = 7;
         const double dotR = 3.5;
@@ -938,16 +997,16 @@ internal static class SvgNodeWriter
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
 
         double cy = node.Height / 2;
-        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(circleR)}" cy="{SvgRenderSupport.F(cy)}" r="{SvgRenderSupport.F(circleR)}" fill="{SvgRenderSupport.Escape(WfInputBg)}" stroke="{SvgRenderSupport.Escape(WfCheckboxBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(circleR)}" cy="{SvgRenderSupport.F(cy)}" r="{SvgRenderSupport.F(circleR)}" fill="{SvgRenderSupport.Escape(p.InputBg)}" stroke="{SvgRenderSupport.Escape(p.CheckboxBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         if (isChecked)
-            sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(circleR)}" cy="{SvgRenderSupport.F(cy)}" r="{SvgRenderSupport.F(dotR)}" fill="{SvgRenderSupport.Escape(WfCheckColor)}"/>""");
+            sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(circleR)}" cy="{SvgRenderSupport.F(cy)}" r="{SvgRenderSupport.F(dotR)}" fill="{SvgRenderSupport.Escape(p.CheckColor)}"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.9;
             double textY = cy + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(circleR * 2 + 6)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfTextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(circleR * 2 + 6)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.TextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -955,27 +1014,27 @@ internal static class SvgNodeWriter
 
     // Toggle
 
-    private static void AppendWfToggle(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfToggle(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         bool isOn = node.Metadata.TryGetValue("wireframe:on", out var ov) && ov is true;
 
         const double pillW = 44;
         const double pillH = 22;
         const double knobR = 9;
-        string pillFill = isOn ? "#555555" : WfCardBorder;
+        string pillFill = isOn ? p.ToggleOnFill : p.ToggleOffFill;
         double knobX = isOn ? (pillW - knobR - 3) : (knobR + 3);
         double knobY = pillH / 2;
 
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
         double pillTop = (node.Height - pillH) / 2;
         sb.AppendLine($"""    <rect x="0" y="{SvgRenderSupport.F(pillTop)}" width="{SvgRenderSupport.F(pillW)}" height="{SvgRenderSupport.F(pillH)}" rx="{SvgRenderSupport.F(pillH / 2)}" ry="{SvgRenderSupport.F(pillH / 2)}" fill="{SvgRenderSupport.Escape(pillFill)}" stroke="none"/>""");
-        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(knobX)}" cy="{SvgRenderSupport.F(pillTop + knobY)}" r="{SvgRenderSupport.F(knobR)}" fill="#FFFFFF" stroke="{SvgRenderSupport.Escape(WfCardBorder)}" stroke-width="0.8"/>""");
+        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(knobX)}" cy="{SvgRenderSupport.F(pillTop + knobY)}" r="{SvgRenderSupport.F(knobR)}" fill="{SvgRenderSupport.Escape(p.KnobFill)}" stroke="{SvgRenderSupport.Escape(p.CardBorder)}" stroke-width="0.8"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.9;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(pillW + 8)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfTextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(pillW + 8)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.TextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -983,24 +1042,24 @@ internal static class SvgNodeWriter
 
     // Dropdown
 
-    private static void AppendWfDropdown(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfDropdown(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
-        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(WfInputBg)}" stroke="{SvgRenderSupport.Escape(WfInputBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(p.InputBg)}" stroke="{SvgRenderSupport.Escape(p.InputBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         // Chevron icon on the right
         double chevX = node.Width - 18;
         double chevY = node.Height / 2;
-        sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(chevX - WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX)},{SvgRenderSupport.F(chevY + WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX + WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)}" fill="none" stroke="{SvgRenderSupport.Escape(WfSubtleText)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
+        sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(chevX - WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX)},{SvgRenderSupport.F(chevY + WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX + WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)}" fill="none" stroke="{SvgRenderSupport.Escape(p.SubtleText)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
 
         // Vertical separator line before chevron
-        sb.AppendLine($"""    <line x1="{SvgRenderSupport.F(node.Width - 28)}" y1="5" x2="{SvgRenderSupport.F(node.Width - 28)}" y2="{SvgRenderSupport.F(node.Height - 5)}" stroke="{SvgRenderSupport.Escape(WfInputBorder)}" stroke-width="0.8"/>""");
+        sb.AppendLine($"""    <line x1="{SvgRenderSupport.F(node.Width - 28)}" y1="5" x2="{SvgRenderSupport.F(node.Width - 28)}" y2="{SvgRenderSupport.F(node.Height - 5)}" stroke="{SvgRenderSupport.Escape(p.InputBorder)}" stroke-width="0.8"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.9;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="8" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfTextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="8" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.TextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -1008,7 +1067,7 @@ internal static class SvgNodeWriter
 
     // Tab bar
 
-    private static void AppendWfTabs(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfTabs(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         string[]? tabs = node.Metadata.TryGetValue("wireframe:tabs", out var tabsObj) ? tabsObj as string[] : null;
         int activeTab = node.Metadata.TryGetValue("wireframe:activeTab", out var atObj) && atObj is int at ? at : 0;
@@ -1022,17 +1081,17 @@ internal static class SvgNodeWriter
         double tabW = node.Width / tabs.Length;
 
         // Bottom border line for the whole bar
-        sb.AppendLine($"""    <line x1="0" y1="{SvgRenderSupport.F(node.Height)}" x2="{SvgRenderSupport.F(node.Width)}" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(WfTabBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <line x1="0" y1="{SvgRenderSupport.F(node.Height)}" x2="{SvgRenderSupport.F(node.Width)}" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(p.TabBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         for (int i = 0; i < tabs.Length; i++)
         {
             bool isActive = i == activeTab;
             double tx = i * tabW;
-            string tabFill = isActive ? WfTabActiveFill : WfTabInactiveFill;
-            string tabText = isActive ? WfTabActiveText : WfTabInactiveText;
-            string tabBotStroke = isActive ? WfTabActiveFill : WfTabBorder;
+            string tabFill = isActive ? p.TabActiveFill : p.TabInactiveFill;
+            string tabText = isActive ? p.TabActiveText : p.TabInactiveText;
+            string tabBotStroke = isActive ? p.TabActiveFill : p.TabBorder;
 
-            sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(tx)}" y="0" width="{SvgRenderSupport.F(tabW)}" height="{SvgRenderSupport.F(node.Height)}" fill="{SvgRenderSupport.Escape(tabFill)}" stroke="{SvgRenderSupport.Escape(WfTabBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+            sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(tx)}" y="0" width="{SvgRenderSupport.F(tabW)}" height="{SvgRenderSupport.F(node.Height)}" fill="{SvgRenderSupport.Escape(tabFill)}" stroke="{SvgRenderSupport.Escape(p.TabBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
             // Cover the bottom border for the active tab
             if (isActive)
@@ -1049,17 +1108,17 @@ internal static class SvgNodeWriter
 
     // Badge
 
-    private static void AppendWfBadge(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfBadge(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
         double rx = node.Height / 2;
-        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(rx)}" ry="{SvgRenderSupport.F(rx)}" fill="{SvgRenderSupport.Escape(WfBadgeFill)}" stroke="{SvgRenderSupport.Escape(WfBadgeBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke * 0.8)}"/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(rx)}" ry="{SvgRenderSupport.F(rx)}" fill="{SvgRenderSupport.Escape(p.BadgeFill)}" stroke="{SvgRenderSupport.Escape(p.BadgeBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke * 0.8)}"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.8;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(node.Width / 2)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfBadgeText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(node.Width / 2)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.BadgeText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -1067,20 +1126,20 @@ internal static class SvgNodeWriter
 
     // Image placeholder
 
-    private static void AppendWfImage(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfImage(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");
-        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(WfImageBg)}" stroke="{SvgRenderSupport.Escape(WfImageBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(node.Width)}" height="{SvgRenderSupport.F(node.Height)}" rx="{SvgRenderSupport.F(WfRadius)}" ry="{SvgRenderSupport.F(WfRadius)}" fill="{SvgRenderSupport.Escape(p.ImageBg)}" stroke="{SvgRenderSupport.Escape(p.ImageBorder)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
 
         // Diagonal cross lines
-        sb.AppendLine($"""    <line x1="0" y1="0" x2="{SvgRenderSupport.F(node.Width)}" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(WfImageX)}" stroke-width="1"/>""");
-        sb.AppendLine($"""    <line x1="{SvgRenderSupport.F(node.Width)}" y1="0" x2="0" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(WfImageX)}" stroke-width="1"/>""");
+        sb.AppendLine($"""    <line x1="0" y1="0" x2="{SvgRenderSupport.F(node.Width)}" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(p.ImageX)}" stroke-width="1"/>""");
+        sb.AppendLine($"""    <line x1="{SvgRenderSupport.F(node.Width)}" y1="0" x2="0" y2="{SvgRenderSupport.F(node.Height)}" stroke="{SvgRenderSupport.Escape(p.ImageX)}" stroke-width="1"/>""");
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
         {
             double fontSize = theme.FontSize * 0.85;
             double textY = node.Height / 2 + fontSize * 0.35;
-            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(node.Width / 2)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(WfSubtleText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+            sb.AppendLine($"""    <text x="{SvgRenderSupport.F(node.Width / 2)}" y="{SvgRenderSupport.F(textY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{SvgRenderSupport.Escape(p.SubtleText)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
         }
 
         sb.AppendLine("  </g>");
@@ -1088,15 +1147,15 @@ internal static class SvgNodeWriter
 
     // Divider
 
-    private static void AppendWfDivider(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfDivider(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         double midY = node.Y + node.Height / 2;
-        sb.AppendLine($"""  <line x1="{SvgRenderSupport.F(node.X)}" y1="{SvgRenderSupport.F(midY)}" x2="{SvgRenderSupport.F(node.X + node.Width)}" y2="{SvgRenderSupport.F(midY)}" stroke="{SvgRenderSupport.Escape(WfDividerColor)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
+        sb.AppendLine($"""  <line x1="{SvgRenderSupport.F(node.X)}" y1="{SvgRenderSupport.F(midY)}" x2="{SvgRenderSupport.F(node.X + node.Width)}" y2="{SvgRenderSupport.F(midY)}" stroke="{SvgRenderSupport.Escape(p.DividerColor)}" stroke-width="{SvgRenderSupport.F(WfStroke)}"/>""");
     }
 
     // Heading
 
-    private static void AppendWfHeading(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfHeading(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         if (string.IsNullOrWhiteSpace(node.Label.Text))
             return;
@@ -1105,12 +1164,12 @@ internal static class SvgNodeWriter
         double fontSize = node.Label.FontSize ?? (level == 1 ? 20.0 : (level == 2 ? 16.0 : 14.0));
         string fontWeight = level <= 2 ? " font-weight=\"bold\"" : string.Empty;
         double textY = node.Y + node.Height / 2 + fontSize * 0.35;
-        sb.AppendLine($"""  <text x="{SvgRenderSupport.F(node.X)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}"{fontWeight} fill="{SvgRenderSupport.Escape(WfTextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+        sb.AppendLine($"""  <text x="{SvgRenderSupport.F(node.X)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}"{fontWeight} fill="{SvgRenderSupport.Escape(p.TextColor)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
     }
 
     // Text (body / bold)
 
-    private static void AppendWfText(StringBuilder sb, Node node, Theme theme)
+    private static void AppendWfText(StringBuilder sb, Node node, Theme theme, WireframePalette p)
     {
         if (string.IsNullOrWhiteSpace(node.Label.Text))
             return;
@@ -1119,7 +1178,7 @@ internal static class SvgNodeWriter
         double fontSize = theme.FontSize;
         string fontWeightAttr = bold ? " font-weight=\"bold\"" : string.Empty;
         double textY = node.Y + node.Height / 2 + fontSize * 0.35;
-        string color = bold ? WfTextColor : WfSubtleText;
+        string color = bold ? p.TextColor : p.SubtleText;
         sb.AppendLine($"""  <text x="{SvgRenderSupport.F(node.X)}" y="{SvgRenderSupport.F(textY)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(fontSize)}"{fontWeightAttr} fill="{SvgRenderSupport.Escape(color)}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
     }
 }

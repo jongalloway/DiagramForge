@@ -1,23 +1,31 @@
-wireframe: Dashboard
-|[ Overview ]| Analytics | Settings |
+---
+theme: dracula
+---
+wireframe: Middle-earth Quest Tracker
+::: HEADER :::
+  # Middle-earth Quest Tracker
+--- END ---
+|[ The Fellowship ]| Mordor Intel | Loot |
 ***
 === ROW ===
-  ::: CARD: Users :::
-    ## 1,240
-    Total users
+  ::: CARD: Ring Status :::
+    ## One Ring
+    Growing heavier by the mile
   --- END ---
-  ::: CARD: Revenue :::
-    ## $48,200
-    This month
+  ::: CARD: Party Members :::
+    ## 9 (was 9)
+    Morale: Questionable
   --- END ---
-  ::: CARD: Orders :::
-    ## 386
-    Pending
+  ::: CARD: Eagles Called :::
+    ## 0
+    As usual
   --- END ---
 --- END ---
 ***
-# Recent Activity
-(( New )) Welcome to the dashboard!
-Plain text description line
-[ text: Search ]
-[ View All ](#view-all)
+# Recent Events
+(( URGENT )) One does not simply walk into Mordor
+[ text: Search ancient texts ]
+=== ROW ===
+  [ Throw Ring Into Volcano ](#mount-doom)
+  [ Precious ]
+--- END ---
