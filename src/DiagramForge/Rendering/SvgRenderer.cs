@@ -128,7 +128,7 @@ public sealed class SvgRenderer : ISvgRenderer
         foreach (var edge in diagram.Edges)
         {
             // Wireframe containment edges are layout-only; they must not produce visible SVG.
-            if (edge.Metadata.TryGetValue("wireframe:containment", out var wfc) && wfc is true)
+            if (edge.Metadata.TryGetValue("wireframe:containment", out var isWireframeContainment) && isWireframeContainment is true)
                 continue;
 
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
@@ -148,7 +148,7 @@ public sealed class SvgRenderer : ISvgRenderer
         foreach (var edge in diagram.Edges)
         {
             // Wireframe containment edges are layout-only; they must not produce visible SVG.
-            if (edge.Metadata.TryGetValue("wireframe:containment", out var wfc2) && wfc2 is true)
+            if (edge.Metadata.TryGetValue("wireframe:containment", out var isWireframeContainmentOverlay) && isWireframeContainmentOverlay is true)
                 continue;
 
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)

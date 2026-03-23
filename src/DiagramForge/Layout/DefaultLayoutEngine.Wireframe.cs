@@ -12,13 +12,19 @@ public sealed partial class DefaultLayoutEngine
     private const double WireframeContainerPad = 12.0;
     private const double WireframeDefaultWidth = 320.0;
     private const double WireframeButtonHeight = 34.0;
+    private const double WireframeButtonMinWidthRatio = 0.4;   // fraction of DefaultWidth
+    private const double WireframeButtonHPad = 32.0;           // horizontal text padding in button
     private const double WireframeInputHeight = 32.0;
     private const double WireframeControlHeight = 22.0;
+    private const double WireframeControlLabelGap = 8.0;       // space between control and its label
+    private const double WireframeControlMinWidth = 120.0;     // minimum width for checkbox/radio
     private const double WireframeToggleWidth = 48.0;
     private const double WireframeToggleHeight = 24.0;
     private const double WireframeTabBarHeight = 38.0;
     private const double WireframeDividerHeight = 4.0;
     private const double WireframeBadgeHeight = 20.0;
+    private const double WireframeBadgeMinWidth = 36.0;        // minimum badge pill width
+    private const double WireframeBadgeHPad = 16.0;            // horizontal padding inside badge
     private const double WireframeImageHeight = 100.0;
     private const double WireframeImageWidth = 160.0;
     private const double WireframeH1FontSize = 20.0;
@@ -136,7 +142,7 @@ public sealed partial class DefaultLayoutEngine
             case "button":
             {
                 double textW = SvgRenderSupport.EstimateTextWidth(node.Label.Text, theme.FontSize);
-                node.Width = Math.Max(WireframeDefaultWidth * 0.4, textW + 32);
+                node.Width = Math.Max(WireframeDefaultWidth * WireframeButtonMinWidthRatio, textW + WireframeButtonHPad);
                 node.Height = WireframeButtonHeight;
                 break;
             }
@@ -149,7 +155,7 @@ public sealed partial class DefaultLayoutEngine
             case "radio":
             {
                 double textW = SvgRenderSupport.EstimateTextWidth(node.Label.Text, theme.FontSize);
-                node.Width = Math.Max(120, WireframeControlHeight + 8 + textW);
+                node.Width = Math.Max(WireframeControlMinWidth, WireframeControlHeight + WireframeControlLabelGap + textW);
                 node.Height = WireframeControlHeight;
                 break;
             }
@@ -157,7 +163,7 @@ public sealed partial class DefaultLayoutEngine
                 node.Width = WireframeToggleWidth
                     + (string.IsNullOrWhiteSpace(node.Label.Text)
                         ? 0
-                        : 8 + SvgRenderSupport.EstimateTextWidth(node.Label.Text, theme.FontSize));
+                        : WireframeControlLabelGap + SvgRenderSupport.EstimateTextWidth(node.Label.Text, theme.FontSize));
                 node.Height = WireframeToggleHeight;
                 break;
 
@@ -175,7 +181,7 @@ public sealed partial class DefaultLayoutEngine
             {
                 double badgeFontSize = theme.FontSize * 0.8;
                 double textW = SvgRenderSupport.EstimateTextWidth(node.Label.Text, badgeFontSize);
-                node.Width = Math.Max(36, textW + 16);
+                node.Width = Math.Max(WireframeBadgeMinWidth, textW + WireframeBadgeHPad);
                 node.Height = WireframeBadgeHeight;
                 break;
             }

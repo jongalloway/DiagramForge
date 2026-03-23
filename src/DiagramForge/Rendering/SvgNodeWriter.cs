@@ -765,6 +765,8 @@ internal static class SvgNodeWriter
     private const string WfCheckColor = "#2A2A2A";
     private const double WfStroke = 1.2;
     private const double WfRadius = 4.0;
+    private const double WfCheckmarkInsetRatio = 0.2;  // relative inset for tick path endpoints
+    private const double WfDropdownChevronSize = 4.5;  // half-width of the dropdown chevron arrow
 
     private static void AppendWireframeNode(StringBuilder sb, Node node, string kind, Theme theme)
     {
@@ -910,9 +912,9 @@ internal static class SvgNodeWriter
         {
             double cx = boxSize / 2;
             double cy = topY + boxSize / 2;
-            // Checkmark tick: two-segment path
-            double t = boxSize * 0.2;
-            sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(t)},{SvgRenderSupport.F(cy)} {SvgRenderSupport.F(cx * 0.75)},{SvgRenderSupport.F(topY + boxSize - t)} {SvgRenderSupport.F(boxSize - t)},{SvgRenderSupport.F(topY + t)}" fill="none" stroke="{SvgRenderSupport.Escape(WfCheckColor)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
+            // Checkmark tick: two-segment polyline (left-bottom valley → right-top peak)
+            double inset = boxSize * WfCheckmarkInsetRatio;
+            sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(inset)},{SvgRenderSupport.F(cy)} {SvgRenderSupport.F(cx * 0.75)},{SvgRenderSupport.F(topY + boxSize - inset)} {SvgRenderSupport.F(boxSize - inset)},{SvgRenderSupport.F(topY + inset)}" fill="none" stroke="{SvgRenderSupport.Escape(WfCheckColor)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
         }
 
         if (!string.IsNullOrWhiteSpace(node.Label.Text))
@@ -989,8 +991,7 @@ internal static class SvgNodeWriter
         // Chevron icon on the right
         double chevX = node.Width - 18;
         double chevY = node.Height / 2;
-        double chevS = 4.5;
-        sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(chevX - chevS)},{SvgRenderSupport.F(chevY - chevS * 0.6)} {SvgRenderSupport.F(chevX)},{SvgRenderSupport.F(chevY + chevS * 0.6)} {SvgRenderSupport.F(chevX + chevS)},{SvgRenderSupport.F(chevY - chevS * 0.6)}" fill="none" stroke="{SvgRenderSupport.Escape(WfSubtleText)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
+        sb.AppendLine($"""    <polyline points="{SvgRenderSupport.F(chevX - WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX)},{SvgRenderSupport.F(chevY + WfDropdownChevronSize * 0.6)} {SvgRenderSupport.F(chevX + WfDropdownChevronSize)},{SvgRenderSupport.F(chevY - WfDropdownChevronSize * 0.6)}" fill="none" stroke="{SvgRenderSupport.Escape(WfSubtleText)}" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>""");
 
         // Vertical separator line before chevron
         sb.AppendLine($"""    <line x1="{SvgRenderSupport.F(node.Width - 28)}" y1="5" x2="{SvgRenderSupport.F(node.Width - 28)}" y2="{SvgRenderSupport.F(node.Height - 5)}" stroke="{SvgRenderSupport.Escape(WfInputBorder)}" stroke-width="0.8"/>""");

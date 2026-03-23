@@ -290,8 +290,12 @@ public sealed class WireframeDslParser : IDiagramParser
         if (string.IsNullOrEmpty(text))
             return null;
 
-        // Strip **bold** markers for label text (bold styling comes from wireframe:bold metadata)
-        bool isBold = text.StartsWith("**", StringComparison.Ordinal) && text.EndsWith("**", StringComparison.Ordinal) && text.Length > 4;
+        // Strip **bold** markers for label text (bold styling comes from wireframe:bold metadata).
+        // Minimum: "**x**" = 5 chars: 2 open markers + 1 body char + 2 close markers.
+        const int BoldWrapperLength = 4; // "**" prefix + "**" suffix
+        bool isBold = text.StartsWith("**", StringComparison.Ordinal)
+                      && text.EndsWith("**", StringComparison.Ordinal)
+                      && text.Length > BoldWrapperLength;
         if (isBold)
             text = text[2..^2].Trim();
 
@@ -304,20 +308,27 @@ public sealed class WireframeDslParser : IDiagramParser
 
     private static Node? ParseBracketComponent(string line, string nodeId)
     {
-        // [on] / [off] → Toggle
-        if (string.Equals(line, "[on]", StringComparison.OrdinalIgnoreCase)
-            || (line.Length > 4 && string.Equals(line[..4], "[on]", StringComparison.OrdinalIgnoreCase) && line[4] == ' '))
+        // [on] / [off] → Toggle (case-insensitive, optional trailing label)
+        const string OnToken = "[on]";
+        const string OffToken = "[off]";
+
+        if (string.Equals(line, OnToken, StringComparison.OrdinalIgnoreCase)
+            || (line.Length > OnToken.Length
+                && string.Equals(line[..OnToken.Length], OnToken, StringComparison.OrdinalIgnoreCase)
+                && line[OnToken.Length] == ' '))
         {
-            var label = line.Length > 5 ? line[5..].Trim() : string.Empty;
+            var label = line.Length > OnToken.Length + 1 ? line[(OnToken.Length + 1)..].Trim() : string.Empty;
             var n = new Node(nodeId, label);
             n.Metadata["wireframe:kind"] = "toggle";
             n.Metadata["wireframe:on"] = true;
             return n;
         }
-        if (string.Equals(line, "[off]", StringComparison.OrdinalIgnoreCase)
-            || (line.Length > 5 && string.Equals(line[..5], "[off]", StringComparison.OrdinalIgnoreCase) && line[5] == ' '))
+        if (string.Equals(line, OffToken, StringComparison.OrdinalIgnoreCase)
+            || (line.Length > OffToken.Length
+                && string.Equals(line[..OffToken.Length], OffToken, StringComparison.OrdinalIgnoreCase)
+                && line[OffToken.Length] == ' '))
         {
-            var label = line.Length > 6 ? line[6..].Trim() : string.Empty;
+            var label = line.Length > OffToken.Length + 1 ? line[(OffToken.Length + 1)..].Trim() : string.Empty;
             var n = new Node(nodeId, label);
             n.Metadata["wireframe:kind"] = "toggle";
             n.Metadata["wireframe:on"] = false;
