@@ -776,6 +776,7 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Iterative process / feedback loop (3–6 steps) | Conceptual DSL | `diagram: cycle\nsteps:\n  - Plan\n  - Build\n  - Measure\n  - Learn` |
 | Sequential stage process (slide-style chevrons) | Conceptual DSL | `diagram: chevrons\nsteps:\n  - Discover\n  - Build\n  - Launch\n  - Learn` |
 | Central concept with surrounding pillars / capabilities (3–8 items) | Conceptual DSL | `diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability` |
+| Concentric strategy / segmentation target | Conceptual DSL | `diagram: target\ncenter: Launch\nrings:\n  - Inner ring: Pricing and messaging\n  - Outer ring: Audience reach` |
 | Visual step-by-step journey / snake timeline (3+ steps) | Conceptual DSL | `diagram: snake\ntitle: Journey\nsteps:\n  - Start: Begin here\n  - Middle: Keep going\n  - End: Arrive` |
 
 Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as tree hierarchies / org charts.
@@ -879,6 +880,22 @@ items:
 
 Supported: 3–8 items. Items are placed evenly around the center at equal angles, starting at the top (12 o'clock).
 
+#### target
+
+Concentric target layout for strategy, segmentation, launch focus, or maturity narratives. One central outcome is surrounded by 2–5 rings, with matching callout cards stacked to the right.
+
+```text
+diagram: target
+title: Launch Focus
+center: Launch
+rings:
+  - Inner ring: Pricing, messaging, and activation readiness
+  - Middle ring: Programs and execution
+  - Outer ring: Audience reach and partner signal
+```
+
+Rings are listed from outermost to innermost. The callout cards preserve that order from top to bottom.
+
 #### snake
 
 Snake timeline layout for journeys, processes, and step-by-step narratives. Steps are rendered as large circles connected by a weaving semicircular path that alternates above and below. Each step supports an optional icon and description.
@@ -923,6 +940,8 @@ Parsers produce a syntax-independent `Diagram` (nodes, edges, groups, labels, la
 ## Roadmap
 
 See [`doc/prd.md`](doc/prd.md) for the full plan. Short version: more Mermaid diagram types, more conceptual layouts, theme packs, eventually D2 and DOT parsers.
+
+For analysis of which SmartArt-style conceptual diagrams are most worth adding next, see [`doc/smartart-analysis.md`](doc/smartart-analysis.md).
 
 ## Contributing
 

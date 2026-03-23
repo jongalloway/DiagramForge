@@ -15,11 +15,11 @@
   </defs>
   <rect width="528.00" height="294.00" fill="#0A0A1A" rx="6.00" ry="6.00"/>
   <text x="264.00" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#00F0FF">Product Roadmap</text>
-  <path d="M 84.00,87.00 C 84.00,103.00 84.00,111.00 84.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 84.00,87.00 C 84.00,135.00 84.00,159.00 84.00,207.00" fill="none" stroke="#00F0FF" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 264.00,87.00 C 264.00,103.00 264.00,111.00 264.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 444.00,87.00 C 444.00,103.00 444.00,111.00 444.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 444.00,87.00 C 444.00,135.00 444.00,159.00 444.00,207.00" fill="none" stroke="#00F0FF" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 84.00,87.00 C 84.00,103.00 84.00,111.00 84.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 84.00,87.00 C 84.00,135.00 84.00,159.00 84.00,207.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 264.00,87.00 C 264.00,103.00 264.00,111.00 264.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 444.00,87.00 C 444.00,103.00 444.00,111.00 444.00,127.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 444.00,87.00 C 444.00,135.00 444.00,159.00 444.00,207.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,47.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

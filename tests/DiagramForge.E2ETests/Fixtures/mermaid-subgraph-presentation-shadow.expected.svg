@@ -70,8 +70,8 @@
   <rect x="392.00" y="32.00" width="152.00" height="104.00" rx="12.00" ry="12.00" fill="url(#group-1-fill-gradient)" stroke="url(#group-1-stroke-gradient)" stroke-width="1.80" filter="url(#group-1-soft-shadow)"/>
   <rect x="402.00" y="42.00" width="49.49" height="23.12" rx="11.56" ry="11.56" fill="#E9EEF2" stroke="#4E7FCA" stroke-width="1.44"/>
   <text x="411.00" y="57.72" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.12" fill="#111827" font-weight="bold">data</text>
-  <path d="M 168.00,96.00 C 192.00,96.00 204.00,96.00 228.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 348.00,96.00 C 372.00,96.00 384.00,96.00 408.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 168.00,96.00 C 192.00,96.00 204.00,96.00 228.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 348.00,96.00 C 372.00,96.00 384.00,96.00 408.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <g transform="translate(48.00,72.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
