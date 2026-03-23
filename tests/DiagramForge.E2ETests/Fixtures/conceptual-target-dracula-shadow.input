@@ -1,0 +1,11 @@
+---
+theme: dracula
+shadowStyle: soft
+---
+diagram: target
+title: Iron Throne Endgame
+center: Throne
+rings:
+  - Outer ring: Houses, dragons, and the war for the realm
+  - Middle ring: Alliances, spies, and marching supply lines
+  - Inner ring: Claims, fire, and the final betrayal

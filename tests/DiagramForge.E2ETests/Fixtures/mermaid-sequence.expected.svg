@@ -16,11 +16,11 @@
   <rect width="348.00" height="228.00" fill="#111827" rx="8.00" ry="8.00"/>
   <line x1="84.00" y1="64.00" x2="84.00" y2="204.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
   <line x1="264.00" y1="64.00" x2="264.00" y2="204.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
-  <path d="M 84.00,84.00 C 156.00,84.00 192.00,84.00 264.00,84.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 84.00,84.00 C 156.00,84.00 192.00,84.00 264.00,84.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="174.00" y="80.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Hello</text>
-  <path d="M 264.00,124.00 C 192.00,124.00 156.00,124.00 84.00,124.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"   marker-end="url(#arrowhead)" />
+  <path d="M 264.00,124.00 C 192.00,124.00 156.00,124.00 84.00,124.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round" stroke-dasharray="6,3"   marker-end="url(#arrowhead)" />
   <text x="174.00" y="120.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Hi back</text>
-  <path d="M 84.00,164.00 C 156.00,164.00 192.00,164.00 264.00,164.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 84.00,164.00 C 156.00,164.00 192.00,164.00 264.00,164.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="174.00" y="160.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Done</text>
   <g transform="translate(24.00,24.00)">
     <defs>

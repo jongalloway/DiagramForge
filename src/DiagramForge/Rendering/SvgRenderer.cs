@@ -123,7 +123,8 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.ContainsKey("snake:pathData"))
             SvgStructureWriter.AppendSnakePath(sb, diagram, theme);
 
-        // Edges (render behind nodes)
+        // Edges: base pass renders normal connectors and any under-node endpoint segments
+        // needed by diagram-specific overlay connectors.
         foreach (var edge in diagram.Edges)
         {
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
@@ -137,6 +138,17 @@ public sealed class SvgRenderer : ISvgRenderer
         int nodeIndex = 0;
         foreach (var node in diagram.Nodes.Values)
             SvgNodeWriter.AppendNode(sb, node, theme, nodeIndex++);
+
+        // Diagram-specific overlay edges (for example target connectors that must stay visible
+        // while crossing over concentric rings but tuck under their endpoints) render after nodes.
+        foreach (var edge in diagram.Edges)
+        {
+            if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
+                || !diagram.Nodes.TryGetValue(edge.TargetId, out var target))
+                continue;
+
+            SvgStructureWriter.AppendEdge(sb, edge, source, target, theme, diagram.LayoutHints, SvgStructureWriter.EdgeRenderPass.Overlay);
+        }
 
         sb.AppendLine("</svg>");
         return sb.ToString();

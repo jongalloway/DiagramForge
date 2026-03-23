@@ -28,10 +28,10 @@
   <rect x="24.00" y="24.00" width="504.00" height="273.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
   <rect x="34.00" y="34.00" width="107.54" height="20.66" rx="10.33" ry="10.33" fill="#193A52" stroke="#33A7DB" stroke-width="1.20"/>
   <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E5EEF9" font-weight="bold">Infrastructure</text>
-  <path d="M 156.00,104.00 C 180.00,104.00 192.00,104.00 216.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <path d="M 336.00,104.00 C 360.00,104.00 372.00,104.00 396.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <path d="M 276.00,151.00 C 276.00,167.00 276.00,175.00 276.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
-  <path d="M 96.00,151.00 C 96.00,167.00 96.00,175.00 96.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50"   />
+  <path d="M 156.00,104.00 C 180.00,104.00 192.00,104.00 216.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   />
+  <path d="M 336.00,104.00 C 360.00,104.00 372.00,104.00 396.00,104.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   />
+  <path d="M 276.00,151.00 C 276.00,167.00 276.00,175.00 276.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   />
+  <path d="M 96.00,151.00 C 96.00,167.00 96.00,175.00 96.00,191.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   />
   <g transform="translate(36.00,57.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

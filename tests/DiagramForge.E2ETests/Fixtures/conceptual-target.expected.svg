@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="934.56" height="578.00" viewBox="0 0 934.56 578.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#516074"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FCFCFD" stroke="#516074" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="934.56" height="578.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
+  <text x="467.28" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#0F172A">Galactic Launch Plan</text>
+  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 439.50,289.00 C 470.41,289.00 549.09,289.00 580.00,289.00" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 385.14,325.14 C 427.14,325.14 538.00,384.24 580.00,384.24" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
+  <g transform="translate(24.00,47.00)">
+    <circle cx="242.00" cy="242.00" r="222.50" fill="none" stroke="#8892A0" stroke-width="39.00"/>
+    <circle cx="242.00" cy="242.00" r="203.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <circle cx="242.00" cy="242.00" r="242.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+  </g>
+  <g transform="translate(73.00,96.00)">
+    <circle cx="193.00" cy="193.00" r="173.50" fill="none" stroke="#665E46" stroke-width="39.00"/>
+    <circle cx="193.00" cy="193.00" r="154.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <circle cx="193.00" cy="193.00" r="193.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+  </g>
+  <g transform="translate(122.00,145.00)">
+    <circle cx="144.00" cy="144.00" r="124.50" fill="none" stroke="#CC1BC9" stroke-width="39.00"/>
+    <circle cx="144.00" cy="144.00" r="105.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <circle cx="144.00" cy="144.00" r="144.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+  </g>
+  <g transform="translate(179.00,202.00)">
+    <ellipse cx="87.00" cy="87.00" rx="87.00" ry="87.00" fill="#1B4092" stroke="#2D4F9B" stroke-width="1.50"/>
+    <text x="87.00" y="91.90" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Ship It</text>
+  </g>
+  <g transform="translate(580.00,152.71)">
+    <rect x="0" y="0" width="279.32" height="82.09" rx="10.00" ry="10.00" fill="#EDF4FF" stroke="none"/>
+    <rect x="0" y="0" width="279.32" height="82.09" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <rect x="1.67" y="1.67" width="275.97" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="#C0C5CD" stroke-width="2.55"/>
+    <rect x="12.00" y="16.00" width="14.00" height="50.09" rx="7.00" ry="7.00" fill="#8892A0" stroke="none"/>
+    <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#0F172A">Outer ring</text>
+    <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#667085">Cantina buzz, holo-posters, and</text>
+    <text x="44.60" y="60.12" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#667085">sector-wide hype</text>
+  </g>
+  <g transform="translate(580.00,256.80)">
+    <rect x="0" y="0" width="323.24" height="64.40" rx="10.00" ry="10.00" fill="#EDF4FF" stroke="none"/>
+    <rect x="0" y="0" width="323.24" height="64.40" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <rect x="1.67" y="1.67" width="319.89" height="61.05" rx="8.32" ry="8.32" fill="none" stroke="#AEAA9E" stroke-width="2.55"/>
+    <rect x="12.00" y="16.00" width="14.00" height="36.00" rx="7.00" ry="7.00" fill="#665E46" stroke="none"/>
+    <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#0F172A">Middle ring</text>
+    <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#667085">Crew sync, fuel checks, and bug hunts</text>
+  </g>
+  <g transform="translate(580.00,343.20)">
+    <rect x="0" y="0" width="330.56" height="82.09" rx="10.00" ry="10.00" fill="#EDF4FF" stroke="none"/>
+    <rect x="0" y="0" width="330.56" height="82.09" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
+    <rect x="1.67" y="1.67" width="327.21" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="#E387E2" stroke-width="2.55"/>
+    <rect x="12.00" y="16.00" width="14.00" height="50.09" rx="7.00" ry="7.00" fill="#CC1BC9" stroke="none"/>
+    <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#0F172A">Inner ring</text>
+    <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#667085">Feature flags, rollback plans, and one</text>
+    <text x="44.60" y="60.12" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#667085">last deploy</text>
+  </g>
+  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#FFFFFF" stroke-width="3.98" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 19.20 74.17 6.63" />
+  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 19.20 74.17 6.63"   />
+  <path d="M 439.50,289.00 C 470.41,289.00 549.09,289.00 580.00,289.00" fill="none" stroke="#FFFFFF" stroke-width="3.98" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 14.43 80.58 4.98" />
+  <path d="M 439.50,289.00 C 470.41,289.00 549.09,289.00 580.00,289.00" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 14.43 80.58 4.98"   />
+  <path d="M 385.14,325.14 C 427.14,325.14 538.00,384.24 580.00,384.24" fill="none" stroke="#FFFFFF" stroke-width="3.98" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 9.96 86.60 3.44" />
+  <path d="M 385.14,325.14 C 427.14,325.14 538.00,384.24 580.00,384.24" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="butt" stroke-linejoin="round" pathLength="100" stroke-dasharray="0 9.96 86.60 3.44"   />
+</svg>

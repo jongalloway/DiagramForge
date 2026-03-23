@@ -26,6 +26,7 @@ public sealed partial class DefaultLayoutEngine
             ["radial"] = LayoutRadialDiagram,
             ["snake"] = LayoutSnakeDiagram,
             ["tablist"] = LayoutTabListDiagram,
+            ["target"] = LayoutTargetDiagram,
             ["tree"] = LayoutTreeDiagram,
         }.ToFrozenDictionary(StringComparer.OrdinalIgnoreCase);
 

@@ -14,8 +14,8 @@
     </marker>
   </defs>
   <rect width="528.00" height="142.00" fill="#0D1117" rx="8.00" ry="8.00"/>
-  <path d="M 144.00,71.00 C 168.00,71.00 180.00,71.00 204.00,71.00" fill="none" stroke="#8B949E" stroke-width="1.50"   marker-end="url(#arrowhead)" />
-  <path d="M 324.00,71.00 C 350.32,71.00 360.00,54.80 384.00,44.00" fill="none" stroke="#8B949E" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 144.00,71.00 C 168.00,71.00 180.00,71.00 204.00,71.00" fill="none" stroke="#8B949E" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 324.00,71.00 C 350.32,71.00 360.00,54.80 384.00,44.00" fill="none" stroke="#8B949E" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <g transform="translate(24.00,24.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

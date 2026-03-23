@@ -14,8 +14,8 @@
     </marker>
   </defs>
   <rect width="353.40" height="247.35" fill="#FCFCFD" rx="8.00" ry="8.00"/>
-  <path d="M 86.70,157.90 L 86.70,143.90 A 6.00,6.00 0 0 1 92.70,137.90 L 170.70,137.90 A 6.00,6.00 0 0 0 176.70,131.90 L 176.70,117.90" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
-  <path d="M 269.40,157.90 L 269.40,143.90 A 6.00,6.00 0 0 0 263.40,137.90 L 182.70,137.90 A 6.00,6.00 0 0 1 176.70,131.90 L 176.70,117.90" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
+  <path d="M 86.70,157.90 L 86.70,143.90 A 6.00,6.00 0 0 1 92.70,137.90 L 170.70,137.90 A 6.00,6.00 0 0 0 176.70,131.90 L 176.70,117.90" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
+  <path d="M 269.40,157.90 L 269.40,143.90 A 6.00,6.00 0 0 0 263.40,137.90 L 182.70,137.90 A 6.00,6.00 0 0 1 176.70,131.90 L 176.70,117.90" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
   <g transform="translate(98.40,24.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

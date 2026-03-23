@@ -97,6 +97,18 @@ internal static class SvgNodeWriter
             {
                 AppendChevronNode(sb, node, fill, stroke, theme, fillOpacityAttribute, nodeShadowAttribute);
             }
+            else if (node.Metadata.TryGetValue("target:kind", out var targetKindObj)
+                && targetKindObj is string targetKind
+                && string.Equals(targetKind, "ring", StringComparison.Ordinal))
+            {
+                AppendTargetRingNode(sb, node, stroke, theme, nodeShadowAttribute);
+            }
+            else if (node.Metadata.TryGetValue("target:kind", out targetKindObj)
+                && targetKindObj is string cardKind
+                && string.Equals(cardKind, "card", StringComparison.Ordinal))
+            {
+                AppendTargetCardNode(sb, node, fill, stroke, theme, nodeShadowAttribute);
+            }
             else if (node.Metadata.TryGetValue("tablist:band", out var tablistBandObj)
                 && tablistBandObj is true)
             {
@@ -326,6 +338,75 @@ internal static class SvgNodeWriter
             : $"0,0 {SvgRenderSupport.F(w - tipDepth)},0 {SvgRenderSupport.F(w)},{SvgRenderSupport.F(midY)} {SvgRenderSupport.F(w - tipDepth)},{SvgRenderSupport.F(h)} 0,{SvgRenderSupport.F(h)} {SvgRenderSupport.F(tipDepth)},{SvgRenderSupport.F(midY)}";
 
         sb.AppendLine($"""    <polygon points="{points}" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"{fillOpacityAttribute}{shadowAttribute}/>""");
+    }
+
+    private static void AppendTargetRingNode(StringBuilder sb, Node node, string stroke, Theme theme, string shadowAttribute)
+    {
+        double strokeWidth = SvgRenderSupport.GetMetadataDouble(node, "target:ringStrokeWidth") ?? Math.Max(theme.StrokeWidth * 4, 24);
+        double radius = Math.Min(node.Width, node.Height) / 2 - strokeWidth / 2;
+        double centerX = node.Width / 2;
+        double centerY = node.Height / 2;
+        string outlineColor = "#888888";
+        double outlineStrokeWidth = 0.8;
+        double outerRadius = radius + (strokeWidth / 2);
+        double innerRadius = radius - (strokeWidth / 2);
+
+        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(centerX)}" cy="{SvgRenderSupport.F(centerY)}" r="{SvgRenderSupport.F(radius)}" fill="none" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{shadowAttribute}/>""");
+
+        if (innerRadius > outlineStrokeWidth / 2)
+        {
+            sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(centerX)}" cy="{SvgRenderSupport.F(centerY)}" r="{SvgRenderSupport.F(innerRadius)}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineStrokeWidth)}"/>""");
+        }
+
+        sb.AppendLine($"""    <circle cx="{SvgRenderSupport.F(centerX)}" cy="{SvgRenderSupport.F(centerY)}" r="{SvgRenderSupport.F(outerRadius)}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineStrokeWidth)}"/>""");
+    }
+
+    private static void AppendTargetCardNode(StringBuilder sb, Node node, string fill, string stroke, Theme theme, string shadowAttribute)
+    {
+        double accentWidth = SvgRenderSupport.GetMetadataDouble(node, "target:accentWidth") ?? 14;
+        double titleFontSize = SvgRenderSupport.GetMetadataDouble(node, "target:titleFontSize") ?? (theme.FontSize * 1.1);
+        double descFontSize = SvgRenderSupport.GetMetadataDouble(node, "target:descFontSize") ?? (theme.FontSize * 0.94);
+        string accentColor = node.Metadata.TryGetValue("target:accentColor", out var accentObj)
+            ? accentObj as string ?? stroke
+            : stroke;
+
+        double w = node.Width;
+        double h = node.Height;
+        double borderRadius = theme.BorderRadius * 1.25;
+        string outlineColor = "#888888";
+        double outlineStrokeWidth = 0.8;
+        double accentBorderStrokeWidth = Math.Max(2.4, (theme.StrokeWidth + 0.2) * 1.5);
+        double accentBorderInset = (outlineStrokeWidth / 2) + (accentBorderStrokeWidth / 2);
+        double accentBorderRadius = Math.Max(0, borderRadius - accentBorderInset);
+        double accentInsetX = Math.Max(12, theme.NodePadding * 0.9);
+        double accentInsetY = Math.Max(16, theme.NodePadding * 1.2);
+        double accentHeight = Math.Max(36, h - (accentInsetY * 2));
+        double accentRadius = Math.Min(accentWidth / 2, 8);
+
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}" stroke="none"{shadowAttribute}/>""");
+        sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineStrokeWidth)}"/>""");
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentBorderInset)}" y="{SvgRenderSupport.F(accentBorderInset)}" width="{SvgRenderSupport.F(Math.Max(0, w - (accentBorderInset * 2)))}" height="{SvgRenderSupport.F(Math.Max(0, h - (accentBorderInset * 2)))}" rx="{SvgRenderSupport.F(accentBorderRadius)}" ry="{SvgRenderSupport.F(accentBorderRadius)}" fill="none" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(accentBorderStrokeWidth)}"/>""");
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentInsetX)}" y="{SvgRenderSupport.F(accentInsetY)}" width="{SvgRenderSupport.F(accentWidth)}" height="{SvgRenderSupport.F(accentHeight)}" rx="{SvgRenderSupport.F(accentRadius)}" ry="{SvgRenderSupport.F(accentRadius)}" fill="{SvgRenderSupport.Escape(accentColor)}" stroke="none"/>""");
+
+        double textX = accentInsetX + accentWidth + theme.NodePadding * 1.55;
+        double titleY = theme.NodePadding * 1.15 + titleFontSize;
+        string titleColor = SvgRenderSupport.Escape(node.Label.Color ?? theme.TextColor);
+        string descColor = SvgRenderSupport.Escape(theme.SubtleTextColor);
+
+        sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(titleY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{titleColor}">{SvgRenderSupport.Escape(node.Label.Text)}</text>""");
+
+        if (node.Metadata.TryGetValue("target:description", out var descObj) && descObj is string description && !string.IsNullOrWhiteSpace(description))
+        {
+            var lines = description.Split('\n');
+            double lineHeight = descFontSize * 1.45;
+            double startY = titleY + descFontSize * 1.15;
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                double lineY = startY + i * lineHeight;
+                sb.AppendLine($"""    <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(lineY)}" text-anchor="start" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(descFontSize)}" fill="{descColor}">{SvgRenderSupport.Escape(lines[i])}</text>""");
+            }
+        }
     }
 
     /// <summary>
