@@ -36,7 +36,7 @@ This means a diagram can carry its own preferred look, while callers can still o
 
 ## 3. Built-in Themes
 
-DiagramForge ships with 23 built-in theme presets:
+DiagramForge ships with 24 built-in theme presets:
 
 `default`, `zinc-light`, `zinc-dark`, `dark`, `neutral`, `forest`, `presentation`, `prism`, `angled-light`, `angled-dark`, `github-light`, `github-dark`, `nord`, `nord-light`, `dracula`, `tokyo-night`, `tokyo-night-storm`, `tokyo-night-light`, `catppuccin-latte`, `catppuccin-mocha`, `solarized-light`, `solarized-dark`, `one-dark`, `cyberpunk`
 
