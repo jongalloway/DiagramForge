@@ -81,19 +81,27 @@ public class ThemePaletteResolverTests
     }
 
     [Fact]
-    public void BuildRingColors_WithNodePalette_UsesAdditionalCandidates()
+    public void BuildRingColors_WithNodePalette_InfluencesSelection()
     {
-        // Build a theme without palette, then one with palette
+        // Use a large ring count so the palette candidates actually get selected.
+        // The three palette entries (#F97316 ~28°, #22C55E ~142°, #A855F7 ~287°) span
+        // very different hue regions from the base theme, so with-palette colors
+        // should differ from without-palette colors for at least one ring slot.
         var themeWithout = Theme.FromPalette("#0EA5E9");
         var themeWith = Theme.FromPalette("#0EA5E9");
         themeWith.NodePalette = ["#F97316", "#22C55E", "#A855F7"];
 
-        // Both should produce 3 valid colors; the palette variant may differ
-        string[] without = ThemePaletteResolver.BuildRingColors(themeWithout, 3, "#000000", "#0EA5E9", isLightBackground: false);
-        string[] with = ThemePaletteResolver.BuildRingColors(themeWith, 3, "#000000", "#0EA5E9", isLightBackground: false);
+        string[] without = ThemePaletteResolver.BuildRingColors(themeWithout, 5, "#000000", "#0EA5E9", isLightBackground: false);
+        string[] with = ThemePaletteResolver.BuildRingColors(themeWith, 5, "#000000", "#0EA5E9", isLightBackground: false);
 
-        Assert.Equal(3, without.Length);
-        Assert.Equal(3, with.Length);
+        // Both return exactly 5 colors
+        Assert.Equal(5, without.Length);
+        Assert.Equal(5, with.Length);
+
+        // With highly distinct palette entries at least one ring color should differ
+        bool anyDiffers = without.Zip(with).Any(pair =>
+            !string.Equals(pair.First, pair.Second, StringComparison.OrdinalIgnoreCase));
+        Assert.True(anyDiffers, "NodePalette entries should influence at least one ring color selection.");
     }
 
     // ── BuildRingColors — fallback path ───────────────────────────────────────
@@ -111,5 +119,28 @@ public class ThemePaletteResolverTests
             Assert.StartsWith("#", color);
             ColorUtils.ParseHex(color); // must not throw
         }
+    }
+
+    // ── BuildRingColors — argument guards ─────────────────────────────────────
+
+    [Fact]
+    public void BuildRingColors_ZeroRingCount_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            ThemePaletteResolver.BuildRingColors(Theme.Default, 0, "#000000", "#AABBCC", isLightBackground: true));
+    }
+
+    [Fact]
+    public void BuildRingColors_NegativeRingCount_ThrowsArgumentOutOfRangeException()
+    {
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+            ThemePaletteResolver.BuildRingColors(Theme.Default, -1, "#000000", "#AABBCC", isLightBackground: true));
+    }
+
+    [Fact]
+    public void BuildRingColors_NullTheme_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            ThemePaletteResolver.BuildRingColors(null!, 3, "#000000", "#AABBCC", isLightBackground: true));
     }
 }

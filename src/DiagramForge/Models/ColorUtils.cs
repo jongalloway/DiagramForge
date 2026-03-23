@@ -204,8 +204,19 @@ public static class ColorUtils
     /// Returns the minimum hue distance between <paramref name="candidate"/> and any color
     /// in <paramref name="existing"/>.
     /// </summary>
+    /// <exception cref="ArgumentNullException"><paramref name="existing"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="existing"/> contains no elements.</exception>
     public static double GetMinimumHueDistance(string candidate, IEnumerable<string> existing)
-        => existing.Min(existingColor => GetHueDistance(candidate, existingColor));
+    {
+        ArgumentNullException.ThrowIfNull(existing);
+
+        // Materialize once so we can check emptiness without double-enumeration.
+        var list = existing as IReadOnlyCollection<string> ?? existing.ToList();
+        if (list.Count == 0)
+            throw new ArgumentException("Parameter 'existing' must contain at least one color.", nameof(existing));
+
+        return list.Min(existingColor => GetHueDistance(candidate, existingColor));
+    }
 
     /// <summary>
     /// Rotates the hue of <paramref name="hex"/> by <paramref name="degrees"/> and clamps
@@ -248,6 +259,13 @@ public static class ColorUtils
     /// <param name="lightness">Lightness 0–1.</param>
     public static string FromHsl(double hue, double saturation, double lightness)
     {
+        // Normalize inputs to match the documented contract (hue 0–360, sat/light 0–1).
+        hue %= 360;
+        if (hue < 0)
+            hue += 360;
+        saturation = Math.Clamp(saturation, 0, 1);
+        lightness = Math.Clamp(lightness, 0, 1);
+
         double chroma = (1 - Math.Abs((2 * lightness) - 1)) * saturation;
         double segment = hue / 60d;
         double x = chroma * (1 - Math.Abs((segment % 2) - 1));

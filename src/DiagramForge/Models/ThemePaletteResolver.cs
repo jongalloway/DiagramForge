@@ -33,6 +33,10 @@ public static class ThemePaletteResolver
     /// </param>
     public static string[] BuildRingColors(Theme theme, int ringCount, string centerColor, string outerColor, bool isLightBackground)
     {
+        ArgumentNullException.ThrowIfNull(theme);
+        if (ringCount < 1)
+            throw new ArgumentOutOfRangeException(nameof(ringCount), ringCount, "ringCount must be at least 1.");
+
         var colors = new List<string>(ringCount)
         {
             outerColor,

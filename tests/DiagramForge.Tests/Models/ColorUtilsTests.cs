@@ -548,6 +548,18 @@ public class ColorUtilsTests
         Assert.Equal(120, min, precision: 1);
     }
 
+    [Fact]
+    public void GetMinimumHueDistance_EmptySequence_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => ColorUtils.GetMinimumHueDistance("#FF0000", []));
+    }
+
+    [Fact]
+    public void GetMinimumHueDistance_NullSequence_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => ColorUtils.GetMinimumHueDistance("#FF0000", null!));
+    }
+
     // ── RotateHue ─────────────────────────────────────────────────────────────
 
     [Fact]
@@ -562,9 +574,7 @@ public class ColorUtilsTests
     [Fact]
     public void RotateHue_180Degrees_ApproximatelyOppositeHue()
     {
-        double originalHue = ColorUtils.GetHue("#4F81BD");
         string rotated = ColorUtils.RotateHue("#4F81BD", 180, isLightBackground: false);
-        double rotatedHue = ColorUtils.GetHue(rotated);
         double dist = ColorUtils.GetHueDistance("#4F81BD", rotated);
         // Should be far around the wheel
         Assert.True(dist > 90, $"Expected hue distance > 90, got {dist:F1}");
@@ -624,6 +634,40 @@ public class ColorUtilsTests
         Assert.InRange(r, 0, 255);
         Assert.InRange(g, 0, 255);
         Assert.InRange(b, 0, 255);
+    }
+
+    [Fact]
+    public void FromHsl_HueBeyond360_NormalizesCorrectly()
+    {
+        // 420° mod 360 = 60° (yellow region); result should equal hue=60
+        string result420 = ColorUtils.FromHsl(420, 1.0, 0.5);
+        string result60 = ColorUtils.FromHsl(60, 1.0, 0.5);
+        Assert.Equal(result60, result420, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_NegativeHue_NormalizesCorrectly()
+    {
+        // -60° mod 360 = 300° (magenta region); should equal hue=300
+        string resultNeg = ColorUtils.FromHsl(-60, 1.0, 0.5);
+        string result300 = ColorUtils.FromHsl(300, 1.0, 0.5);
+        Assert.Equal(result300, resultNeg, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_SaturationAbove1_ClampsTo1()
+    {
+        string clamped = ColorUtils.FromHsl(0, 2.0, 0.5);
+        string expected = ColorUtils.FromHsl(0, 1.0, 0.5);
+        Assert.Equal(expected, clamped, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_LightnessAbove1_ClampsTo1()
+    {
+        string clamped = ColorUtils.FromHsl(0, 1.0, 5.0);
+        string expected = ColorUtils.FromHsl(0, 1.0, 1.0);
+        Assert.Equal(expected, clamped, ignoreCase: true);
     }
 }
 
