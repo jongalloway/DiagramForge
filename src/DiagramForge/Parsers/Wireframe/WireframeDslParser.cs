@@ -511,7 +511,9 @@ public sealed class WireframeDslParser : IDiagramParser
 
         badgeLabel = line[2..closeIdx].Trim();
         trailingText = line[(closeIdx + 2)..].Trim();
-        return badgeLabel.Length > 0;
+        // Require non-empty trailing text so a standalone badge with only trailing
+        // whitespace (e.g. "(( Info )) ") is not treated as an inline badge row.
+        return badgeLabel.Length > 0 && trailingText.Length > 0;
     }
 
     private static Node? ParseTabBar(string line, string nodeId)

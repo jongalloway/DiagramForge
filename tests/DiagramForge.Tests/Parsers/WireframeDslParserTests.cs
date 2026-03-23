@@ -577,4 +577,23 @@ public class WireframeDslParserTests
         Assert.NotNull(badge);
         Assert.Equal("Info", badge!.Label.Text);
     }
+
+    [Fact]
+    public void Parse_StandaloneBadge_WithTrailingWhitespace_IsNotTreatedAsInline()
+    {
+        // A badge followed only by whitespace should NOT create an implicit row.
+        var diagram = _parser.Parse("wireframe\n(( Info )) ");
+
+        // No implicit row node should be created.
+        var row = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "row"
+            && !n.Metadata.ContainsKey("wireframe:isRoot"));
+        Assert.Null(row);
+
+        // The badge should still be parsed as a standalone badge.
+        var badge = diagram.Nodes.Values.FirstOrDefault(n =>
+            n.Metadata.TryGetValue("wireframe:kind", out var k) && k is "badge");
+        Assert.NotNull(badge);
+        Assert.Equal("Info", badge!.Label.Text);
+    }
 }

@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using System.Text;
 using DiagramForge.Models;
 
@@ -747,7 +748,7 @@ internal static class SvgNodeWriter
     /// <see cref="Theme.BackgroundColor"/>, <see cref="Theme.TextColor"/>,
     /// <see cref="Theme.AccentColor"/>, and <see cref="Theme.SubtleTextColor"/>.
     /// </summary>
-    private readonly record struct WireframePalette
+    private sealed record WireframePalette
     {
         public string CardFill { get; init; }
         public string CardBorder { get; init; }
@@ -825,9 +826,17 @@ internal static class SvgNodeWriter
         }
     }
 
+    /// <summary>
+    /// Cache keyed by <see cref="Theme"/> identity so that <see cref="WireframePalette.FromTheme"/>
+    /// is computed at most once per distinct theme per process lifetime.
+    /// <see cref="ConditionalWeakTable{TKey,TValue}"/> is used so cached entries are automatically
+    /// discarded when the theme object is GC-collected.
+    /// </summary>
+    private static readonly ConditionalWeakTable<Theme, WireframePalette> s_paletteCache = new();
+
     private static void AppendWireframeNode(StringBuilder sb, Node node, string kind, Theme theme)
     {
-        var p = WireframePalette.FromTheme(theme);
+        var p = s_paletteCache.GetValue(theme, static t => WireframePalette.FromTheme(t));
 
         switch (kind)
         {

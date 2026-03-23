@@ -1,4 +1,5 @@
 using DiagramForge.Models;
+using DiagramForge.Parsers.Wireframe;
 using DiagramForge.Rendering;
 
 namespace DiagramForge.Layout;
@@ -50,7 +51,7 @@ public sealed partial class DefaultLayoutEngine
         if (diagram.Nodes.Count == 0)
             return;
 
-        if (!diagram.Nodes.TryGetValue(Parsers.Wireframe.WireframeDslParser.RootNodeId, out var root))
+        if (!diagram.Nodes.TryGetValue(WireframeDslParser.RootNodeId, out var root))
             return;
 
         // Build parent→children map from wireframe:containment edges.
