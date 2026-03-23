@@ -458,5 +458,216 @@ public class ColorUtilsTests
         int spread2 = Math.Max(r2, Math.Max(g2, b2)) - Math.Min(r2, Math.Min(g2, b2));
         Assert.True(spread2 >= spread1, "Higher amplify should produce equal or greater channel spread.");
     }
+
+    // ── GetHue ────────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void GetHue_Red_Returns0()
+    {
+        double hue = ColorUtils.GetHue("#FF0000");
+        Assert.Equal(0, hue, precision: 1);
+    }
+
+    [Fact]
+    public void GetHue_Green_Returns120()
+    {
+        double hue = ColorUtils.GetHue("#00FF00");
+        Assert.Equal(120, hue, precision: 1);
+    }
+
+    [Fact]
+    public void GetHue_Blue_Returns240()
+    {
+        double hue = ColorUtils.GetHue("#0000FF");
+        Assert.Equal(240, hue, precision: 1);
+    }
+
+    [Fact]
+    public void GetHue_Achromatic_Returns0()
+    {
+        // Grey has no hue
+        double hue = ColorUtils.GetHue("#808080");
+        Assert.Equal(0, hue, precision: 1);
+    }
+
+    [Fact]
+    public void GetHue_ReturnsValueInRange()
+    {
+        double hue = ColorUtils.GetHue("#4F81BD");
+        Assert.InRange(hue, 0, 360);
+    }
+
+    // ── GetHueDistance ────────────────────────────────────────────────────────
+
+    [Fact]
+    public void GetHueDistance_SameColor_ReturnsZero()
+    {
+        double dist = ColorUtils.GetHueDistance("#FF0000", "#FF0000");
+        Assert.Equal(0, dist, precision: 2);
+    }
+
+    [Fact]
+    public void GetHueDistance_OppositeHues_Returns180()
+    {
+        // Red (0°) vs Cyan (180°) should be 180
+        double dist = ColorUtils.GetHueDistance("#FF0000", "#00FFFF");
+        Assert.Equal(180, dist, precision: 1);
+    }
+
+    [Fact]
+    public void GetHueDistance_IsSymmetric()
+    {
+        double d1 = ColorUtils.GetHueDistance("#FF0000", "#0000FF");
+        double d2 = ColorUtils.GetHueDistance("#0000FF", "#FF0000");
+        Assert.Equal(d1, d2, precision: 6);
+    }
+
+    [Fact]
+    public void GetHueDistance_NeverExceeds180()
+    {
+        // Distance wraps circularly so max is 180
+        double dist = ColorUtils.GetHueDistance("#FF0000", "#00FF00");
+        Assert.InRange(dist, 0, 180);
+    }
+
+    // ── GetMinimumHueDistance ─────────────────────────────────────────────────
+
+    [Fact]
+    public void GetMinimumHueDistance_SingleExisting_EqualsSingleDistance()
+    {
+        double expected = ColorUtils.GetHueDistance("#FF0000", "#0000FF");
+        double actual = ColorUtils.GetMinimumHueDistance("#FF0000", ["#0000FF"]);
+        Assert.Equal(expected, actual, precision: 6);
+    }
+
+    [Fact]
+    public void GetMinimumHueDistance_MultipleExisting_ReturnsMinimum()
+    {
+        // Red (0°) vs green (120°) = 120; red vs blue (240°) = 120; red vs cyan (180°) = 180
+        double min = ColorUtils.GetMinimumHueDistance("#FF0000", ["#00FF00", "#0000FF", "#00FFFF"]);
+        Assert.Equal(120, min, precision: 1);
+    }
+
+    [Fact]
+    public void GetMinimumHueDistance_EmptySequence_ThrowsArgumentException()
+    {
+        Assert.Throws<ArgumentException>(() => ColorUtils.GetMinimumHueDistance("#FF0000", []));
+    }
+
+    [Fact]
+    public void GetMinimumHueDistance_NullSequence_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() => ColorUtils.GetMinimumHueDistance("#FF0000", null!));
+    }
+
+    // ── RotateHue ─────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void RotateHue_ZeroDegrees_PreservesHue()
+    {
+        double originalHue = ColorUtils.GetHue("#4F81BD");
+        string rotated = ColorUtils.RotateHue("#4F81BD", 0, isLightBackground: false);
+        double rotatedHue = ColorUtils.GetHue(rotated);
+        Assert.InRange(Math.Abs(originalHue - rotatedHue), 0, 2); // allow minor rounding
+    }
+
+    [Fact]
+    public void RotateHue_180Degrees_ApproximatelyOppositeHue()
+    {
+        string rotated = ColorUtils.RotateHue("#4F81BD", 180, isLightBackground: false);
+        double dist = ColorUtils.GetHueDistance("#4F81BD", rotated);
+        // Should be far around the wheel
+        Assert.True(dist > 90, $"Expected hue distance > 90, got {dist:F1}");
+    }
+
+    [Fact]
+    public void RotateHue_ReturnsValidHexString()
+    {
+        string result = ColorUtils.RotateHue("#4F81BD", 45, isLightBackground: true);
+        Assert.StartsWith("#", result);
+        var (r, g, b) = ColorUtils.ParseHex(result);
+        Assert.InRange(r, 0, 255);
+        Assert.InRange(g, 0, 255);
+        Assert.InRange(b, 0, 255);
+    }
+
+    // ── FromHsl ───────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void FromHsl_Red_ReturnsRedHex()
+    {
+        // Hue=0°, Sat=1, Light=0.5 should give pure red #FF0000
+        string result = ColorUtils.FromHsl(0, 1.0, 0.5);
+        Assert.Equal("#FF0000", result, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_Green_ReturnsGreenHex()
+    {
+        string result = ColorUtils.FromHsl(120, 1.0, 0.5);
+        Assert.Equal("#00FF00", result, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_Blue_ReturnsBlueHex()
+    {
+        string result = ColorUtils.FromHsl(240, 1.0, 0.5);
+        Assert.Equal("#0000FF", result, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_ZeroSaturation_ProducesGray()
+    {
+        string result = ColorUtils.FromHsl(120, 0, 0.5);
+        var (r, g, b) = ColorUtils.ParseHex(result);
+        // All channels should be equal (grayscale)
+        Assert.Equal(r, g);
+        Assert.Equal(g, b);
+    }
+
+    [Fact]
+    public void FromHsl_ReturnsValidHexString()
+    {
+        string result = ColorUtils.FromHsl(200, 0.7, 0.45);
+        Assert.StartsWith("#", result);
+        var (r, g, b) = ColorUtils.ParseHex(result);
+        Assert.InRange(r, 0, 255);
+        Assert.InRange(g, 0, 255);
+        Assert.InRange(b, 0, 255);
+    }
+
+    [Fact]
+    public void FromHsl_HueBeyond360_NormalizesCorrectly()
+    {
+        // 420° mod 360 = 60° (yellow region); result should equal hue=60
+        string result420 = ColorUtils.FromHsl(420, 1.0, 0.5);
+        string result60 = ColorUtils.FromHsl(60, 1.0, 0.5);
+        Assert.Equal(result60, result420, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_NegativeHue_NormalizesCorrectly()
+    {
+        // -60° mod 360 = 300° (magenta region); should equal hue=300
+        string resultNeg = ColorUtils.FromHsl(-60, 1.0, 0.5);
+        string result300 = ColorUtils.FromHsl(300, 1.0, 0.5);
+        Assert.Equal(result300, resultNeg, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_SaturationAbove1_ClampsTo1()
+    {
+        string clamped = ColorUtils.FromHsl(0, 2.0, 0.5);
+        string expected = ColorUtils.FromHsl(0, 1.0, 0.5);
+        Assert.Equal(expected, clamped, ignoreCase: true);
+    }
+
+    [Fact]
+    public void FromHsl_LightnessAbove1_ClampsTo1()
+    {
+        string clamped = ColorUtils.FromHsl(0, 1.0, 5.0);
+        string expected = ColorUtils.FromHsl(0, 1.0, 1.0);
+        Assert.Equal(expected, clamped, ignoreCase: true);
+    }
 }
 
