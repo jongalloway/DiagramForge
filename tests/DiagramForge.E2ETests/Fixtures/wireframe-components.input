@@ -1,0 +1,15 @@
+wireframe: Component Showcase
+# Form Elements
+[ text: Full Name ]
+[ text: Email ]
+[v] Country {USA, UK, Canada}
+[ ] Accept Terms
+[x] Subscribe to newsletter
+( ) Monthly
+(x) Yearly
+***
+[on] Dark Mode
+[off] Notifications
+***
+[ Submit ](#submit)
+[ Cancel ]

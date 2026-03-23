@@ -1,0 +1,23 @@
+wireframe: Dashboard
+|[ Overview ]| Analytics | Settings |
+***
+=== ROW ===
+  ::: CARD: Users :::
+    ## 1,240
+    Total users
+  --- END ---
+  ::: CARD: Revenue :::
+    ## $48,200
+    This month
+  --- END ---
+  ::: CARD: Orders :::
+    ## 386
+    Pending
+  --- END ---
+--- END ---
+***
+# Recent Activity
+(( New )) Welcome to the dashboard!
+Plain text description line
+[ text: Search ]
+[ View All ](#view-all)
