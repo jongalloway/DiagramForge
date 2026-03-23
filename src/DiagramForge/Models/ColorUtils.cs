@@ -160,6 +160,115 @@ public static class ColorUtils
         return (lighter + 0.05) / (darker + 0.05);
     }
 
+    // ── HSL helpers ───────────────────────────────────────────────────────────
+
+    /// <summary>
+    /// Returns the HSL hue angle (0–360) for a hex color.
+    /// Achromatic colors (grey scale) return 0.
+    /// </summary>
+    public static double GetHue(string hex)
+    {
+        var (rRaw, gRaw, bRaw) = ParseHex(hex);
+        double r = rRaw / 255d;
+        double g = gRaw / 255d;
+        double b = bRaw / 255d;
+        double max = Math.Max(r, Math.Max(g, b));
+        double min = Math.Min(r, Math.Min(g, b));
+        double delta = max - min;
+
+        if (delta < 0.0001)
+            return 0;
+
+        double hue = max switch
+        {
+            _ when max == r => 60 * (((g - b) / delta) % 6),
+            _ when max == g => 60 * (((b - r) / delta) + 2),
+            _ => 60 * (((r - g) / delta) + 4),
+        };
+
+        return hue < 0 ? hue + 360 : hue;
+    }
+
+    /// <summary>
+    /// Returns the circular hue distance (0–180) between two hex colors.
+    /// </summary>
+    public static double GetHueDistance(string leftHex, string rightHex)
+    {
+        double leftHue = GetHue(leftHex);
+        double rightHue = GetHue(rightHex);
+        double delta = Math.Abs(leftHue - rightHue);
+        return Math.Min(delta, 360 - delta);
+    }
+
+    /// <summary>
+    /// Returns the minimum hue distance between <paramref name="candidate"/> and any color
+    /// in <paramref name="existing"/>.
+    /// </summary>
+    public static double GetMinimumHueDistance(string candidate, IEnumerable<string> existing)
+        => existing.Min(existingColor => GetHueDistance(candidate, existingColor));
+
+    /// <summary>
+    /// Rotates the hue of <paramref name="hex"/> by <paramref name="degrees"/> and clamps
+    /// saturation/lightness to produce a visually balanced result.
+    /// </summary>
+    /// <param name="hex">Source hex color.</param>
+    /// <param name="degrees">Degrees to rotate the hue (positive = clockwise).</param>
+    /// <param name="isLightBackground">
+    /// When <see langword="true"/> the lightness ceiling is lowered so the result reads well
+    /// on a light canvas; when <see langword="false"/> the floor is raised for dark canvases.
+    /// </param>
+    public static string RotateHue(string hex, double degrees, bool isLightBackground)
+    {
+        var (rRaw, gRaw, bRaw) = ParseHex(hex);
+        double r = rRaw / 255d;
+        double g = gRaw / 255d;
+        double b = bRaw / 255d;
+        double max = Math.Max(r, Math.Max(g, b));
+        double min = Math.Min(r, Math.Min(g, b));
+        double delta = max - min;
+        double lightness = (max + min) / 2;
+        double saturation = delta < 0.0001
+            ? 0
+            : delta / (1 - Math.Abs(2 * lightness - 1));
+        double hue = (GetHue(hex) + degrees) % 360;
+        if (hue < 0)
+            hue += 360;
+
+        saturation = Math.Clamp(Math.Max(saturation, 0.46), 0, 0.88);
+        lightness = Math.Clamp(isLightBackground ? Math.Min(lightness, 0.42) : Math.Max(lightness, 0.48), 0.24, 0.62);
+
+        return FromHsl(hue, saturation, lightness);
+    }
+
+    /// <summary>
+    /// Converts HSL components to a hex color string.
+    /// </summary>
+    /// <param name="hue">Hue angle in degrees (0–360).</param>
+    /// <param name="saturation">Saturation 0–1.</param>
+    /// <param name="lightness">Lightness 0–1.</param>
+    public static string FromHsl(double hue, double saturation, double lightness)
+    {
+        double chroma = (1 - Math.Abs((2 * lightness) - 1)) * saturation;
+        double segment = hue / 60d;
+        double x = chroma * (1 - Math.Abs((segment % 2) - 1));
+
+        (double r1, double g1, double b1) = segment switch
+        {
+            >= 0 and < 1 => (chroma, x, 0d),
+            >= 1 and < 2 => (x, chroma, 0d),
+            >= 2 and < 3 => (0d, chroma, x),
+            >= 3 and < 4 => (0d, x, chroma),
+            >= 4 and < 5 => (x, 0d, chroma),
+            _ => (chroma, 0d, x),
+        };
+
+        double match = lightness - (chroma / 2);
+        return ToHex(
+            (int)Math.Round((r1 + match) * 255),
+            (int)Math.Round((g1 + match) * 255),
+            (int)Math.Round((b1 + match) * 255));
+    }
+
     // ── Private helpers ───────────────────────────────────────────────────────
 
     /// <summary>Linearizes a single sRGB channel value for WCAG relative luminance calculation (IEC 61966-2-1).</summary>
