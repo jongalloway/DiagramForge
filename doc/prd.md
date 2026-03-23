@@ -1,4 +1,5 @@
 # Product Requirements Document (PRD)
+
 ## Project: Markdown‑Driven Diagram Rendering Engine (Text → SVG)
 
 ---
@@ -38,7 +39,7 @@ Clients (e.g., MarpToPptx, Obsidian plugins, CLI tools) are responsible for extr
 - Provide a **pluggable parser architecture** for future syntaxes (e.g., D2, DOT).
 - Remain **independent of any specific client** (Marp, PPTX, web apps, etc.).
 - Support for themes and palletes, both built-in and user supplied.
-- Leverage existing ecosystem. Refer to https://github.com/mermaid-js/mermaid for specification and transpile open source code (with attribution) if possible.
+- Leverage existing ecosystem. Refer to <https://github.com/mermaid-js/mermaid> for specification and transpile open source code (with attribution) if possible.
 
 ### 2.2 Non‑Goals
 
@@ -148,7 +149,26 @@ Examples that remain good candidates for the Conceptual DSL:
 - Radial / hub-and-spoke
 - Pillars / stacked segments
 
-### 5.3 Future Diagram Types (not in v1)
+### 5.3 Wireframe DSL
+
+Low-fidelity wireframe diagrams based on the [markdown-ui-dsl](https://github.com/MegaByteMark/markdown-ui-dsl) syntax. The wireframe parser implements a focused subset of the DSL to render UI mockups as self-contained SVG.
+
+Supported component subset:
+
+- Container primitives: column, row, card, header, footer
+- Form elements: text input, checkbox, radio button, toggle, dropdown
+- Navigation: tab bar (active/inactive states)
+- Content: heading, body text, badge (inline with trailing text), image placeholder, divider
+- Actions: button (primary via link syntax, secondary via plain brackets)
+- Layout: `=== ROW ===` for horizontal arrangement, `::: CARD :::` for grouped content, `***` dividers, indent-based nesting
+
+Selection rule:
+
+- Use the wireframe DSL when the goal is a quick, theme-able, low-fidelity UI sketch inside a slide or document.
+- The wireframe DSL is not a UI framework; it renders static SVG of standard UI widget shapes.
+- All wireframe colors are derived from the four semantic theme properties (`BackgroundColor`, `TextColor`, `SubtleTextColor`, `AccentColor`) via `WireframePalette`, so every built-in theme works out of the box including dark themes.
+
+### 5.4 Future Diagram Types (not in v1)
 
 - D2 subset
 - Architecture diagrams

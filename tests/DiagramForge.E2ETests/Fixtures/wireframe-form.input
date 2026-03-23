@@ -1,0 +1,18 @@
+wireframe: TPS Report Filing
+::: HEADER :::
+  # File TPS Report
+--- END ---
+[ text: Report Title ]
+[v] Cover Sheet {Standard, New (per memo), Coverless (denied)}
+***
+[x] I got the memo about cover sheets
+[ ] Attach red stapler insurance claim
+( ) Single-sided
+(x) Collated, three-hole punched
+***
+(( MEMO )) New cover sheets are now required.
+***
+=== ROW ===
+  [ File Report ](#submit)
+  [ Cancel ]
+--- END ---

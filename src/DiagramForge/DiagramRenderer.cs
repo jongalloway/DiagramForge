@@ -5,6 +5,7 @@ using DiagramForge.Layout;
 using DiagramForge.Models;
 using DiagramForge.Parsers.Conceptual;
 using DiagramForge.Parsers.Mermaid;
+using DiagramForge.Parsers.Wireframe;
 using DiagramForge.Rendering;
 
 namespace DiagramForge;
@@ -56,7 +57,7 @@ public sealed class DiagramRenderer
     /// </summary>
     public DiagramRenderer()
         : this(
-            parsers: [new MermaidParser(), new ConceptualDslParser()],
+            parsers: [new MermaidParser(), new ConceptualDslParser(), new WireframeDslParser()],
             layoutEngine: new DefaultLayoutEngine(),
             svgRenderer: new SvgRenderer(),
             defaultTheme: Theme.Default)

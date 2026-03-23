@@ -12,7 +12,7 @@ Representative snapshot fixtures from the E2E suite. Click any thumbnail to open
 <!-- markdownlint-disable MD033 -->
 <h3>Diagram Types</h3>
 
-DiagramForge currently supports more than a dozen diagram types across Mermaid and the conceptual DSL. This gallery is representative, not complete, and includes a few icon-enabled examples. See [Supported syntax](#supported-syntax) and [Conceptual DSL](#conceptual-dsl) below for the full set and syntax details.
+DiagramForge currently supports more than a dozen diagram types across Mermaid, the Conceptual DSL, and the Wireframe DSL. This gallery is representative, not complete, and includes a few icon-enabled examples. See [Supported syntax](#supported-syntax), [Conceptual DSL](#conceptual-dsl), and [Wireframe DSL](#wireframe-dsl) below for the full set and syntax details.
 
 <table cellpadding="12" width="100%">
   <tr>
@@ -137,6 +137,20 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
       </a>
       <br />
       <sub>Snake Timeline (Dracula)</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/wireframe-form.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/wireframe-form.expected.svg" alt="Wireframe form dialog" height="96" />
+      </a>
+      <br />
+      <sub>Wireframe Form</sub>
+    </td>
+    <td align="center" valign="top" width="33%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/wireframe-dashboard.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/wireframe-dashboard.expected.svg" alt="Wireframe dashboard (Dracula)" height="96" />
+      </a>
+      <br />
+      <sub>Wireframe Dashboard (Dracula)</sub>
     </td>
   </tr>
 </table>
@@ -278,7 +292,7 @@ That's the whole API.
 
 Most diagram-as-code tools assume a browser. Mermaid.js needs a JavaScript engine to run at all — and even once you've stood up headless Chrome and extracted the SVG, you find that it renders text via `<foreignObject>` wrapping HTML `<div>`s instead of native `<text>` elements. That's fine in a web page. It's a blank box in Inkscape, a parse error in Illustrator, and a mess when you try to drop it into a PowerPoint slide. See mermaid-js/mermaid [#2688](https://github.com/mermaid-js/mermaid/issues/2688), [#1845](https://github.com/mermaid-js/mermaid/issues/1845), [#1923](https://github.com/mermaid-js/mermaid/issues/1923), [#2169](https://github.com/mermaid-js/mermaid/issues/2169).
 
-DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts, block diagrams, sequence diagrams, state diagrams, mindmaps, timelines, Venn diagrams, architecture diagrams, and XY charts — the output opens anywhere.
+DiagramForge aims lower and hits harder: a **subset** of Mermaid, rendered to **actual** SVG. Flowcharts, block diagrams, sequence diagrams, state diagrams, mindmaps, timelines, Venn diagrams, architecture diagrams, XY charts, and low-fidelity wireframes — the output opens anywhere.
 
 - **Real SVG.** Native `<text>` elements. No `<foreignObject>`, no embedded HTML, no CSS-in-SVG. Opens in Inkscape, imports into PowerPoint and Keynote, renders with librsvg.
 - **Pure .NET.** `net10.0`, zero native dependencies, zero runtime package dependencies. No headless browser, no Node, no shelling out.
@@ -316,7 +330,7 @@ string svg = renderer.Render(diagramText);
 File.WriteAllText("out.svg", svg);
 ```
 
-The renderer auto-detects the syntax from the input. No need to tell it whether it's Mermaid or Conceptual DSL.
+The renderer auto-detects the syntax from the input. No need to tell it whether it's Mermaid, Conceptual DSL, or Wireframe DSL.
 
 ### With a custom theme
 
@@ -343,7 +357,7 @@ See [doc/theming.md](doc/theming.md) for the full `Theme` property surface and [
 
 ### With diagram frontmatter
 
-Diagram files can embed a small frontmatter block ahead of Mermaid or Conceptual DSL content:
+Diagram files can embed a small frontmatter block ahead of Mermaid, Conceptual DSL, or Wireframe DSL content:
 
 ```text
 ---
@@ -784,6 +798,7 @@ Rule of thumb: if the diagram is already easy to describe as Mermaid, use Mermai
 | Central concept with surrounding pillars / capabilities (3–8 items) | Conceptual DSL | `diagram: radial\ncenter: Platform\nitems:\n  - Security\n  - Reliability\n  - Observability` |
 | Concentric strategy / segmentation target | Conceptual DSL | `diagram: target\ncenter: Launch\nrings:\n  - Inner ring: Pricing and messaging\n  - Outer ring: Audience reach` |
 | Visual step-by-step journey / snake timeline (3+ steps) | Conceptual DSL | `diagram: snake\ntitle: Journey\nsteps:\n  - Start: Begin here\n  - Middle: Keep going\n  - End: Arrive` |
+| Low-fidelity UI mockup / wireframe sketch | Wireframe DSL | `wireframe: Settings\n::: HEADER :::\n  # Settings\n--- END ---\n[ text: Name ]\n[ Save ](#save)` |
 
 Planned conceptual additions are aimed at presentation-native graphics that Mermaid does not cover idiomatically, such as tree hierarchies / org charts.
 
@@ -919,6 +934,64 @@ steps:
 
 Requires at least 3 steps. Each step follows the format `Label: Description` — the description is optional. Icons use the standard `icon:pack:name` prefix.
 
+### Wireframe DSL
+
+Low-fidelity wireframe diagrams based on the [markdown-ui-dsl](https://github.com/MegaByteMark/markdown-ui-dsl) syntax. The first non-frontmatter line must start with `wireframe`.
+
+DiagramForge implements a focused subset of the DSL — enough to sketch forms, dashboards, and component showcases as static, theme-able SVG.
+
+#### Supported components
+
+| Component | Syntax | Example |
+| --- | --- | --- |
+| Header | `::: HEADER :::`…`--- END ---` | `::: HEADER :::\n  # Page Title\n--- END ---` |
+| Card | `::: CARD: Label :::`…`--- END ---` | `::: CARD: Users :::\n  ## 1,240\n  Total\n--- END ---` |
+| Row layout | `=== ROW ===`…`--- END ---` | `=== ROW ===\n  [ OK ](#ok)\n  [ Cancel ]\n--- END ---` |
+| Button (primary) | `[ Label ](#link)` | `[ Submit ](#save)` |
+| Button (secondary) | `[ Label ]` | `[ Cancel ]` |
+| Text input | `[ text: placeholder ]` | `[ text: Email address ]` |
+| Checkbox | `[x]` / `[ ]` + label | `[x] Accept terms` |
+| Radio button | `(x)` / `( )` + label | `(x) Yearly` |
+| Toggle | `[on]` / `[off]` + label | `[on] Dark Mode` |
+| Dropdown | `[v] Label {options}` | `[v] Country {USA, UK, Canada}` |
+| Tab bar | `\|[ Active ]\| Tab2 \| Tab3 \|` | `\|[ Overview ]\| Settings \|` |
+| Badge (inline) | `(( Label )) text` | `(( New )) 3 notifications` |
+| Heading | `# Heading` or `## Heading` | `# Recent Activity` |
+| Body text | plain text line | `Status: Cannot Reproduce` |
+| Divider | `***` | `***` |
+| Image placeholder | `[ IMG: description ]` | `[ IMG: Profile photo ]` |
+
+#### Example
+
+```text
+wireframe: Settings Dialog
+::: HEADER :::
+  # Preferences
+--- END ---
+[ text: Display name ]
+[v] Theme {Light, Dark, System}
+[x] Send notifications
+( ) Daily digest
+(x) Real-time
+***
+=== ROW ===
+  [ Save ](#save)
+  [ Cancel ]
+--- END ---
+```
+
+All wireframe colors are derived from the active theme's `BackgroundColor`, `TextColor`, `SubtleTextColor`, and `AccentColor`, so every built-in theme (including dark themes) works automatically. Use [frontmatter](#with-diagram-frontmatter) to pick a theme:
+
+```text
+---
+theme: dracula
+---
+wireframe: Dashboard
+::: HEADER :::
+  # Mission Control
+--- END ---
+```
+
 ## Architecture
 
 ```mermaid
@@ -945,7 +1018,7 @@ Parsers produce a syntax-independent `Diagram` (nodes, edges, groups, labels, la
 
 ## Roadmap
 
-See [`doc/prd.md`](doc/prd.md) for the full plan. Short version: more Mermaid diagram types, more conceptual layouts, theme packs, eventually D2 and DOT parsers.
+See [`doc/prd.md`](doc/prd.md) for the full plan. Short version: more Mermaid diagram types, more conceptual layouts, wireframe enhancements, theme packs, eventually D2 and DOT parsers.
 
 For analysis of which SmartArt-style conceptual diagrams are most worth adding next, see [`doc/smartart-analysis.md`](doc/smartart-analysis.md).
 

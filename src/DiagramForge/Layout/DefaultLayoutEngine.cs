@@ -66,6 +66,9 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
             return;
         }
 
+        if (TryLayoutWireframeDiagram(diagram, theme, pad))
+            return;
+
         // ── Sizing pass ───────────────────────────────────────────────────────
         // Compute each node's width from its label so text does not overflow the
         // shape. MinNodeWidth remains a floor so short labels ("A", "End") do not

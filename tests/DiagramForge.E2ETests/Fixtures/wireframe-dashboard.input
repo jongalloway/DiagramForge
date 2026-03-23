@@ -1,0 +1,31 @@
+---
+theme: dracula
+---
+wireframe: Middle-earth Quest Tracker
+::: HEADER :::
+  # Middle-earth Quest Tracker
+--- END ---
+|[ The Fellowship ]| Mordor Intel | Loot |
+***
+=== ROW ===
+  ::: CARD: Ring Status :::
+    ## One Ring
+    Growing heavier by the mile
+  --- END ---
+  ::: CARD: Party Members :::
+    ## 9 (was 9)
+    Morale: Questionable
+  --- END ---
+  ::: CARD: Eagles Called :::
+    ## 0
+    As usual
+  --- END ---
+--- END ---
+***
+# Recent Events
+(( URGENT )) One does not simply walk into Mordor
+[ text: Search ancient texts ]
+=== ROW ===
+  [ Throw Ring Into Volcano ](#mount-doom)
+  [ Precious ]
+--- END ---

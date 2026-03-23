@@ -1,0 +1,35 @@
+---
+theme: catppuccin-latte
+---
+wireframe: Monsters Inc Scare Floor
+::: HEADER :::
+  # Scare Floor F — Daily Report
+--- END ---
+=== ROW ===
+  ::: CARD: Top Scarer :::
+    ## Sulley
+    Screams: 1,893
+  --- END ---
+  ::: CARD: Runner Up :::
+    ## Randall
+    Screams: 1,891
+  --- END ---
+--- END ---
+|[ Scare Floor ]| Laugh Floor | Break Room |
+***
+# Door Station Status
+[x] Door station 6 active
+[ ] CDA decontamination pending
+[v] Sector {Himalayas, Sahara, Boo's Room}
+( ) Scare power
+(x) Laugh power
+[on] Scream Canisters
+[off] Laugh Conversion (beta)
+***
+[ text: Search child database ]
+(( 23-19 )) White sock detected!
+[ IMG: Door vault surveillance ]
+=== ROW ===
+  [ Power Scare Floor ](#scare)
+  [ Switch to Laugh Power ]
+--- END ---

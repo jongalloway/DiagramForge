@@ -127,6 +127,10 @@ public sealed class SvgRenderer : ISvgRenderer
         // needed by diagram-specific overlay connectors.
         foreach (var edge in diagram.Edges)
         {
+            // Wireframe containment edges are layout-only; they must not produce visible SVG.
+            if (edge.Metadata.TryGetValue("wireframe:containment", out var isWireframeContainment) && isWireframeContainment is true)
+                continue;
+
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
                 || !diagram.Nodes.TryGetValue(edge.TargetId, out var target))
                 continue;
@@ -143,6 +147,10 @@ public sealed class SvgRenderer : ISvgRenderer
         // while crossing over concentric rings but tuck under their endpoints) render after nodes.
         foreach (var edge in diagram.Edges)
         {
+            // Wireframe containment edges are layout-only; they must not produce visible SVG.
+            if (edge.Metadata.TryGetValue("wireframe:containment", out var isWireframeContainmentOverlay) && isWireframeContainmentOverlay is true)
+                continue;
+
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var source)
                 || !diagram.Nodes.TryGetValue(edge.TargetId, out var target))
                 continue;

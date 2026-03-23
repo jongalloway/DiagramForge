@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="622.60" height="510.70" viewBox="0 0 622.60 510.70">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#FF79C6"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#282A36" stroke="#FF79C6" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FF79C6"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#282A36" stroke="#FF79C6" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="622.60" height="510.70" fill="#282A36" rx="8.00" ry="8.00"/>
+  <g transform="translate(24.00,24.00)">
+    <rect x="0" y="0" width="574.60" height="56.00" rx="0.00" ry="0.00" fill="#41434D" stroke="#7B7E8E" stroke-width="1.20"/>
+  </g>
+  <text x="36.00" y="59.00" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="20.00" font-weight="bold" fill="#F8F8F2">Middle-earth Quest Tracker</text>
+  <g transform="translate(24.00,88.00)">
+    <line x1="0" y1="38.00" x2="320.00" y2="38.00" stroke="#828595" stroke-width="1.20"/>
+    <rect x="0.00" y="0" width="106.67" height="38.00" fill="#282A36" stroke="#828595" stroke-width="1.20"/>
+    <line x1="1.00" y1="38.00" x2="105.67" y2="38.00" stroke="#282A36" stroke-width="1.70"/>
+    <text x="53.33" y="23.09" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" font-weight="bold" fill="#F8F8F2">The Fellowship</text>
+    <rect x="106.67" y="0" width="106.67" height="38.00" fill="#41434D" stroke="#828595" stroke-width="1.20"/>
+    <text x="160.00" y="23.09" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" fill="#B2B6C8">Mordor Intel</text>
+    <rect x="213.33" y="0" width="106.67" height="38.00" fill="#41434D" stroke="#828595" stroke-width="1.20"/>
+    <text x="266.67" y="23.09" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" fill="#B2B6C8">Loot</text>
+  </g>
+  <line x1="24.00" y1="136.00" x2="344.00" y2="136.00" stroke="#666978" stroke-width="1.20"/>
+  <g transform="translate(36.00,158.00)">
+    <rect x="0" y="0" width="242.60" height="105.90" rx="4.00" ry="4.00" fill="#343641" stroke="#7B7E8E" stroke-width="1.20"/>
+    <text x="12.00" y="19.70" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" font-weight="bold" fill="#B2B6C8">Ring Status</text>
+  </g>
+  <text x="48.00" y="215.90" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" font-weight="bold" fill="#F8F8F2">One Ring</text>
+  <text x="48.00" y="246.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#B2B6C8">Growing heavier by the mile</text>
+  <g transform="translate(286.60,158.00)">
+    <rect x="0" y="0" width="188.00" height="105.90" rx="4.00" ry="4.00" fill="#343641" stroke="#7B7E8E" stroke-width="1.20"/>
+    <text x="12.00" y="19.70" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" font-weight="bold" fill="#B2B6C8">Party Members</text>
+  </g>
+  <text x="298.60" y="215.90" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" font-weight="bold" fill="#F8F8F2">9 (was 9)</text>
+  <text x="298.60" y="246.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#B2B6C8">Morale: Questionable</text>
+  <g transform="translate(482.60,158.00)">
+    <rect x="0" y="0" width="104.00" height="105.90" rx="4.00" ry="4.00" fill="#343641" stroke="#7B7E8E" stroke-width="1.20"/>
+    <text x="12.00" y="19.70" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" font-weight="bold" fill="#B2B6C8">Eagles Called</text>
+  </g>
+  <text x="494.60" y="215.90" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.00" font-weight="bold" fill="#F8F8F2">0</text>
+  <text x="494.60" y="246.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#B2B6C8">As usual</text>
+  <line x1="24.00" y1="285.90" x2="344.00" y2="285.90" stroke="#666978" stroke-width="1.20"/>
+  <text x="24.00" y="318.90" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="20.00" font-weight="bold" fill="#F8F8F2">Recent Events</text>
+  <g transform="translate(36.00,347.90)">
+    <rect x="0" y="0" width="53.44" height="20.00" rx="10.00" ry="10.00" fill="#443F59" stroke="#856FAA" stroke-width="0.96"/>
+    <text x="26.72" y="13.64" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#D3B8F6">URGENT</text>
+  </g>
+  <text x="97.44" y="362.85" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#B2B6C8">One does not simply walk into Mordor</text>
+  <g transform="translate(24.00,388.70)">
+    <rect x="0" y="0" width="296.00" height="32.00" rx="4.00" ry="4.00" fill="#343641" stroke="#B2B6C8" stroke-width="1.20"/>
+    <text x="8" y="20.09" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.70" fill="#969AAB">Search ancient texts</text>
+  </g>
+  <g transform="translate(36.00,440.70)">
+    <rect x="0" y="0" width="211.40" height="34.00" rx="4.00" ry="4.00" fill="#D9D9D6" stroke="none"/>
+    <text x="105.70" y="21.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#262833">Throw Ring Into Volcano</text>
+  </g>
+  <g transform="translate(255.40,440.70)">
+    <rect x="0" y="0" width="128.00" height="34.00" rx="4.00" ry="4.00" fill="#D9D9D6" stroke="none"/>
+    <text x="64.00" y="21.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#262833">Precious</text>
+  </g>
+</svg>
