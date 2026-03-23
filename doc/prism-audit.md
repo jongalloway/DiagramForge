@@ -133,7 +133,7 @@ Additionally, all three variants set `render:noGradient = true` (cards: TabList.
 | Mermaid flowchart | **A** ✅ | Standard gradient path |
 | Mermaid subgraph | **A** ✅ | Standard gradient path |
 | Mermaid mindmap | **A** ✅ | Standard shape routing |
-| Mermaid sequence / state / class / arch / block / venn | **A** ✅ | Standard shape routing |
+| Mermaid sequence / state / class / architecture / block / venn | **A** ✅ | Standard shape routing |
 | Conceptual chevrons / funnel / pyramid | **A** ✅ | Custom polygon shape; uses standard fill/stroke |
 | Conceptual cycle / radial / tree | **A** ✅ | Standard routing |
 | **Mermaid xychart** | **B** ⚠️ | `TryResolveXyChartColors` uses accent-tint palette, not white fills; border gradient present |
