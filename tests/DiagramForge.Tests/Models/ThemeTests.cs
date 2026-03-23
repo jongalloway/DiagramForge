@@ -221,12 +221,29 @@ public class ThemeTests
         Assert.Contains("nord-light", Theme.BuiltInThemeNames);
         Assert.Contains("github-dark", Theme.BuiltInThemeNames);
         Assert.Contains("cyberpunk", Theme.BuiltInThemeNames);
+        Assert.Contains("synthwave", Theme.BuiltInThemeNames);
     }
 
     [Fact]
     public void Cyberpunk_UsesNeonGlowOnDarkBackground()
     {
         var theme = Theme.Cyberpunk;
+
+        Assert.True(ColorUtils.GetLuminance(theme.BackgroundColor) < 40);
+        Assert.True(theme.UseGradients);
+        Assert.True(theme.UseBorderGradients);
+        Assert.NotNull(theme.BorderGradientStops);
+        Assert.True(theme.BorderGradientStops!.Count >= 4);
+        Assert.Equal("glow", theme.ShadowStyle);
+        Assert.True(theme.UseNodeShadows);
+        Assert.Equal(0, theme.ShadowOffsetX);
+        Assert.Equal(0, theme.ShadowOffsetY);
+    }
+
+    [Fact]
+    public void Synthwave_UsesSunsetGlowOnDarkBackground()
+    {
+        var theme = Theme.Synthwave;
 
         Assert.True(ColorUtils.GetLuminance(theme.BackgroundColor) < 40);
         Assert.True(theme.UseGradients);
@@ -280,6 +297,7 @@ public class ThemeTests
     [InlineData("dracula")]
     [InlineData("tokyo-night")]
     [InlineData("cyberpunk")]
+    [InlineData("synthwave")]
     public void BuiltInTheme_SelectedThemes_UseExpressiveMultiStopBorderGradients(string name)
     {
         var theme = Theme.GetByName(name)!;
@@ -347,6 +365,7 @@ public class ThemeTests
     [InlineData("angled-light")]
     [InlineData("angled-dark")]
     [InlineData("cyberpunk")]
+    [InlineData("synthwave")]
     public void BuiltInTheme_TextColor_HasSufficientContrastAgainstNodeFill(string themeName)
     {
         var theme = Theme.GetByName(themeName)!;
