@@ -20,33 +20,33 @@ internal static partial class SvgNodeWriter
     /// </summary>
     private sealed record WireframePalette
     {
-        public string CardFill { get; init; }
-        public string CardBorder { get; init; }
-        public string HeaderFill { get; init; }
-        public string ButtonFill { get; init; }
-        public string ButtonText { get; init; }
-        public string InputBorder { get; init; }
-        public string InputBg { get; init; }
-        public string InputPlaceholder { get; init; }
-        public string TextColor { get; init; }
-        public string SubtleText { get; init; }
-        public string DividerColor { get; init; }
-        public string BadgeFill { get; init; }
-        public string BadgeBorder { get; init; }
-        public string BadgeText { get; init; }
-        public string ImageBg { get; init; }
-        public string ImageBorder { get; init; }
-        public string ImageX { get; init; }
-        public string TabActiveFill { get; init; }
-        public string TabInactiveFill { get; init; }
-        public string TabBorder { get; init; }
-        public string TabActiveText { get; init; }
-        public string TabInactiveText { get; init; }
-        public string CheckboxBorder { get; init; }
-        public string CheckColor { get; init; }
-        public string ToggleOnFill { get; init; }
-        public string ToggleOffFill { get; init; }
-        public string KnobFill { get; init; }
+        public required string CardFill { get; init; }
+        public required string CardBorder { get; init; }
+        public required string HeaderFill { get; init; }
+        public required string ButtonFill { get; init; }
+        public required string ButtonText { get; init; }
+        public required string InputBorder { get; init; }
+        public required string InputBg { get; init; }
+        public required string InputPlaceholder { get; init; }
+        public required string TextColor { get; init; }
+        public required string SubtleText { get; init; }
+        public required string DividerColor { get; init; }
+        public required string BadgeFill { get; init; }
+        public required string BadgeBorder { get; init; }
+        public required string BadgeText { get; init; }
+        public required string ImageBg { get; init; }
+        public required string ImageBorder { get; init; }
+        public required string ImageX { get; init; }
+        public required string TabActiveFill { get; init; }
+        public required string TabInactiveFill { get; init; }
+        public required string TabBorder { get; init; }
+        public required string TabActiveText { get; init; }
+        public required string TabInactiveText { get; init; }
+        public required string CheckboxBorder { get; init; }
+        public required string CheckColor { get; init; }
+        public required string ToggleOnFill { get; init; }
+        public required string ToggleOffFill { get; init; }
+        public required string KnobFill { get; init; }
 
         public static WireframePalette FromTheme(Theme theme)
         {
