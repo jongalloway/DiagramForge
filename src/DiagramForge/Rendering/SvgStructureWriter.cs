@@ -316,6 +316,7 @@ internal static class SvgStructureWriter
         string extraAttributes = "")
     {
         double strokeWidth = baseStrokeWidth ?? theme.StrokeWidth;
+        string escapedLineCap = SvgRenderSupport.Escape(lineCap);
 
         if (outlinedTargetConnector)
         {
@@ -325,7 +326,6 @@ internal static class SvgStructureWriter
             double outlineWidth = connectorStrokeWidth + (haloPerSide * 2);
             string appliedMarkerStart = includeMarkers ? markerStart : " ";
             string appliedMarkerEnd = includeMarkers ? markerEnd : " ";
-            string escapedLineCap = SvgRenderSupport.Escape(lineCap);
             sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineWidth)}" stroke-linecap="{escapedLineCap}" stroke-linejoin="round"{extraAttributes}{strokeDash}/>""");
             sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(connectorStrokeWidth)}" stroke-linecap="{escapedLineCap}" stroke-linejoin="round"{extraAttributes}{strokeDash}{appliedMarkerStart}{appliedMarkerEnd}/>""");
             return;
@@ -333,10 +333,7 @@ internal static class SvgStructureWriter
 
         string startMarker = includeMarkers ? markerStart : " ";
         string endMarker = includeMarkers ? markerEnd : " ";
-        string lineCapAttribute = string.Equals(lineCap, "round", StringComparison.Ordinal)
-            ? string.Empty
-            : $" stroke-linecap=\"{SvgRenderSupport.Escape(lineCap)}\"";
-        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}"{lineCapAttribute}{extraAttributes}{strokeDash}{startMarker}{endMarker}/>""");
+        sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{strokeColor}" stroke-width="{SvgRenderSupport.F(strokeWidth)}" stroke-linecap="{escapedLineCap}"{extraAttributes}{strokeDash}{startMarker}{endMarker}/>""");
     }
 
     private static bool TryGetMetadataDouble(IReadOnlyDictionary<string, object> metadata, string key, out double value)

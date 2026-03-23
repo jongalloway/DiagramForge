@@ -15,9 +15,9 @@
   </defs>
   <rect width="927.24" height="578.00" fill="#282A36" rx="8.00" ry="8.00"/>
   <text x="463.62" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#F8F8F2">Iron Throne Endgame</text>
-  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#E5E5E7" stroke-width="2.62"   />
-  <path d="M 439.43,293.89 C 470.36,293.89 549.07,297.85 580.00,297.85" fill="none" stroke="#E5E5E7" stroke-width="2.62"   />
-  <path d="M 384.18,328.17 C 426.18,328.17 538.00,393.09 580.00,393.09" fill="none" stroke="#E5E5E7" stroke-width="2.62"   />
+  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 439.43,293.89 C 470.36,293.89 549.07,297.85 580.00,297.85" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 384.18,328.17 C 426.18,328.17 538.00,393.09 580.00,393.09" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
   <g transform="translate(24.00,47.00)">
     <circle cx="242.00" cy="242.00" r="222.50" fill="none" stroke="#D86BAC" stroke-width="39.00"/>
     <circle cx="242.00" cy="242.00" r="203.00" fill="none" stroke="#888888" stroke-width="0.80"/>

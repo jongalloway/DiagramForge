@@ -14,11 +14,11 @@
     </marker>
   </defs>
   <rect width="348.00" height="168.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
-  <path d="M 144.00,44.00 L 204.00,44.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 144.00,44.00 L 204.00,44.00" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="158.00" y="54.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
   <text x="184.00" y="34.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">*</text>
   <text x="174.00" y="40.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#667085" font-style="italic">owns</text>
-  <path d="M 144.00,124.00 L 204.00,124.00" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 144.00,124.00 L 204.00,124.00" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="158.00" y="134.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1</text>
   <text x="184.00" y="114.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.40" fill="#667085">1..*</text>
   <g transform="translate(24.00,24.00)">
