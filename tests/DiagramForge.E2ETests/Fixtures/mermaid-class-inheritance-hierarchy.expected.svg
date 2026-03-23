@@ -14,11 +14,11 @@
     </marker>
   </defs>
   <rect width="460.20" height="429.80" fill="#FCFCFD" rx="8.00" ry="8.00"/>
-  <path d="M 230.10,129.45 L 230.10,89.45" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
-  <path d="M 98.40,234.90 L 98.40,220.90 A 6.00,6.00 0 0 1 104.40,214.90 L 224.10,214.90 A 6.00,6.00 0 0 0 230.10,208.90 L 230.10,194.90" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
-  <path d="M 326.70,234.90 L 326.70,220.90 A 6.00,6.00 0 0 0 320.70,214.90 L 236.10,214.90 A 6.00,6.00 0 0 1 230.10,208.90 L 230.10,194.90" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
-  <path d="M 94.50,340.35 L 94.50,326.35 A 6.00,6.00 0 0 1 100.50,320.35 L 320.70,320.35 A 6.00,6.00 0 0 0 326.70,314.35 L 326.70,300.35" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
-  <path d="M 330.60,340.35 L 330.60,322.30 A 1.95,1.95 0 0 0 328.65,320.35 L 328.65,320.35 A 1.95,1.95 0 0 1 326.70,318.40 L 326.70,300.35" fill="none" stroke="#516074" stroke-width="1.50"   marker-end="url(#arrowhead-open)" />
+  <path d="M 230.10,129.45 L 230.10,89.45" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
+  <path d="M 98.40,234.90 L 98.40,220.90 A 6.00,6.00 0 0 1 104.40,214.90 L 224.10,214.90 A 6.00,6.00 0 0 0 230.10,208.90 L 230.10,194.90" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
+  <path d="M 326.70,234.90 L 326.70,220.90 A 6.00,6.00 0 0 0 320.70,214.90 L 236.10,214.90 A 6.00,6.00 0 0 1 230.10,208.90 L 230.10,194.90" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
+  <path d="M 94.50,340.35 L 94.50,326.35 A 6.00,6.00 0 0 1 100.50,320.35 L 320.70,320.35 A 6.00,6.00 0 0 0 326.70,314.35 L 326.70,300.35" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
+  <path d="M 330.60,340.35 L 330.60,322.30 A 1.95,1.95 0 0 0 328.65,320.35 L 328.65,320.35 A 1.95,1.95 0 0 1 326.70,318.40 L 326.70,300.35" fill="none" stroke="#516074" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead-open)" />
   <g transform="translate(170.10,24.00)">
     <defs>
       <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">

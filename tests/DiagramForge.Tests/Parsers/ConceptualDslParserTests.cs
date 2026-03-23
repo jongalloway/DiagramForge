@@ -27,7 +27,7 @@ public class ConceptualDslParserTests
     [InlineData("diagram: chevrons\nsteps:\n  - Discover\n  - Build")]
     [InlineData("diagram: tree\ntree:\n  Root\n    Child")]
     [InlineData("diagram: snake\nsteps:\n  - Step 1\n  - Step 2\n  - Step 3")]
-    [InlineData("diagram: target\ncenter: Launch\nrings:\n  - Inner: Focus\n  - Outer: Reach")]
+    [InlineData("diagram: target\ncenter: Launch\nrings:\n  - Outer: Reach\n  - Inner: Focus")]
     [InlineData("diagram: tablist\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
     [InlineData("diagram: tablist\nlayout: flat\ncategories:\n  - title: A\n    items:\n      - X\n  - title: B\n    items:\n      - Y")]
     public void CanParse_ReturnsTrue_ForKnownTypes(string text)
@@ -1286,7 +1286,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void CanParse_ReturnsTrue_ForTarget()
     {
-        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Outer: Reach\n  - Inner: Pricing";
 
         Assert.True(_parser.CanParse(text));
     }
@@ -1294,7 +1294,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_Target_ProducesCenterRingAndCardNodes()
     {
-        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner: Pricing\n  - Middle: Programs\n  - Outer: Reach";
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Outer: Reach\n  - Middle: Programs\n  - Inner: Pricing";
 
         var diagram = _parser.Parse(text);
 
@@ -1312,21 +1312,21 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_Target_SetsRingMetadataAndDescriptions()
     {
-        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Inner ring: Pricing and messaging\n  - Outer ring: Audience reach";
+        const string text = "diagram: target\ncenter: Launch\nrings:\n  - Outer ring: Audience reach\n  - Inner ring: Pricing and messaging";
 
         var diagram = _parser.Parse(text);
 
         Assert.Equal("ring", diagram.Nodes["ring_0"].Metadata["target:kind"]);
         Assert.Equal(0, diagram.Nodes["ring_0"].Metadata["target:ringIndex"]);
-        Assert.Equal("Pricing and messaging", diagram.Nodes["ring_0"].Metadata["target:description"]);
+        Assert.Equal("Audience reach", diagram.Nodes["ring_0"].Metadata["target:description"]);
         Assert.Equal("card", diagram.Nodes["card_0"].Metadata["target:kind"]);
-        Assert.Equal("Pricing and messaging", diagram.Nodes["card_0"].Metadata["target:description"]);
+        Assert.Equal("Audience reach", diagram.Nodes["card_0"].Metadata["target:description"]);
     }
 
     [Fact]
     public void Parse_Target_WithTitleAndCenterIcon_SetsMetadata()
     {
-        const string text = "diagram: target\ntitle: Launch Focus\ncenter: icon:builtin:cloud Launch\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+        const string text = "diagram: target\ntitle: Launch Focus\ncenter: icon:builtin:cloud Launch\nrings:\n  - Outer: Reach\n  - Inner: Pricing";
 
         var diagram = _parser.Parse(text);
 
@@ -1339,7 +1339,7 @@ public class ConceptualDslParserTests
     [Fact]
     public void Parse_Target_MissingCenter_ThrowsDiagramParseException()
     {
-        const string text = "diagram: target\nrings:\n  - Inner: Pricing\n  - Outer: Reach";
+        const string text = "diagram: target\nrings:\n  - Outer: Reach\n  - Inner: Pricing";
 
         var ex = Assert.Throws<DiagramParseException>(() => _parser.Parse(text));
 

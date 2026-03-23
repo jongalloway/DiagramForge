@@ -42,11 +42,11 @@
   <rect x="32.00" y="32.00" width="332.00" height="104.00" rx="12.00" ry="12.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.80" filter="url(#group-0-soft-shadow)"/>
   <rect x="42.00" y="42.00" width="104.59" height="23.12" rx="11.56" ry="11.56" fill="#E9EEF2" stroke="#4E7FCA" stroke-width="1.44"/>
   <text x="51.00" y="57.72" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.12" fill="#111827" font-weight="bold">Design Loop</text>
-  <path d="M 168.00,96.00 C 192.00,96.00 204.00,96.00 228.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 348.00,96.00 C 372.00,96.00 384.00,96.00 408.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
-  <path d="M 528.00,96.00 C 552.00,96.00 564.00,96.00 588.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 168.00,96.00 C 192.00,96.00 204.00,96.00 228.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 348.00,96.00 C 372.00,96.00 384.00,96.00 408.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 528.00,96.00 C 552.00,96.00 564.00,96.00 588.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="558.00" y="92.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">ship</text>
-  <path d="M 408.00,96.00 C 312.00,96.00 264.00,96.00 168.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80"   marker-end="url(#arrowhead)" />
+  <path d="M 408.00,96.00 C 312.00,96.00 264.00,96.00 168.00,96.00" fill="none" stroke="#173F6D" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="288.00" y="92.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.60" fill="#4B5563" font-style="italic">revise</text>
   <g transform="translate(48.00,72.00)">
     <defs>

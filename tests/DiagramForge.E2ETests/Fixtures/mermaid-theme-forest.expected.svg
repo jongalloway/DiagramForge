@@ -30,11 +30,11 @@
   <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="8.00" ry="8.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.50"/>
   <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#E4F0E7" stroke="#63A483" stroke-width="1.20"/>
   <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#16311F" font-weight="bold">Design Loop</text>
-  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"   marker-end="url(#arrowhead)" />
-  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"   marker-end="url(#arrowhead)" />
-  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#5B7F69" font-style="italic">ship</text>
-  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50"   marker-end="url(#arrowhead)" />
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#406B4F" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
   <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#5B7F69" font-style="italic">revise</text>
   <g transform="translate(36.00,57.00)">
     <defs>

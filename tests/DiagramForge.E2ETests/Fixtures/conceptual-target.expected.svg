@@ -15,9 +15,9 @@
   </defs>
   <rect width="934.56" height="578.00" fill="#FCFCFD" rx="8.00" ry="8.00"/>
   <text x="467.28" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#0F172A">Galactic Launch Plan</text>
-  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#3A4050" stroke-width="2.62"   />
-  <path d="M 439.50,289.00 C 470.41,289.00 549.09,289.00 580.00,289.00" fill="none" stroke="#3A4050" stroke-width="2.62"   />
-  <path d="M 385.14,325.14 C 427.14,325.14 538.00,384.24 580.00,384.24" fill="none" stroke="#3A4050" stroke-width="2.62"   />
+  <path d="M 478.92,224.42 C 501.16,224.42 557.76,193.75 580.00,193.75" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 439.50,289.00 C 470.41,289.00 549.09,289.00 580.00,289.00" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
+  <path d="M 385.14,325.14 C 427.14,325.14 538.00,384.24 580.00,384.24" fill="none" stroke="#3A4050" stroke-width="2.62" stroke-linecap="round"   />
   <g transform="translate(24.00,47.00)">
     <circle cx="242.00" cy="242.00" r="222.50" fill="none" stroke="#8892A0" stroke-width="39.00"/>
     <circle cx="242.00" cy="242.00" r="203.00" fill="none" stroke="#888888" stroke-width="0.80"/>
