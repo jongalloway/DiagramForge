@@ -58,7 +58,8 @@ internal static class SvgNodeWriter
             && textOnlyObj is bool isTextOnly
             && isTextOnly;
         bool applyNodeShadow = theme.UseNodeShadows
-            && string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase)
+            && (string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(theme.ShadowStyle, "glow", StringComparison.OrdinalIgnoreCase))
             && !textOnly;
 
         sb.AppendLine($"""  <g transform="translate({SvgRenderSupport.F(node.X)},{SvgRenderSupport.F(node.Y)})">""");

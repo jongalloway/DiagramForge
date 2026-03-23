@@ -531,8 +531,12 @@ public sealed class DiagramRenderer
                 theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 1.20 : theme.ShadowBlur, 0.60, 2.40);
                 theme.ShadowOffsetY = theme.ShadowOffsetY == 0 ? 1.20 : theme.ShadowOffsetY;
                 break;
+            case "glow":
+                theme.ShadowStyle = "glow";
+                theme.UseNodeShadows = true;
+                break;
             default:
-                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none or soft.", nameof(shadowStyle));
+                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none, soft, or glow.", nameof(shadowStyle));
         }
     }
 

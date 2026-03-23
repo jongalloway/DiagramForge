@@ -32,6 +32,7 @@ public class Theme
         "solarized-light",
         "solarized-dark",
         "one-dark",
+        "cyberpunk",
     ];
 
     // ── Built-in named presets ────────────────────────────────────────────────
@@ -382,6 +383,9 @@ public class Theme
         useBorderGradients: true,
         gradientStrength: 0.10);
 
+    /// <summary>Dark cyberpunk theme with neon glow accents and bold multi-stop border gradients.</summary>
+    public static Theme Cyberpunk => CreateCyberpunkTheme();
+
     // ── Palette lookup ────────────────────────────────────────────────────────
 
     /// <summary>All built-in theme names supported by <see cref="GetByName(string?)"/>.</summary>
@@ -418,6 +422,7 @@ public class Theme
             "solarized-light" => SolarizedLight,
             "solarized-dark" => SolarizedDark,
             "one-dark" => OneDark,
+            "cyberpunk" => Cyberpunk,
             _ => null,
         };
 
@@ -788,6 +793,51 @@ public class Theme
         theme.GroupStrokeColor = "#3A475C";
         theme.TitleTextColor = "#F8FAFC";
         theme.BorderRadius = 10;
+        return theme;
+    }
+
+    private static Theme CreateCyberpunkTheme()
+    {
+        var theme = CreatePreset(
+            backgroundColor: "#0A0A1A",
+            foregroundColor: "#E0E0F0",
+            accentColor: "#FF2D95",
+            mutedColor: "#7A7A9E",
+            surfaceColor: "#12122A",
+            borderColor: "#FF2D95",
+            lineColor: "#00F0FF",
+            nodePalette:
+            [
+                "#120E2A", "#14102E", "#160E30", "#131028",
+                "#18103A", "#140E2C", "#1A1038", "#151030",
+            ],
+            useGradients: true,
+            useBorderGradients: true,
+            gradientStrength: 0.18,
+            useMultiStopBorderGradient: false);
+
+        theme.NodeFillColor = "#12122A";
+        theme.NodeStrokeColor = "#FF2D95";
+        theme.GroupFillColor = "#12122AE0";
+        theme.GroupStrokeColor = "#8B5CF6";
+        theme.TitleTextColor = "#00F0FF";
+        theme.EdgeColor = "#00F0FF";
+        theme.BorderGradientStops =
+        [
+            "#00F0FF",   // cyan neon
+            "#8B5CF6",   // purple
+            "#FF2D95",   // hot pink
+            "#39FF14",   // neon green
+        ];
+        theme.BorderRadius = 6;
+        theme.StrokeWidth = 1.8;
+        theme.ShadowStyle = "glow";
+        theme.UseNodeShadows = true;
+        theme.ShadowColor = "#FF2D95";
+        theme.ShadowOpacity = 0.55;
+        theme.ShadowBlur = 4.0;
+        theme.ShadowOffsetX = 0;
+        theme.ShadowOffsetY = 0;
         return theme;
     }
 

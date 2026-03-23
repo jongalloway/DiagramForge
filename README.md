@@ -143,7 +143,7 @@ DiagramForge currently supports more than a dozen diagram types across Mermaid a
 
 <h3>Built-in Themes</h3>
 
-This theme gallery is also a representative sample rather than the full catalog. DiagramForge ships with 23 built-in themes: `default`, `zinc-light`, `zinc-dark`, `dark`, `neutral`, `forest`, `presentation`, `prism`, `angled-light`, `angled-dark`, `github-light`, `github-dark`, `nord`, `nord-light`, `dracula`, `tokyo-night`, `tokyo-night-storm`, `tokyo-night-light`, `catppuccin-latte`, `catppuccin-mocha`, `solarized-light`, `solarized-dark`, and `one-dark`. See [With a custom theme](#with-a-custom-theme), [doc/theming.md](doc/theming.md), and [doc/frontmatter.md](doc/frontmatter.md) for the full styling surface.
+This theme gallery is also a representative sample rather than the full catalog. DiagramForge ships with 24 built-in themes: `default`, `zinc-light`, `zinc-dark`, `dark`, `neutral`, `forest`, `presentation`, `prism`, `angled-light`, `angled-dark`, `github-light`, `github-dark`, `nord`, `nord-light`, `dracula`, `tokyo-night`, `tokyo-night-storm`, `tokyo-night-light`, `catppuccin-latte`, `catppuccin-mocha`, `solarized-light`, `solarized-dark`, `one-dark`, and `cyberpunk`. See [With a custom theme](#with-a-custom-theme), [doc/theming.md](doc/theming.md), and [doc/frontmatter.md](doc/frontmatter.md) for the full styling surface.
 
 <table cellpadding="16" width="100%">
   <tr>
@@ -241,6 +241,16 @@ This theme gallery is also a representative sample rather than the full catalog.
       <br />
       <sub>Zinc Light</sub>
     </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top" width="50%">
+      <a href="https://github.com/jongalloway/DiagramForge/blob/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-cyberpunk.expected.svg">
+        <img src="https://raw.githubusercontent.com/jongalloway/DiagramForge/main/tests/DiagramForge.E2ETests/Fixtures/mermaid-theme-cyberpunk.expected.svg" alt="Cyberpunk theme" width="400" />
+      </a>
+      <br />
+      <sub>Cyberpunk</sub>
+    </td>
+    <td></td>
   </tr>
 </table>
 <!-- markdownlint-enable MD033 -->

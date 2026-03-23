@@ -180,7 +180,27 @@ internal static class SvgRenderSupport
     {
         shadowFilterId = null;
 
-        if (!enabled || !string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase))
+        if (!enabled)
+            return;
+
+        if (string.Equals(theme.ShadowStyle, "glow", StringComparison.OrdinalIgnoreCase))
+        {
+            shadowFilterId = prefix + "-glow";
+            sb.AppendLine($"{indent}<defs>");
+            sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\" color-interpolation-filters=\"sRGB\">");
+            sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"glow-blur\"/>");
+            sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"glow-color\"/>");
+            sb.AppendLine($"{indent}    <feComposite in=\"glow-color\" in2=\"glow-blur\" operator=\"in\" result=\"glow\"/>");
+            sb.AppendLine($"{indent}    <feMerge>");
+            sb.AppendLine($"{indent}      <feMergeNode in=\"glow\"/>");
+            sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+            sb.AppendLine($"{indent}    </feMerge>");
+            sb.AppendLine($"{indent}  </filter>");
+            sb.AppendLine($"{indent}</defs>");
+            return;
+        }
+
+        if (!string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase))
             return;
 
         shadowFilterId = prefix + "-soft-shadow";
