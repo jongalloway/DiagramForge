@@ -531,8 +531,19 @@ public sealed class DiagramRenderer
                 theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 1.20 : theme.ShadowBlur, 0.60, 2.40);
                 theme.ShadowOffsetY = theme.ShadowOffsetY == 0 ? 1.20 : theme.ShadowOffsetY;
                 break;
+            case "glow":
+                theme.ShadowStyle = "glow";
+                theme.UseNodeShadows = true;
+                // For glow, ensure a visible halo by bumping opacity/blur if unset,
+                // clamping them to sensible ranges, and zeroing offsets so the
+                // effect is centered around the node rather than offset like a drop shadow.
+                theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.36 : theme.ShadowOpacity, 0.20, 0.80);
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 2.40 : theme.ShadowBlur, 1.20, 4.00);
+                theme.ShadowOffsetX = 0;
+                theme.ShadowOffsetY = 0;
+                break;
             default:
-                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none or soft.", nameof(shadowStyle));
+                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none, soft, or glow.", nameof(shadowStyle));
         }
     }
 

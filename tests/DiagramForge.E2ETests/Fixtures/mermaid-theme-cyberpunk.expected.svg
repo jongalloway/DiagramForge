@@ -1,0 +1,162 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="720.00" height="133.00" viewBox="0 0 720.00 133.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#00F0FF"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#0A0A1A" stroke="#00F0FF" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#00F0FF"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#0A0A1A" stroke="#00F0FF" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="720.00" height="133.00" fill="#0A0A1A" rx="6.00" ry="6.00"/>
+  <defs>
+    <linearGradient id="group-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38384CE0"/>
+      <stop offset="58%" stop-color="#12122AE0"/>
+      <stop offset="100%" stop-color="#101025E0"/>
+    </linearGradient>
+    <linearGradient id="group-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#00F0FF"/>
+      <stop offset="33%" stop-color="#8B5CF6"/>
+      <stop offset="67%" stop-color="#FF2D95"/>
+      <stop offset="100%" stop-color="#39FF14"/>
+    </linearGradient>
+  </defs>
+  <defs>
+    <filter id="group-0-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+      <feGaussianBlur in="SourceAlpha" stdDeviation="4.00" result="glow-blur"/>
+      <feFlood flood-color="#FF2D95" flood-opacity="0.55" result="glow-color"/>
+      <feComposite in="glow-color" in2="glow-blur" operator="in" result="glow"/>
+      <feMerge>
+        <feMergeNode in="glow"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <rect x="24.00" y="24.00" width="324.00" height="85.00" rx="6.00" ry="6.00" fill="url(#group-0-fill-gradient)" stroke="url(#group-0-stroke-gradient)" stroke-width="1.80" filter="url(#group-0-glow)"/>
+  <rect x="34.00" y="34.00" width="88.36" height="20.66" rx="10.33" ry="10.33" fill="#261C4A" stroke="#8155E4" stroke-width="1.44"/>
+  <text x="43.00" y="48.05" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.66" fill="#E0E0F0" font-weight="bold">Design Loop</text>
+  <path d="M 156.00,77.00 C 180.00,77.00 192.00,77.00 216.00,77.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 336.00,77.00 C 360.00,77.00 372.00,77.00 396.00,77.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <path d="M 516.00,77.00 C 540.00,77.00 552.00,77.00 576.00,77.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <text x="546.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#7A7A9E" font-style="italic">ship</text>
+  <path d="M 396.00,77.00 C 300.00,77.00 252.00,77.00 156.00,77.00" fill="none" stroke="#00F0FF" stroke-width="1.80" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <text x="276.00" y="73.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#7A7A9E" font-style="italic">revise</text>
+  <g transform="translate(36.00,57.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#38354C"/>
+        <stop offset="58%" stop-color="#120E2A"/>
+        <stop offset="100%" stop-color="#100C25"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00F0FF"/>
+        <stop offset="33%" stop-color="#8B5CF6"/>
+        <stop offset="67%" stop-color="#FF2D95"/>
+        <stop offset="100%" stop-color="#39FF14"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-0-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4.00" result="glow-blur"/>
+        <feFlood flood-color="#FF2D95" flood-opacity="0.55" result="glow-color"/>
+        <feComposite in="glow-color" in2="glow-blur" operator="in" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.80" filter="url(#node-0-glow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E0E0F0">Plan</text>
+  </g>
+  <g transform="translate(216.00,57.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3A364F"/>
+        <stop offset="58%" stop-color="#14102E"/>
+        <stop offset="100%" stop-color="#110E29"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00F0FF"/>
+        <stop offset="33%" stop-color="#8B5CF6"/>
+        <stop offset="67%" stop-color="#FF2D95"/>
+        <stop offset="100%" stop-color="#39FF14"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-1-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4.00" result="glow-blur"/>
+        <feFlood flood-color="#FF2D95" flood-opacity="0.55" result="glow-color"/>
+        <feComposite in="glow-color" in2="glow-blur" operator="in" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.80" filter="url(#node-1-glow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E0E0F0">Draft</text>
+  </g>
+  <g transform="translate(396.00,57.00)">
+    <defs>
+      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#3B3551"/>
+        <stop offset="58%" stop-color="#160E30"/>
+        <stop offset="100%" stop-color="#130C2A"/>
+      </linearGradient>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00F0FF"/>
+        <stop offset="33%" stop-color="#8B5CF6"/>
+        <stop offset="67%" stop-color="#FF2D95"/>
+        <stop offset="100%" stop-color="#39FF14"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-2-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4.00" result="glow-blur"/>
+        <feFlood flood-color="#FF2D95" flood-opacity="0.55" result="glow-color"/>
+        <feComposite in="glow-color" in2="glow-blur" operator="in" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <polygon points="60.00,0 120.00,20.00 60.00,40.00 0,20.00" fill="url(#node-2-fill-gradient)" stroke="url(#node-2-stroke-gradient)" stroke-width="1.80" filter="url(#node-2-glow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E0E0F0">Review</text>
+  </g>
+  <g transform="translate(576.00,57.00)">
+    <defs>
+      <linearGradient id="node-3-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#39364A"/>
+        <stop offset="58%" stop-color="#131028"/>
+        <stop offset="100%" stop-color="#100E23"/>
+      </linearGradient>
+      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#00F0FF"/>
+        <stop offset="33%" stop-color="#8B5CF6"/>
+        <stop offset="67%" stop-color="#FF2D95"/>
+        <stop offset="100%" stop-color="#39FF14"/>
+      </linearGradient>
+    </defs>
+    <defs>
+      <filter id="node-3-glow" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+        <feGaussianBlur in="SourceAlpha" stdDeviation="4.00" result="glow-blur"/>
+        <feFlood flood-color="#FF2D95" flood-opacity="0.55" result="glow-color"/>
+        <feComposite in="glow-color" in2="glow-blur" operator="in" result="glow"/>
+        <feMerge>
+          <feMergeNode in="glow"/>
+          <feMergeNode in="SourceGraphic"/>
+        </feMerge>
+      </filter>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-3-fill-gradient)" stroke="url(#node-3-stroke-gradient)" stroke-width="1.80" filter="url(#node-3-glow)"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E0E0F0">Publish</text>
+  </g>
+</svg>
