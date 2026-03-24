@@ -160,6 +160,72 @@ public static class ColorUtils
         return (lighter + 0.05) / (darker + 0.05);
     }
 
+    // ── Achromatic / monochrome helpers ──────────────────────────────────────
+
+    /// <summary>
+    /// Returns <see langword="true"/> when the HSL saturation of the color is below
+    /// <paramref name="saturationThreshold"/>. Achromatic colors include pure white,
+    /// pure black, and grays.
+    /// </summary>
+    /// <param name="hex">Hex color string.</param>
+    /// <param name="saturationThreshold">
+    /// Saturation threshold 0–1; colors with saturation below this value are considered
+    /// achromatic. Defaults to 0.08.
+    /// </param>
+    public static bool IsAchromatic(string hex, double saturationThreshold = 0.08)
+    {
+        var (rRaw, gRaw, bRaw) = ParseHex(hex);
+        double r = rRaw / 255d;
+        double g = gRaw / 255d;
+        double b = bRaw / 255d;
+        double max = Math.Max(r, Math.Max(g, b));
+        double min = Math.Min(r, Math.Min(g, b));
+        double delta = max - min;
+        double lightness = (max + min) / 2;
+        double denominator = 1 - Math.Abs(2 * lightness - 1);
+        // When delta is near zero the color is already achromatic; guard the denominator
+        // (which is also ~0 at lightness=0 or lightness=1) to avoid division by zero.
+        double saturation = delta < 0.0001 || denominator < 0.0001
+            ? 0
+            : delta / denominator;
+        return saturation < saturationThreshold;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when all palette entries are achromatic,
+    /// all entries are the same color, or all entries match the background color.
+    /// This is the single check that layout engines should call before consuming
+    /// <see cref="Theme.NodePalette"/> directly.
+    /// </summary>
+    /// <param name="palette">Palette to evaluate (must not be <see langword="null"/>).</param>
+    /// <param name="backgroundColor">
+    /// Optional background color. When provided, a palette whose every entry matches
+    /// the background is considered monochrome (the nodes would be invisible).
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="palette"/> is <see langword="null"/>.</exception>
+    public static bool IsPaletteMonochrome(IReadOnlyList<string> palette, string? backgroundColor = null)
+    {
+        ArgumentNullException.ThrowIfNull(palette);
+
+        if (palette.Count == 0)
+            return false;
+
+        // All entries are achromatic (white, black, or gray).
+        if (palette.All(c => IsAchromatic(c)))
+            return true;
+
+        // All entries are the same color (trivially monochrome — no hue variety).
+        if (palette.All(c => string.Equals(c, palette[0], StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        // All entries match the background (nodes would be invisible against the canvas).
+        if (backgroundColor is not null &&
+            palette.All(c => string.Equals(c, backgroundColor, StringComparison.OrdinalIgnoreCase)))
+            return true;
+
+        return false;
+    }
+
     // ── HSL helpers ───────────────────────────────────────────────────────────
 
     /// <summary>
@@ -354,16 +420,44 @@ public static class ColorUtils
     /// (removing the shared "whiteness") and adding a small brightness floor.
     /// Useful when a pastel palette needs a bold accent variant (e.g. pillar titles).
     /// </summary>
+    /// <remarks>
+    /// When the input color is achromatic (no hue to amplify), a lightness shift is
+    /// applied instead: light achromatic inputs are darkened and dark achromatic inputs
+    /// are lightened to produce a visually distinguishable result. Callers that require
+    /// a chromatic output for achromatic inputs should use
+    /// <see cref="IsPaletteMonochrome"/> / <c>ThemePaletteResolver.ResolveEffectivePalette</c>
+    /// before calling this method.
+    /// </remarks>
     /// <param name="hex">Hex color string (typically a pastel).</param>
     /// <param name="amplify">How much to amplify the hue deviation (default 3).</param>
     public static string Vibrant(string hex, double amplify = 3.0)
     {
         var (r, g, b, a) = ParseHexWithAlpha(hex);
-        int min = Math.Min(r, Math.Min(g, b));
+
+        if (IsAchromatic(hex))
+        {
+            // Achromatic colors have no hue channel to amplify.
+            // Shift lightness toward mid-range so the result is visually
+            // distinguishable from both the input and a same-color background.
+            double max = Math.Max(r, Math.Max(g, b));
+            double min = Math.Min(r, Math.Min(g, b));
+            double lightness = (max + min) / (2.0 * 255);
+            // 0.5 splits light (≥0.5) from dark (<0.5).
+            // A shift of 0.35 reliably moves the result away from the input without
+            // pushing it all the way to the opposite extreme.
+            // The 0.25 / 0.75 bounds prevent the result landing too close to black or white.
+            double targetLightness = lightness >= 0.5
+                ? Math.Max(0.25, lightness - 0.35)
+                : Math.Min(0.75, lightness + 0.35);
+            int channel = (int)Math.Round(targetLightness * 255);
+            return ToHex(channel, channel, channel, a);
+        }
+
+        int minChannel = Math.Min(r, Math.Min(g, b));
         return ToHex(
-            Clamp((int)((r - min) * amplify + min / 4.0)),
-            Clamp((int)((g - min) * amplify + min / 4.0)),
-            Clamp((int)((b - min) * amplify + min / 4.0)),
+            Clamp((int)((r - minChannel) * amplify + minChannel / 4.0)),
+            Clamp((int)((g - minChannel) * amplify + minChannel / 4.0)),
+            Clamp((int)((b - minChannel) * amplify + minChannel / 4.0)),
             a);
     }
 

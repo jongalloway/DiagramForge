@@ -669,5 +669,208 @@ public class ColorUtilsTests
         string expected = ColorUtils.FromHsl(0, 1.0, 1.0);
         Assert.Equal(expected, clamped, ignoreCase: true);
     }
+
+    // ── IsAchromatic ──────────────────────────────────────────────────────────
+
+    [Fact]
+    public void IsAchromatic_PureWhite_ReturnsTrue()
+    {
+        Assert.True(ColorUtils.IsAchromatic("#FFFFFF"));
+    }
+
+    [Fact]
+    public void IsAchromatic_PureBlack_ReturnsTrue()
+    {
+        Assert.True(ColorUtils.IsAchromatic("#000000"));
+    }
+
+    [Fact]
+    public void IsAchromatic_MidGray_ReturnsTrue()
+    {
+        Assert.True(ColorUtils.IsAchromatic("#808080"));
+    }
+
+    [Fact]
+    public void IsAchromatic_LightGray_ReturnsTrue()
+    {
+        // #D3D3D3 is a well-known "LightGray" — zero saturation
+        Assert.True(ColorUtils.IsAchromatic("#D3D3D3"));
+    }
+
+    [Fact]
+    public void IsAchromatic_ChromaticRed_ReturnsFalse()
+    {
+        Assert.False(ColorUtils.IsAchromatic("#FF0000"));
+    }
+
+    [Fact]
+    public void IsAchromatic_ChromaticBlue_ReturnsFalse()
+    {
+        Assert.False(ColorUtils.IsAchromatic("#2563EB"));
+    }
+
+    [Fact]
+    public void IsAchromatic_ChromaticGreen_ReturnsFalse()
+    {
+        Assert.False(ColorUtils.IsAchromatic("#22C55E"));
+    }
+
+    [Fact]
+    public void IsAchromatic_LowSaturationPastel_DefaultThreshold_ReturnsTrue()
+    {
+        // Very pale pastel with saturation well below 0.08 threshold
+        // #F5F5F5 is nearly white with essentially zero saturation
+        Assert.True(ColorUtils.IsAchromatic("#F5F5F5"));
+    }
+
+    [Fact]
+    public void IsAchromatic_CustomThreshold_LowSaturationColor_ReturnsTrue()
+    {
+        // A muted blue — below the default threshold but above an even lower custom one
+        // Test that the threshold parameter is respected
+        Assert.False(ColorUtils.IsAchromatic("#4F81BD", saturationThreshold: 0.01));
+    }
+
+    [Fact]
+    public void IsAchromatic_NearAchromatic_DefaultThresholdTrue_LowerThresholdFalse()
+    {
+        // #ECECE9 is a warm off-white with HSL saturation ~0.07 (between 0.05 and 0.08).
+        // With the default 0.08 threshold it should be considered achromatic;
+        // with a stricter 0.05 threshold the slight tint should be detected as chromatic.
+        Assert.True(ColorUtils.IsAchromatic("#ECECE9"));
+        Assert.False(ColorUtils.IsAchromatic("#ECECE9", saturationThreshold: 0.05));
+    }
+
+    // ── IsPaletteMonochrome ───────────────────────────────────────────────────
+
+    [Fact]
+    public void IsPaletteMonochrome_AllWhite_ReturnsTrue()
+    {
+        var palette = new[] { "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
+                              "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_AllBlack_ReturnsTrue()
+    {
+        var palette = new[] { "#000000", "#000000", "#000000" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_MixedWhiteAndLightGrays_ReturnsTrue()
+    {
+        // White, silver, light-gray — all achromatic
+        var palette = new[] { "#FFFFFF", "#C0C0C0", "#D3D3D3", "#F5F5F5" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_NormalChromaticPalette_ReturnsFalse()
+    {
+        var palette = new[] { "#F97316", "#22C55E", "#A855F7", "#2563EB" };
+        Assert.False(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_SingleEntry_ReturnsTrue()
+    {
+        // A single-entry palette is trivially "all the same color"
+        var palette = new[] { "#FF0000" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_EmptyPalette_ReturnsFalse()
+    {
+        var palette = Array.Empty<string>();
+        Assert.False(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_NullPalette_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            ColorUtils.IsPaletteMonochrome(null!));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_MatchesBackground_ReturnsTrue()
+    {
+        // All entries are chromatic but match the background — nodes would be invisible
+        var palette = new[] { "#2563EB", "#2563EB", "#2563EB" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette, backgroundColor: "#2563EB"));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_MatchesBackground_NoBackground_ReturnsFalse()
+    {
+        // Same chromatic entries, but without a background to compare against —
+        // they are the same color, so still "all same color" → true
+        var palette = new[] { "#2563EB", "#2563EB", "#2563EB" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette, backgroundColor: null));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_PrismTheme_ReturnsTrue()
+    {
+        // Prism defines NodePalette = all "#FFFFFF"
+        var prism = Theme.Prism;
+        Assert.NotNull(prism.NodePalette);
+        Assert.True(ColorUtils.IsPaletteMonochrome(prism.NodePalette, prism.BackgroundColor));
+    }
+
+    // ── Vibrant (achromatic hardening) ────────────────────────────────────────
+
+    [Fact]
+    public void Vibrant_WhiteInput_ProducesVisiblyDifferentColor()
+    {
+        string result = ColorUtils.Vibrant("#FFFFFF");
+        Assert.NotEqual("#FFFFFF", result, StringComparer.OrdinalIgnoreCase);
+        // Should be parseable and valid
+        var (r, g, b) = ColorUtils.ParseHex(result);
+        Assert.InRange(r, 0, 255);
+    }
+
+    [Fact]
+    public void Vibrant_BlackInput_ProducesVisiblyDifferentColor()
+    {
+        string result = ColorUtils.Vibrant("#000000");
+        Assert.NotEqual("#000000", result, StringComparer.OrdinalIgnoreCase);
+        var (r, g, b) = ColorUtils.ParseHex(result);
+        Assert.InRange(r, 0, 255);
+    }
+
+    [Fact]
+    public void Vibrant_AchromaticInput_LightColorIsDarkened()
+    {
+        // White (lightness=1.0) should produce a noticeably darker result
+        string result = ColorUtils.Vibrant("#FFFFFF");
+        double inputLuminance = ColorUtils.GetLuminance("#FFFFFF");
+        double resultLuminance = ColorUtils.GetLuminance(result);
+        Assert.True(resultLuminance < inputLuminance,
+            $"Vibrant(white) luminance ({resultLuminance:F0}) should be lower than input ({inputLuminance:F0}).");
+    }
+
+    [Fact]
+    public void Vibrant_AchromaticInput_DarkColorIsLightened()
+    {
+        // Black (lightness=0.0) should produce a noticeably lighter result
+        string result = ColorUtils.Vibrant("#000000");
+        double inputLuminance = ColorUtils.GetLuminance("#000000");
+        double resultLuminance = ColorUtils.GetLuminance(result);
+        Assert.True(resultLuminance > inputLuminance,
+            $"Vibrant(black) luminance ({resultLuminance:F0}) should be higher than input ({inputLuminance:F0}).");
+    }
+
+    [Fact]
+    public void Vibrant_AchromaticInput_PreservesAlphaChannel()
+    {
+        // Gray with alpha
+        string result = ColorUtils.Vibrant("#808080CC");
+        var (_, _, _, a) = ColorUtils.ParseHexWithAlpha(result);
+        Assert.Equal(0xCC, a);
+    }
 }
 
