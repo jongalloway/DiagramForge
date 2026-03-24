@@ -83,9 +83,37 @@ internal static partial class SvgNodeWriter
         double accentHeight = Math.Max(36, h - (accentInsetY * 2));
         double accentRadius = Math.Min(accentWidth / 2, 8);
 
+        string accentBorderStroke = stroke;
+        if (theme.UseBorderGradients)
+        {
+            string gradId = $"target-{node.Id}-accent";
+            sb.AppendLine("    <defs>");
+            sb.AppendLine($"      <linearGradient id=\"{gradId}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
+            if (theme.BorderGradientStops is { Count: > 1 })
+            {
+                int stopCount = theme.BorderGradientStops.Count;
+                for (int i = 0; i < stopCount; i++)
+                {
+                    // stopCount > 1 is guaranteed by the guard above, so (stopCount - 1) > 0
+                    double offset = i * 100.0 / (stopCount - 1);
+                    sb.AppendLine($"        <stop offset=\"{offset:F0}%\" stop-color=\"{SvgRenderSupport.Escape(theme.BorderGradientStops[i])}\"/>");
+                }
+            }
+            else
+            {
+                string strokeStart = ColorUtils.Lighten(stroke, Math.Max(theme.GradientStrength * 0.28, 0.03));
+                string strokeEnd = ColorUtils.Blend(stroke, theme.AccentColor, Math.Max(theme.GradientStrength * 0.24, 0.05));
+                sb.AppendLine($"        <stop offset=\"0%\" stop-color=\"{SvgRenderSupport.Escape(strokeStart)}\"/>");
+                sb.AppendLine($"        <stop offset=\"100%\" stop-color=\"{SvgRenderSupport.Escape(strokeEnd)}\"/>");
+            }
+            sb.AppendLine("      </linearGradient>");
+            sb.AppendLine("    </defs>");
+            accentBorderStroke = $"url(#{gradId})";
+        }
+
         sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}" stroke="none"{shadowAttribute}/>""");
         sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineStrokeWidth)}"/>""");
-        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentBorderInset)}" y="{SvgRenderSupport.F(accentBorderInset)}" width="{SvgRenderSupport.F(Math.Max(0, w - (accentBorderInset * 2)))}" height="{SvgRenderSupport.F(Math.Max(0, h - (accentBorderInset * 2)))}" rx="{SvgRenderSupport.F(accentBorderRadius)}" ry="{SvgRenderSupport.F(accentBorderRadius)}" fill="none" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(accentBorderStrokeWidth)}"/>""");
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentBorderInset)}" y="{SvgRenderSupport.F(accentBorderInset)}" width="{SvgRenderSupport.F(Math.Max(0, w - (accentBorderInset * 2)))}" height="{SvgRenderSupport.F(Math.Max(0, h - (accentBorderInset * 2)))}" rx="{SvgRenderSupport.F(accentBorderRadius)}" ry="{SvgRenderSupport.F(accentBorderRadius)}" fill="none" stroke="{accentBorderStroke}" stroke-width="{SvgRenderSupport.F(accentBorderStrokeWidth)}"/>""");
         sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentInsetX)}" y="{SvgRenderSupport.F(accentInsetY)}" width="{SvgRenderSupport.F(accentWidth)}" height="{SvgRenderSupport.F(accentHeight)}" rx="{SvgRenderSupport.F(accentRadius)}" ry="{SvgRenderSupport.F(accentRadius)}" fill="{SvgRenderSupport.Escape(accentColor)}" stroke="none"/>""");
 
         double textX = accentInsetX + accentWidth + theme.NodePadding * 1.55;
