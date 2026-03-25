@@ -140,11 +140,10 @@ public sealed partial class DefaultLayoutEngine
         double centerY = pad + titleOffset + descSpace + arcRadius + circleDiameter / 2;
 
         // ── Palette ───────────────────────────────────────────────────────────
-        // For the snake diagram we use the node palette colors for circle fills,
-        // falling back to the single node fill color when no palette is defined.
-        string[] palette = theme.NodePalette is { Count: > 0 }
-            ? [.. theme.NodePalette]
-            : [theme.NodeFillColor];
+        // Use the effective palette so monochrome themes (e.g. Prism, where every
+        // NodePalette entry is #FFFFFF) fall back to a chromatic palette derived
+        // from the theme's BorderGradientStops or accent/secondary hue rotation.
+        IReadOnlyList<string> palette = ThemePaletteResolver.ResolveEffectivePalette(theme);
 
         string[] strokePalette = theme.NodeStrokePalette is { Count: > 0 }
             ? [.. theme.NodeStrokePalette]
@@ -167,7 +166,7 @@ public sealed partial class DefaultLayoutEngine
             node.Y = cy - circleDiameter / 2;
 
             // Assign vibrant colors from palette
-            node.FillColor = palette[i % palette.Length];
+            node.FillColor = palette[i % palette.Count];
             node.StrokeColor = strokePalette[i % strokePalette.Length];
 
             SetLabelCenter(node, circleDiameter / 2, circleDiameter / 2);
@@ -214,7 +213,7 @@ public sealed partial class DefaultLayoutEngine
         var segmentStops = new List<(double Start, double End)>();
         for (int i = 0; i < n; i++)
         {
-            segmentColors.Add(palette[i % palette.Length]);
+            segmentColors.Add(palette[i % palette.Count]);
             double solidStart = ((2.0 * i + 1) - r) / (2.0 * n) * 100;
             double solidEnd   = ((2.0 * i + 1) + r) / (2.0 * n) * 100;
             segmentStops.Add((solidStart, solidEnd));

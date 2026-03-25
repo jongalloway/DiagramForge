@@ -1644,4 +1644,28 @@ public class DefaultLayoutEngineTests
             Assert.NotNull(node.StrokeColor);
         });
     }
+
+    [Fact]
+    public void Layout_Snake_PrismTheme_ProducesVisibleNonWhiteFillColors()
+    {
+        // Prism has an all-white NodePalette. The layout must fall back to a
+        // chromatic palette so circles and tube segments are not invisible.
+        var diagram = CreateSnakeDiagram(5);
+
+        _engine.Layout(diagram, Theme.Prism);
+
+        // Each node fill must differ from the white Prism background.
+        Assert.All(diagram.Nodes.Values, node =>
+        {
+            Assert.NotNull(node.FillColor);
+            Assert.NotEqual(Theme.Prism.BackgroundColor, node.FillColor, StringComparer.OrdinalIgnoreCase);
+        });
+
+        // Segment colors stored in metadata must also be non-white.
+        var segmentColors = diagram.Metadata["snake:segmentColors"] as List<string>;
+        Assert.NotNull(segmentColors);
+        Assert.True(segmentColors.Count > 0);
+        Assert.False(ColorUtils.IsPaletteMonochrome(segmentColors, Theme.Prism.BackgroundColor),
+            "Segment colors must not be monochrome relative to the Prism background.");
+    }
 }
