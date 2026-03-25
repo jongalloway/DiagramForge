@@ -724,7 +724,7 @@ public class ColorUtilsTests
     }
 
     [Fact]
-    public void IsAchromatic_CustomThreshold_LowSaturationColor_ReturnsTrue()
+    public void IsAchromatic_CustomThreshold_LowSaturationColor_ReturnsFalse()
     {
         // A muted blue — below the default threshold but above an even lower custom one
         // Test that the threshold parameter is respected
@@ -804,12 +804,28 @@ public class ColorUtilsTests
     }
 
     [Fact]
-    public void IsPaletteMonochrome_MatchesBackground_NoBackground_ReturnsFalse()
+    public void IsPaletteMonochrome_MatchesBackground_NoBackground_ReturnsTrue()
     {
         // Same chromatic entries, but without a background to compare against —
         // they are the same color, so still "all same color" → true
         var palette = new[] { "#2563EB", "#2563EB", "#2563EB" };
         Assert.True(ColorUtils.IsPaletteMonochrome(palette, backgroundColor: null));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_ShorthandVsFullEquivalent_ReturnsTrue()
+    {
+        // #FFF and #FFFFFF are the same color — palette should be detected as monochrome
+        var palette = new[] { "#FFF", "#FFFFFF", "#FFF" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette));
+    }
+
+    [Fact]
+    public void IsPaletteMonochrome_ShorthandBackground_NormalizedComparison_ReturnsTrue()
+    {
+        // #FFF (shorthand) vs #FFFFFF (full) should match background correctly
+        var palette = new[] { "#FFFFFF", "#FFFFFF" };
+        Assert.True(ColorUtils.IsPaletteMonochrome(palette, backgroundColor: "#FFF"));
     }
 
     [Fact]
@@ -821,7 +837,24 @@ public class ColorUtilsTests
         Assert.True(ColorUtils.IsPaletteMonochrome(prism.NodePalette, prism.BackgroundColor));
     }
 
-    // ── Vibrant (achromatic hardening) ────────────────────────────────────────
+    // ── IsAchromatic threshold clamping ───────────────────────────────────────
+
+    [Fact]
+    public void IsAchromatic_NegativeThreshold_ClampsToZero_ReturnsFalse()
+    {
+        // Threshold clamped to 0 — no color can be below a 0 saturation threshold
+        Assert.False(ColorUtils.IsAchromatic("#808080", saturationThreshold: -1.0));
+    }
+
+    [Fact]
+    public void IsAchromatic_ThresholdAbove1_ClampsTo1_ReturnsTrue()
+    {
+        // Threshold clamped to 1 — any color with saturation < 1 is considered achromatic.
+        // #CC5050 is a muted red with HSL saturation ~0.5, so it returns true when
+        // the (clamped) threshold is 1.0, even though it is chromatic at the default threshold.
+        Assert.True(ColorUtils.IsAchromatic("#CC5050", saturationThreshold: 2.0));
+        Assert.False(ColorUtils.IsAchromatic("#CC5050")); // default threshold does not treat it as achromatic
+    }
 
     [Fact]
     public void Vibrant_WhiteInput_ProducesVisiblyDifferentColor()

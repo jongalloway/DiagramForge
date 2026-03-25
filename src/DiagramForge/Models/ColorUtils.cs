@@ -170,10 +170,11 @@ public static class ColorUtils
     /// <param name="hex">Hex color string.</param>
     /// <param name="saturationThreshold">
     /// Saturation threshold 0–1; colors with saturation below this value are considered
-    /// achromatic. Defaults to 0.08.
+    /// achromatic. Values outside [0,1] are clamped. Defaults to 0.08.
     /// </param>
     public static bool IsAchromatic(string hex, double saturationThreshold = 0.08)
     {
+        saturationThreshold = Math.Clamp(saturationThreshold, 0, 1);
         var (rRaw, gRaw, bRaw) = ParseHex(hex);
         double r = rRaw / 255d;
         double g = gRaw / 255d;
@@ -215,13 +216,20 @@ public static class ColorUtils
             return true;
 
         // All entries are the same color (trivially monochrome — no hue variety).
-        if (palette.All(c => string.Equals(c, palette[0], StringComparison.OrdinalIgnoreCase)))
-            return true;
+        // Compare by parsed RGBA values so shorthand formats (#FFF vs #FFFFFF) are treated as equal.
+        {
+            var referenceColor = ParseHexWithAlpha(palette[0]);
+            if (palette.All(c => ParseHexWithAlpha(c) == referenceColor))
+                return true;
+        }
 
         // All entries match the background (nodes would be invisible against the canvas).
-        if (backgroundColor is not null &&
-            palette.All(c => string.Equals(c, backgroundColor, StringComparison.OrdinalIgnoreCase)))
-            return true;
+        if (backgroundColor is not null)
+        {
+            var background = ParseHexWithAlpha(backgroundColor);
+            if (palette.All(c => ParseHexWithAlpha(c) == background))
+                return true;
+        }
 
         return false;
     }

@@ -27,7 +27,7 @@ public static class ThemePaletteResolver
     ///   <item>
     ///     If <see cref="Theme.UseBorderGradients"/> is <see langword="true"/> and
     ///     <see cref="Theme.BorderGradientStops"/> contains more than one stop, the stops
-    ///     are interpolated/cycled to produce <see cref="DefaultPaletteSize"/> entries.
+    ///     are linearly interpolated to produce <see cref="DefaultPaletteSize"/> entries.
     ///   </item>
     ///   <item>
     ///     Otherwise, a palette is derived from <see cref="Theme.AccentColor"/> and
@@ -52,10 +52,15 @@ public static class ThemePaletteResolver
 
         // Build fallback from gradient stops when they are available and meaningful.
         if (theme.UseBorderGradients && theme.BorderGradientStops is { Count: > 1 })
-            return BuildPaletteFromGradientStops(theme.BorderGradientStops, DefaultPaletteSize);
+        {
+            var gradientPalette = BuildPaletteFromGradientStops(theme.BorderGradientStops, DefaultPaletteSize);
+            if (!ColorUtils.IsPaletteMonochrome(gradientPalette, theme.BackgroundColor))
+                return gradientPalette;
+        }
 
         // Fall back to hue-rotation derivation from the theme's semantic colors.
-        return BuildPaletteFromHueRotation(theme.AccentColor, theme.SecondaryColor, DefaultPaletteSize);
+        bool isLightBackground = ColorUtils.IsLight(theme.BackgroundColor);
+        return BuildPaletteFromHueRotation(theme.AccentColor, theme.SecondaryColor, DefaultPaletteSize, isLightBackground);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -97,9 +102,8 @@ public static class ThemePaletteResolver
     /// in equal steps, alternating between the two base colors.
     /// </summary>
     private static IReadOnlyList<string> BuildPaletteFromHueRotation(
-        string accentColor, string secondaryColor, int count)
+        string accentColor, string secondaryColor, int count, bool isLightBackground)
     {
-        bool isLight = ColorUtils.IsLight(accentColor);
         double hueStep = 360.0 / count;
         var result = new List<string>(count);
 
@@ -107,7 +111,7 @@ public static class ThemePaletteResolver
         {
             string baseColor = i % 2 == 0 ? accentColor : secondaryColor;
             double rotation = Math.Floor(i / 2.0) * hueStep;
-            result.Add(ColorUtils.RotateHue(baseColor, rotation, isLight));
+            result.Add(ColorUtils.RotateHue(baseColor, rotation, isLightBackground));
         }
 
         return result;

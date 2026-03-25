@@ -275,4 +275,21 @@ public class ThemePaletteResolverTests
         Assert.False(ColorUtils.IsPaletteMonochrome(result),
             "Fallback for mixed-gray palette should not be monochrome.");
     }
+
+    [Fact]
+    public void ResolveEffectivePalette_MonochromeGradientStops_FallsBackToHueRotation()
+    {
+        // Even when UseBorderGradients is true, if the gradient stops are themselves
+        // monochrome the method should skip them and fall back to hue rotation.
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF"];
+        theme.UseBorderGradients = true;
+        theme.BorderGradientStops = ["#808080", "#AAAAAA"];  // achromatic stops
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Result should be chromatic even when gradient stops are monochrome.");
+    }
 }
