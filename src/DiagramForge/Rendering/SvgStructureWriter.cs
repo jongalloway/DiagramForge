@@ -741,8 +741,16 @@ internal static class SvgStructureWriter
             sb.AppendLine("    </linearGradient>");
             sb.AppendLine("  </defs>");
 
-            // Outline stroke for definition against background
-            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{SvgRenderSupport.Escape(theme.BackgroundColor)}" stroke-width="{SvgRenderSupport.F(strokeWidth + 6)}" stroke-linecap="round" stroke-linejoin="round"/>""");
+            // Outline stroke for definition against background.
+            // Normally the background color acts as a "halo" framing the tube.
+            // When the segment colors match the background (e.g. a custom theme
+            // with white palette before the palette resolver runs, or any case
+            // where tube ≈ background), substitute the border color so the tube
+            // is still visible.
+            string outlineColor = ColorUtils.IsPaletteMonochrome(segmentColors, theme.BackgroundColor)
+                ? theme.BorderColor
+                : theme.BackgroundColor;
+            sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="{SvgRenderSupport.Escape(outlineColor)}" stroke-width="{SvgRenderSupport.F(strokeWidth + 6)}" stroke-linecap="round" stroke-linejoin="round"/>""");
             // Main gradient path — fully opaque for visual impact
             sb.AppendLine($"""  <path d="{pathData}" fill="none" stroke="url(#{gradientId})" stroke-width="{SvgRenderSupport.F(strokeWidth)}" stroke-linecap="round" stroke-linejoin="round"/>""");
         }
