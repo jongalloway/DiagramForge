@@ -20,11 +20,6 @@
   <path d="M 384.18,328.17 C 426.18,328.17 538.00,393.09 580.00,393.09" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
   <g transform="translate(24.00,47.00)">
     <defs>
-      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#DB79B4"/>
-        <stop offset="58%" stop-color="#D86BAC"/>
-        <stop offset="100%" stop-color="#C963A0"/>
-      </linearGradient>
       <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#444754"/>
         <stop offset="33%" stop-color="#574D77"/>
@@ -38,11 +33,6 @@
   </g>
   <g transform="translate(73.00,96.00)">
     <defs>
-      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#295F87"/>
-        <stop offset="58%" stop-color="#124E7A"/>
-        <stop offset="100%" stop-color="#104871"/>
-      </linearGradient>
       <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#444754"/>
         <stop offset="33%" stop-color="#574D77"/>
@@ -56,11 +46,6 @@
   </g>
   <g transform="translate(122.00,145.00)">
     <defs>
-      <linearGradient id="node-2-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" stop-color="#292F76"/>
-        <stop offset="58%" stop-color="#121967"/>
-        <stop offset="100%" stop-color="#101760"/>
-      </linearGradient>
       <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
         <stop offset="0%" stop-color="#444754"/>
         <stop offset="33%" stop-color="#574D77"/>

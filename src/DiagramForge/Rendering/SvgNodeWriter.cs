@@ -78,6 +78,13 @@ internal static partial class SvgNodeWriter
             fill = SvgRenderSupport.Escape(baseFill);
             stroke = SvgRenderSupport.Escape(baseStroke);
         }
+        else if (node.Metadata.TryGetValue("render:disableFillGradient", out var disableFillGradient) && disableFillGradient is true)
+        {
+            // Fill is always "none" for this node type (e.g. target ring circles), so skip the
+            // fill-gradient def to avoid emitting unused SVG. Border gradient is still applied.
+            fill = SvgRenderSupport.Escape(baseFill);
+            SvgRenderSupport.AppendBorderGradientDef(sb, "    ", $"node-{nodeIndex}-stroke-gradient", baseStroke, theme, out stroke);
+        }
         else
         {
             SvgRenderSupport.AppendGradientDefs(sb, "    ", $"node-{nodeIndex}", baseFill, baseStroke, theme, out fill, out stroke);
