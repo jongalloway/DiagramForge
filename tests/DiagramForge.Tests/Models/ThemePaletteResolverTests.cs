@@ -143,4 +143,153 @@ public class ThemePaletteResolverTests
         Assert.Throws<ArgumentNullException>(() =>
             ThemePaletteResolver.BuildRingColors(null!, 3, "#000000", "#AABBCC", isLightBackground: true));
     }
+
+    // ── ResolveEffectivePalette ───────────────────────────────────────────────
+
+    [Fact]
+    public void ResolveEffectivePalette_NullTheme_ThrowsArgumentNullException()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            ThemePaletteResolver.ResolveEffectivePalette(null!));
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_NormalChromaticPalette_ReturnsPaletteUnchanged()
+    {
+        var theme = Theme.Default;
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        // Default theme has a chromatic palette — it should be returned as-is
+        Assert.NotNull(result);
+        Assert.True(result.Count > 0);
+        // The result should be the same reference as NodePalette (no copy made)
+        Assert.Same(theme.NodePalette, result);
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_AllWhitePalette_ReturnsChromaticFallback()
+    {
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF",
+                             "#FFFFFF", "#FFFFFF", "#FFFFFF", "#FFFFFF"];
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Fallback palette should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_AllBlackPalette_ReturnsChromaticFallback()
+    {
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#000000", "#000000", "#000000"];
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Fallback palette should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_PrismTheme_ReturnsChromaticFallback()
+    {
+        // Prism has all-white NodePalette but has chromatic BorderGradientStops
+        var result = ThemePaletteResolver.ResolveEffectivePalette(Theme.Prism);
+
+        Assert.Equal(8, result.Count);
+        // Each color should be valid hex
+        foreach (string color in result)
+        {
+            Assert.StartsWith("#", color);
+            ColorUtils.ParseHex(color); // must not throw
+        }
+        // The fallback from gradient stops should not be monochrome
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Prism fallback palette derived from gradient stops should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_MonochromeNoGradientStops_UsesHueRotationFallback()
+    {
+        var theme = Theme.FromPalette("#E84393");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF", "#FFFFFF"];
+        theme.UseBorderGradients = false;
+        theme.BorderGradientStops = null;
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Hue-rotation fallback palette should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_WithGradientStops_UsesGradientStopsFallback()
+    {
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF", "#FFFFFF"];
+        theme.UseBorderGradients = true;
+        theme.BorderGradientStops = ["#2563EB", "#7C3AED", "#DB2777", "#F59E0B"];
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        // Must have exactly 8 entries
+        Assert.Equal(8, result.Count);
+        // First entry should be at or near the first gradient stop
+        Assert.Equal(theme.BorderGradientStops[0], result[0], ignoreCase: true);
+        // Last entry should be at or near the last gradient stop
+        Assert.Equal(theme.BorderGradientStops[^1], result[^1], ignoreCase: true);
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_FallbackPalette_AllColorsAreValidHex()
+    {
+        var theme = Theme.FromPalette("#6366F1");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF", "#FFFFFF"];
+        theme.UseBorderGradients = false;
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        foreach (string color in result)
+        {
+            Assert.StartsWith("#", color);
+            var (r, g, b) = ColorUtils.ParseHex(color);
+            Assert.InRange(r, 0, 255);
+            Assert.InRange(g, 0, 255);
+            Assert.InRange(b, 0, 255);
+        }
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_MixedMonochromeGrays_ReturnsFallback()
+    {
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#FFFFFF", "#D3D3D3", "#C0C0C0", "#808080"];
+        theme.UseBorderGradients = false;
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Fallback for mixed-gray palette should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_MonochromeGradientStops_FallsBackToHueRotation()
+    {
+        // Even when UseBorderGradients is true, if the gradient stops are themselves
+        // monochrome the method should skip them and fall back to hue rotation.
+        var theme = Theme.FromPalette("#3B82F6");
+        theme.NodePalette = ["#FFFFFF", "#FFFFFF"];
+        theme.UseBorderGradients = true;
+        theme.BorderGradientStops = ["#808080", "#AAAAAA"];  // achromatic stops
+
+        var result = ThemePaletteResolver.ResolveEffectivePalette(theme);
+
+        Assert.Equal(8, result.Count);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result),
+            "Result should be chromatic even when gradient stops are monochrome.");
+    }
 }
