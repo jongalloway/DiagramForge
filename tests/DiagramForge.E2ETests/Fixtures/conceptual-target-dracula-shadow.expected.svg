@@ -19,17 +19,41 @@
   <path d="M 439.43,293.89 C 470.36,293.89 549.07,297.85 580.00,297.85" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
   <path d="M 384.18,328.17 C 426.18,328.17 538.00,393.09 580.00,393.09" fill="none" stroke="#E5E5E7" stroke-width="2.62" stroke-linecap="round"   />
   <g transform="translate(24.00,47.00)">
-    <circle cx="242.00" cy="242.00" r="222.50" fill="none" stroke="#D86BAC" stroke-width="39.00"/>
+    <defs>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <circle cx="242.00" cy="242.00" r="222.50" fill="none" stroke="url(#node-0-stroke-gradient)" stroke-width="39.00"/>
     <circle cx="242.00" cy="242.00" r="203.00" fill="none" stroke="#888888" stroke-width="0.80"/>
     <circle cx="242.00" cy="242.00" r="242.00" fill="none" stroke="#888888" stroke-width="0.80"/>
   </g>
   <g transform="translate(73.00,96.00)">
-    <circle cx="193.00" cy="193.00" r="173.50" fill="none" stroke="#124E7A" stroke-width="39.00"/>
+    <defs>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <circle cx="193.00" cy="193.00" r="173.50" fill="none" stroke="url(#node-1-stroke-gradient)" stroke-width="39.00"/>
     <circle cx="193.00" cy="193.00" r="154.00" fill="none" stroke="#888888" stroke-width="0.80"/>
     <circle cx="193.00" cy="193.00" r="193.00" fill="none" stroke="#888888" stroke-width="0.80"/>
   </g>
   <g transform="translate(122.00,145.00)">
-    <circle cx="144.00" cy="144.00" r="124.50" fill="none" stroke="#121967" stroke-width="39.00"/>
+    <defs>
+      <linearGradient id="node-2-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
+    <circle cx="144.00" cy="144.00" r="124.50" fill="none" stroke="url(#node-2-stroke-gradient)" stroke-width="39.00"/>
     <circle cx="144.00" cy="144.00" r="105.00" fill="none" stroke="#888888" stroke-width="0.80"/>
     <circle cx="144.00" cy="144.00" r="144.00" fill="none" stroke="#888888" stroke-width="0.80"/>
   </g>
@@ -38,27 +62,51 @@
     <text x="87.00" y="91.90" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#0F172A">Throne</text>
   </g>
   <g transform="translate(580.00,152.71)">
+    <defs>
+      <linearGradient id="target-card_0-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
     <rect x="0" y="0" width="315.92" height="82.09" rx="10.00" ry="10.00" fill="#313342" stroke="none"/>
     <rect x="0" y="0" width="315.92" height="82.09" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
-    <rect x="1.67" y="1.67" width="312.57" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="#B15D92" stroke-width="2.55"/>
+    <rect x="1.67" y="1.67" width="312.57" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="url(#target-card_0-accent)" stroke-width="2.55"/>
     <rect x="12.00" y="16.00" width="14.00" height="50.09" rx="7.00" ry="7.00" fill="#D86BAC" stroke="none"/>
     <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#F8F8F2">Outer ring</text>
     <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#B2B6C8">Houses, dragons, and the war for the</text>
     <text x="44.60" y="60.12" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#B2B6C8">realm</text>
   </g>
   <g transform="translate(580.00,256.80)">
+    <defs>
+      <linearGradient id="target-card_1-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
     <rect x="0" y="0" width="323.24" height="82.09" rx="10.00" ry="10.00" fill="#313342" stroke="none"/>
     <rect x="0" y="0" width="323.24" height="82.09" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
-    <rect x="1.67" y="1.67" width="319.89" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="#17466B" stroke-width="2.55"/>
+    <rect x="1.67" y="1.67" width="319.89" height="78.74" rx="8.32" ry="8.32" fill="none" stroke="url(#target-card_1-accent)" stroke-width="2.55"/>
     <rect x="12.00" y="16.00" width="14.00" height="50.09" rx="7.00" ry="7.00" fill="#124E7A" stroke="none"/>
     <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#F8F8F2">Middle ring</text>
     <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#B2B6C8">Alliances, spies, and marching supply</text>
     <text x="44.60" y="60.12" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#B2B6C8">lines</text>
   </g>
   <g transform="translate(580.00,360.89)">
+    <defs>
+      <linearGradient id="target-card_2-accent" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#444754"/>
+        <stop offset="33%" stop-color="#574D77"/>
+        <stop offset="67%" stop-color="#63516F"/>
+        <stop offset="100%" stop-color="#4A4E57"/>
+      </linearGradient>
+    </defs>
     <rect x="0" y="0" width="315.92" height="64.40" rx="10.00" ry="10.00" fill="#313342" stroke="none"/>
     <rect x="0" y="0" width="315.92" height="64.40" rx="10.00" ry="10.00" fill="none" stroke="#888888" stroke-width="0.80"/>
-    <rect x="1.67" y="1.67" width="312.57" height="61.05" rx="8.32" ry="8.32" fill="none" stroke="#171D5C" stroke-width="2.55"/>
+    <rect x="1.67" y="1.67" width="312.57" height="61.05" rx="8.32" ry="8.32" fill="none" stroke="url(#target-card_2-accent)" stroke-width="2.55"/>
     <rect x="12.00" y="16.00" width="14.00" height="36.00" rx="7.00" ry="7.00" fill="#121967" stroke="none"/>
     <text x="44.60" y="28.40" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.60" font-weight="bold" fill="#F8F8F2">Inner ring</text>
     <text x="44.60" y="42.43" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="12.20" fill="#B2B6C8">Claims, fire, and the final betrayal</text>

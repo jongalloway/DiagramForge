@@ -145,29 +145,59 @@ internal static class SvgRenderSupport
         {
             string strokeId = prefix + "-stroke-gradient";
             sb.AppendLine($"{indent}  <linearGradient id=\"{strokeId}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
-
-            if (theme.BorderGradientStops is { Count: > 1 })
-            {
-                int stopCount = theme.BorderGradientStops.Count;
-                for (int i = 0; i < stopCount; i++)
-                {
-                    double offset = stopCount == 1 ? 100 : i * 100.0 / (stopCount - 1);
-                    sb.AppendLine($"{indent}    <stop offset=\"{offset:F0}%\" stop-color=\"{Escape(theme.BorderGradientStops[i])}\"/>");
-                }
-            }
-            else
-            {
-                string strokeStart = ColorUtils.Lighten(strokeColor, Math.Max(theme.GradientStrength * 0.28, 0.03));
-                string strokeEnd = ColorUtils.Blend(strokeColor, theme.AccentColor, Math.Max(theme.GradientStrength * 0.24, 0.05));
-                sb.AppendLine($"{indent}    <stop offset=\"0%\" stop-color=\"{Escape(strokeStart)}\"/>");
-                sb.AppendLine($"{indent}    <stop offset=\"100%\" stop-color=\"{Escape(strokeEnd)}\"/>");
-            }
-
+            AppendBorderGradientStops(sb, $"{indent}    ", strokeColor, theme);
             sb.AppendLine($"{indent}  </linearGradient>");
             strokePaint = $"url(#{strokeId})";
         }
 
         sb.AppendLine($"{indent}</defs>");
+    }
+
+    /// <summary>
+    /// Emits a self-contained <c>&lt;defs&gt;&lt;linearGradient&gt;...&lt;/linearGradient&gt;&lt;/defs&gt;</c>
+    /// block for a border gradient and returns a <c>url(#…)</c> stroke paint reference.
+    /// When <see cref="Theme.UseBorderGradients"/> is false, <paramref name="strokePaint"/> is set
+    /// to the plain escaped stroke colour and no SVG is emitted.
+    /// </summary>
+    internal static void AppendBorderGradientDef(
+        StringBuilder sb,
+        string indent,
+        string gradId,
+        string strokeColor,
+        Theme theme,
+        out string strokePaint)
+    {
+        strokePaint = Escape(strokeColor);
+
+        if (!theme.UseBorderGradients)
+            return;
+
+        sb.AppendLine($"{indent}<defs>");
+        sb.AppendLine($"{indent}  <linearGradient id=\"{gradId}\" x1=\"0%\" y1=\"0%\" x2=\"100%\" y2=\"0%\">");
+        AppendBorderGradientStops(sb, $"{indent}    ", strokeColor, theme);
+        sb.AppendLine($"{indent}  </linearGradient>");
+        sb.AppendLine($"{indent}</defs>");
+        strokePaint = $"url(#{gradId})";
+    }
+
+    private static void AppendBorderGradientStops(StringBuilder sb, string indent, string strokeColor, Theme theme)
+    {
+        if (theme.BorderGradientStops is { Count: > 1 })
+        {
+            int stopCount = theme.BorderGradientStops.Count;
+            for (int i = 0; i < stopCount; i++)
+            {
+                double offset = i * 100.0 / (stopCount - 1);
+                sb.AppendLine($"{indent}<stop offset=\"{offset:F0}%\" stop-color=\"{Escape(theme.BorderGradientStops[i])}\"/>");
+            }
+        }
+        else
+        {
+            string strokeStart = ColorUtils.Lighten(strokeColor, Math.Max(theme.GradientStrength * 0.28, 0.03));
+            string strokeEnd = ColorUtils.Blend(strokeColor, theme.AccentColor, Math.Max(theme.GradientStrength * 0.24, 0.05));
+            sb.AppendLine($"{indent}<stop offset=\"0%\" stop-color=\"{Escape(strokeStart)}\"/>");
+            sb.AppendLine($"{indent}<stop offset=\"100%\" stop-color=\"{Escape(strokeEnd)}\"/>");
+        }
     }
 
     internal static void AppendShadowFilterDefs(

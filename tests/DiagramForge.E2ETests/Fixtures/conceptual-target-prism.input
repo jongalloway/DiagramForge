@@ -1,0 +1,10 @@
+---
+theme: prism
+---
+diagram: target
+title: Prism Launch Target
+center: Launch
+rings:
+  - Outer ring: Marketing, partnerships, and community outreach
+  - Middle ring: Engineering reviews, QA cycles, and staging gates
+  - Inner ring: Feature freeze, final sign-off, and deploy

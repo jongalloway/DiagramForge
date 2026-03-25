@@ -83,9 +83,11 @@ internal static partial class SvgNodeWriter
         double accentHeight = Math.Max(36, h - (accentInsetY * 2));
         double accentRadius = Math.Min(accentWidth / 2, 8);
 
+        SvgRenderSupport.AppendBorderGradientDef(sb, "    ", $"target-{node.Id}-accent", stroke, theme, out string accentBorderStroke);
+
         sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="{fill}" stroke="none"{shadowAttribute}/>""");
         sb.AppendLine($"""    <rect x="0" y="0" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="{SvgRenderSupport.F(borderRadius)}" ry="{SvgRenderSupport.F(borderRadius)}" fill="none" stroke="{outlineColor}" stroke-width="{SvgRenderSupport.F(outlineStrokeWidth)}"/>""");
-        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentBorderInset)}" y="{SvgRenderSupport.F(accentBorderInset)}" width="{SvgRenderSupport.F(Math.Max(0, w - (accentBorderInset * 2)))}" height="{SvgRenderSupport.F(Math.Max(0, h - (accentBorderInset * 2)))}" rx="{SvgRenderSupport.F(accentBorderRadius)}" ry="{SvgRenderSupport.F(accentBorderRadius)}" fill="none" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(accentBorderStrokeWidth)}"/>""");
+        sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentBorderInset)}" y="{SvgRenderSupport.F(accentBorderInset)}" width="{SvgRenderSupport.F(Math.Max(0, w - (accentBorderInset * 2)))}" height="{SvgRenderSupport.F(Math.Max(0, h - (accentBorderInset * 2)))}" rx="{SvgRenderSupport.F(accentBorderRadius)}" ry="{SvgRenderSupport.F(accentBorderRadius)}" fill="none" stroke="{accentBorderStroke}" stroke-width="{SvgRenderSupport.F(accentBorderStrokeWidth)}"/>""");
         sb.AppendLine($"""    <rect x="{SvgRenderSupport.F(accentInsetX)}" y="{SvgRenderSupport.F(accentInsetY)}" width="{SvgRenderSupport.F(accentWidth)}" height="{SvgRenderSupport.F(accentHeight)}" rx="{SvgRenderSupport.F(accentRadius)}" ry="{SvgRenderSupport.F(accentRadius)}" fill="{SvgRenderSupport.Escape(accentColor)}" stroke="none"/>""");
 
         double textX = accentInsetX + accentWidth + theme.NodePadding * 1.55;

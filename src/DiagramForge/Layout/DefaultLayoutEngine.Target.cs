@@ -136,7 +136,7 @@ public sealed partial class DefaultLayoutEngine
             ringNode.StrokeColor = ringColor;
             ringNode.Metadata["target:ringStrokeWidth"] = ringStrokeWidth;
             ringNode.Metadata["render:suppressLabel"] = true;
-            ringNode.Metadata["render:noGradient"] = true;
+            ringNode.Metadata["render:disableFillGradient"] = true;
 
             cardNode.X = cardX;
             cardNode.Y = cardStartY;
