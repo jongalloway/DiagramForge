@@ -16,14 +16,6 @@
   <rect width="485.00" height="500.32" fill="#FFFFFF" rx="10.00" ry="10.00"/>
   <text x="242.50" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#111827">Project Phases</text>
   <g transform="translate(24.00,47.00)">
-    <defs>
-      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
     <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#0985FF" stroke="none"/>
     <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Discovery</text>
@@ -32,14 +24,6 @@
     <text x="35.00" y="114.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Competitive analysis</text>
   </g>
   <g transform="translate(24.00,187.24)">
-    <defs>
-      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
     <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#1220FF" stroke="none"/>
     <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Design</text>
@@ -48,14 +32,6 @@
     <text x="35.00" y="114.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Accessibility review</text>
   </g>
   <g transform="translate(24.00,327.48)">
-    <defs>
-      <linearGradient id="node-8-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
     <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#7010FF" stroke="none"/>
     <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Development</text>

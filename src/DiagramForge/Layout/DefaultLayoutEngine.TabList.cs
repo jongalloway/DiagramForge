@@ -110,8 +110,18 @@ public sealed partial class DefaultLayoutEngine
             theme.NodePadding * 2.5 + maxItemCount * descLineHeight + theme.NodePadding);
         double rowGap = Math.Max(theme.NodePadding * 1.6, 16);
 
-        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
-        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
+        IReadOnlyList<string> effectivePalette;
+        bool useFallbackPalette;
+        if (theme.NodePalette is { Count: > 0 })
+        {
+            effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+            useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
+        }
+        else
+        {
+            effectivePalette = [theme.NodeFillColor];
+            useFallbackPalette = false;
+        }
 
         for (int i = 0; i < titleNodes.Count; i++)
         {
@@ -214,8 +224,11 @@ public sealed partial class DefaultLayoutEngine
             theme.NodePadding * 2 + titleFontSize * 1.3 + maxItemCount * descLineHeight + theme.NodePadding);
         double rowGap = 6; // Narrow gap for stacked infographic feel
 
-        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
-        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
+        IReadOnlyList<string> effectivePalette;
+        if (theme.NodePalette is { Count: > 0 })
+            effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        else
+            effectivePalette = [theme.NodeFillColor];
 
         for (int i = 0; i < titleNodes.Count; i++)
         {
@@ -244,8 +257,9 @@ public sealed partial class DefaultLayoutEngine
             titleNode.Label.FontSize = numberFontSize;
             titleNode.Label.FontWeight = "bold";
             titleNode.Label.Color = tabTextColor;
-            if (!useFallbackPalette)
-                titleNode.Metadata["render:noGradient"] = true;
+            // Stacked renderer uses tablist:tabStroke/contentStroke directly; node-level
+            // gradient stroke is not consumed, so always suppress gradient generation.
+            titleNode.Metadata["render:noGradient"] = true;
             titleNode.Metadata["tablist:band"] = true;
             titleNode.Metadata["tablist:layout"] = "stacked";
             titleNode.Metadata["tablist:accentWidth"] = tabWidth;
@@ -324,8 +338,11 @@ public sealed partial class DefaultLayoutEngine
         double totalWidth = accentLineWidth + accentLineGap + barWidth;
         double categoryGap = theme.NodePadding * 1.2;
 
-        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
-        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
+        IReadOnlyList<string> effectivePalette;
+        if (theme.NodePalette is { Count: > 0 })
+            effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        else
+            effectivePalette = [theme.NodeFillColor];
 
         double curY = pad + titleOffset;
 
@@ -353,8 +370,9 @@ public sealed partial class DefaultLayoutEngine
             titleNode.Label.FontSize = titleFontSize;
             titleNode.Label.FontWeight = "bold";
             titleNode.Label.Color = titleBarTextColor;
-            if (!useFallbackPalette)
-                titleNode.Metadata["render:noGradient"] = true;
+            // Flat renderer uses tablist:accentColor and StrokeColor="none" directly;
+            // node-level gradient stroke is not consumed, so always suppress gradient generation.
+            titleNode.Metadata["render:noGradient"] = true;
             titleNode.Metadata["tablist:band"] = true;
             titleNode.Metadata["tablist:layout"] = "flat";
             titleNode.Metadata["tablist:accentLineWidth"] = accentLineWidth;

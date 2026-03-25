@@ -16,14 +16,6 @@
   <rect width="544.44" height="397.51" fill="#FFFFFF" rx="10.00" ry="10.00"/>
   <text x="272.22" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#111827">Software Release Checklist</text>
   <g transform="translate(24.00,47.00)">
-    <defs>
-      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#1371F8" stroke="#4E94F9" stroke-width="0.75"/>
     <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#09A4FF" stroke="#46BAFF" stroke-width="0.75"/>
     <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#0F172A">01</text>
@@ -32,14 +24,6 @@
     <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">No open critical comments</text>
   </g>
   <g transform="translate(24.00,150.17)">
-    <defs>
-      <linearGradient id="node-3-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#2630F8" stroke="#5C63F9" stroke-width="0.75"/>
     <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#1224FF" stroke="#4D5AFF" stroke-width="0.75"/>
     <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">02</text>
@@ -48,14 +32,6 @@
     <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Integration tests passing</text>
   </g>
   <g transform="translate(24.00,253.34)">
-    <defs>
-      <linearGradient id="node-6-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" stop-color="#2563EB"/>
-        <stop offset="33%" stop-color="#7C3AED"/>
-        <stop offset="67%" stop-color="#DB2777"/>
-        <stop offset="100%" stop-color="#F59E0B"/>
-      </linearGradient>
-    </defs>
     <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#6A21F9" stroke="#8F58FA" stroke-width="0.75"/>
     <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#8810FF" stroke="#A54BFF" stroke-width="0.75"/>
     <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">03</text>
