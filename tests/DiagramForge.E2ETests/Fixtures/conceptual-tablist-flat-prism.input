@@ -1,0 +1,22 @@
+---
+theme: prism
+---
+diagram: tablist
+layout: flat
+title: Project Phases
+categories:
+  - title: Discovery
+    items:
+      - Stakeholder interviews
+      - Requirements gathering
+      - Competitive analysis
+  - title: Design
+    items:
+      - Wireframes & prototypes
+      - Design system setup
+      - Accessibility review
+  - title: Development
+    items:
+      - Sprint planning
+      - Feature implementation
+      - Code review process

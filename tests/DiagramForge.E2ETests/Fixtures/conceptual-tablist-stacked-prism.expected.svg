@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="544.44" height="397.51" viewBox="0 0 544.44 397.51">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="544.44" height="397.51" fill="#FFFFFF" rx="10.00" ry="10.00"/>
+  <text x="272.22" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#111827">Software Release Checklist</text>
+  <g transform="translate(24.00,47.00)">
+    <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#1371F8" stroke="#4E94F9" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#09A4FF" stroke="#46BAFF" stroke-width="0.75"/>
+    <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#0F172A">01</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Code Review</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">All PRs approved</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">No open critical comments</text>
+  </g>
+  <g transform="translate(24.00,150.17)">
+    <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#2630F8" stroke="#5C63F9" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#1224FF" stroke="#4D5AFF" stroke-width="0.75"/>
+    <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">02</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Testing</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Unit tests passing</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Integration tests passing</text>
+  </g>
+  <g transform="translate(24.00,253.34)">
+    <rect x="66.44" y="0" width="430.00" height="97.17" rx="10.00" ry="10.00" fill="#6A21F9" stroke="#8F58FA" stroke-width="0.75"/>
+    <rect x="0" y="0" width="76.44" height="97.17" rx="10.00" ry="10.00" fill="#8810FF" stroke="#A54BFF" stroke-width="0.75"/>
+    <text x="38.22" y="58.14" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="27.30" font-weight="bold" fill="#F8FAFC">03</text>
+    <text x="100.44" y="28.90" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="16.90" font-weight="bold" fill="#F8FAFC">Deployment</text>
+    <text x="100.44" y="50.24" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Staging verification complete</text>
+    <text x="100.44" y="69.84" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="14.00" fill="#F8FAFC">Rollback plan documented</text>
+  </g>
+</svg>

@@ -1,0 +1,19 @@
+---
+theme: prism
+---
+diagram: tablist
+layout: stacked
+title: Software Release Checklist
+categories:
+  - title: Code Review
+    items:
+      - All PRs approved
+      - No open critical comments
+  - title: Testing
+    items:
+      - Unit tests passing
+      - Integration tests passing
+  - title: Deployment
+    items:
+      - Staging verification complete
+      - Rollback plan documented

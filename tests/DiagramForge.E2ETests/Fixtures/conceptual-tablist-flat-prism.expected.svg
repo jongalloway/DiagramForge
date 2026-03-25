@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="485.00" height="500.32" viewBox="0 0 485.00 500.32">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="485.00" height="500.32" fill="#FFFFFF" rx="10.00" ry="10.00"/>
+  <text x="242.50" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#111827">Project Phases</text>
+  <g transform="translate(24.00,47.00)">
+    <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
+    <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#0985FF" stroke="none"/>
+    <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Discovery</text>
+    <text x="35.00" y="66.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Stakeholder interviews</text>
+    <text x="35.00" y="90.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Requirements gathering</text>
+    <text x="35.00" y="114.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Competitive analysis</text>
+  </g>
+  <g transform="translate(24.00,187.24)">
+    <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
+    <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#1220FF" stroke="none"/>
+    <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Design</text>
+    <text x="35.00" y="66.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Wireframes &amp; prototypes</text>
+    <text x="35.00" y="90.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Design system setup</text>
+    <text x="35.00" y="114.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Accessibility review</text>
+  </g>
+  <g transform="translate(24.00,327.48)">
+    <rect x="0" y="0" width="5.00" height="125.84" rx="2.50" ry="2.50" fill="#09A4FF" stroke="none"/>
+    <rect x="17.00" y="0" width="420.00" height="41.84" rx="10.00" ry="10.00" fill="#7010FF" stroke="none"/>
+    <text x="35.00" y="27.08" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Development</text>
+    <text x="35.00" y="66.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Sprint planning</text>
+    <text x="35.00" y="90.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Feature implementation</text>
+    <text x="35.00" y="114.44" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#111827">•  Code review process</text>
+  </g>
+</svg>
