@@ -1,0 +1,26 @@
+---
+theme: prism
+---
+diagram: tablist
+title: Cloud Architecture Layers
+categories:
+  - title: Presentation
+    items:
+      - Web frontend (React)
+      - Mobile clients (iOS, Android)
+      - CDN-cached static assets
+  - title: API Gateway
+    items:
+      - Rate limiting & auth
+      - Request routing
+      - Response caching
+  - title: Services
+    items:
+      - User service
+      - Order service
+      - Notification service
+  - title: Data
+    items:
+      - Relational DB (Postgres)
+      - Cache layer (Redis)
+      - Object storage (S3)

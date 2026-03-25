@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="570.72" height="589.60" viewBox="0 0 570.72 589.60">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#64748B"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#FFFFFF" stroke="#64748B" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="570.72" height="589.60" fill="#FFFFFF" rx="10.00" ry="10.00"/>
+  <text x="285.36" y="20.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" font-weight="bold" fill="#111827">Cloud Architecture Layers</text>
+  <g transform="translate(24.00,47.00)">
+    <defs>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="522.72" height="109.50" rx="10.00" ry="10.00" fill="#E4ECFC" stroke="#9CB8F6" stroke-width="1.50"/>
+    <rect x="0" y="0" width="162.72" height="109.50" rx="10.00" ry="10.00" fill="#09A4FF" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="186.72" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Web frontend (React)</text>
+    <text x="186.72" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Mobile clients (iOS, Android)</text>
+    <text x="186.72" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  CDN-cached static assets</text>
+    <text x="81.36" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#0F172A">Presentation</text>
+  </g>
+  <g transform="translate(24.00,175.70)">
+    <defs>
+      <linearGradient id="node-4-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="522.72" height="109.50" rx="10.00" ry="10.00" fill="#E9EAFC" stroke="#ADB0F6" stroke-width="1.50"/>
+    <rect x="0" y="0" width="162.72" height="109.50" rx="10.00" ry="10.00" fill="#1224FF" stroke="url(#node-4-stroke-gradient)" stroke-width="1.50"/>
+    <text x="186.72" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Rate limiting &amp; auth</text>
+    <text x="186.72" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Request routing</text>
+    <text x="186.72" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Response caching</text>
+    <text x="81.36" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">API Gateway</text>
+  </g>
+  <g transform="translate(24.00,304.40)">
+    <defs>
+      <linearGradient id="node-8-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="522.72" height="109.50" rx="10.00" ry="10.00" fill="#EDE8FC" stroke="#BEA9F6" stroke-width="1.50"/>
+    <rect x="0" y="0" width="162.72" height="109.50" rx="10.00" ry="10.00" fill="#8810FF" stroke="url(#node-8-stroke-gradient)" stroke-width="1.50"/>
+    <text x="186.72" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  User service</text>
+    <text x="186.72" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Order service</text>
+    <text x="186.72" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Notification service</text>
+    <text x="81.36" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Services</text>
+  </g>
+  <g transform="translate(24.00,433.10)">
+    <defs>
+      <linearGradient id="node-12-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#2563EB"/>
+        <stop offset="33%" stop-color="#7C3AED"/>
+        <stop offset="67%" stop-color="#DB2777"/>
+        <stop offset="100%" stop-color="#F59E0B"/>
+      </linearGradient>
+    </defs>
+    <rect x="0" y="0" width="522.72" height="109.50" rx="10.00" ry="10.00" fill="#F2E6F8" stroke="#D0A4E7" stroke-width="1.50"/>
+    <rect x="0" y="0" width="162.72" height="109.50" rx="10.00" ry="10.00" fill="#FF0DFF" stroke="url(#node-12-stroke-gradient)" stroke-width="1.50"/>
+    <text x="186.72" y="34.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Relational DB (Postgres)</text>
+    <text x="186.72" y="57.00" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Cache layer (Redis)</text>
+    <text x="186.72" y="79.50" text-anchor="start" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="15.00" fill="#0F172A">•  Object storage (S3)</text>
+    <text x="81.36" y="60.91" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="17.60" font-weight="bold" fill="#F8FAFC">Data</text>
+  </g>
+</svg>

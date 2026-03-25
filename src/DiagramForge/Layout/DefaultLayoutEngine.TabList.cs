@@ -110,15 +110,14 @@ public sealed partial class DefaultLayoutEngine
             theme.NodePadding * 2.5 + maxItemCount * descLineHeight + theme.NodePadding);
         double rowGap = Math.Max(theme.NodePadding * 1.6, 16);
 
-        string[] palette = theme.NodePalette is { Count: > 0 }
-            ? [.. theme.NodePalette]
-            : [theme.NodeFillColor];
+        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
 
         for (int i = 0; i < titleNodes.Count; i++)
         {
             var titleNode = titleNodes[i];
             double rowY = pad + titleOffset + i * (cardHeight + rowGap);
-            string catFill = palette[i % palette.Length];
+            string catFill = effectivePalette[i % effectivePalette.Count];
 
             // Accent block: vibrant saturated color
             string accentFill = ColorUtils.Vibrant(catFill, 2.5);
@@ -137,7 +136,8 @@ public sealed partial class DefaultLayoutEngine
             titleNode.Label.FontSize = titleFontSize;
             titleNode.Label.FontWeight = "bold";
             titleNode.Label.Color = accentTextColor;
-            titleNode.Metadata["render:noGradient"] = true;
+            if (!useFallbackPalette)
+                titleNode.Metadata["render:noGradient"] = true;
             titleNode.Metadata["tablist:band"] = true;
             titleNode.Metadata["tablist:layout"] = "cards";
             titleNode.Metadata["tablist:accentWidth"] = accentWidth;
@@ -214,15 +214,14 @@ public sealed partial class DefaultLayoutEngine
             theme.NodePadding * 2 + titleFontSize * 1.3 + maxItemCount * descLineHeight + theme.NodePadding);
         double rowGap = 6; // Narrow gap for stacked infographic feel
 
-        string[] palette = theme.NodePalette is { Count: > 0 }
-            ? [.. theme.NodePalette]
-            : [theme.NodeFillColor];
+        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
 
         for (int i = 0; i < titleNodes.Count; i++)
         {
             var titleNode = titleNodes[i];
             double rowY = pad + titleOffset + i * (bandHeight + rowGap);
-            string catFill = palette[i % palette.Length];
+            string catFill = effectivePalette[i % effectivePalette.Count];
 
             // Number tab: vivid saturated color
             string tabFill = ColorUtils.Vibrant(catFill, 2.5);
@@ -245,7 +244,8 @@ public sealed partial class DefaultLayoutEngine
             titleNode.Label.FontSize = numberFontSize;
             titleNode.Label.FontWeight = "bold";
             titleNode.Label.Color = tabTextColor;
-            titleNode.Metadata["render:noGradient"] = true;
+            if (!useFallbackPalette)
+                titleNode.Metadata["render:noGradient"] = true;
             titleNode.Metadata["tablist:band"] = true;
             titleNode.Metadata["tablist:layout"] = "stacked";
             titleNode.Metadata["tablist:accentWidth"] = tabWidth;
@@ -324,9 +324,8 @@ public sealed partial class DefaultLayoutEngine
         double totalWidth = accentLineWidth + accentLineGap + barWidth;
         double categoryGap = theme.NodePadding * 1.2;
 
-        string[] palette = theme.NodePalette is { Count: > 0 }
-            ? [.. theme.NodePalette]
-            : [theme.NodeFillColor];
+        var effectivePalette = ThemePaletteResolver.ResolveEffectivePalette(theme);
+        bool useFallbackPalette = !ReferenceEquals(effectivePalette, theme.NodePalette);
 
         double curY = pad + titleOffset;
 
@@ -337,7 +336,7 @@ public sealed partial class DefaultLayoutEngine
             var items = itemsByCategory.TryGetValue(catIdx, out var list) ? list : [];
             int itemCount = items.Count;
 
-            string catFill = palette[i % palette.Length];
+            string catFill = effectivePalette[i % effectivePalette.Count];
             string titleBarFill = ColorUtils.Vibrant(catFill, 2.0);
             string titleBarTextColor = ColorUtils.ChooseTextColor(titleBarFill);
 
@@ -354,12 +353,13 @@ public sealed partial class DefaultLayoutEngine
             titleNode.Label.FontSize = titleFontSize;
             titleNode.Label.FontWeight = "bold";
             titleNode.Label.Color = titleBarTextColor;
-            titleNode.Metadata["render:noGradient"] = true;
+            if (!useFallbackPalette)
+                titleNode.Metadata["render:noGradient"] = true;
             titleNode.Metadata["tablist:band"] = true;
             titleNode.Metadata["tablist:layout"] = "flat";
             titleNode.Metadata["tablist:accentLineWidth"] = accentLineWidth;
             titleNode.Metadata["tablist:accentLineGap"] = accentLineGap;
-            titleNode.Metadata["tablist:accentColor"] = ColorUtils.Vibrant(palette[0], 2.5);
+            titleNode.Metadata["tablist:accentColor"] = ColorUtils.Vibrant(effectivePalette[0], 2.5);
             titleNode.Metadata["tablist:barWidth"] = barWidth;
             titleNode.Metadata["tablist:titleBarHeight"] = titleBarHeight;
             titleNode.Metadata["tablist:descFontSize"] = descFontSize;
