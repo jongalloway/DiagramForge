@@ -1770,14 +1770,29 @@ public class DefaultLayoutEngineTests
 
         foreach (var n in titleNodes)
         {
-            // contentFill is stored for cards and stacked; titleBarFill is the node FillColor for flat.
-            if (n.Metadata.TryGetValue("tablist:contentFill", out var cf) && cf is string contentFill)
+            // contentFill is required for cards and stacked; optional (not expected) for flat.
+            if (layout is "cards" or "stacked")
             {
-                Assert.NotEqual(Theme.Prism.BackgroundColor, contentFill, StringComparer.OrdinalIgnoreCase);
+                Assert.True(n.Metadata.TryGetValue("tablist:contentFill", out var requiredCf) && requiredCf is string,
+                    $"tablist:contentFill must be set for '{layout}' layout.");
+                var requiredContentFill = n.Metadata["tablist:contentFill"] as string;
+                Assert.NotEqual(Theme.Prism.BackgroundColor, requiredContentFill, StringComparer.OrdinalIgnoreCase);
+            }
+            else
+            {
+                if (n.Metadata.TryGetValue("tablist:contentFill", out var cf) && cf is string contentFill)
+                    Assert.NotEqual(Theme.Prism.BackgroundColor, contentFill, StringComparer.OrdinalIgnoreCase);
             }
 
-            // accentColor is stored for flat layout
-            if (n.Metadata.TryGetValue("tablist:accentColor", out var ac) && ac is string accentColor)
+            // accentColor is required for flat layout; optional for others.
+            if (string.Equals(layout, "flat", StringComparison.OrdinalIgnoreCase))
+            {
+                Assert.True(n.Metadata.TryGetValue("tablist:accentColor", out var requiredAc) && requiredAc is string,
+                    "tablist:accentColor must be set for 'flat' layout.");
+                var requiredAccentColor = n.Metadata["tablist:accentColor"] as string;
+                Assert.NotEqual(Theme.Prism.BackgroundColor, requiredAccentColor, StringComparer.OrdinalIgnoreCase);
+            }
+            else if (n.Metadata.TryGetValue("tablist:accentColor", out var ac) && ac is string accentColor)
             {
                 Assert.NotEqual(Theme.Prism.BackgroundColor, accentColor, StringComparer.OrdinalIgnoreCase);
             }
