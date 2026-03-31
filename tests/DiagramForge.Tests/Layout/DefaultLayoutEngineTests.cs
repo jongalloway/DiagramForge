@@ -1668,4 +1668,158 @@ public class DefaultLayoutEngineTests
         Assert.False(ColorUtils.IsPaletteMonochrome(segmentColors, Theme.Prism.BackgroundColor),
             "Segment colors must not be monochrome relative to the Prism background.");
     }
+
+    // ── TabList ───────────────────────────────────────────────────────────────
+
+    private static Diagram CreateTabListDiagram(string layout, int categoryCount = 3, int itemsPerCategory = 2)
+    {
+        var diagram = new Diagram { DiagramType = "tablist", SourceSyntax = "conceptual" };
+
+        for (int c = 0; c < categoryCount; c++)
+        {
+            var titleNode = new Node($"tab_{c}", $"Category {c + 1}");
+            titleNode.Metadata["tablist:kind"] = "title";
+            titleNode.Metadata["tablist:categoryIndex"] = c;
+            titleNode.Metadata["tablist:layout"] = layout;
+            diagram.AddNode(titleNode);
+
+            for (int i = 0; i < itemsPerCategory; i++)
+            {
+                var itemNode = new Node($"tab_{c}_item_{i}", $"Item {c + 1}.{i + 1}");
+                itemNode.Metadata["tablist:kind"] = "item";
+                itemNode.Metadata["tablist:categoryIndex"] = c;
+                itemNode.Metadata["tablist:itemIndex"] = i;
+                itemNode.Metadata["tablist:layout"] = layout;
+                diagram.AddNode(itemNode);
+            }
+        }
+
+        return diagram;
+    }
+
+    [Theory]
+    [InlineData("cards")]
+    [InlineData("stacked")]
+    [InlineData("flat")]
+    public void Layout_TabList_AllVariants_TitleNodesGetPositiveSize(string layout)
+    {
+        var diagram = CreateTabListDiagram(layout);
+
+        _engine.Layout(diagram, _theme);
+
+        var titleNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("tablist:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal))
+            .ToList();
+
+        Assert.True(titleNodes.Count > 0);
+        Assert.All(titleNodes, n =>
+        {
+            Assert.True(n.Width > 0, $"Title node {n.Id} Width should be > 0");
+            Assert.True(n.Height > 0, $"Title node {n.Id} Height should be > 0");
+        });
+    }
+
+    [Theory]
+    [InlineData("cards")]
+    [InlineData("stacked")]
+    [InlineData("flat")]
+    public void Layout_TabList_PrismTheme_TitleNodesHaveChromaticFills(string layout)
+    {
+        // Prism has an all-white NodePalette. The layout must fall back to a
+        // chromatic palette so accent fills, tab fills, and bar fills are visible.
+        var diagram = CreateTabListDiagram(layout);
+
+        _engine.Layout(diagram, Theme.Prism);
+
+        var titleNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("tablist:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal))
+            .ToList();
+
+        Assert.True(titleNodes.Count > 0);
+
+        // Each title node's fill must differ from the white Prism background.
+        Assert.All(titleNodes, n =>
+        {
+            Assert.NotNull(n.FillColor);
+            Assert.NotEqual(Theme.Prism.BackgroundColor, n.FillColor, StringComparer.OrdinalIgnoreCase);
+        });
+
+        // The set of fill colors across title nodes must not be monochrome.
+        var fills = titleNodes.Select(n => n.FillColor!).ToList();
+        Assert.False(ColorUtils.IsPaletteMonochrome(fills, Theme.Prism.BackgroundColor),
+            $"TabList '{layout}' fill colors must not be monochrome with Prism theme.");
+    }
+
+    [Theory]
+    [InlineData("cards")]
+    [InlineData("stacked")]
+    [InlineData("flat")]
+    public void Layout_TabList_PrismTheme_AccentAndContentColorsAreChromaticInMetadata(string layout)
+    {
+        // The layout stores accent/content colors in node metadata; these must also
+        // be chromatic so the rendered output is visible against Prism's white background.
+        var diagram = CreateTabListDiagram(layout);
+
+        _engine.Layout(diagram, Theme.Prism);
+
+        var titleNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("tablist:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal))
+            .ToList();
+
+        Assert.True(titleNodes.Count > 0);
+
+        foreach (var n in titleNodes)
+        {
+            // contentFill is required for cards and stacked; optional (not expected) for flat.
+            if (layout is "cards" or "stacked")
+            {
+                Assert.True(n.Metadata.TryGetValue("tablist:contentFill", out var requiredCf) && requiredCf is string,
+                    $"tablist:contentFill must be set for '{layout}' layout.");
+                var requiredContentFill = n.Metadata["tablist:contentFill"] as string;
+                Assert.NotEqual(Theme.Prism.BackgroundColor, requiredContentFill, StringComparer.OrdinalIgnoreCase);
+            }
+            else
+            {
+                if (n.Metadata.TryGetValue("tablist:contentFill", out var cf) && cf is string contentFill)
+                    Assert.NotEqual(Theme.Prism.BackgroundColor, contentFill, StringComparer.OrdinalIgnoreCase);
+            }
+
+            // accentColor is required for flat layout; optional for others.
+            if (string.Equals(layout, "flat", StringComparison.OrdinalIgnoreCase))
+            {
+                Assert.True(n.Metadata.TryGetValue("tablist:accentColor", out var requiredAc) && requiredAc is string,
+                    "tablist:accentColor must be set for 'flat' layout.");
+                var requiredAccentColor = n.Metadata["tablist:accentColor"] as string;
+                Assert.NotEqual(Theme.Prism.BackgroundColor, requiredAccentColor, StringComparer.OrdinalIgnoreCase);
+            }
+            else if (n.Metadata.TryGetValue("tablist:accentColor", out var ac) && ac is string accentColor)
+            {
+                Assert.NotEqual(Theme.Prism.BackgroundColor, accentColor, StringComparer.OrdinalIgnoreCase);
+            }
+        }
+    }
+
+    [Theory]
+    [InlineData("cards")]
+    [InlineData("stacked")]
+    [InlineData("flat")]
+    public void Layout_TabList_DefaultTheme_IsUnaffected(string layout)
+    {
+        // Non-Prism themes with chromatic palettes must continue to work as before.
+        var diagram = CreateTabListDiagram(layout);
+
+        _engine.Layout(diagram, Theme.Default);
+
+        var titleNodes = diagram.Nodes.Values
+            .Where(n => n.Metadata.TryGetValue("tablist:kind", out var k) && "title".Equals(k as string, StringComparison.Ordinal))
+            .ToList();
+
+        Assert.True(titleNodes.Count > 0);
+        Assert.All(titleNodes, n =>
+        {
+            Assert.NotNull(n.FillColor);
+            Assert.True(n.Width > 0);
+            Assert.True(n.Height > 0);
+        });
+    }
 }
