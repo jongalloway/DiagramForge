@@ -46,10 +46,45 @@ public static class ThemePaletteResolver
         ResolveEffectivePalette(theme, DefaultPaletteSize);
 
     /// <summary>
-    /// Returns a chromatic palette sized for the caller's repeated-element needs.
+    /// Returns a palette suitable for direct node-fill use, regardless of whether
+    /// the theme's <see cref="Theme.NodePalette"/> is chromatic.
     /// </summary>
+    /// <remarks>
+    /// <para>
+    /// If <see cref="Theme.NodePalette"/> is non-empty and
+    /// <see cref="ColorUtils.IsPaletteMonochrome"/> returns <see langword="false"/>,
+    /// the existing palette is returned unchanged — <paramref name="desiredCount"/>
+    /// does <em>not</em> resize or pad a chromatic palette.
+    /// </para>
+    /// <para>
+    /// <paramref name="desiredCount"/> controls only the number of entries produced
+    /// when a fallback palette must be synthesized (i.e., when the theme's
+    /// <see cref="Theme.NodePalette"/> is absent, monochrome, or matches the background):
+    /// <list type="number">
+    ///   <item>
+    ///     If <see cref="Theme.UseBorderGradients"/> is <see langword="true"/> and
+    ///     <see cref="Theme.BorderGradientStops"/> contains more than one stop, the stops
+    ///     are linearly interpolated to produce <paramref name="desiredCount"/> entries.
+    ///   </item>
+    ///   <item>
+    ///     Otherwise, <paramref name="desiredCount"/> hue-rotated colors are derived from
+    ///     <see cref="Theme.AccentColor"/> and <see cref="Theme.SecondaryColor"/>.
+    ///   </item>
+    /// </list>
+    /// </para>
+    /// <para>This is a pure function of the <see cref="Theme"/> — no side effects.</para>
+    /// </remarks>
     /// <param name="theme">Source theme.</param>
-    /// <param name="desiredCount">Number of entries to produce for fallback palettes.</param>
+    /// <param name="desiredCount">
+    /// Minimum number of entries to generate when a fallback palette is synthesized.
+    /// Has no effect when the theme's <see cref="Theme.NodePalette"/> is already chromatic.
+    /// Must be at least 1.
+    /// </param>
+    /// <returns>
+    /// A <see cref="IReadOnlyList{T}"/> of hex color strings suitable for node fills.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="theme"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentOutOfRangeException"><paramref name="desiredCount"/> is less than 1.</exception>
     public static IReadOnlyList<string> ResolveEffectivePalette(Theme theme, int desiredCount)
     {
         ArgumentNullException.ThrowIfNull(theme);
