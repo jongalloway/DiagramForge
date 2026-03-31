@@ -157,6 +157,8 @@ public static class ThemePaletteResolver
             throw new ArgumentOutOfRangeException(nameof(ringCount), ringCount, "ringCount must be at least 1.");
 
         var chromaticPalette = ResolveEffectivePalette(theme, Math.Max(DefaultPaletteSize, ringCount * 2));
+        bool isThemePaletteMonochrome = theme.NodePalette is { Count: > 0 }
+            && ColorUtils.IsPaletteMonochrome(theme.NodePalette, theme.BackgroundColor);
 
         var colors = new List<string>(ringCount)
         {
@@ -183,13 +185,19 @@ public static class ThemePaletteResolver
             for (int i = 0; i < theme.NodePalette.Count; i++)
             {
                 string paletteColor = theme.NodePalette[i];
-                string fallbackColor = chromaticPalette[i % chromaticPalette.Count];
-                candidatePool.Add(ColorUtils.Vibrant(paletteColor, fallbackColor, 2.6));
-                candidatePool.Add(ColorUtils.RotateHue(fallbackColor, 28, isLightBackground));
+                if (isThemePaletteMonochrome)
+                {
+                    string fallbackColor = chromaticPalette[i % chromaticPalette.Count];
+                    candidatePool.Add(ColorUtils.Vibrant(paletteColor, fallbackColor, 2.6));
+                    candidatePool.Add(ColorUtils.RotateHue(fallbackColor, 28, isLightBackground));
+                }
+                else
+                {
+                    candidatePool.Add(ColorUtils.Vibrant(paletteColor, 2.6));
+                    candidatePool.Add(ColorUtils.RotateHue(paletteColor, 28, isLightBackground));
+                }
             }
         }
-
-        candidatePool.AddRange(chromaticPalette);
 
         var distinctCandidates = candidatePool
             .Select(color => ColorUtils.Blend(color, theme.BackgroundColor, isLightBackground ? 0.06 : 0.10))
