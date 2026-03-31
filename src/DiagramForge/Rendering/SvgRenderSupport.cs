@@ -343,7 +343,7 @@ internal static class SvgRenderSupport
                 sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-16%\" y=\"-12%\" width=\"140%\" height=\"148%\" color-interpolation-filters=\"sRGB\">");
                 sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur * 2.5)}\" result=\"blur\"/>");
                 sb.AppendLine($"{indent}    <feOffset in=\"blur\" dx=\"0\" dy=\"{F(Math.Max(theme.ShadowOffsetY, 3))}\" result=\"offset\"/>");
-                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity * 0.7)}\" result=\"shadow-color\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(Math.Clamp(theme.ShadowOpacity * 0.7, 0.0, 1.0))}\" result=\"shadow-color\"/>");
                 sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"offset\" operator=\"in\" result=\"shadow\"/>");
                 sb.AppendLine($"{indent}    <feMerge>");
                 sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");

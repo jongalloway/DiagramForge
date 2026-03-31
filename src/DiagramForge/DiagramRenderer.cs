@@ -548,6 +548,8 @@ public sealed class DiagramRenderer
                 theme.UseNodeShadows = true;
                 theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.50 : theme.ShadowOpacity, 0.30, 0.70);
                 theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 4.00 : theme.ShadowBlur, 2.00, 6.00);
+                theme.ShadowOffsetX = 0;
+                theme.ShadowOffsetY = 0;
                 break;
             case "frosted-glass":
                 theme.ShadowStyle = "frosted-glass";
