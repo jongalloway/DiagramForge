@@ -222,6 +222,109 @@ public class SvgRendererPaletteTests
         Assert.Contains("filter=\"url(#node-0-soft-shadow)\"", svg);
     }
 
+    // ── Advanced filter effects ───────────────────────────────────────────────
+
+    [Fact]
+    public void Render_WithNeumorphicTheme_EmitsNeumorphicFilter()
+    {
+        var theme = Theme.Neumorphic;
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Alpha"))
+            .AddNode(new Node("B", "Beta"))
+            .AddEdge(new Edge("A", "B")), theme);
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains("node-0-neumorphic", svg);
+        Assert.Contains("filter=\"url(#node-0-neumorphic)\"", svg);
+        // Neumorphic requires both dark and light shadow layers.
+        Assert.Contains("dark-shadow", svg);
+        Assert.Contains("light-shadow", svg);
+    }
+
+    [Fact]
+    public void Render_WithGlassTheme_EmitsFrostedGlassFilter()
+    {
+        var theme = Theme.Glass;
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Alpha"))
+            .AddNode(new Node("B", "Beta"))
+            .AddEdge(new Edge("A", "B")), theme);
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains("node-0-frosted-glass", svg);
+        Assert.Contains("filter=\"url(#node-0-frosted-glass)\"", svg);
+        // Frosted glass uses ambient shadow + inner highlight for a floating panel look.
+        Assert.Contains("shadow-blur", svg);
+        Assert.Contains("inner-edge", svg);
+    }
+
+    [Fact]
+    public void Render_WithNeonTheme_EmitsGlassGlowFilter()
+    {
+        var theme = Theme.Neon;
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Alpha"))
+            .AddNode(new Node("B", "Beta"))
+            .AddEdge(new Edge("A", "B")), theme);
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains("node-0-glass-glow", svg);
+        Assert.Contains("filter=\"url(#node-0-glass-glow)\"", svg);
+        Assert.Contains("feBlend", svg);
+    }
+
+    [Theory]
+    [InlineData("inner-glass", "inner-glass")]
+    [InlineData("ambient-shadow", "ambient-shadow")]
+    public void Render_WithEffectStyle_EmitsMatchingFilter(string shadowStyle, string expectedFilterSuffix)
+    {
+        var theme = new Theme
+        {
+            ShadowStyle = shadowStyle,
+            UseNodeShadows = true,
+            ShadowBlur = 1.50,
+            ShadowOpacity = 0.14,
+            ShadowOffsetY = 1.40,
+        };
+        var diagram = BuildAndLayout(new Diagram()
+            .AddNode(new Node("A", "Alpha"))
+            .AddEdge(new Edge("A", "A")), theme);
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains($"node-0-{expectedFilterSuffix}", svg);
+        Assert.Contains($"filter=\"url(#node-0-{expectedFilterSuffix})\"", svg);
+    }
+
+    [Fact]
+    public void Render_WithNeumorphicGroup_EmitsGroupFilter()
+    {
+        var theme = new Theme
+        {
+            ShadowStyle = "neumorphic",
+            UseNodeShadows = true,
+            ShadowBlur = 2.00,
+            ShadowOpacity = 0.18,
+            ShadowOffsetY = 1.50,
+        };
+        var diagram = new Diagram()
+            .AddNode(new Node("A", "Alpha"))
+            .AddNode(new Node("B", "Beta"))
+            .AddEdge(new Edge("A", "B"));
+        var group = new Group("g1", "Services");
+        group.ChildNodeIds.Add("A");
+        group.ChildNodeIds.Add("B");
+        diagram.AddGroup(group);
+        _layout.Layout(diagram, theme);
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains("group-0-neumorphic", svg);
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private Diagram BuildAndLayout(Diagram diagram, Theme theme)

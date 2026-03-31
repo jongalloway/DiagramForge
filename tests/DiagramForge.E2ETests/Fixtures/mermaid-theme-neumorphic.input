@@ -1,0 +1,10 @@
+---
+theme: neumorphic
+---
+flowchart LR
+  subgraph team [Design Loop]
+    A[Plan] --> B[Draft]
+  end
+  B --> C{Review}
+  C -->|ship| D[Publish]
+  C -->|revise| A

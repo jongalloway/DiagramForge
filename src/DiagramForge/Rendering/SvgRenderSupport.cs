@@ -230,39 +230,133 @@ internal static class SvgRenderSupport
         if (!enabled)
             return;
 
-        if (string.Equals(theme.ShadowStyle, "glow", StringComparison.OrdinalIgnoreCase))
+        switch (theme.ShadowStyle?.Trim().ToLowerInvariant())
         {
-            shadowFilterId = prefix + "-glow";
-            sb.AppendLine($"{indent}<defs>");
-            sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\" color-interpolation-filters=\"sRGB\">");
-            sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"glow-blur\"/>");
-            sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"glow-color\"/>");
-            sb.AppendLine($"{indent}    <feComposite in=\"glow-color\" in2=\"glow-blur\" operator=\"in\" result=\"glow\"/>");
-            sb.AppendLine($"{indent}    <feMerge>");
-            sb.AppendLine($"{indent}      <feMergeNode in=\"glow\"/>");
-            sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
-            sb.AppendLine($"{indent}    </feMerge>");
-            sb.AppendLine($"{indent}  </filter>");
-            sb.AppendLine($"{indent}</defs>");
-            return;
+            case "glow":
+                shadowFilterId = prefix + "-glow";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-20%\" y=\"-20%\" width=\"140%\" height=\"140%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"glow-blur\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"glow-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"glow-color\" in2=\"glow-blur\" operator=\"in\" result=\"glow\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"glow\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "soft":
+                shadowFilterId = prefix + "-soft-shadow";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-8%\" y=\"-8%\" width=\"124%\" height=\"136%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"shadow-blur\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"shadow-blur\" dx=\"{F(theme.ShadowOffsetX)}\" dy=\"{F(theme.ShadowOffsetY)}\" result=\"shadow-offset\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"shadow-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"shadow-offset\" operator=\"in\" result=\"shadow\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "neumorphic":
+                shadowFilterId = prefix + "-neumorphic";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-20%\" y=\"-20%\" width=\"148%\" height=\"156%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"blur1\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"blur1\" dx=\"{F(theme.ShadowOffsetX + 5)}\" dy=\"{F(theme.ShadowOffsetY + 5)}\" result=\"dark-shadow\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"dark-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"dark-color\" in2=\"dark-shadow\" operator=\"in\" result=\"dark\"/>");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"blur2\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"blur2\" dx=\"{F(theme.ShadowOffsetX - 5)}\" dy=\"{F(theme.ShadowOffsetY - 5)}\" result=\"light-shadow\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"#FFFFFF\" flood-opacity=\"{F(Math.Min(theme.ShadowOpacity * 2.0, 0.80))}\" result=\"light-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"light-color\" in2=\"light-shadow\" operator=\"in\" result=\"light\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"dark\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"light\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "frosted-glass":
+                shadowFilterId = prefix + "-frosted-glass";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-16%\" y=\"-12%\" width=\"140%\" height=\"148%\" color-interpolation-filters=\"sRGB\">");
+                // Ambient shadow beneath for floating depth
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur * 1.8)}\" result=\"shadow-blur\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"shadow-blur\" dx=\"0\" dy=\"{F(Math.Max(theme.ShadowOffsetY, 3))}\" result=\"shadow-offset\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"shadow-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"shadow-offset\" operator=\"in\" result=\"shadow\"/>");
+                // Inner top-edge highlight for glass sheen
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur * 0.5)}\" result=\"inner-blur\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"inner-blur\" dx=\"0\" dy=\"2\" result=\"inner-offset\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"inner-offset\" in2=\"SourceAlpha\" operator=\"arithmetic\" k2=\"-1\" k3=\"1\" result=\"inner-edge\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"#FFFFFF\" flood-opacity=\"0.55\" result=\"highlight-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"highlight-color\" in2=\"inner-edge\" operator=\"in\" result=\"highlight\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"highlight\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "glass-glow":
+                shadowFilterId = prefix + "-glass-glow";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-30%\" y=\"-30%\" width=\"160%\" height=\"160%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceGraphic\" stdDeviation=\"{F(theme.ShadowBlur * 2.5)}\" result=\"glow\"/>");
+                sb.AppendLine($"{indent}    <feColorMatrix in=\"glow\" type=\"matrix\"");
+                sb.AppendLine($"{indent}      values=\"1.2 0 0 0 0  0 1.2 0 0 0  0 0 1.2 0 0  0 0 0 1 0\" result=\"tinted\"/>");
+                sb.AppendLine($"{indent}    <feBlend in=\"SourceGraphic\" in2=\"tinted\" mode=\"screen\"/>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "inner-glass":
+                shadowFilterId = prefix + "-inner-glass";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-4%\" y=\"-4%\" width=\"108%\" height=\"112%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur * 0.8)}\" result=\"blur\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"blur\" dx=\"0\" dy=\"1\" result=\"offset\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"offset\" in2=\"SourceAlpha\" operator=\"arithmetic\" k2=\"-1\" k3=\"1\" result=\"inner\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"#FFFFFF\" flood-opacity=\"0.35\" result=\"highlight-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"highlight-color\" in2=\"inner\" operator=\"in\" result=\"highlight\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"highlight\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            case "ambient-shadow":
+                shadowFilterId = prefix + "-ambient-shadow";
+                sb.AppendLine($"{indent}<defs>");
+                sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-16%\" y=\"-12%\" width=\"140%\" height=\"148%\" color-interpolation-filters=\"sRGB\">");
+                sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur * 2.5)}\" result=\"blur\"/>");
+                sb.AppendLine($"{indent}    <feOffset in=\"blur\" dx=\"0\" dy=\"{F(Math.Max(theme.ShadowOffsetY, 3))}\" result=\"offset\"/>");
+                sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(Math.Clamp(theme.ShadowOpacity * 0.7, 0.0, 1.0))}\" result=\"shadow-color\"/>");
+                sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"offset\" operator=\"in\" result=\"shadow\"/>");
+                sb.AppendLine($"{indent}    <feMerge>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");
+                sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
+                sb.AppendLine($"{indent}    </feMerge>");
+                sb.AppendLine($"{indent}  </filter>");
+                sb.AppendLine($"{indent}</defs>");
+                break;
+
+            default:
+                // Unknown or "none" — no filter emitted.
+                break;
         }
-
-        if (!string.Equals(theme.ShadowStyle, "soft", StringComparison.OrdinalIgnoreCase))
-            return;
-
-        shadowFilterId = prefix + "-soft-shadow";
-        sb.AppendLine($"{indent}<defs>");
-        sb.AppendLine($"{indent}  <filter id=\"{shadowFilterId}\" x=\"-8%\" y=\"-8%\" width=\"124%\" height=\"136%\" color-interpolation-filters=\"sRGB\">");
-        sb.AppendLine($"{indent}    <feGaussianBlur in=\"SourceAlpha\" stdDeviation=\"{F(theme.ShadowBlur)}\" result=\"shadow-blur\"/>");
-        sb.AppendLine($"{indent}    <feOffset in=\"shadow-blur\" dx=\"{F(theme.ShadowOffsetX)}\" dy=\"{F(theme.ShadowOffsetY)}\" result=\"shadow-offset\"/>");
-        sb.AppendLine($"{indent}    <feFlood flood-color=\"{Escape(theme.ShadowColor)}\" flood-opacity=\"{F(theme.ShadowOpacity)}\" result=\"shadow-color\"/>");
-        sb.AppendLine($"{indent}    <feComposite in=\"shadow-color\" in2=\"shadow-offset\" operator=\"in\" result=\"shadow\"/>");
-        sb.AppendLine($"{indent}    <feMerge>");
-        sb.AppendLine($"{indent}      <feMergeNode in=\"shadow\"/>");
-        sb.AppendLine($"{indent}      <feMergeNode in=\"SourceGraphic\"/>");
-        sb.AppendLine($"{indent}    </feMerge>");
-        sb.AppendLine($"{indent}  </filter>");
-        sb.AppendLine($"{indent}</defs>");
     }
 
     internal static double? GetMetadataDouble(Node node, string key)
