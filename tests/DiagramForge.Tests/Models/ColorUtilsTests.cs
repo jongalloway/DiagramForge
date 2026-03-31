@@ -905,5 +905,17 @@ public class ColorUtilsTests
         var (_, _, _, a) = ColorUtils.ParseHexWithAlpha(result);
         Assert.Equal(0xCC, a);
     }
+
+    [Fact]
+    public void Vibrant_AchromaticInput_WithChromaticFallback_UsesFallbackHueAndPreservesAlpha()
+    {
+        string result = ColorUtils.Vibrant("#FFFFFF80", "#2563EB");
+
+        Assert.False(ColorUtils.IsAchromatic(result));
+
+        var (r, g, b, a) = ColorUtils.ParseHexWithAlpha(result);
+        Assert.Equal((37, 99, 235), (r, g, b));
+        Assert.Equal(0x80, a);
+    }
 }
 
