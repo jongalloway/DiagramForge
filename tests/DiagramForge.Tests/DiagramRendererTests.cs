@@ -140,6 +140,20 @@ public class DiagramRendererTests
         Assert.DoesNotContain("feGaussianBlur", svg);
     }
 
+    [Theory]
+    [InlineData("neumorphic", "neumorphic")]
+    [InlineData("frosted-glass", "frosted-glass")]
+    [InlineData("glass-glow", "glass-glow")]
+    [InlineData("inner-glass", "inner-glass")]
+    [InlineData("ambient-shadow", "ambient-shadow")]
+    public void Render_WithFrontmatterAdvancedShadowStyle_EmitsExpectedFilter(string style, string expectedSuffix)
+    {
+        string svg = _renderer.Render($"---\nshadowStyle: {style}\n---\nflowchart LR\n  A[Alpha] --> B[Beta]");
+
+        Assert.Contains($"node-0-{expectedSuffix}", svg);
+        Assert.Contains($"filter=\"url(#node-0-{expectedSuffix})\"", svg);
+    }
+
     [Fact]
     public void Render_WithJsonThemeFillAndShadowStyles_AppliesThemeDrivenStyles()
     {

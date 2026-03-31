@@ -34,6 +34,9 @@ public class Theme
         "one-dark",
         "cyberpunk",
         "synthwave",
+        "glass",
+        "neumorphic",
+        "neon",
     ];
 
     // ── Built-in named presets ────────────────────────────────────────────────
@@ -390,6 +393,15 @@ public class Theme
     /// <summary>Dark synthwave theme with warm sunset gradients and analog glow.</summary>
     public static Theme Synthwave => CreateSynthwaveTheme();
 
+    /// <summary>Light frosted-glass theme with translucent sheen and specular highlights.</summary>
+    public static Theme Glass => CreateGlassTheme();
+
+    /// <summary>Clean neumorphic theme with paired light and dark soft shadows for tactile depth.</summary>
+    public static Theme Neumorphic => CreateNeumorphicTheme();
+
+    /// <summary>Dark neon theme with vivid glass-glow halos around nodes.</summary>
+    public static Theme Neon => CreateNeonTheme();
+
     // ── Palette lookup ────────────────────────────────────────────────────────
 
     /// <summary>All built-in theme names supported by <see cref="GetByName(string?)"/>.</summary>
@@ -428,6 +440,9 @@ public class Theme
             "one-dark" => OneDark,
             "cyberpunk" => Cyberpunk,
             "synthwave" => Synthwave,
+            "glass" => Glass,
+            "neumorphic" => Neumorphic,
+            "neon" => Neon,
             _ => null,
         };
 
@@ -886,6 +901,117 @@ public class Theme
         theme.ShadowColor = "#FF6EC7";
         theme.ShadowOpacity = 0.45;
         theme.ShadowBlur = 5.0;
+        theme.ShadowOffsetX = 0;
+        theme.ShadowOffsetY = 0;
+        return theme;
+    }
+
+    private static Theme CreateGlassTheme()
+    {
+        var theme = CreatePreset(
+            backgroundColor: "#E2E8F0",
+            foregroundColor: "#1A2B42",
+            accentColor: "#2563EB",
+            mutedColor: "#64748B",
+            surfaceColor: "#F8FAFC",
+            borderColor: "#94A3B8",
+            lineColor: "#475569",
+            nodePalette:
+            [
+                "#C7D8EED9", "#C7E8D5D9", "#E8D5C7D9", "#D5C7E8D9",
+                "#C7E8E2D9", "#E8C7D2D9", "#D5DFEAD9", "#E8E2C7D9",
+            ],
+            useGradients: true,
+            useBorderGradients: false,
+            gradientStrength: 0.08);
+
+        theme.NodeFillColor = "#C7D8EED9";
+        theme.NodeStrokeColor = "#94A3B8";
+        theme.GroupFillColor = "#CBD5E1B3";
+        theme.GroupStrokeColor = "#94A3B8";
+        theme.BorderRadius = 14;
+        theme.StrokeWidth = 1.4;
+        theme.ShadowStyle = "frosted-glass";
+        theme.UseNodeShadows = true;
+        theme.ShadowColor = "#0F172A";
+        theme.ShadowOpacity = 0.18;
+        theme.ShadowBlur = 3.50;
+        theme.ShadowOffsetY = 3.00;
+        return theme;
+    }
+
+    private static Theme CreateNeumorphicTheme()
+    {
+        var theme = CreatePreset(
+            backgroundColor: "#E4E9F0",
+            foregroundColor: "#2D3748",
+            accentColor: "#4299E1",
+            mutedColor: "#8896A6",
+            surfaceColor: "#E4E9F0",
+            borderColor: "#D2D8E0",
+            lineColor: "#8896A6",
+            nodePalette:
+            [
+                "#E4E9F0", "#E4E9F0", "#E4E9F0", "#E4E9F0",
+                "#E4E9F0", "#E4E9F0", "#E4E9F0", "#E4E9F0",
+            ],
+            useGradients: false,
+            useBorderGradients: false,
+            gradientStrength: 0.0);
+
+        theme.NodeFillColor = "#E4E9F0";
+        theme.NodeStrokeColor = "#D2D8E0";
+        theme.GroupFillColor = "#E4E9F0";
+        theme.GroupStrokeColor = "#D2D8E0";
+        theme.BorderRadius = 16;
+        theme.StrokeWidth = 0.8;
+        theme.ShadowStyle = "neumorphic";
+        theme.UseNodeShadows = true;
+        theme.ShadowColor = "#8B98AC";
+        theme.ShadowOpacity = 0.55;
+        theme.ShadowBlur = 4.00;
+        theme.ShadowOffsetX = 0;
+        theme.ShadowOffsetY = 0;
+        return theme;
+    }
+
+    private static Theme CreateNeonTheme()
+    {
+        var theme = CreatePreset(
+            backgroundColor: "#0D0D1A",
+            foregroundColor: "#E0E0F0",
+            accentColor: "#00FF88",
+            mutedColor: "#7A7A9E",
+            surfaceColor: "#141428",
+            borderColor: "#00FF88",
+            lineColor: "#00CCFF",
+            nodePalette:
+            [
+                "#101028", "#121230", "#0E1828", "#141432",
+                "#161636", "#0E1E30", "#121228", "#101830",
+            ],
+            useGradients: true,
+            useBorderGradients: true,
+            gradientStrength: 0.14);
+
+        theme.NodeFillColor = "#101028";
+        theme.NodeStrokeColor = "#00FF88";
+        theme.GroupFillColor = "#141428E0";
+        theme.GroupStrokeColor = "#00CCFF";
+        theme.TitleTextColor = "#00FF88";
+        theme.EdgeColor = "#00CCFF";
+        theme.BorderGradientStops =
+        [
+            "#00FF88",   // neon green
+            "#00CCFF",   // electric blue
+            "#FF00FF",   // magenta
+            "#FFD700",   // gold
+        ];
+        theme.BorderRadius = 8;
+        theme.StrokeWidth = 1.6;
+        theme.ShadowStyle = "glass-glow";
+        theme.UseNodeShadows = true;
+        theme.ShadowBlur = 4.00;
         theme.ShadowOffsetX = 0;
         theme.ShadowOffsetY = 0;
         return theme;

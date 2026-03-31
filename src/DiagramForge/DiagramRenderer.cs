@@ -543,8 +543,40 @@ public sealed class DiagramRenderer
                 theme.ShadowOffsetX = 0;
                 theme.ShadowOffsetY = 0;
                 break;
+            case "neumorphic":
+                theme.ShadowStyle = "neumorphic";
+                theme.UseNodeShadows = true;
+                theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.50 : theme.ShadowOpacity, 0.30, 0.70);
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 4.00 : theme.ShadowBlur, 2.00, 6.00);
+                break;
+            case "frosted-glass":
+                theme.ShadowStyle = "frosted-glass";
+                theme.UseNodeShadows = true;
+                theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.10 : theme.ShadowOpacity, 0.06, 0.18);
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 2.80 : theme.ShadowBlur, 1.50, 5.00);
+                theme.ShadowOffsetY = theme.ShadowOffsetY == 0 ? 3.00 : theme.ShadowOffsetY;
+                break;
+            case "glass-glow":
+                theme.ShadowStyle = "glass-glow";
+                theme.UseNodeShadows = true;
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 2.00 : theme.ShadowBlur, 1.00, 5.00);
+                theme.ShadowOffsetX = 0;
+                theme.ShadowOffsetY = 0;
+                break;
+            case "inner-glass":
+                theme.ShadowStyle = "inner-glass";
+                theme.UseNodeShadows = true;
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 1.20 : theme.ShadowBlur, 0.50, 2.50);
+                break;
+            case "ambient-shadow":
+                theme.ShadowStyle = "ambient-shadow";
+                theme.UseNodeShadows = true;
+                theme.ShadowOpacity = Math.Clamp(theme.ShadowOpacity <= 0 ? 0.10 : theme.ShadowOpacity, 0.04, 0.20);
+                theme.ShadowBlur = Math.Clamp(theme.ShadowBlur <= 0 ? 3.00 : theme.ShadowBlur, 1.50, 6.00);
+                theme.ShadowOffsetY = theme.ShadowOffsetY == 0 ? 3.00 : theme.ShadowOffsetY;
+                break;
             default:
-                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none, soft, or glow.", nameof(shadowStyle));
+                throw new ArgumentException($"Unknown shadow style in frontmatter: '{shadowStyle}'. Expected none, soft, glow, neumorphic, frosted-glass, glass-glow, inner-glass, or ambient-shadow.", nameof(shadowStyle));
         }
     }
 
