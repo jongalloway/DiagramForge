@@ -177,6 +177,23 @@ public class DiagramRendererTests
         Assert.DoesNotContain("#4F81BD", svg);
     }
 
+    [Fact]
+    public void Render_XyChart_WithPrism_UsesSoftenedBorderGradientSeriesColors()
+    {
+        string svg = _renderer.Render(
+            "xychart-beta\n    title \"Revenue\"\n    x-axis [Q1, Q2, Q3]\n    y-axis 0 --> 100\n    bar [25, 50, 75]\n    bar [20, 55, 80]",
+            Theme.Prism);
+
+        var palette = ThemePaletteResolver.ResolveEffectivePalette(Theme.Prism, 8);
+        string firstSeriesColor = ColorUtils.Blend(palette[0], Theme.Prism.BackgroundColor, 0.18);
+        string secondSeriesColor = ColorUtils.Blend(palette[1], Theme.Prism.BackgroundColor, 0.18);
+        string accentLadderSecondSeries = ColorUtils.Darken(Theme.Prism.AccentColor, 0.14);
+
+        Assert.Contains(firstSeriesColor, svg);
+        Assert.Contains(secondSeriesColor, svg);
+        Assert.DoesNotContain(accentLadderSecondSeries, svg);
+    }
+
     // ── Parser registry ───────────────────────────────────────────────────────
 
     [Fact]

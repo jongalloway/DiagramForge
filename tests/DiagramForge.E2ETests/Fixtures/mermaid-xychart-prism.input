@@ -1,0 +1,10 @@
+---
+theme: prism
+---
+xychart-beta
+    title "Quarterly Pipeline"
+    x-axis [Q1, Q2, Q3, Q4]
+    y-axis 0 --> 100
+    bar [20, 40, 65, 80]
+    bar [30, 55, 45, 70]
+    bar [50, 35, 75, 60]

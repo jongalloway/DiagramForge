@@ -71,6 +71,16 @@ internal static class SvgRenderSupport
     internal static string GetXyChartSeriesColor(Theme theme, int seriesIndex)
     {
         bool isLightBackground = ColorUtils.IsLight(theme.BackgroundColor);
+
+        if (ShouldUseThemePaletteForXyChart(theme))
+        {
+            var themePalette = ThemePaletteResolver.ResolveEffectivePalette(theme, 8);
+            string baseColor = themePalette[Math.Abs(seriesIndex) % themePalette.Count];
+            return isLightBackground
+                ? ColorUtils.Blend(baseColor, theme.BackgroundColor, 0.18)
+                : ColorUtils.Blend(baseColor, theme.SurfaceColor, 0.12);
+        }
+
         string accent = theme.AccentColor;
 
         string[] palette =
@@ -87,6 +97,13 @@ internal static class SvgRenderSupport
 
         return palette[Math.Abs(seriesIndex) % palette.Length];
     }
+
+    private static bool ShouldUseThemePaletteForXyChart(Theme theme) =>
+        !theme.UseGradients
+        && theme.UseBorderGradients
+        && theme.BorderGradientStops is { Count: > 1 }
+        && theme.NodePalette is { Count: > 0 }
+        && ColorUtils.IsPaletteMonochrome(theme.NodePalette, theme.BackgroundColor);
 
     internal static string GetXyChartSeriesStrokeColor(string fillColor, Theme theme) =>
         ColorUtils.IsLight(theme.BackgroundColor)
