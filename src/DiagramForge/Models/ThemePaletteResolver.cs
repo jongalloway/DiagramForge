@@ -42,9 +42,19 @@ public static class ThemePaletteResolver
     /// A <see cref="IReadOnlyList{T}"/> of hex color strings suitable for node fills.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="theme"/> is <see langword="null"/>.</exception>
-    public static IReadOnlyList<string> ResolveEffectivePalette(Theme theme)
+    public static IReadOnlyList<string> ResolveEffectivePalette(Theme theme) =>
+        ResolveEffectivePalette(theme, DefaultPaletteSize);
+
+    /// <summary>
+    /// Returns a chromatic palette sized for the caller's repeated-element needs.
+    /// </summary>
+    /// <param name="theme">Source theme.</param>
+    /// <param name="desiredCount">Number of entries to produce for fallback palettes.</param>
+    public static IReadOnlyList<string> ResolveEffectivePalette(Theme theme, int desiredCount)
     {
         ArgumentNullException.ThrowIfNull(theme);
+        if (desiredCount < 1)
+            throw new ArgumentOutOfRangeException(nameof(desiredCount), desiredCount, "desiredCount must be at least 1.");
 
         if (theme.NodePalette is { Count: > 0 } &&
             !ColorUtils.IsPaletteMonochrome(theme.NodePalette, theme.BackgroundColor))
@@ -53,14 +63,14 @@ public static class ThemePaletteResolver
         // Build fallback from gradient stops when they are available and meaningful.
         if (theme.UseBorderGradients && theme.BorderGradientStops is { Count: > 1 })
         {
-            var gradientPalette = BuildPaletteFromGradientStops(theme.BorderGradientStops, DefaultPaletteSize);
+            var gradientPalette = BuildPaletteFromGradientStops(theme.BorderGradientStops, desiredCount);
             if (!ColorUtils.IsPaletteMonochrome(gradientPalette, theme.BackgroundColor))
                 return gradientPalette;
         }
 
         // Fall back to hue-rotation derivation from the theme's semantic colors.
         bool isLightBackground = ColorUtils.IsLight(theme.BackgroundColor);
-        return BuildPaletteFromHueRotation(theme.AccentColor, theme.SecondaryColor, DefaultPaletteSize, isLightBackground);
+        return BuildPaletteFromHueRotation(theme.AccentColor, theme.SecondaryColor, desiredCount, isLightBackground);
     }
 
     // ── Private helpers ───────────────────────────────────────────────────────
@@ -146,6 +156,8 @@ public static class ThemePaletteResolver
         if (ringCount < 1)
             throw new ArgumentOutOfRangeException(nameof(ringCount), ringCount, "ringCount must be at least 1.");
 
+        var chromaticPalette = ResolveEffectivePalette(theme, Math.Max(DefaultPaletteSize, ringCount * 2));
+
         var colors = new List<string>(ringCount)
         {
             outerColor,
@@ -156,11 +168,11 @@ public static class ThemePaletteResolver
 
         var candidatePool = new List<string>
         {
-            ColorUtils.Vibrant(theme.SecondaryColor, 2.4),
-            ColorUtils.Vibrant(theme.AccentColor, 2.4),
-            ColorUtils.Vibrant(ColorUtils.Blend(theme.SecondaryColor, theme.AccentColor, 0.5), 2.6),
-            ColorUtils.Vibrant(ColorUtils.Blend(theme.AccentColor, theme.PrimaryColor, 0.35), 2.5),
-            ColorUtils.Vibrant(ColorUtils.Blend(theme.PrimaryColor, theme.SecondaryColor, 0.25), 2.5),
+            ColorUtils.Vibrant(theme.SecondaryColor, chromaticPalette[0], 2.4),
+            ColorUtils.Vibrant(theme.AccentColor, chromaticPalette[1 % chromaticPalette.Count], 2.4),
+            ColorUtils.Vibrant(ColorUtils.Blend(theme.SecondaryColor, theme.AccentColor, 0.5), chromaticPalette[2 % chromaticPalette.Count], 2.6),
+            ColorUtils.Vibrant(ColorUtils.Blend(theme.AccentColor, theme.PrimaryColor, 0.35), chromaticPalette[3 % chromaticPalette.Count], 2.5),
+            ColorUtils.Vibrant(ColorUtils.Blend(theme.PrimaryColor, theme.SecondaryColor, 0.25), chromaticPalette[4 % chromaticPalette.Count], 2.5),
             ColorUtils.RotateHue(theme.SecondaryColor, 34, isLightBackground),
             ColorUtils.RotateHue(theme.AccentColor, -34, isLightBackground),
             ColorUtils.RotateHue(theme.PrimaryColor, 52, isLightBackground),
@@ -168,18 +180,31 @@ public static class ThemePaletteResolver
 
         if (theme.NodePalette is { Count: > 0 })
         {
-            foreach (var paletteColor in theme.NodePalette)
+            for (int i = 0; i < theme.NodePalette.Count; i++)
             {
-                candidatePool.Add(ColorUtils.Vibrant(paletteColor, 2.6));
-                candidatePool.Add(ColorUtils.RotateHue(paletteColor, 28, isLightBackground));
+                string paletteColor = theme.NodePalette[i];
+                string fallbackColor = chromaticPalette[i % chromaticPalette.Count];
+                candidatePool.Add(ColorUtils.Vibrant(paletteColor, fallbackColor, 2.6));
+                candidatePool.Add(ColorUtils.RotateHue(fallbackColor, 28, isLightBackground));
             }
         }
+
+        candidatePool.AddRange(chromaticPalette);
 
         var distinctCandidates = candidatePool
             .Select(color => ColorUtils.Blend(color, theme.BackgroundColor, isLightBackground ? 0.06 : 0.10))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Where(color => ColorUtils.GetHueDistance(color, outerColor) >= 18)
             .ToList();
+
+        if (ColorUtils.IsPaletteMonochrome(distinctCandidates, theme.BackgroundColor))
+        {
+            distinctCandidates = chromaticPalette
+                .Select(color => ColorUtils.Blend(color, theme.BackgroundColor, isLightBackground ? 0.06 : 0.10))
+                .Distinct(StringComparer.OrdinalIgnoreCase)
+                .Where(color => ColorUtils.GetHueDistance(color, outerColor) >= 18)
+                .ToList();
+        }
 
         while (colors.Count < ringCount)
         {

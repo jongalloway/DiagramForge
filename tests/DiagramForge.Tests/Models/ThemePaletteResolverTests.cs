@@ -104,6 +104,25 @@ public class ThemePaletteResolverTests
         Assert.True(anyDiffers, "NodePalette entries should influence at least one ring color selection.");
     }
 
+    [Fact]
+    public void BuildRingColors_PrismTheme_UsesChromaticInnerRingFallback()
+    {
+        string[] result = ThemePaletteResolver.BuildRingColors(
+            Theme.Prism,
+            ringCount: 5,
+            centerColor: "#FFFFFF",
+            outerColor: "#D6DEE8",
+            isLightBackground: true);
+
+        Assert.Equal(5, result.Length);
+        Assert.Equal("#D6DEE8", result[0], ignoreCase: true);
+
+        string[] innerRings = result.Skip(1).ToArray();
+        Assert.All(innerRings, color => Assert.False(ColorUtils.IsAchromatic(color)));
+        Assert.False(ColorUtils.IsPaletteMonochrome(innerRings, Theme.Prism.BackgroundColor),
+            "Prism inner ring colors should come from a chromatic fallback palette rather than stay monochrome.");
+    }
+
     // ── BuildRingColors — fallback path ───────────────────────────────────────
 
     [Fact]
@@ -208,6 +227,17 @@ public class ThemePaletteResolverTests
         // The fallback from gradient stops should not be monochrome
         Assert.False(ColorUtils.IsPaletteMonochrome(result),
             "Prism fallback palette derived from gradient stops should not be monochrome.");
+    }
+
+    [Fact]
+    public void ResolveEffectivePalette_PrismTheme_WithRequestedCount_ReturnsChromaticFallbackOfRequestedSize()
+    {
+        var result = ThemePaletteResolver.ResolveEffectivePalette(Theme.Prism, desiredCount: 12);
+
+        Assert.Equal(12, result.Count);
+        Assert.Equal(Theme.Prism.BorderGradientStops![0], result[0], ignoreCase: true);
+        Assert.Equal(Theme.Prism.BorderGradientStops[^1], result[^1], ignoreCase: true);
+        Assert.False(ColorUtils.IsPaletteMonochrome(result, Theme.Prism.BackgroundColor));
     }
 
     [Fact]

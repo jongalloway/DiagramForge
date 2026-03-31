@@ -469,6 +469,27 @@ public static class ColorUtils
             a);
     }
 
+    /// <summary>
+    /// Derives a vibrant color from <paramref name="hex"/>, but when the input is
+    /// achromatic returns <paramref name="achromaticFallback"/> instead.
+    /// </summary>
+    /// <remarks>
+    /// The fallback keeps the source alpha channel so callers can supply a chromatic
+    /// palette color without losing opacity from the original input.
+    /// </remarks>
+    /// <param name="hex">Hex color string (typically a pastel).</param>
+    /// <param name="achromaticFallback">Chromatic fallback used when <paramref name="hex"/> has no usable hue.</param>
+    /// <param name="amplify">How much to amplify the hue deviation (default 3).</param>
+    public static string Vibrant(string hex, string achromaticFallback, double amplify = 3.0)
+    {
+        if (!IsAchromatic(hex))
+            return Vibrant(hex, amplify);
+
+        var (_, _, _, alpha) = ParseHexWithAlpha(hex);
+        var (fallbackR, fallbackG, fallbackB, _) = ParseHexWithAlpha(achromaticFallback);
+        return ToHex(fallbackR, fallbackG, fallbackB, alpha);
+    }
+
     private static int Clamp(int value) => Math.Max(0, Math.Min(255, value));
 
     /// <summary>
