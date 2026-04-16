@@ -1906,7 +1906,9 @@ public class DefaultLayoutEngineTests
             System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.True(selfCanvasH > normalCanvasH,
-            $"Self-message canvas ({selfCanvasH}) should be taller than same-count normal messages ({normalCanvasH})");
+            $"Diagram with a self-message canvas height ({selfCanvasH}) should be taller than " +
+            $"a diagram with the same total message count but all regular messages ({normalCanvasH}), " +
+            "because self-messages occupy 2× the normal row height.");
     }
 
     [Fact]

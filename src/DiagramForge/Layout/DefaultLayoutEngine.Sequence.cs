@@ -5,7 +5,8 @@ namespace DiagramForge.Layout;
 public sealed partial class DefaultLayoutEngine
 {
     // Width of the right-side loopback arc rendered for self-messages.
-    // Must stay in sync with the LoopWidth constant in SvgStructureWriter.
+    // This value is stored in sequence:selfMessageLoopWidth edge metadata so the
+    // renderer always reads the same value that the canvas-width calculation uses.
     private const double SelfMessageLoopWidth = 40;
 
     private static void LayoutSequenceDiagram(
