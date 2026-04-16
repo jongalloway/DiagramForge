@@ -123,11 +123,11 @@ in this order:
 5. **Subtitle `<text>`** — centered below the title in a smaller, muted font, if `Diagram.Subtitle` is set.
 6. **Groups** — `<rect>` + optional `<text>` label for each group. Rendered
    first so they appear behind nodes.
-6. **Edges** — cubic Bézier `<path>` elements with anchor points on node edges.
+7. **Edges** — cubic Bézier `<path>` elements with anchor points on node edges.
    Rendered behind nodes. Optional edge labels at the midpoint.
-7. **Nodes** — `<g>` containing a shape element (`<rect>`, `<ellipse>`,
+8. **Nodes** — `<g>` containing a shape element (`<rect>`, `<ellipse>`,
    `<polygon>`) and a centered `<text>` label.
-8. **`</svg>`** close.
+9. **`</svg>`** close.
 
 The output is a single self-contained SVG string — no external stylesheets, no
 `<foreignObject>`, no embedded HTML. All text uses native `<text>` elements.
