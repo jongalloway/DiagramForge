@@ -55,6 +55,10 @@ public sealed partial class DefaultLayoutEngine
             {
                 edge.Metadata["sequence:selfMessage"] = true;
                 edge.Metadata["sequence:selfMessageHeight"] = messageRowHeight;
+                // Store the loop width on the edge so the renderer reads the same
+                // value that the canvas-width calculation uses — no separate constant
+                // to keep in sync between layout and rendering.
+                edge.Metadata["sequence:selfMessageLoopWidth"] = SelfMessageLoopWidth;
                 runY += messageRowHeight * 2;
             }
             else

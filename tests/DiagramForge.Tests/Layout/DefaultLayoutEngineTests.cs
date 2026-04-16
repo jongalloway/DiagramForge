@@ -1928,7 +1928,8 @@ public class DefaultLayoutEngineTests
             System.Globalization.CultureInfo.InvariantCulture);
 
         Assert.True(afterY >= selfY + selfH * 2,
-            $"Message after self-message (Y={afterY}) should be at least one full self-message row below (selfY={selfY}, selfH={selfH})");
+            $"Message after self-message (Y={afterY}) should be at least 2× the self-message arc height ({selfH}) below the self-message start (selfY={selfY}). " +
+            $"Self-messages occupy 2× a normal row, so the next message must start at or after selfY + 2*selfH = {selfY + selfH * 2}.");
     }
 
     [Fact]

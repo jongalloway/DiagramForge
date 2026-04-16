@@ -195,11 +195,13 @@ internal static class SvgStructureWriter
 
         if (isSelfMessage)
         {
-            const double LoopWidth = 40;
             const double LoopCornerRadius = 8;
+            // Read the loop width that the layout engine stored on this edge so that
+            // the canvas-width calculation and the arc path use the same value.
+            double loopWidth = TryGetMetadataDouble(edge.Metadata, "sequence:selfMessageLoopWidth", out var lw) ? lw : 40;
             double rightEdge = source.X + source.Width;
-            pathData = BuildSelfMessageLoopPath(rightEdge, y1, LoopWidth, selfMessageArcHeight, LoopCornerRadius);
-            labelX = rightEdge + LoopWidth + 6;
+            pathData = BuildSelfMessageLoopPath(rightEdge, y1, loopWidth, selfMessageArcHeight, LoopCornerRadius);
+            labelX = rightEdge + loopWidth + 6;
             labelY = y1 + selfMessageArcHeight / 2 + 4;
         }
 
