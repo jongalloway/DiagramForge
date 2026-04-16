@@ -43,6 +43,41 @@ public class DiagramRendererTests
     }
 
     [Fact]
+    public void Render_WithFrontmatterSubtitle_RendersSubtitleInSvg()
+    {
+        string svg = _renderer.Render("---\nsubtitle: Scenario A\n---\nsequenceDiagram\n    A->>B: Hello");
+
+        Assert.Contains("Scenario A", svg);
+    }
+
+    [Fact]
+    public void Render_WithFrontmatterTitleAndSubtitle_BothRendered()
+    {
+        string svg = _renderer.Render("---\ntitle: My Title\nsubtitle: My Subtitle\n---\nsequenceDiagram\n    A->>B: Hello");
+
+        Assert.Contains("My Title", svg);
+        Assert.Contains("My Subtitle", svg);
+    }
+
+    [Fact]
+    public void Render_WithFrontmatterTitle_SetsDiagramTitle()
+    {
+        string svg = _renderer.Render("---\ntitle: From Frontmatter\n---\nflowchart LR\n  A --> B");
+
+        Assert.Contains("From Frontmatter", svg);
+    }
+
+    [Fact]
+    public void Render_InlineTitleDirective_TakesPrecedenceOverFrontmatterTitle()
+    {
+        // Inline title: directive in the sequence body wins over frontmatter title:
+        string svg = _renderer.Render("---\ntitle: Frontmatter Title\n---\nsequenceDiagram\n    title: Inline Title\n    A->>B: Hello");
+
+        Assert.Contains("Inline Title", svg);
+        Assert.DoesNotContain("Frontmatter Title", svg);
+    }
+
+    [Fact]
     public void Render_WithFrontmatterTheme_AppliesNamedTheme()
     {
         string svg = _renderer.Render("---\ntheme: github-dark\n---\nflowchart LR\n  A --> B");

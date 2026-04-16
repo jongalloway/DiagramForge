@@ -120,7 +120,8 @@ in this order:
 2. **`<defs>`** — arrow markers for edge arrowheads.
 3. **Background `<rect>`** — full-canvas fill with rounded corners.
 4. **Title `<text>`** — centered at the top, if `Diagram.Title` is set.
-5. **Groups** — `<rect>` + optional `<text>` label for each group. Rendered
+5. **Subtitle `<text>`** — centered below the title in a smaller, muted font, if `Diagram.Subtitle` is set.
+6. **Groups** — `<rect>` + optional `<text>` label for each group. Rendered
    first so they appear behind nodes.
 6. **Edges** — cubic Bézier `<path>` elements with anchor points on node edges.
    Rendered behind nodes. Optional edge labels at the midpoint.

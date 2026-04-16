@@ -39,6 +39,8 @@ public sealed class SvgRenderer : ISvgRenderer
         // Title — diagram-type layouts may override font size / position via metadata.
         // Prefer the namespaced "diagram:titleFontSize" / "diagram:titleY" keys; fall back
         // to the legacy un-namespaced keys for backward compatibility.
+        double renderedTitleFontSize = 0;
+        double renderedTitleY = 0;
         if (!string.IsNullOrWhiteSpace(diagram.Title))
         {
             double titleFontSize;
@@ -55,6 +57,18 @@ public sealed class SvgRenderer : ISvgRenderer
             else
                 titleY = theme.DiagramPadding - 4;
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(titleY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(titleFontSize)}" font-weight="bold" fill="{SvgRenderSupport.Escape(theme.TitleTextColor)}">{SvgRenderSupport.Escape(diagram.Title)}</text>""");
+            renderedTitleFontSize = titleFontSize;
+            renderedTitleY = titleY;
+        }
+
+        // Subtitle — rendered below the title in a smaller, muted font.
+        if (!string.IsNullOrWhiteSpace(diagram.Subtitle))
+        {
+            double subtitleFontSize = theme.FontSize;
+            double subtitleY = !string.IsNullOrWhiteSpace(diagram.Title)
+                ? renderedTitleY + renderedTitleFontSize + 4
+                : theme.DiagramPadding - 4;
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(width / 2)}" y="{SvgRenderSupport.F(subtitleY)}" text-anchor="middle" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(subtitleFontSize)}" fill="{SvgRenderSupport.Escape(theme.SubtleTextColor)}">{SvgRenderSupport.Escape(diagram.Subtitle)}</text>""");
         }
 
         // Groups (render behind nodes). Parents render first so nested child groups
@@ -207,7 +221,8 @@ public sealed class SvgRenderer : ISvgRenderer
         if (TryGetCycleArcBounds(diagram, out _, out _, out _, out var cycleMaxY))
             maxY = Math.Max(maxY, cycleMaxY);
         double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
-        return maxY + theme.DiagramPadding + titleOffset;
+        double subtitleOffset = !string.IsNullOrWhiteSpace(diagram.Subtitle) ? theme.FontSize + 4 : 0;
+        return maxY + theme.DiagramPadding + titleOffset + subtitleOffset;
     }
 
     private static bool TryGetCycleArcBounds(Diagram diagram, out double minX, out double maxX, out double minY, out double maxY)

@@ -1822,4 +1822,106 @@ public class DefaultLayoutEngineTests
             Assert.True(n.Height > 0);
         });
     }
+
+    // ── Sequence diagram heading offset ───────────────────────────────────────
+
+    private static Diagram BuildSequenceDiagram(string? title = null, string? subtitle = null)
+    {
+        var diagram = new Diagram
+        {
+            SourceSyntax = "mermaid",
+            DiagramType = "sequencediagram",
+            Title = title,
+            Subtitle = subtitle,
+        };
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var nodeA = new Node("A", "Alice") { Shape = Shape.Rectangle };
+        nodeA.Metadata["sequence:participantIndex"] = 0;
+        var nodeB = new Node("B", "Bob") { Shape = Shape.Rectangle };
+        nodeB.Metadata["sequence:participantIndex"] = 1;
+        diagram.AddNode(nodeA);
+        diagram.AddNode(nodeB);
+
+        var edge = new Edge("A", "B");
+        edge.Metadata["sequence:messageIndex"] = 0;
+        diagram.AddEdge(edge);
+
+        return diagram;
+    }
+
+    [Fact]
+    public void Layout_SequenceDiagram_NoHeading_NodesStartAtPad()
+    {
+        var diagram = BuildSequenceDiagram();
+
+        _engine.Layout(diagram, _theme);
+
+        double pad = _theme.DiagramPadding;
+        foreach (var node in diagram.Nodes.Values)
+            Assert.True(node.Y >= pad, $"Node Y ({node.Y}) should be >= pad ({pad})");
+    }
+
+    [Fact]
+    public void Layout_SequenceDiagram_WithTitle_NodesShiftedDown()
+    {
+        var withoutTitle = BuildSequenceDiagram();
+        var withTitle = BuildSequenceDiagram(title: "My Title");
+
+        _engine.Layout(withoutTitle, _theme);
+        _engine.Layout(withTitle, _theme);
+
+        double noTitleY = withoutTitle.Nodes["A"].Y;
+        double withTitleY = withTitle.Nodes["A"].Y;
+        Assert.True(withTitleY > noTitleY,
+            $"Nodes should be shifted down when title is set (no-title Y={noTitleY}, with-title Y={withTitleY})");
+    }
+
+    [Fact]
+    public void Layout_SequenceDiagram_WithSubtitle_NodesShiftedDown()
+    {
+        var withoutSubtitle = BuildSequenceDiagram();
+        var withSubtitle = BuildSequenceDiagram(subtitle: "Subtitle text");
+
+        _engine.Layout(withoutSubtitle, _theme);
+        _engine.Layout(withSubtitle, _theme);
+
+        double noSubtitleY = withoutSubtitle.Nodes["A"].Y;
+        double withSubtitleY = withSubtitle.Nodes["A"].Y;
+        Assert.True(withSubtitleY > noSubtitleY,
+            $"Nodes should be shifted down when subtitle is set (no-subtitle Y={noSubtitleY}, with-subtitle Y={withSubtitleY})");
+    }
+
+    [Fact]
+    public void Layout_SequenceDiagram_WithTitleAndSubtitle_NodesShiftedMoreThanTitleOnly()
+    {
+        var withTitle = BuildSequenceDiagram(title: "Title");
+        var withBoth = BuildSequenceDiagram(title: "Title", subtitle: "Subtitle");
+
+        _engine.Layout(withTitle, _theme);
+        _engine.Layout(withBoth, _theme);
+
+        double titleOnlyY = withTitle.Nodes["A"].Y;
+        double bothY = withBoth.Nodes["A"].Y;
+        Assert.True(bothY > titleOnlyY,
+            $"Nodes should be shifted further down when both title and subtitle are set (title-only Y={titleOnlyY}, both Y={bothY})");
+    }
+
+    [Fact]
+    public void Layout_SequenceDiagram_WithSubtitle_CanvasHeightIncludesHeadingSpace()
+    {
+        var withoutSubtitle = BuildSequenceDiagram();
+        var withSubtitle = BuildSequenceDiagram(subtitle: "Subtitle text");
+
+        _engine.Layout(withoutSubtitle, _theme);
+        _engine.Layout(withSubtitle, _theme);
+
+        double noSubtitleHeight = Convert.ToDouble(withoutSubtitle.Metadata["sequence:canvasHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+        double withSubtitleHeight = Convert.ToDouble(withSubtitle.Metadata["sequence:canvasHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.True(withSubtitleHeight > noSubtitleHeight,
+            "Canvas height must increase when subtitle is present");
+    }
 }

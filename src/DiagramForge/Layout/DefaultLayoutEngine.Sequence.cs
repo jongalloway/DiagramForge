@@ -23,16 +23,25 @@ public sealed partial class DefaultLayoutEngine
             .ThenBy(n => n.Id, StringComparer.Ordinal)
             .ToList();
 
+        // Reserve vertical space for the title and/or subtitle so they don't overlap participants.
+        bool hasTitle = !string.IsNullOrWhiteSpace(diagram.Title);
+        bool hasSubtitle = !string.IsNullOrWhiteSpace(diagram.Subtitle);
+        double headingOffset = 0;
+        if (hasTitle || hasSubtitle)
+            headingOffset += theme.TitleFontSize + 8;
+        if (hasTitle && hasSubtitle)
+            headingOffset += theme.FontSize + 4;
+
         double runX = pad;
         double participantStripHeight = ordered.Max(node => node.Height);
         foreach (var node in ordered)
         {
             node.X = runX;
-            node.Y = pad + (participantStripHeight - node.Height);
+            node.Y = pad + headingOffset + (participantStripHeight - node.Height);
             runX += node.Width + hGap;
         }
 
-        double firstMessageY = pad + participantStripHeight + vGap / 2;
+        double firstMessageY = pad + headingOffset + participantStripHeight + vGap / 2;
         double messageRowHeight = vGap;
 
         foreach (var edge in diagram.Edges)
