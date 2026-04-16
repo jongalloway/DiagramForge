@@ -4,6 +4,10 @@ namespace DiagramForge.Layout;
 
 public sealed partial class DefaultLayoutEngine
 {
+    // Width of the right-side loopback arc rendered for self-messages.
+    // Must stay in sync with the LoopWidth constant in SvgStructureWriter.
+    private const double SelfMessageLoopWidth = 40;
+
     private static void LayoutSequenceDiagram(
         Diagram diagram,
         Theme theme,
@@ -35,16 +39,49 @@ public sealed partial class DefaultLayoutEngine
         double firstMessageY = pad + participantStripHeight + vGap / 2;
         double messageRowHeight = vGap;
 
-        foreach (var edge in diagram.Edges)
+        // Self-messages (source == target) need 2× the normal row height to
+        // accommodate a loopback arc. Walk edges in message-index order so that
+        // the running-Y accumulates correctly regardless of storage order.
+        var orderedEdges = diagram.Edges
+            .OrderBy(e => TryGetMetadataInt(e.Metadata, "sequence:messageIndex", out var idx) ? idx : 0)
+            .ToList();
+
+        double runY = firstMessageY;
+        foreach (var edge in orderedEdges)
         {
-            int msgIdx = TryGetMetadataInt(edge.Metadata, "sequence:messageIndex", out var messageIndex)
-                ? messageIndex
-                : 0;
-            edge.Metadata["sequence:messageY"] = firstMessageY + msgIdx * messageRowHeight;
+            bool isSelf = string.Equals(edge.SourceId, edge.TargetId, StringComparison.Ordinal);
+            edge.Metadata["sequence:messageY"] = runY;
+            if (isSelf)
+            {
+                edge.Metadata["sequence:selfMessage"] = true;
+                edge.Metadata["sequence:selfMessageHeight"] = messageRowHeight;
+                runY += messageRowHeight * 2;
+            }
+            else
+            {
+                runY += messageRowHeight;
+            }
         }
 
-        int edgeCount = diagram.Edges.Count;
-        double canvasHeight = firstMessageY + Math.Max(0, edgeCount) * messageRowHeight + pad;
+        double canvasHeight = runY + pad;
         diagram.Metadata["sequence:canvasHeight"] = canvasHeight;
+
+        // Compute canvas width, extending it when any participant has a self-message
+        // so the loopback arc is not clipped at the canvas boundary.
+        double maxNodeRight = ordered.Count > 0
+            ? ordered.Max(n => n.X + n.Width)
+            : 0;
+        double extraRight = 0;
+        foreach (var edge in orderedEdges)
+        {
+            if (!edge.Metadata.ContainsKey("sequence:selfMessage"))
+                continue;
+            if (!diagram.Nodes.TryGetValue(edge.SourceId, out var selfNode))
+                continue;
+            double arcRight = selfNode.X + selfNode.Width + SelfMessageLoopWidth;
+            if (arcRight > maxNodeRight + extraRight)
+                extraRight = arcRight - maxNodeRight;
+        }
+        diagram.Metadata["sequence:canvasWidth"] = maxNodeRight + extraRight + pad;
     }
 }

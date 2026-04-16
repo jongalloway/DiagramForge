@@ -1,0 +1,10 @@
+---
+theme: dark
+---
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    A->>A: Build prompt (system + context)
+    A->>B: Send request
+    B-->>B: Process internally
+    B-->>A: Response
