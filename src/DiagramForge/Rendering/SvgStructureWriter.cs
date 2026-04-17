@@ -114,6 +114,8 @@ internal static class SvgStructureWriter
         }
 
         bool isSequenceEdge = false;
+        bool isSelfMessage = false;
+        double selfMessageArcHeight = 0;
         if (edge.Metadata.TryGetValue("sequence:messageY", out var msgYObj))
         {
             isSequenceEdge = true;
@@ -122,9 +124,20 @@ internal static class SvgStructureWriter
             y1 = msgY;
             x2 = targetCenterX;
             y2 = msgY;
-            double seqOffset = Math.Abs(x2 - x1) * 0.4;
-            cp1 = $"{SvgRenderSupport.F(x1 + (x2 >= x1 ? seqOffset : -seqOffset))},{SvgRenderSupport.F(y1)}";
-            cp2 = $"{SvgRenderSupport.F(x2 - (x2 >= x1 ? seqOffset : -seqOffset))},{SvgRenderSupport.F(y2)}";
+
+            if (edge.Metadata.TryGetValue("sequence:selfMessage", out var selfMsgObj) && selfMsgObj is true)
+            {
+                isSelfMessage = true;
+                selfMessageArcHeight = TryGetMetadataDouble(edge.Metadata, "sequence:selfMessageHeight", out var ah)
+                    ? ah : 40;
+                // x1/y1/x2/y2 are set; pathData is handled specially below via BuildSelfMessageLoopPath.
+            }
+            else
+            {
+                double seqOffset = Math.Abs(x2 - x1) * 0.4;
+                cp1 = $"{SvgRenderSupport.F(x1 + (x2 >= x1 ? seqOffset : -seqOffset))},{SvgRenderSupport.F(y1)}";
+                cp2 = $"{SvgRenderSupport.F(x2 - (x2 >= x1 ? seqOffset : -seqOffset))},{SvgRenderSupport.F(y2)}";
+            }
         }
 
         string strokeColor = SvgRenderSupport.Escape(edge.Color ?? theme.EdgeColor);
@@ -178,6 +191,20 @@ internal static class SvgStructureWriter
             default: // Bezier
                 pathData = $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} C {cp1} {cp2} {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}";
                 break;
+        }
+
+        if (isSelfMessage)
+        {
+            const double SelfMessageLoopCornerRadius = 8;
+            // Read the loop width that the layout engine stored on this edge so that
+            // the canvas-width calculation and the arc path use the same value.
+            double loopWidth = TryGetMetadataDouble(edge.Metadata, "sequence:selfMessageLoopWidth", out var lw) ? lw : 40;
+            // Anchor the loop to the lifeline (x1 == sourceCenterX) so the arc starts
+            // and ends at the same x as the dashed lifeline drawn by AppendLifelines.
+            double lifelineX = x1;
+            pathData = BuildSelfMessageLoopPath(lifelineX, y1, loopWidth, selfMessageArcHeight, SelfMessageLoopCornerRadius);
+            labelX = lifelineX + loopWidth + 6;
+            labelY = y1 + selfMessageArcHeight / 2 + 4;
         }
 
         if (TryBuildCycleArcPath(edge, source, target, out var cycleArcPath, out var cycleLabelX, out var cycleLabelY))
@@ -454,6 +481,30 @@ internal static class SvgStructureWriter
                 $"L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2)}"),
                 labX, labY);
         }
+    }
+
+    /// <summary>
+    /// Builds a right-side loopback arc path for a sequence self-message.
+    /// The path goes: right edge → out right → down → back left to right edge,
+    /// with rounded corners. The arrowhead sits at the bottom of the return segment,
+    /// pointing left toward the participant lifeline.
+    /// </summary>
+    private static string BuildSelfMessageLoopPath(
+        double rightEdge, double startY, double loopWidth, double arcHeight, double cornerRadius)
+    {
+        double x1 = rightEdge;
+        double y1 = startY;
+        double x2 = rightEdge + loopWidth;
+        double y2 = startY + arcHeight;
+        double r = Math.Min(cornerRadius, Math.Min(loopWidth * 0.4, arcHeight * 0.4));
+
+        return string.Concat(
+            $"M {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y1)} ",
+            $"L {SvgRenderSupport.F(x2 - r)},{SvgRenderSupport.F(y1)} ",
+            $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 1 {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y1 + r)} ",
+            $"L {SvgRenderSupport.F(x2)},{SvgRenderSupport.F(y2 - r)} ",
+            $"A {SvgRenderSupport.F(r)},{SvgRenderSupport.F(r)} 0 0 1 {SvgRenderSupport.F(x2 - r)},{SvgRenderSupport.F(y2)} ",
+            $"L {SvgRenderSupport.F(x1)},{SvgRenderSupport.F(y2)}");
     }
 
     internal static void AppendGroup(StringBuilder sb, Group group, Theme theme, int groupIndex)

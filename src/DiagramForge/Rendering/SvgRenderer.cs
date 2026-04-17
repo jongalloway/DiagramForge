@@ -189,6 +189,11 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.TryGetValue("snake:canvasWidth", out var snakeW))
             return Convert.ToDouble(snakeW, System.Globalization.CultureInfo.InvariantCulture);
 
+        // Sequence diagrams store an explicit canvas width when self-message loopback
+        // arcs would extend beyond the rightmost participant's right edge.
+        if (diagram.Metadata.TryGetValue("sequence:canvasWidth", out var seqW))
+            return Convert.ToDouble(seqW, System.Globalization.CultureInfo.InvariantCulture);
+
         double maxX = diagram.Nodes.Values.Max(n => n.X + n.Width);
         // Group rects extend beyond their member nodes by their own padding;
         // without this, the group's right edge is clipped at the canvas boundary.

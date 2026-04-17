@@ -1823,6 +1823,47 @@ public class DefaultLayoutEngineTests
         });
     }
 
+    // ── Sequence diagram self-message ─────────────────────────────────────────
+
+    private Diagram CreateSequenceDiagram(params (string src, string tgt, string label)[] messages)
+    {
+        var diagram = new Diagram();
+        diagram.DiagramType = "sequencediagram";
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var participants = new Dictionary<string, int>(StringComparer.Ordinal);
+
+        foreach (var (src, tgt, _) in messages)
+        {
+            foreach (var id in new[] { src, tgt })
+            {
+                if (!participants.ContainsKey(id))
+                {
+                    var node = new Node(id, id) { Shape = Shape.Rectangle };
+                    node.Metadata["sequence:participantIndex"] = participants.Count;
+                    participants[id] = participants.Count;
+                    diagram.AddNode(node);
+                }
+            }
+        }
+
+        int msgIdx = 0;
+        foreach (var (src, tgt, label) in messages)
+        {
+            var edge = new Edge(src, tgt)
+            {
+                LineStyle = EdgeLineStyle.Solid,
+                ArrowHead = ArrowHeadStyle.Arrow,
+            };
+            if (!string.IsNullOrEmpty(label))
+                edge.Label = new Label(label);
+            edge.Metadata["sequence:messageIndex"] = msgIdx++;
+            diagram.AddEdge(edge);
+        }
+
+        return diagram;
+    }
+
     // ── Sequence diagram heading offset ───────────────────────────────────────
 
     private static Diagram BuildSequenceDiagram(string? title = null, string? subtitle = null)
@@ -1848,6 +1889,88 @@ public class DefaultLayoutEngineTests
         diagram.AddEdge(edge);
 
         return diagram;
+    }
+
+    [Fact]
+    public void Layout_SequenceSelfMessage_TaggedWithSelfMessageMetadata()
+    {
+        var diagram = CreateSequenceDiagram(("A", "A", "Think"));
+
+        _engine.Layout(diagram, _theme);
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.True(edge.Metadata.ContainsKey("sequence:selfMessage"));
+        Assert.True(edge.Metadata["sequence:selfMessage"] is true);
+    }
+
+    [Fact]
+    public void Layout_SequenceSelfMessage_HasSelfMessageHeight()
+    {
+        var diagram = CreateSequenceDiagram(("A", "A", "Think"));
+
+        _engine.Layout(diagram, _theme);
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.True(edge.Metadata.ContainsKey("sequence:selfMessageHeight"));
+        double height = Convert.ToDouble(edge.Metadata["sequence:selfMessageHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+        Assert.True(height > 0);
+    }
+
+    [Fact]
+    public void Layout_SequenceSelfMessage_TakesMoreVerticalSpaceThanRegularMessage()
+    {
+        // A self-message followed by a regular message
+        var diagramSelf = CreateSequenceDiagram(("A", "A", "Self"), ("A", "B", "Regular"));
+        var diagramNoSelf = CreateSequenceDiagram(("A", "B", "First"), ("A", "B", "Second"));
+
+        _engine.Layout(diagramSelf, _theme);
+        _engine.Layout(diagramNoSelf, _theme);
+
+        double selfCanvasH = Convert.ToDouble(diagramSelf.Metadata["sequence:canvasHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+        double normalCanvasH = Convert.ToDouble(diagramNoSelf.Metadata["sequence:canvasHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.True(selfCanvasH > normalCanvasH,
+            $"Diagram with a self-message canvas height ({selfCanvasH}) should be taller than " +
+            $"a diagram with the same total message count but all regular messages ({normalCanvasH}), " +
+            "because self-messages occupy 2× the normal row height.");
+    }
+
+    [Fact]
+    public void Layout_SequenceSelfMessage_SubsequentMessageIsBelow()
+    {
+        // Regular message after self-message must sit below the self-message's row
+        var diagram = CreateSequenceDiagram(("A", "A", "Self"), ("A", "B", "After"));
+
+        _engine.Layout(diagram, _theme);
+
+        var selfEdge = diagram.Edges.First(e => string.Equals(e.SourceId, e.TargetId, StringComparison.Ordinal));
+        var afterEdge = diagram.Edges.First(e => !string.Equals(e.SourceId, e.TargetId, StringComparison.Ordinal));
+
+        double selfY = Convert.ToDouble(selfEdge.Metadata["sequence:messageY"],
+            System.Globalization.CultureInfo.InvariantCulture);
+        double afterY = Convert.ToDouble(afterEdge.Metadata["sequence:messageY"],
+            System.Globalization.CultureInfo.InvariantCulture);
+        double selfH = Convert.ToDouble(selfEdge.Metadata["sequence:selfMessageHeight"],
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.True(afterY >= selfY + selfH * 2,
+            $"Message after self-message (Y={afterY}) should be at least 2× the self-message arc height ({selfH}) below the self-message start (selfY={selfY}). " +
+            $"Self-messages occupy 2× a normal row, so the next message must start at or after selfY + 2*selfH = {selfY + selfH * 2}.");
+    }
+
+    [Fact]
+    public void Layout_SequenceRegularMessage_DoesNotHaveSelfMessageMetadata()
+    {
+        var diagram = CreateSequenceDiagram(("A", "B", "Hello"));
+
+        _engine.Layout(diagram, _theme);
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.False(edge.Metadata.ContainsKey("sequence:selfMessage"));
+        Assert.False(edge.Metadata.ContainsKey("sequence:selfMessageHeight"));
     }
 
     [Fact]

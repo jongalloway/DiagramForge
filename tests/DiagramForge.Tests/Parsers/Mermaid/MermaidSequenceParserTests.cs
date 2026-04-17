@@ -223,6 +223,36 @@ public class MermaidSequenceParserTests
         }
     }
 
+    // ── Self-messages ─────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_SelfMessage_SourceAndTargetAreTheSameParticipant()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>A: Think");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("A", edge.SourceId);
+        Assert.Equal("A", edge.TargetId);
+    }
+
+    [Fact]
+    public void Parse_SelfMessage_LabelIsPreserved()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>A: Build prompt");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.Equal("Build prompt", edge.Label?.Text);
+    }
+
+    [Fact]
+    public void Parse_SelfMessage_MessageIndexIsAssigned()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>A: Think");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.True(edge.Metadata.ContainsKey("sequence:messageIndex"));
+    }
+
     // ── Title and subtitle directives ─────────────────────────────────────────
 
     [Fact]
