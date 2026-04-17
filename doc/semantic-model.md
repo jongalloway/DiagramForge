@@ -20,6 +20,7 @@ All model types live in `DiagramForge.Models`.
 ```
 Diagram
  ├── Title              string?
+ ├── Subtitle           string?
  ├── SourceSyntax       string?
  ├── DiagramType        string?
  ├── LayoutHints        LayoutHints
@@ -60,7 +61,8 @@ The root container. One `Diagram` instance represents one rendered image.
 
 | Property | Type | Set by | Description |
 |----------|------|--------|-------------|
-| `Title` | `string?` | Parser | Optional human-readable title displayed above the diagram. |
+| `Title` | `string?` | Parser / Frontmatter | Optional human-readable title displayed above the diagram. |
+| `Subtitle` | `string?` | Parser / Frontmatter | Optional subtitle displayed below the title in a smaller, muted font. |
 | `SourceSyntax` | `string?` | Parser | Identifies the parser that produced this model (e.g., `"mermaid"`, `"conceptual"`). |
 | `DiagramType` | `string?` | Parser | Specific diagram variant (e.g., `"flowchart"`, `"venn"`, `"mindmap"`). |
 | `Nodes` | `Dictionary<string, Node>` | Parser | All nodes, keyed by unique ID. |

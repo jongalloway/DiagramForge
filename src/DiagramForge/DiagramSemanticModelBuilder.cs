@@ -16,6 +16,12 @@ public sealed class DiagramSemanticModelBuilder : IDiagramSemanticModelBuilder
         return this;
     }
 
+    public IDiagramSemanticModelBuilder WithSubtitle(string subtitle)
+    {
+        _diagram.Subtitle = subtitle;
+        return this;
+    }
+
     public IDiagramSemanticModelBuilder WithSourceSyntax(string syntaxId)
     {
         _diagram.SourceSyntax = syntaxId;

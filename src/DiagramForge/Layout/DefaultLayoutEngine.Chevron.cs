@@ -33,7 +33,7 @@ public sealed partial class DefaultLayoutEngine
         // Each chevron's bounding-box width must accommodate both the label and the tip.
         double nodeW = Math.Max(widestLabel + tipDepth, minW);
         int stageCount = orderedNodes.Count;
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         for (int index = 0; index < orderedNodes.Count; index++)
         {

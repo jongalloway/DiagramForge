@@ -74,9 +74,7 @@ public sealed partial class DefaultLayoutEngine
         double titleFontSize = Math.Round(theme.FontSize * 1.35, 1);
         double descFontSize = Math.Round(theme.FontSize * 1.15, 1);
         double descLineHeight = descFontSize * 1.5;
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
-
-        // Accent block width: sized for title text
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
         double accentWidth = Math.Max(minW * 1.0,
             titleNodes.Max(n =>
                 EstimateTextWidth(n.Label.Text, titleFontSize) + theme.NodePadding * 3));
@@ -187,7 +185,7 @@ public sealed partial class DefaultLayoutEngine
         double titleFontSize = Math.Round(theme.FontSize * 1.3, 1);
         double descFontSize = Math.Round(theme.FontSize * 1.08, 1);
         double descLineHeight = descFontSize * 1.4;
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         // Number tab width: compact square-ish block for the ordinal number
         double tabWidth = Math.Max(minW * 0.5, numberFontSize * 2.8);
@@ -304,7 +302,7 @@ public sealed partial class DefaultLayoutEngine
         double titleFontSize = Math.Round(theme.FontSize * 1.35, 1);
         double descFontSize = Math.Round(theme.FontSize * 1.15, 1);
         double descLineHeight = descFontSize * 1.6;
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         // Accent line: narrow vertical stripe on the left
         double accentLineWidth = 5;

@@ -27,6 +27,8 @@ After the closing fence, the remaining content is parsed normally as Mermaid or 
 | Key | Accepted forms | Notes |
 | --- | --- | --- |
 | `theme` | Built-in theme name | Uses `Theme.GetByName(...)`; unknown names throw. |
+| `title` | `title` | Sets `Diagram.Title`; inline parser directives take precedence. |
+| `subtitle` | `subtitle` | Sets `Diagram.Subtitle`; rendered below the title in a smaller, muted font. Inline parser directives take precedence. |
 | `palette` | Single-line JSON array of hex strings | Example: `["#FF0000", "#00FF00"]` |
 | `borderStyle` | `borderStyle`, `border-style` | Values: `solid`, `subtle`, `rainbow` |
 | `fillStyle` | `fillStyle`, `fill-style` | Values: `flat`, `subtle`, `diagonal-strong` |

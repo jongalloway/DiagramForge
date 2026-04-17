@@ -252,4 +252,77 @@ public class MermaidSequenceParserTests
         var edge = Assert.Single(diagram.Edges);
         Assert.True(edge.Metadata.ContainsKey("sequence:messageIndex"));
     }
+
+    // ── Title and subtitle directives ─────────────────────────────────────────
+
+    [Fact]
+    public void Parse_TitleDirective_SetsDiagramTitle()
+    {
+        const string text = """
+            sequenceDiagram
+                title: Login Flow
+                A->>B: Hello
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Login Flow", diagram.Title);
+    }
+
+    [Fact]
+    public void Parse_TitleDirective_Quoted_SetsDiagramTitle()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    title: \"Quoted Title\"\n    A->>B: msg");
+
+        Assert.Equal("Quoted Title", diagram.Title);
+    }
+
+    [Fact]
+    public void Parse_SubtitleDirective_SetsDiagramSubtitle()
+    {
+        const string text = """
+            sequenceDiagram
+                subtitle: Scenario A
+                A->>B: Hello
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Scenario A", diagram.Subtitle);
+    }
+
+    [Fact]
+    public void Parse_TitleAndSubtitleDirectives_BothSet()
+    {
+        const string text = """
+            sequenceDiagram
+                title: Auth Sequence
+                subtitle: Happy path
+                participant A as Alice
+                A->>B: Login
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("Auth Sequence", diagram.Title);
+        Assert.Equal("Happy path", diagram.Subtitle);
+    }
+
+    [Fact]
+    public void Parse_TitleAndSubtitleDirectives_DoNotCreateParticipants()
+    {
+        const string text = """
+            sequenceDiagram
+                title: My Title
+                subtitle: My Subtitle
+                A->>B: msg
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // Only A and B should be participants; title/subtitle are not nodes
+        Assert.Equal(2, diagram.Nodes.Count);
+        Assert.True(diagram.Nodes.ContainsKey("A"));
+        Assert.True(diagram.Nodes.ContainsKey("B"));
+    }
 }

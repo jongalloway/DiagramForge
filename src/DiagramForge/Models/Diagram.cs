@@ -9,6 +9,9 @@ public class Diagram
     /// <summary>Optional human-readable title of the diagram.</summary>
     public string? Title { get; set; }
 
+    /// <summary>Optional subtitle displayed below the title in a smaller, muted font.</summary>
+    public string? Subtitle { get; set; }
+
     /// <summary>Identifies the source syntax that produced this model (e.g., "mermaid", "conceptual").</summary>
     public string? SourceSyntax { get; set; }
 

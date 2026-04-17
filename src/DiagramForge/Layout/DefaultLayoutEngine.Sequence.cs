@@ -28,16 +28,19 @@ public sealed partial class DefaultLayoutEngine
             .ThenBy(n => n.Id, StringComparer.Ordinal)
             .ToList();
 
+        // Reserve vertical space for the title and/or subtitle so they don't overlap participants.
+        double headingOffset = ComputeHeadingOffset(diagram, theme);
+
         double runX = pad;
         double participantStripHeight = ordered.Max(node => node.Height);
         foreach (var node in ordered)
         {
             node.X = runX;
-            node.Y = pad + (participantStripHeight - node.Height);
+            node.Y = pad + headingOffset + (participantStripHeight - node.Height);
             runX += node.Width + hGap;
         }
 
-        double firstMessageY = pad + participantStripHeight + vGap / 2;
+        double firstMessageY = pad + headingOffset + participantStripHeight + vGap / 2;
         double messageRowHeight = vGap;
 
         // Self-messages (source == target) need 2× the normal row height to

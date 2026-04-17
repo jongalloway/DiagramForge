@@ -51,6 +51,60 @@ public class SvgRendererTests
     }
 
     [Fact]
+    public void Render_ContainsDiagramSubtitle_WhenSet()
+    {
+        var diagram = BuildAndLayout(new Diagram { Subtitle = "Scenario context" }
+            .AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        Assert.Contains("Scenario context", svg);
+    }
+
+    [Fact]
+    public void Render_Subtitle_UsesSubtleTextColor()
+    {
+        var theme = Theme.Default;
+        var diagram = BuildAndLayout(new Diagram { Subtitle = "My Subtitle" }
+            .AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, theme);
+
+        Assert.Contains(theme.SubtleTextColor, svg);
+    }
+
+    [Fact]
+    public void Render_SubtitleWithTitle_AppearsAfterTitle()
+    {
+        var diagram = BuildAndLayout(new Diagram { Title = "Main Title", Subtitle = "Sub" }
+            .AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, _theme);
+
+        int titlePos = svg.IndexOf("Main Title", StringComparison.Ordinal);
+        int subtitlePos = svg.IndexOf("Sub", StringComparison.Ordinal);
+        Assert.True(titlePos < subtitlePos, "Subtitle should appear after the title in SVG output");
+    }
+
+    [Fact]
+    public void Render_SubtitleWithTitle_SubtitleYIsGreaterThanTitleY()
+    {
+        var theme = Theme.Default;
+        var diagram = BuildAndLayout(new Diagram { Title = "T", Subtitle = "S" }
+            .AddNode(new Node("A")));
+
+        string svg = _renderer.Render(diagram, theme);
+
+        // Extract y attributes from the two text elements
+        var textMatches = System.Text.RegularExpressions.Regex.Matches(
+            svg, @"<text[^>]*\by=""([\d.]+)""[^>]*>");
+        Assert.True(textMatches.Count >= 2, "Expected at least two <text> elements (title + subtitle)");
+        double titleY = double.Parse(textMatches[0].Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+        double subtitleY = double.Parse(textMatches[1].Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+        Assert.True(subtitleY > titleY, "Subtitle Y must be greater than title Y");
+    }
+
+    [Fact]
     public void Render_ContainsArrowheadMarker_WhenEdgesPresent()
     {
         var diagram = BuildAndLayout(new Diagram()

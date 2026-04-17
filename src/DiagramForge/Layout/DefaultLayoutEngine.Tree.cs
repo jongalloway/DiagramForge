@@ -98,7 +98,7 @@ public sealed partial class DefaultLayoutEngine
             }
         }
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         // Lay out roots side-by-side
         double currentX = pad;
