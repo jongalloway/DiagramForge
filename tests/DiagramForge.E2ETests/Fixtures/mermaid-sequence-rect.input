@@ -1,0 +1,14 @@
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    participant C as Carol
+    A->>B: Initialise
+    rect rgb(0,128,255)
+        B->>C: Query
+        C-->>B: Result
+    end
+    rect rgba(255,128,0,0.25)
+        B->>A: Notify
+        A-->>B: Ack
+    end
+    A->>B: Done

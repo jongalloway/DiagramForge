@@ -120,6 +120,53 @@ public sealed partial class DefaultLayoutEngine
             if (contentRight > maxNodeRight + extraRight)
                 extraRight = contentRight - maxNodeRight;
         }
-        diagram.Metadata["sequence:canvasWidth"] = maxNodeRight + extraRight + pad;
+        double canvasWidth = maxNodeRight + extraRight + pad;
+        diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
+
+        // Position rect-band groups now that message Y coordinates are final.
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:rectGroup", out var isRectObj) || isRectObj is not true)
+                continue;
+
+            if (!group.Metadata.TryGetValue("sequence:rectStartIndex", out var startIdxObj)
+                || !group.Metadata.TryGetValue("sequence:rectEndIndex", out var endIdxObj))
+                continue;
+
+            int startIdx = Convert.ToInt32(startIdxObj, System.Globalization.CultureInfo.InvariantCulture);
+            int endIdx   = Convert.ToInt32(endIdxObj,   System.Globalization.CultureInfo.InvariantCulture);
+
+            double halfRow    = messageRowHeight / 2;
+            double bandTop    = double.MaxValue;
+            double bandBottom = double.MinValue;
+
+            foreach (var e in orderedEdges)
+            {
+                if (!TryGetMetadataInt(e.Metadata, "sequence:messageIndex", out var msgIdx))
+                    continue;
+                if (msgIdx < startIdx || msgIdx > endIdx)
+                    continue;
+                if (!e.Metadata.TryGetValue("sequence:messageY", out var yObj))
+                    continue;
+
+                double y = Convert.ToDouble(yObj, System.Globalization.CultureInfo.InvariantCulture);
+                bool isSelf = e.Metadata.ContainsKey("sequence:selfMessage");
+                double rowH = isSelf ? messageRowHeight * 2 : messageRowHeight;
+
+                if (y < bandTop)    bandTop    = y;
+                // Use y + rowH - halfRow so consecutive bands meet at a shared
+                // midpoint rather than overlapping.
+                double rowBottom = y + rowH - halfRow;
+                if (rowBottom > bandBottom) bandBottom = rowBottom;
+            }
+
+            if (bandTop == double.MaxValue)
+                continue; // no enclosed messages found
+
+            group.X      = 0;
+            group.Y      = bandTop    - halfRow;
+            group.Width  = canvasWidth;
+            group.Height = bandBottom - bandTop + halfRow;
+        }
     }
 }
