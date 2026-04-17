@@ -188,35 +188,84 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
 
         var content = block[(open + 1)..close];
 
-        int iconIdx = content.IndexOf("icon:", StringComparison.OrdinalIgnoreCase);
-        if (iconIdx < 0)
-            return null;
+        // Walk key/value pairs so that "icon:" is matched only as a full key, not as a
+        // substring of another key (e.g. "bicon:") or inside a quoted string value.
+        int i = 0;
 
-        var afterIcon = content[(iconIdx + "icon:".Length)..].Trim();
-
-        string iconValue;
-        if (afterIcon.Length > 0 && (afterIcon[0] == '\'' || afterIcon[0] == '"'))
+        while (i < content.Length)
         {
-            char quote = afterIcon[0];
-            int closeQuote = afterIcon.IndexOf(quote, 1);
-            if (closeQuote < 0)
+            while (i < content.Length && (char.IsWhiteSpace(content[i]) || content[i] == ','))
+                i++;
+
+            if (i >= content.Length)
+                break;
+
+            int keyStart = i;
+            while (i < content.Length && !char.IsWhiteSpace(content[i]) && content[i] != ':' && content[i] != ',')
+                i++;
+
+            if (i == keyStart)
                 return null;
-            iconValue = afterIcon[1..closeQuote];
+
+            var key = content[keyStart..i];
+
+            while (i < content.Length && char.IsWhiteSpace(content[i]))
+                i++;
+
+            if (i >= content.Length || content[i] != ':')
+                return null;
+
+            i++; // consume ':'
+
+            while (i < content.Length && char.IsWhiteSpace(content[i]))
+                i++;
+
+            if (string.Equals(key, "icon", StringComparison.OrdinalIgnoreCase))
+            {
+                if (i >= content.Length || (content[i] != '\'' && content[i] != '"'))
+                    return null;
+
+                char quote = content[i];
+                int valueStart = ++i;
+
+                while (i < content.Length && content[i] != quote)
+                    i++;
+
+                if (i >= content.Length)
+                    return null;
+
+                var iconValue = content[valueStart..i];
+                if (string.IsNullOrEmpty(iconValue))
+                    return null;
+
+                // Validate pack:name format — must have a colon with non-empty pack and name.
+                int colonIdx = iconValue.IndexOf(':');
+                if (colonIdx <= 0 || colonIdx >= iconValue.Length - 1)
+                    return null;
+
+                return iconValue;
+            }
+
+            // Skip the value for any non-icon key.
+            if (i < content.Length && (content[i] == '\'' || content[i] == '"'))
+            {
+                char quote = content[i++];
+                while (i < content.Length && content[i] != quote)
+                    i++;
+
+                if (i >= content.Length)
+                    return null;
+
+                i++; // consume closing quote
+            }
+            else
+            {
+                while (i < content.Length && content[i] != ',')
+                    i++;
+            }
         }
-        else
-        {
-            return null;
-        }
 
-        if (string.IsNullOrEmpty(iconValue))
-            return null;
-
-        // Validate pack:name format — must have a colon with non-empty pack and name.
-        int colonIdx = iconValue.IndexOf(':');
-        if (colonIdx <= 0 || colonIdx >= iconValue.Length - 1)
-            return null;
-
-        return iconValue;
+        return null;
     }
 
     /// <summary>

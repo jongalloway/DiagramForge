@@ -681,4 +681,28 @@ public class MermaidSequenceParserTests
         Assert.Equal("heroicons:server", diagram.Nodes["A"].IconRef);
         Assert.Null(diagram.Nodes["B"].IconRef);
     }
+
+    [Fact]
+    public void Parse_ParticipantWithSubstringKeyName_DoesNotFalselyMatchIcon()
+    {
+        // "bicon:" contains "icon:" as a substring but must NOT be treated as an icon key.
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ bicon: 'heroicons:server' }
+            """);
+
+        Assert.Null(diagram.Nodes["A"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithMultipleMetadataKeys_IconExtractedCorrectly()
+    {
+        // When icon is not the first key, it should still be found.
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ shape: 'rect', icon: 'heroicons:server' }
+            """);
+
+        Assert.Equal("heroicons:server", diagram.Nodes["A"].IconRef);
+    }
 }
