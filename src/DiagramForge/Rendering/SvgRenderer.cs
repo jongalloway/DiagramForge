@@ -129,6 +129,11 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
             SvgStructureWriter.AppendLifelines(sb, diagram, theme, height);
 
+        // Sequence-diagram notes: styled annotation boxes positioned at their sequence Y.
+        // Rendered after lifelines so the note fill sits on top of the dashed strokes.
+        if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
+            SvgStructureWriter.AppendSequenceNotes(sb, diagram, theme);
+
         // XY chart axes, grid lines, and line series.
         if (diagram.Metadata.ContainsKey("xychart:chartX"))
             SvgStructureWriter.AppendXyChartAxes(sb, diagram, theme);

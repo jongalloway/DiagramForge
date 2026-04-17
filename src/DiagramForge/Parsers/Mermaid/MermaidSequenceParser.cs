@@ -33,6 +33,11 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         // Stack for open rect blocks: each entry holds (group, startMessageIndex).
         var openRects = new Stack<(Group Group, int StartIndex)>();
         int rectIndex = 0;
+        int noteIndex = 0;
+
+        // Tracks the most recently parsed note group so that subsequent indented
+        // lines can be appended as continuation text (multi-line notes).
+        Group? pendingNoteGroup = null;
 
         Node GetOrCreateParticipant(string id)
         {
@@ -49,6 +54,23 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         for (int i = 1; i < document.Lines.Length; i++)
         {
             var line = document.Lines[i];
+
+            // Multi-line note continuation: if the raw line is indented and no
+            // other keyword matches, append to the pending note.
+            if (pendingNoteGroup != null)
+            {
+                bool isIndented = i < document.RawLines.Length
+                    && document.RawLines[i].Length > 0
+                    && char.IsWhiteSpace(document.RawLines[i][0]);
+
+                if (isIndented && !IsSequenceKeyword(line))
+                {
+                    pendingNoteGroup.Label.Text += "\n" + line;
+                    continue;
+                }
+
+                pendingNoteGroup = null;
+            }
 
             // autonumber — enable numbered badges on each message
             if (line.Equals("autonumber", StringComparison.OrdinalIgnoreCase))
@@ -115,6 +137,28 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 continue;
             }
 
+            // Note right of X: text
+            // Note left of X: text
+            // Note over X[,Y]: text
+            if (TryParseNote(line, out var notePosition, out var noteP1, out var noteP2, out var noteText))
+            {
+                GetOrCreateParticipant(noteP1!);
+                if (noteP2 is not null)
+                    GetOrCreateParticipant(noteP2);
+
+                var groupId = $"sequence:note:{noteIndex++:D4}";
+                var group = new Group(groupId, noteText ?? string.Empty);
+                group.Metadata["sequence:noteGroup"] = true;
+                group.Metadata["sequence:notePosition"] = notePosition!;
+                group.Metadata["sequence:noteParticipant"] = noteP1!;
+                if (noteP2 is not null)
+                    group.Metadata["sequence:noteParticipant2"] = noteP2;
+                group.Metadata["sequence:noteSequenceIndex"] = messageIndex++;
+                builder.AddGroup(group);
+                pendingNoteGroup = group;
+                continue;
+            }
+
             // rect rgb(...) / rect rgba(...)  — colored background band
             if (line.StartsWith("rect ", StringComparison.OrdinalIgnoreCase))
             {
@@ -172,6 +216,110 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         if (autonumber)
             diagram.Metadata["sequence:autonumber"] = true;
         return diagram;
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="line"/> starts with a
+    /// known sequence-diagram keyword, which prevents it from being absorbed as a
+    /// multi-line note continuation.
+    /// </summary>
+    private static bool IsSequenceKeyword(string line)
+    {
+        return line.StartsWith("participant ", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("Note ", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("rect ", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("title:", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("subtitle:", StringComparison.OrdinalIgnoreCase)
+            || line.Equals("autonumber", StringComparison.OrdinalIgnoreCase)
+            || line.Equals("end", StringComparison.OrdinalIgnoreCase)
+            || TryParseMessage(line, out _, out _, out _, out _, out _);
+    }
+
+    /// <summary>
+    /// Attempts to parse a note directive of the form
+    /// <c>Note right of X: text</c>, <c>Note left of X: text</c>, or
+    /// <c>Note over X[,Y]: text</c>.
+    /// </summary>
+    private static bool TryParseNote(
+        string line,
+        out string? position,
+        out string? participant1,
+        out string? participant2,
+        out string? text)
+    {
+        position = participant1 = participant2 = text = null;
+
+        if (!line.StartsWith("Note ", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        var rest = line["Note ".Length..].TrimStart();
+
+        string afterPosition;
+        if (rest.StartsWith("right of ", StringComparison.OrdinalIgnoreCase))
+        {
+            position = "rightOf";
+            afterPosition = rest["right of ".Length..];
+        }
+        else if (rest.StartsWith("left of ", StringComparison.OrdinalIgnoreCase))
+        {
+            position = "leftOf";
+            afterPosition = rest["left of ".Length..];
+        }
+        else if (rest.StartsWith("over ", StringComparison.OrdinalIgnoreCase))
+        {
+            position = "over";
+            afterPosition = rest["over ".Length..];
+        }
+        else
+        {
+            return false;
+        }
+
+        ParseNoteParticipantsAndText(afterPosition.Trim(), out participant1, out participant2, out text);
+        return participant1 is not null;
+    }
+
+    /// <summary>
+    /// Splits the participant/text portion of a note directive into its components.
+    /// The input has the form <c>P1[,P2]: text</c> where the colon and text are optional.
+    /// </summary>
+    private static void ParseNoteParticipantsAndText(
+        string rest,
+        out string? participant1,
+        out string? participant2,
+        out string? text)
+    {
+        participant1 = participant2 = text = null;
+
+        int colonIdx = rest.IndexOf(':', StringComparison.Ordinal);
+        string participants;
+        if (colonIdx >= 0)
+        {
+            participants = rest[..colonIdx].Trim();
+            text = rest[(colonIdx + 1)..].Trim();
+            if (string.IsNullOrEmpty(text))
+                text = null;
+        }
+        else
+        {
+            participants = rest.Trim();
+        }
+
+        int commaIdx = participants.IndexOf(',', StringComparison.Ordinal);
+        if (commaIdx >= 0)
+        {
+            participant1 = participants[..commaIdx].Trim();
+            participant2 = participants[(commaIdx + 1)..].Trim();
+            if (string.IsNullOrEmpty(participant2))
+                participant2 = null;
+        }
+        else
+        {
+            participant1 = participants.Trim();
+        }
+
+        if (string.IsNullOrEmpty(participant1))
+            participant1 = null;
     }
 
     /// <summary>
