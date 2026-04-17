@@ -1,0 +1,12 @@
+---
+theme: dark
+---
+sequenceDiagram
+    autonumber
+    participant A as Alice
+    participant B as Bob
+    A->>B: Login request
+    B-->>A: Challenge
+    A->>B: Credentials
+    B-->>A: Token
+    A->>A: Store token
