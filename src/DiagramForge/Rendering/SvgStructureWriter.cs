@@ -673,6 +673,43 @@ internal static class SvgStructureWriter
         }
     }
 
+    internal static void AppendSequenceAutonumberBadges(StringBuilder sb, Diagram diagram, Theme theme)
+    {
+        if (!diagram.Metadata.TryGetValue("sequence:autonumberBadgeX", out var badgeXObj))
+            return;
+
+        double badgeX = Convert.ToDouble(badgeXObj, System.Globalization.CultureInfo.InvariantCulture);
+        const double BadgeRadius = 12;
+        string fillColor = SvgRenderSupport.Escape(theme.AccentColor);
+        string textColor = SvgRenderSupport.Escape(ColorUtils.IsLight(theme.AccentColor) ? "#0F172A" : "#FFFFFF");
+        string fontFamily = SvgRenderSupport.Escape(theme.FontFamily);
+        double fontSize = theme.FontSize * 0.78;
+
+        foreach (var edge in diagram.Edges)
+        {
+            if (!edge.Metadata.TryGetValue("sequence:messageY", out var msgYObj))
+                continue;
+
+            if (!edge.Metadata.TryGetValue("sequence:autonumberIndex", out var numObj))
+                continue;
+
+            double msgY = Convert.ToDouble(msgYObj, System.Globalization.CultureInfo.InvariantCulture);
+            int num = Convert.ToInt32(numObj, System.Globalization.CultureInfo.InvariantCulture);
+
+            // Self-messages span 2× the row height; vertically center the badge in that range.
+            double badgeY = msgY;
+            if (edge.Metadata.TryGetValue("sequence:selfMessage", out var selfMsgObj) && selfMsgObj is true)
+            {
+                double selfH = TryGetMetadataDouble(edge.Metadata, "sequence:selfMessageHeight", out var ah) ? ah : 40;
+                badgeY = msgY + selfH / 2;
+            }
+
+            string numText = SvgRenderSupport.Escape(num.ToString(System.Globalization.CultureInfo.InvariantCulture));
+            sb.AppendLine($"""  <circle cx="{SvgRenderSupport.F(badgeX)}" cy="{SvgRenderSupport.F(badgeY)}" r="{SvgRenderSupport.F(BadgeRadius)}" fill="{fillColor}"/>""");
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(badgeX)}" y="{SvgRenderSupport.F(badgeY + fontSize * 0.38)}" text-anchor="middle" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{textColor}" font-weight="600">{numText}</text>""");
+        }
+    }
+
     internal static void AppendXyChartAxes(StringBuilder sb, Diagram diagram, Theme theme)
     {
         double chartX = Convert.ToDouble(diagram.Metadata["xychart:chartX"], System.Globalization.CultureInfo.InvariantCulture);

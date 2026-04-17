@@ -152,6 +152,10 @@ public sealed class SvgRenderer : ISvgRenderer
             SvgStructureWriter.AppendEdge(sb, edge, source, target, theme, diagram.LayoutHints);
         }
 
+        // Sequence-diagram autonumber badges: numbered circles rendered over arrows but under nodes.
+        if (diagram.Metadata.ContainsKey("sequence:autonumber"))
+            SvgStructureWriter.AppendSequenceAutonumberBadges(sb, diagram, theme);
+
         // Nodes (pass index for palette cycling)
         int nodeIndex = 0;
         foreach (var node in diagram.Nodes.Values)
