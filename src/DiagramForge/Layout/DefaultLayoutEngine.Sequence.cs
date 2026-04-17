@@ -126,7 +126,10 @@ public sealed partial class DefaultLayoutEngine
             else if (noteGroup != null)
             {
                 noteGroup.Metadata["sequence:noteY"] = runY;
-                runY += messageRowHeight;
+                // Pre-compute note box height so multi-line notes don't overlap the
+                // next row. Uses the same formula as LayoutSequenceNotes below.
+                double preNoteHeight = ComputeNoteBoxHeight(noteGroup.Label.Text, theme);
+                runY += Math.Max(messageRowHeight, preNoteHeight);
             }
         }
 
@@ -161,7 +164,7 @@ public sealed partial class DefaultLayoutEngine
         double canvasWidth = maxNodeRight + extraRight + pad;
 
         // Position note groups now that participant positions and sequence Y values are final.
-        LayoutSequenceNotes(diagram, ordered, canvasWidth, messageRowHeight, theme, ref canvasWidth);
+        LayoutSequenceNotes(diagram, messageRowHeight, theme, ref canvasWidth);
 
         diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
 
@@ -213,21 +216,64 @@ public sealed partial class DefaultLayoutEngine
     }
 
     /// <summary>
+    /// Returns the computed box height for a note with the given text using note font metrics.
+    /// Shared by both the Y-assignment pre-pass and the <see cref="LayoutSequenceNotes"/> main pass
+    /// to guarantee consistent values.
+    /// </summary>
+    private static double ComputeNoteBoxHeight(string noteText, Theme theme)
+    {
+        double noteFontSize = theme.FontSize * 0.85;
+        double lineH = noteFontSize * 1.3;
+        int lineCount = noteText.Split('\n').Length;
+        return Math.Max(NoteMinHeight, lineCount * lineH + 2 * NoteVPad);
+    }
+
+    /// <summary>
     /// Computes the position (X, Y, Width, Height) of each sequence note group and
-    /// extends <paramref name="canvasWidth"/> when right-of or left-of notes fall
-    /// outside the existing canvas bounds.
+    /// adjusts participant positions / canvas width as needed when notes protrude
+    /// outside the diagram bounds.
     /// </summary>
     private static void LayoutSequenceNotes(
         Diagram diagram,
-        IReadOnlyList<Node> orderedParticipants,
-        double currentCanvasWidth,
         double messageRowHeight,
         Theme theme,
         ref double canvasWidth)
     {
         double noteFontSize = theme.FontSize * 0.85;
-        double lineHeight   = noteFontSize * 1.3;
 
+        // --- Pre-pass: compute how much extra space leftOf notes need on the left -------
+        double extraLeft = 0;
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
+                continue;
+            if (!group.Metadata.TryGetValue("sequence:notePosition", out var posObj) || posObj is not string pos || pos != "leftOf")
+                continue;
+            if (!group.Metadata.TryGetValue("sequence:noteParticipant", out var p1Obj) || p1Obj is not string p1)
+                continue;
+            if (!diagram.Nodes.TryGetValue(p1, out var p1Node))
+                continue;
+
+            string noteText = group.Label.Text;
+            string[] noteLines = noteText.Split('\n');
+            double textWidth = noteLines.Max(l => EstimateTextWidth(l, noteFontSize));
+            double noteWidth  = Math.Max(NoteMinWidth, textWidth + 2 * NoteHPad);
+
+            double lifelineX = p1Node.X + p1Node.Width / 2;
+            double noteX = lifelineX - noteWidth - NoteLifelineGap;
+            if (noteX < theme.DiagramPadding)
+                extraLeft = Math.Max(extraLeft, theme.DiagramPadding - noteX);
+        }
+
+        // Shift all participants right when any leftOf note would be clipped at the left edge.
+        if (extraLeft > 0)
+        {
+            foreach (var node in diagram.Nodes.Values)
+                node.X += extraLeft;
+            canvasWidth += extraLeft;
+        }
+
+        // --- Main pass: compute note box geometry ----------------------------------------
         foreach (var group in diagram.Groups)
         {
             if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
@@ -244,17 +290,18 @@ public sealed partial class DefaultLayoutEngine
                 continue;
 
             double noteY = Convert.ToDouble(noteYObj, System.Globalization.CultureInfo.InvariantCulture);
-            string notePos = group.Metadata.TryGetValue("sequence:notePosition", out var posObj)
-                && posObj is string ps ? ps : "over";
+            string notePos = group.Metadata.TryGetValue("sequence:notePosition", out var notePosObj)
+                && notePosObj is string ps ? ps : "over";
 
             string noteText = group.Label.Text;
             string[] noteLines = noteText.Split('\n');
             double textWidth = noteLines.Max(l => EstimateTextWidth(l, noteFontSize));
             double noteWidth  = Math.Max(NoteMinWidth, textWidth + 2 * NoteHPad);
-            double noteHeight = Math.Max(NoteMinHeight, noteLines.Length * lineHeight + 2 * NoteVPad);
+            double noteHeight = ComputeNoteBoxHeight(noteText, theme);
 
             // Vertically center the note box within its sequence row.
-            double vOffset = Math.Max(0, (messageRowHeight - noteHeight) / 2);
+            double rowH = Math.Max(messageRowHeight, noteHeight);
+            double vOffset = Math.Max(0, (rowH - noteHeight) / 2);
             double boxY = noteY + vOffset;
 
             double noteX;
@@ -279,18 +326,18 @@ public sealed partial class DefaultLayoutEngine
                 case "over":
                 default:
                 {
+                    Node? p2Node = null;
                     bool hasTwoParticipants =
                         group.Metadata.TryGetValue("sequence:noteParticipant2", out var p2Obj)
                         && p2Obj is string p2
                         && !string.IsNullOrEmpty(p2)
-                        && diagram.Nodes.TryGetValue(p2, out var p2Node)
+                        && diagram.Nodes.TryGetValue(p2, out p2Node)
                         && p2Node is not null;
 
                     if (hasTwoParticipants)
                     {
-                        diagram.Nodes.TryGetValue((string)group.Metadata["sequence:noteParticipant2"]!, out var p2NodeRef);
-                        double left  = Math.Min(p1Node.X, p2NodeRef!.X);
-                        double right = Math.Max(p1Node.X + p1Node.Width, p2NodeRef.X + p2NodeRef.Width);
+                        double left  = Math.Min(p1Node.X, p2Node!.X);
+                        double right = Math.Max(p1Node.X + p1Node.Width, p2Node.X + p2Node.Width);
                         noteX     = left;
                         noteWidth = Math.Max(noteWidth, right - left);
                     }

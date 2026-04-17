@@ -698,13 +698,18 @@ internal static class SvgStructureWriter
     /// </summary>
     internal static void AppendSequenceNotes(StringBuilder sb, Diagram diagram, Theme theme)
     {
-        foreach (var group in diagram.Groups)
-        {
-            if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
-                continue;
+        var noteGroups = diagram.Groups
+            .Where(g => g.Metadata.TryGetValue("sequence:noteGroup", out var v) && v is true)
+            .OrderBy(g => g.Metadata.TryGetValue("sequence:noteSequenceIndex", out var idx)
+                ? Convert.ToInt32(idx, System.Globalization.CultureInfo.InvariantCulture) : 0)
+            .ThenBy(g => g.Id, StringComparer.Ordinal)
+            .ToList();
 
-            // Skip groups that the layout engine did not position (e.g., missing participant).
-            if (!group.Metadata.ContainsKey("sequence:noteY"))
+        foreach (var group in noteGroups)
+        {
+            // Skip groups that the layout engine did not fully position/size
+            // (e.g., missing participant).
+            if (!group.Metadata.ContainsKey("sequence:noteY") || group.Width <= 0 || group.Height <= 0)
                 continue;
 
             AppendSequenceNote(sb, group, theme);

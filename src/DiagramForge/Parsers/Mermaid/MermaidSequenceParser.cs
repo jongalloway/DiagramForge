@@ -65,7 +65,7 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
 
                 if (isIndented && !IsSequenceKeyword(line))
                 {
-                    pendingNoteGroup.Label = new Label(pendingNoteGroup.Label.Text + "\n" + line);
+                    pendingNoteGroup.Label.Text += "\n" + line;
                     continue;
                 }
 
