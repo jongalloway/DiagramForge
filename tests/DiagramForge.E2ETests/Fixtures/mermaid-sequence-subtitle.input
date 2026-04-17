@@ -1,0 +1,11 @@
+---
+theme: dark
+---
+sequenceDiagram
+    title: Authentication Flow
+    subtitle: Happy path — user logs in successfully
+    participant A as Alice
+    participant B as Bob
+    A->>B: Login request
+    B-->>A: Token issued
+    A->>B: Access resource

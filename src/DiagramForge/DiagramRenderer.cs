@@ -198,6 +198,14 @@ public sealed class DiagramRenderer
             diagram.LayoutHints.EdgeRouting = frontmatter.EdgeRouting.Value;
         }
 
+        // Frontmatter title/subtitle override the parser-supplied values only when the parser
+        // did not already set them (inline directives take precedence over frontmatter).
+        if (frontmatter.Title is not null && string.IsNullOrWhiteSpace(diagram.Title))
+            diagram.Title = frontmatter.Title;
+
+        if (frontmatter.Subtitle is not null && string.IsNullOrWhiteSpace(diagram.Subtitle))
+            diagram.Subtitle = frontmatter.Subtitle;
+
         ResolveIcons(diagram);
         _layoutEngine.Layout(diagram, effectiveTheme);
         return _svgRenderer.Render(diagram, effectiveTheme);
@@ -407,6 +415,8 @@ public sealed class DiagramRenderer
         string? parsedShadowStyle = null;
         bool? parsedTransparentBackground = null;
         EdgeRouting? parsedEdgeRouting = null;
+        string? parsedTitle = null;
+        string? parsedSubtitle = null;
 
         foreach (string rawLine in frontmatter.Split('\n'))
         {
@@ -468,9 +478,17 @@ public sealed class DiagramRenderer
             {
                 parsedEdgeRouting = ParseEdgeRouting(Unquote(line["edge-routing:".Length..].Trim()), raw);
             }
+            else if (line.StartsWith("title:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedTitle = Unquote(line["title:".Length..].Trim());
+            }
+            else if (line.StartsWith("subtitle:", StringComparison.OrdinalIgnoreCase))
+            {
+                parsedSubtitle = Unquote(line["subtitle:".Length..].Trim());
+            }
         }
 
-        return new FrontmatterOptions(diagramText, parsedTheme, parsedPaletteJson, parsedBorderStyle, parsedFillStyle, parsedShadowStyle, parsedTransparentBackground, parsedEdgeRouting);
+        return new FrontmatterOptions(diagramText, parsedTheme, parsedPaletteJson, parsedBorderStyle, parsedFillStyle, parsedShadowStyle, parsedTransparentBackground, parsedEdgeRouting, parsedTitle, parsedSubtitle);
     }
 
     private static void ApplyBorderStyle(Theme theme, string borderStyle)
@@ -607,7 +625,7 @@ public sealed class DiagramRenderer
         };
     }
 
-    private sealed record FrontmatterOptions(string DiagramText, Theme? Theme, string? PaletteJson, string? BorderStyle, string? FillStyle, string? ShadowStyle, bool? TransparentBackground, EdgeRouting? EdgeRouting = null);
+    private sealed record FrontmatterOptions(string DiagramText, Theme? Theme, string? PaletteJson, string? BorderStyle, string? FillStyle, string? ShadowStyle, bool? TransparentBackground, EdgeRouting? EdgeRouting = null, string? Title = null, string? Subtitle = null);
 }
 
 [System.Text.Json.Serialization.JsonSerializable(typeof(List<string>))]

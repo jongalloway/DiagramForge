@@ -44,6 +44,24 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         {
             var line = document.Lines[i];
 
+            // title: <text>  — diagram title directive
+            if (line.StartsWith("title:", StringComparison.OrdinalIgnoreCase))
+            {
+                var titleText = line["title:".Length..].Trim().Trim('"');
+                if (!string.IsNullOrEmpty(titleText))
+                    builder.WithTitle(titleText);
+                continue;
+            }
+
+            // subtitle: <text>  — diagram subtitle directive
+            if (line.StartsWith("subtitle:", StringComparison.OrdinalIgnoreCase))
+            {
+                var subtitleText = line["subtitle:".Length..].Trim().Trim('"');
+                if (!string.IsNullOrEmpty(subtitleText))
+                    builder.WithSubtitle(subtitleText);
+                continue;
+            }
+
             // participant ID
             // participant ID as Alias
             if (line.StartsWith("participant ", StringComparison.OrdinalIgnoreCase))

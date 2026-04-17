@@ -32,7 +32,7 @@ public sealed partial class DefaultLayoutEngine
         if (eventNodes.Count > 0)
             colWidth = Math.Max(colWidth, eventNodes.Max(n => n.Width));
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         double periodY = pad + titleOffset;
         double periodRowHeight = periodNodes.Max(node => node.Height);

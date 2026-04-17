@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
 
@@ -40,6 +41,111 @@ public class DiagramRendererTests
         string svg = _renderer.Render("flowchart LR\n  A --> B", theme);
 
         Assert.Contains("#FF0000", svg);
+    }
+
+    [Fact]
+    public void Render_WithFrontmatterSubtitle_RendersSubtitleInSvg()
+    {
+        string svg = _renderer.Render("---\nsubtitle: Scenario A\n---\nsequenceDiagram\n    A->>B: Hello");
+
+        Assert.Contains("Scenario A", svg);
+    }
+
+    [Fact]
+    public void Render_WithFrontmatterTitleAndSubtitle_BothRendered()
+    {
+        string svg = _renderer.Render("---\ntitle: My Title\nsubtitle: My Subtitle\n---\nsequenceDiagram\n    A->>B: Hello");
+
+        Assert.Contains("My Title", svg);
+        Assert.Contains("My Subtitle", svg);
+    }
+
+    [Fact]
+    public void Render_Flowchart_WithFrontmatterSubtitle_RendersSubtitleInSvg()
+    {
+        string svg = _renderer.Render("---\nsubtitle: Context info\n---\nflowchart LR\n  A --> B");
+
+        Assert.Contains("Context info", svg);
+    }
+
+    [Fact]
+    public void Render_Flowchart_WithFrontmatterTitleAndSubtitle_BothRenderedAndNodesShiftedDown()
+    {
+        // Nodes must start BELOW the subtitle text to avoid overlap.
+        // Subtitle baseline is at roughly DiagramPadding - 4 + TitleFontSize + 4 (≈39 for default theme).
+        // Nodes must start at Y > subtitle text bottom.
+        string svg = _renderer.Render("---\ntitle: My Title\nsubtitle: My Sub\n---\nflowchart LR\n  A --> B");
+
+        Assert.Contains("My Title", svg);
+        Assert.Contains("My Sub", svg);
+
+        // Extract all node group translate Y values from the SVG; they must all be > subtitleY
+        var translateMatches = Regex.Matches(
+            svg, @"transform=""translate\([^,]+,\s*([\d.]+)\)""");
+        Assert.NotEmpty(translateMatches);
+
+        // Subtitle is rendered at approximately DiagramPadding - 4 + TitleFontSize + 4.
+        // For default theme (DiagramPadding=24, TitleFontSize=15, FontSize=13):
+        // subtitleY ≈ 39, subtitleTextTop ≈ 39 - 13*0.85 ≈ 28.
+        // With heading offset, node Y must start at ≥ 24 + (15+8) + (13+4) = 64.
+        foreach (Match m in translateMatches)
+        {
+            double nodeY = double.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
+            Assert.True(nodeY > 39,
+                $"Node at Y={nodeY} must be below subtitle (Y≈39) to avoid overlap");
+        }
+    }
+
+    [Fact]
+    public void Render_Flowchart_WithFrontmatterTitleOnly_CanvasHeightIsCorrect()
+    {
+        string svgNoTitle = _renderer.Render("flowchart LR\n  A --> B");
+        string svgWithTitle = _renderer.Render("---\ntitle: T\n---\nflowchart LR\n  A --> B");
+
+        double heightNoTitle = ExtractSvgHeight(svgNoTitle);
+        double heightWithTitle = ExtractSvgHeight(svgWithTitle);
+
+        Assert.True(heightWithTitle > heightNoTitle,
+            "Canvas height must grow when a title is added");
+    }
+
+    [Fact]
+    public void Render_Flowchart_WithFrontmatterTitleAndSubtitle_CanvasHeightLargerThanTitleOnly()
+    {
+        string svgTitleOnly = _renderer.Render("---\ntitle: T\n---\nflowchart LR\n  A --> B");
+        string svgTitleAndSubtitle = _renderer.Render("---\ntitle: T\nsubtitle: S\n---\nflowchart LR\n  A --> B");
+
+        double heightTitleOnly = ExtractSvgHeight(svgTitleOnly);
+        double heightBoth = ExtractSvgHeight(svgTitleAndSubtitle);
+
+        Assert.True(heightBoth > heightTitleOnly,
+            "Canvas height must be larger when subtitle is added alongside the title");
+    }
+
+    private static double ExtractSvgHeight(string svg)
+    {
+        var match = Regex.Match(
+            svg, @"<svg[^>]*\bheight=""([\d.]+)""");
+        Assert.True(match.Success, "Could not extract SVG height attribute");
+        return double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
+    }
+
+    [Fact]
+    public void Render_WithFrontmatterTitle_SetsDiagramTitle()
+    {
+        string svg = _renderer.Render("---\ntitle: From Frontmatter\n---\nflowchart LR\n  A --> B");
+
+        Assert.Contains("From Frontmatter", svg);
+    }
+
+    [Fact]
+    public void Render_InlineTitleDirective_TakesPrecedenceOverFrontmatterTitle()
+    {
+        // Inline title: directive in the sequence body wins over frontmatter title:
+        string svg = _renderer.Render("---\ntitle: Frontmatter Title\n---\nsequenceDiagram\n    title: Inline Title\n    A->>B: Hello");
+
+        Assert.Contains("Inline Title", svg);
+        Assert.DoesNotContain("Frontmatter Title", svg);
     }
 
     [Fact]

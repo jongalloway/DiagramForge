@@ -20,7 +20,7 @@ public sealed partial class DefaultLayoutEngine
         if (cells.Count == 0)
             return;
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
         double baseFontSize = cells.Max(node => node.Label.FontSize ?? theme.FontSize);
         double cellWidth = cells.Max(node =>
             EnsureIconWidth(node, theme, Math.Max(minW + 24, EstimateTextWidth(node.Label, node.Label.FontSize ?? theme.FontSize) + theme.NodePadding * 2.5)));

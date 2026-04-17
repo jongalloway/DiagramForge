@@ -12,6 +12,9 @@ public interface IDiagramSemanticModelBuilder
     /// <summary>Sets the optional diagram title.</summary>
     IDiagramSemanticModelBuilder WithTitle(string title);
 
+    /// <summary>Sets the optional diagram subtitle displayed below the title.</summary>
+    IDiagramSemanticModelBuilder WithSubtitle(string subtitle);
+
     /// <summary>Specifies the source syntax identifier (e.g., "mermaid").</summary>
     IDiagramSemanticModelBuilder WithSourceSyntax(string syntaxId);
 

@@ -37,7 +37,7 @@ public sealed partial class DefaultLayoutEngine
         if (setNodes.Count == 0)
             return;
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
         double diameter = setNodes.Max(node =>
         {
             double fontSize = node.Label.FontSize ?? theme.FontSize;

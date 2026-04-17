@@ -53,7 +53,7 @@ public sealed partial class DefaultLayoutEngine
         double minRadiusFromCenter = centerDiameter / 2 + itemNodeW / 2 + 40.0;
         double radius = Math.Max(minRadiusFromSpacing, minRadiusFromCenter);
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         // Canvas center point
         double cx = pad + radius + Math.Max(itemNodeW, centerDiameter) / 2;

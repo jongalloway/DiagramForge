@@ -27,7 +27,7 @@ public sealed partial class DefaultLayoutEngine
         if (ringNodes.Count == 0 || cardNodes.Count != ringNodes.Count)
             return;
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
         bool isLightBackground = ColorUtils.IsLight(theme.BackgroundColor);
 
         double centerFontSize = Math.Round(theme.FontSize * 1.08, 1);
