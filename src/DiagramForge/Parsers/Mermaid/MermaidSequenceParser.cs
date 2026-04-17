@@ -28,6 +28,10 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         int participantIndex = 0;
         int messageIndex = 0;
 
+        // Stack for open rect blocks: each entry holds (group, startMessageIndex).
+        var openRects = new Stack<(Group Group, int StartIndex)>();
+        int rectIndex = 0;
+
         Node GetOrCreateParticipant(string id)
         {
             if (!participants.TryGetValue(id, out var node))
@@ -89,6 +93,35 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 continue;
             }
 
+            // rect rgb(...) / rect rgba(...)  — colored background band
+            if (line.StartsWith("rect ", StringComparison.OrdinalIgnoreCase))
+            {
+                var colorSpec = line["rect ".Length..].Trim();
+                if (TryParseRectColor(colorSpec, out var normalizedColor))
+                {
+                    var groupId = $"sequence:rect:{rectIndex++}";
+                    var group = new Group(groupId, string.Empty);
+                    group.FillColor = normalizedColor;
+                    group.Metadata["sequence:rectGroup"] = true;
+                    openRects.Push((group, messageIndex));
+                }
+                continue;
+            }
+
+            // end  — closes the innermost open rect block
+            if (string.Equals(line, "end", StringComparison.OrdinalIgnoreCase) && openRects.Count > 0)
+            {
+                var (group, startIdx) = openRects.Pop();
+                int endIdx = messageIndex - 1;
+                if (endIdx >= startIdx)
+                {
+                    group.Metadata["sequence:rectStartIndex"] = startIdx;
+                    group.Metadata["sequence:rectEndIndex"] = endIdx;
+                    builder.AddGroup(group);
+                }
+                continue;
+            }
+
             // Message line:  SourceId->>TargetId: label text
             if (TryParseMessage(line, out var srcId, out var tgtId, out var msgLabel,
                                 out var lineStyle, out var arrowHead))
@@ -111,6 +144,28 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         }
 
         return builder.Build();
+    }
+
+    /// <summary>
+    /// Validates and normalises a rect color specification of the form
+    /// <c>rgb(R,G,B)</c> or <c>rgba(R,G,B,A)</c>.
+    /// Returns <see langword="false"/> when the input does not match either form.
+    /// </summary>
+    private static bool TryParseRectColor(string colorSpec, out string normalizedColor)
+    {
+        normalizedColor = string.Empty;
+        var trimmed = colorSpec.Trim();
+
+        bool isRgb  = trimmed.StartsWith("rgb(",  StringComparison.OrdinalIgnoreCase);
+        bool isRgba = trimmed.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase);
+        if (!isRgb && !isRgba)
+            return false;
+
+        if (!trimmed.EndsWith(")"))
+            return false;
+
+        normalizedColor = trimmed;
+        return true;
     }
 
     /// <summary>

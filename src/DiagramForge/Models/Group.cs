@@ -53,4 +53,7 @@ public class Group
 
     /// <summary>Layout size computed by the layout engine.</summary>
     public double Height { get; set; }
+
+    /// <summary>Arbitrary key-value metadata attached to this group (e.g., parser-specific annotations).</summary>
+    public Dictionary<string, object> Metadata { get; } = new(StringComparer.Ordinal);
 }

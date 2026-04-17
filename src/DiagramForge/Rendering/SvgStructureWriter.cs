@@ -509,6 +509,14 @@ internal static class SvgStructureWriter
 
     internal static void AppendGroup(StringBuilder sb, Group group, Theme theme, int groupIndex)
     {
+        // Sequence rect bands are rendered as simple semi-transparent colored rectangles
+        // spanning the full diagram width — no gradient, no border, no label badge.
+        if (group.Metadata.TryGetValue("sequence:rectGroup", out var isRectObj) && isRectObj is true)
+        {
+            AppendSequenceRectBand(sb, group);
+            return;
+        }
+
         string baseFill = group.FillColor ?? theme.GroupFillColor;
         string baseStroke = group.StrokeColor ?? theme.GroupStrokeColor;
         SvgRenderSupport.AppendGradientDefs(sb, "  ", $"group-{groupIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
@@ -532,6 +540,24 @@ internal static class SvgStructureWriter
             sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(badgeX)}" y="{SvgRenderSupport.F(badgeY)}" width="{SvgRenderSupport.F(badgeWidth)}" height="{SvgRenderSupport.F(badgeHeight)}" rx="{SvgRenderSupport.F(badgeHeight / 2)}" ry="{SvgRenderSupport.F(badgeHeight / 2)}" fill="{badgeFill}" stroke="{badgeStroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth * 0.8)}"/>""");
             sb.AppendLine($"""  <text x="{SvgRenderSupport.F(badgeX + 9)}" y="{SvgRenderSupport.F(badgeY + badgeHeight * 0.68)}" font-family="{SvgRenderSupport.Escape(theme.FontFamily)}" font-size="{SvgRenderSupport.F(badgeFontSize)}" fill="{badgeText}" font-weight="bold">{SvgRenderSupport.Escape(group.Label.Text)}</text>""");
         }
+    }
+
+    /// <summary>
+    /// Renders a sequence-diagram rect band as a simple semi-transparent colored
+    /// rectangle spanning the full canvas width.  No border, no label badge.
+    /// </summary>
+    private static void AppendSequenceRectBand(StringBuilder sb, Group group)
+    {
+        string colorSpec = group.FillColor ?? "rgb(128,128,128)";
+        string fill      = SvgRenderSupport.Escape(colorSpec);
+
+        // For rgb() (no embedded alpha) add a fill-opacity so the band is
+        // semi-transparent.  For rgba() the caller-supplied alpha takes effect
+        // automatically via the browser's CSS colour parsing.
+        bool hasEmbeddedAlpha = colorSpec.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase);
+        string opacityAttr = hasEmbeddedAlpha ? string.Empty : " fill-opacity=\"0.2\"";
+
+        sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(group.X)}" y="{SvgRenderSupport.F(group.Y)}" width="{SvgRenderSupport.F(group.Width)}" height="{SvgRenderSupport.F(group.Height)}" fill="{fill}"{opacityAttr}/>""");
     }
 
     private static bool TryBuildCycleArcPath(Edge edge, Node source, Node target, out string pathData, out double labelX, out double labelY)

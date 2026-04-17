@@ -325,4 +325,154 @@ public class MermaidSequenceParserTests
         Assert.True(diagram.Nodes.ContainsKey("A"));
         Assert.True(diagram.Nodes.ContainsKey("B"));
     }
+
+    // ── Rect blocks ───────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_RectRgb_CreatesOneGroup()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(255,0,0)
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Single(diagram.Groups);
+    }
+
+    [Fact]
+    public void Parse_RectRgb_GroupFillColorIsPreserved()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(0,255,0)
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("rgb(0,255,0)", diagram.Groups[0].FillColor);
+    }
+
+    [Fact]
+    public void Parse_RectRgba_GroupFillColorIsPreserved()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgba(0,128,255,0.3)
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("rgba(0,128,255,0.3)", diagram.Groups[0].FillColor);
+    }
+
+    [Fact]
+    public void Parse_RectBlock_GroupHasRectGroupMetadata()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(255,0,0)
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.True(group.Metadata.TryGetValue("sequence:rectGroup", out var val) && val is true);
+    }
+
+    [Fact]
+    public void Parse_RectBlock_GroupStartAndEndIndexSet()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: Before
+                rect rgb(255,0,0)
+                    A->>B: Inside
+                end
+                A->>B: After
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups);
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:rectStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:rectEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_TwoRectBlocks_CreatesTwoGroups()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(255,0,0)
+                    A->>B: msg1
+                end
+                rect rgb(0,255,0)
+                    A->>B: msg2
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+    }
+
+    [Fact]
+    public void Parse_RectWithNoMessages_GroupNotAdded()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(255,0,0)
+                end
+                A->>B: msg
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Empty(diagram.Groups);
+    }
+
+    [Fact]
+    public void Parse_RectBlock_DoesNotCreateExtraParticipants()
+    {
+        const string text = """
+            sequenceDiagram
+                participant A
+                participant B
+                rect rgb(255,0,0)
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_RectBlock_MessagesStillParsed()
+    {
+        const string text = """
+            sequenceDiagram
+                rect rgb(255,0,0)
+                    A->>B: Hello
+                    B-->>A: Hi
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Edges.Count);
+    }
 }
