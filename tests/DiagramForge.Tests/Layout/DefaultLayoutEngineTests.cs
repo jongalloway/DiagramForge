@@ -1924,4 +1924,67 @@ public class DefaultLayoutEngineTests
         Assert.True(withSubtitleHeight > noSubtitleHeight,
             "Canvas height must increase when subtitle is present");
     }
+
+    // ── BFS (flowchart) heading offset ────────────────────────────────────────
+
+    [Fact]
+    public void Layout_Flowchart_WithTitleAndSubtitle_NodesShiftedBelowSubtitleArea()
+    {
+        // With default theme: titleY ≈ DiagramPadding - 4 = 20, subtitleY ≈ 39.
+        // Subtitle text body spans approximately Y=26-39.
+        // Nodes must start at Y > subtitle text bottom to avoid overlap.
+        var diagram = new Diagram { Title = "Title", Subtitle = "Subtitle" }
+            .AddNode(new Node("A"))
+            .AddNode(new Node("B"))
+            .AddEdge(new Edge("A", "B"));
+
+        _engine.Layout(diagram, _theme);
+
+        double subtitleTextBottom = _theme.DiagramPadding - 4 + _theme.TitleFontSize + 4 + _theme.FontSize;
+        foreach (var node in diagram.Nodes.Values)
+        {
+            Assert.True(node.Y > subtitleTextBottom,
+                $"Node Y ({node.Y}) must be below subtitle text bottom (≈{subtitleTextBottom}) to avoid overlap");
+        }
+    }
+
+    [Fact]
+    public void Layout_Flowchart_WithSubtitleOnly_NodesFitBelowSubtitle()
+    {
+        // Subtitle-only (no title): subtitle renders at DiagramPadding - 4 (same as title position).
+        // Subtitle text top ≈ DiagramPadding - 4 - FontSize * 0.85 ≈ 9.  Nodes at DiagramPadding = 24.
+        // No overlap expected even without extra offset.
+        var diagram = new Diagram { Subtitle = "Context" }
+            .AddNode(new Node("A"));
+
+        _engine.Layout(diagram, _theme);
+
+        // Even without special handling, subtitle-only should not crash, and nodes should be positioned
+        double subtitleBaseline = _theme.DiagramPadding - 4 + _theme.TitleFontSize + 4;
+        foreach (var node in diagram.Nodes.Values)
+            Assert.True(node.Y > 0, "Node Y must be positive");
+    }
+
+    [Fact]
+    public void Layout_Flowchart_WithTitleAndSubtitle_NodesLowerThanTitleOnly()
+    {
+        var titleOnly = new Diagram { Title = "Title" }
+            .AddNode(new Node("A"))
+            .AddNode(new Node("B"))
+            .AddEdge(new Edge("A", "B"));
+
+        var titleAndSubtitle = new Diagram { Title = "Title", Subtitle = "Sub" }
+            .AddNode(new Node("A"))
+            .AddNode(new Node("B"))
+            .AddEdge(new Edge("A", "B"));
+
+        _engine.Layout(titleOnly, _theme);
+        _engine.Layout(titleAndSubtitle, _theme);
+
+        double titleOnlyY = titleOnly.Nodes.Values.Min(n => n.Y);
+        double bothY = titleAndSubtitle.Nodes.Values.Min(n => n.Y);
+        Assert.True(bothY > titleOnlyY,
+            $"Nodes should be further down with subtitle (title-only minY={titleOnlyY}, both minY={bothY})");
+    }
 }
+

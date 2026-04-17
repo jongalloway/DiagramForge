@@ -40,6 +40,22 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
     /// </summary>
     private const double AvgGlyphAdvanceEm = 0.6;
 
+    /// <summary>
+    /// Returns the vertical offset to reserve above diagram content for the title and/or subtitle.
+    /// Layouts must add this to any initial node Y so that title + subtitle text does not overlap nodes.
+    /// </summary>
+    private static double ComputeHeadingOffset(Diagram diagram, Theme theme)
+    {
+        bool hasTitle = !string.IsNullOrWhiteSpace(diagram.Title);
+        bool hasSubtitle = !string.IsNullOrWhiteSpace(diagram.Subtitle);
+        double offset = 0;
+        if (hasTitle || hasSubtitle)
+            offset += theme.TitleFontSize + 8;
+        if (hasTitle && hasSubtitle)
+            offset += theme.FontSize + 4;
+        return offset;
+    }
+
     /// <inheritdoc/>
     public void Layout(Diagram diagram, Theme theme)
     {
@@ -100,6 +116,11 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
         bool isHorizontal = hints.Direction is LayoutDirection.LeftToRight
                                                or LayoutDirection.RightToLeft;
 
+        // Reserve vertical space above content for the title and/or subtitle so that
+        // text does not overlap the first row of nodes.  This mirrors the pattern used
+        // by every named diagram-specific layout (TabList, Timeline, Chevron, etc.).
+        double headingOffset = ComputeHeadingOffset(diagram, theme);
+
         if (isHorizontal)
         {
             double maxColumnHeight = centerHierarchyBands
@@ -122,8 +143,8 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
                 double maxWidthInColumn = layer.Max(n => n.Width);
                 double columnHeight = layer.Sum(node => node.Height) + (Math.Max(0, layer.Count - 1) * vGap);
                 double runY = centerHierarchyBands
-                    ? pad + ((maxColumnHeight - columnHeight) / 2)
-                    : pad;
+                    ? pad + headingOffset + ((maxColumnHeight - columnHeight) / 2)
+                    : pad + headingOffset;
                 foreach (var node in layer)
                 {
                     node.X = columnX;
@@ -142,7 +163,7 @@ public sealed partial class DefaultLayoutEngine : ILayoutEngine
                     .Max()
                 : 0;
 
-            double rowY = pad;
+            double rowY = pad + headingOffset;
             foreach (var layer in layers)
             {
                 if (layer.Count == 0)

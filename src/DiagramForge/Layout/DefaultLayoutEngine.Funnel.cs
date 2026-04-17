@@ -35,7 +35,7 @@ public sealed partial class DefaultLayoutEngine
         int stageCount = orderedNodes.Count;
         double nodeHeight = orderedNodes.Max(node => EnsureIconHeight(node, nodeH));
         double fullWidth = Math.Max(widestLabel, minW * 1.9);
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
 
         for (int index = 0; index < orderedNodes.Count; index++)
         {

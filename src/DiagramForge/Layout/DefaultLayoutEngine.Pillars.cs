@@ -29,7 +29,7 @@ public sealed partial class DefaultLayoutEngine
         // ── Title font is 20% larger and bold ──────────────────────────────────
         double titleFontSize = Math.Round(theme.FontSize * 1.2, 1);
 
-        double titleOffset = !string.IsNullOrWhiteSpace(diagram.Title) ? theme.TitleFontSize + 8 : 0;
+        double titleOffset = ComputeHeadingOffset(diagram, theme);
         double maxSegTextWidth = diagram.Nodes.Values
             .Where(n => n.Metadata.TryGetValue("pillars:kind", out var kind) && "segment".Equals(kind as string, StringComparison.Ordinal))
             .Select(n => EnsureIconWidth(n, theme, EstimateTextWidth(n.Label.Text, n.Label.FontSize ?? theme.FontSize) + theme.NodePadding * 2.5))

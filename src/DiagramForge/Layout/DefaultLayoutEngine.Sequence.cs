@@ -24,13 +24,7 @@ public sealed partial class DefaultLayoutEngine
             .ToList();
 
         // Reserve vertical space for the title and/or subtitle so they don't overlap participants.
-        bool hasTitle = !string.IsNullOrWhiteSpace(diagram.Title);
-        bool hasSubtitle = !string.IsNullOrWhiteSpace(diagram.Subtitle);
-        double headingOffset = 0;
-        if (hasTitle || hasSubtitle)
-            headingOffset += theme.TitleFontSize + 8;
-        if (hasTitle && hasSubtitle)
-            headingOffset += theme.FontSize + 4;
+        double headingOffset = ComputeHeadingOffset(diagram, theme);
 
         double runX = pad;
         double participantStripHeight = ordered.Max(node => node.Height);
