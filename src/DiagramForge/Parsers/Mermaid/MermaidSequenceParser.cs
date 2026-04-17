@@ -27,6 +27,8 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         var participants = new Dictionary<string, Node>(StringComparer.Ordinal);
         int participantIndex = 0;
         int messageIndex = 0;
+        bool autonumber = false;
+        int autonumberIndex = 1;
 
         // Stack for open rect blocks: each entry holds (group, startMessageIndex).
         var openRects = new Stack<(Group Group, int StartIndex)>();
@@ -47,6 +49,13 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         for (int i = 1; i < document.Lines.Length; i++)
         {
             var line = document.Lines[i];
+
+            // autonumber — enable numbered badges on each message
+            if (line.Equals("autonumber", StringComparison.OrdinalIgnoreCase))
+            {
+                autonumber = true;
+                continue;
+            }
 
             // title: <text>  — diagram title directive
             if (line.StartsWith("title:", StringComparison.OrdinalIgnoreCase))
@@ -136,6 +145,9 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 };
                 edge.Metadata["sequence:messageIndex"] = messageIndex++;
 
+                if (autonumber)
+                    edge.Metadata["sequence:autonumberIndex"] = autonumberIndex++;
+
                 if (!string.IsNullOrEmpty(msgLabel))
                     edge.Label = new Label(msgLabel!);
 
@@ -143,7 +155,10 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
             }
         }
 
-        return builder.Build();
+        var diagram = builder.Build();
+        if (autonumber)
+            diagram.Metadata["sequence:autonumber"] = true;
+        return diagram;
     }
 
     /// <summary>

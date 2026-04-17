@@ -326,6 +326,99 @@ public class MermaidSequenceParserTests
         Assert.True(diagram.Nodes.ContainsKey("B"));
     }
 
+    // ── Autonumber ────────────────────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_Autonumber_SetsDiagramMetadata()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    autonumber\n    A->>B: Hello");
+
+        Assert.True(diagram.Metadata.ContainsKey("sequence:autonumber"));
+        Assert.True(diagram.Metadata["sequence:autonumber"] is true);
+    }
+
+    [Fact]
+    public void Parse_Autonumber_CaseInsensitive()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    AUTONUMBER\n    A->>B: Hello");
+
+        Assert.True(diagram.Metadata.ContainsKey("sequence:autonumber"));
+    }
+
+    [Fact]
+    public void Parse_Autonumber_EdgeHasAutonumberIndex()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    autonumber\n    A->>B: Hello");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.True(edge.Metadata.ContainsKey("sequence:autonumberIndex"));
+        Assert.Equal(1, Convert.ToInt32(edge.Metadata["sequence:autonumberIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_Autonumber_MultipleMessages_IndexesStartAtOne()
+    {
+        const string text = """
+            sequenceDiagram
+                autonumber
+                A->>B: First
+                B-->>A: Second
+                A->>B: Third
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(3, diagram.Edges.Count);
+        for (int i = 0; i < diagram.Edges.Count; i++)
+        {
+            int idx = Convert.ToInt32(diagram.Edges[i].Metadata["sequence:autonumberIndex"],
+                System.Globalization.CultureInfo.InvariantCulture);
+            Assert.Equal(i + 1, idx);
+        }
+    }
+
+    [Fact]
+    public void Parse_NoAutonumber_DiagramMetadataKeyAbsent()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>B: Hello");
+
+        Assert.False(diagram.Metadata.ContainsKey("sequence:autonumber"));
+    }
+
+    [Fact]
+    public void Parse_NoAutonumber_EdgeDoesNotHaveAutonumberIndex()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>B: Hello");
+
+        var edge = Assert.Single(diagram.Edges);
+        Assert.False(edge.Metadata.ContainsKey("sequence:autonumberIndex"));
+    }
+
+    [Fact]
+    public void Parse_Autonumber_MessagesBeforeKeyword_AreNotNumbered()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: Before
+                autonumber
+                B-->>A: After
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Edges.Count);
+        // Find edge with label "Before" — it should have no autonumber index
+        var beforeEdge = diagram.Edges.First(e => e.Label?.Text == "Before");
+        Assert.False(beforeEdge.Metadata.ContainsKey("sequence:autonumberIndex"));
+
+        // Find edge with label "After" — it should be numbered 1
+        var afterEdge = diagram.Edges.First(e => e.Label?.Text == "After");
+        Assert.True(afterEdge.Metadata.ContainsKey("sequence:autonumberIndex"));
+        Assert.Equal(1, Convert.ToInt32(afterEdge.Metadata["sequence:autonumberIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
     // ── Rect blocks ───────────────────────────────────────────────────────────
 
     [Fact]

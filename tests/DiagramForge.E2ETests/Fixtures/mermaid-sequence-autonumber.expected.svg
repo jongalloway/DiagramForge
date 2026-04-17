@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384.00" height="348.00" viewBox="0 0 384.00 348.00">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#94A3B8"/>
+    </marker>
+    <marker id="arrowhead-open" markerWidth="12" markerHeight="9" refX="11" refY="4.50" orient="auto">
+      <polygon points="0 0, 12 4.50, 0 9" fill="#111827" stroke="#94A3B8" stroke-width="1.50"/>
+    </marker>
+    <marker id="arrowhead-filled-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#94A3B8"/>
+    </marker>
+    <marker id="arrowhead-open-diamond" markerWidth="14" markerHeight="9" refX="1" refY="4.50" orient="auto">
+      <polygon points="1 4.50, 7 1, 13 4.50, 7 8" fill="#111827" stroke="#94A3B8" stroke-width="1.50"/>
+    </marker>
+  </defs>
+  <rect width="384.00" height="348.00" fill="#111827" rx="8.00" ry="8.00"/>
+  <line x1="120.00" y1="64.00" x2="120.00" y2="324.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
+  <line x1="300.00" y1="64.00" x2="300.00" y2="324.00" stroke="#94A3B8" stroke-width="1.50" stroke-dasharray="6,3"/>
+  <path d="M 120.00,84.00 C 192.00,84.00 228.00,84.00 300.00,84.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <text x="210.00" y="80.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Login request</text>
+  <path d="M 300.00,124.00 C 228.00,124.00 192.00,124.00 120.00,124.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round" stroke-dasharray="6,3"   marker-end="url(#arrowhead)" />
+  <text x="210.00" y="120.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Challenge</text>
+  <path d="M 120.00,164.00 C 192.00,164.00 228.00,164.00 300.00,164.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <text x="210.00" y="160.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Credentials</text>
+  <path d="M 300.00,204.00 C 228.00,204.00 192.00,204.00 120.00,204.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round" stroke-dasharray="6,3"   marker-end="url(#arrowhead)" />
+  <text x="210.00" y="200.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Token</text>
+  <path d="M 120.00,244.00 L 152.00,244.00 A 8.00,8.00 0 0 1 160.00,252.00 L 160.00,276.00 A 8.00,8.00 0 0 1 152.00,284.00 L 120.00,284.00" fill="none" stroke="#94A3B8" stroke-width="1.50" stroke-linecap="round"   marker-end="url(#arrowhead)" />
+  <text x="166.00" y="268.00" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="11.05" fill="#8FA3B8" font-style="italic">Store token</text>
+  <circle cx="42.00" cy="84.00" r="12.00" fill="#87D6FC"/>
+  <text x="42.00" y="87.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.14" fill="#0F172A" font-weight="600">1</text>
+  <circle cx="42.00" cy="124.00" r="12.00" fill="#87D6FC"/>
+  <text x="42.00" y="127.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.14" fill="#0F172A" font-weight="600">2</text>
+  <circle cx="42.00" cy="164.00" r="12.00" fill="#87D6FC"/>
+  <text x="42.00" y="167.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.14" fill="#0F172A" font-weight="600">3</text>
+  <circle cx="42.00" cy="204.00" r="12.00" fill="#87D6FC"/>
+  <text x="42.00" y="207.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.14" fill="#0F172A" font-weight="600">4</text>
+  <circle cx="42.00" cy="264.00" r="12.00" fill="#87D6FC"/>
+  <text x="42.00" y="267.85" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="10.14" fill="#0F172A" font-weight="600">5</text>
+  <g transform="translate(60.00,24.00)">
+    <defs>
+      <linearGradient id="node-0-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#374C62"/>
+        <stop offset="58%" stop-color="#243B53"/>
+        <stop offset="100%" stop-color="#21374E"/>
+      </linearGradient>
+      <linearGradient id="node-0-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#233649"/>
+        <stop offset="100%" stop-color="#22384D"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-0-fill-gradient)" stroke="url(#node-0-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Alice</text>
+  </g>
+  <g transform="translate(240.00,24.00)">
+    <defs>
+      <linearGradient id="node-1-fill-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#2C4D5E"/>
+        <stop offset="58%" stop-color="#183C4F"/>
+        <stop offset="100%" stop-color="#16384A"/>
+      </linearGradient>
+      <linearGradient id="node-1-stroke-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%" stop-color="#1A3745"/>
+        <stop offset="100%" stop-color="#193949"/>
+      </linearGradient>
+    </defs>
+    <rect width="120.00" height="40.00" rx="0" ry="0" fill="url(#node-1-fill-gradient)" stroke="url(#node-1-stroke-gradient)" stroke-width="1.50"/>
+    <text x="60.00" y="24.55" text-anchor="middle" font-family="&quot;Segoe UI&quot;, Inter, Arial, sans-serif" font-size="13.00" fill="#E5EEF9">Bob</text>
+  </g>
+</svg>
