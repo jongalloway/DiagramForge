@@ -2107,5 +2107,144 @@ public class DefaultLayoutEngineTests
         Assert.True(bothY > titleOnlyY,
             $"Nodes should be further down with subtitle (title-only minY={titleOnlyY}, both minY={bothY})");
     }
+
+    // ── Sequence diagram notes ────────────────────────────────────────────────
+
+    private static Diagram BuildSequenceDiagramWithNote(string notePosition, string noteP1, string? noteP2 = null)
+    {
+        var diagram = new Diagram
+        {
+            SourceSyntax = "mermaid",
+            DiagramType = "sequencediagram",
+        };
+        diagram.LayoutHints.Direction = LayoutDirection.LeftToRight;
+
+        var nodeA = new Node("A", "Alice") { Shape = Shape.Rectangle };
+        nodeA.Metadata["sequence:participantIndex"] = 0;
+        var nodeB = new Node("B", "Bob") { Shape = Shape.Rectangle };
+        nodeB.Metadata["sequence:participantIndex"] = 1;
+        diagram.AddNode(nodeA);
+        diagram.AddNode(nodeB);
+
+        var edge = new Edge("A", "B");
+        edge.Metadata["sequence:messageIndex"] = 0;
+        diagram.AddEdge(edge);
+
+        var noteGroup = new Group("sequence:note:0000", "a note");
+        noteGroup.Metadata["sequence:noteGroup"] = true;
+        noteGroup.Metadata["sequence:notePosition"] = notePosition;
+        noteGroup.Metadata["sequence:noteParticipant"] = noteP1;
+        if (noteP2 is not null)
+            noteGroup.Metadata["sequence:noteParticipant2"] = noteP2;
+        noteGroup.Metadata["sequence:noteSequenceIndex"] = 1; // after the message
+        diagram.AddGroup(noteGroup);
+
+        return diagram;
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_RightOf_PositionedRightOfLifeline()
+    {
+        var diagram = BuildSequenceDiagramWithNote("rightOf", "A");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        var nodeA = diagram.Nodes["A"];
+        double lifelineX = nodeA.X + nodeA.Width / 2;
+
+        Assert.True(noteGroup.X > lifelineX,
+            $"Note X ({noteGroup.X}) should be to the right of lifeline X ({lifelineX})");
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_LeftOf_PositionedLeftOfLifeline()
+    {
+        var diagram = BuildSequenceDiagramWithNote("leftOf", "B");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        var nodeB = diagram.Nodes["B"];
+        double lifelineX = nodeB.X + nodeB.Width / 2;
+
+        Assert.True(noteGroup.X + noteGroup.Width < lifelineX,
+            $"Note right edge ({noteGroup.X + noteGroup.Width}) should be left of lifeline X ({lifelineX})");
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_Over_SingleParticipant_AlignedWithNode()
+    {
+        var diagram = BuildSequenceDiagramWithNote("over", "A");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        var nodeA = diagram.Nodes["A"];
+
+        Assert.Equal(nodeA.X, noteGroup.X, precision: 1);
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_Over_TwoParticipants_SpansBothNodes()
+    {
+        var diagram = BuildSequenceDiagramWithNote("over", "A", "B");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        var nodeA = diagram.Nodes["A"];
+        var nodeB = diagram.Nodes["B"];
+
+        Assert.True(noteGroup.X <= nodeA.X,
+            $"Note X ({noteGroup.X}) should be at or left of node A ({nodeA.X})");
+        Assert.True(noteGroup.X + noteGroup.Width >= nodeB.X + nodeB.Width,
+            $"Note right ({noteGroup.X + noteGroup.Width}) should reach or pass node B right ({nodeB.X + nodeB.Width})");
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_HasNonZeroHeightAndWidth()
+    {
+        var diagram = BuildSequenceDiagramWithNote("rightOf", "A");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        Assert.True(noteGroup.Width > 0, "Note width should be positive");
+        Assert.True(noteGroup.Height > 0, "Note height should be positive");
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_SubsequentMessageBelowNote()
+    {
+        // After a note, the next message should have a higher Y than the note itself.
+        var diagram = BuildSequenceDiagramWithNote("rightOf", "A");
+        // The note occupies sequence index 1; add a second message at index 2.
+        var laterEdge = new Edge("A", "B");
+        laterEdge.Metadata["sequence:messageIndex"] = 2;
+        diagram.AddEdge(laterEdge);
+
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        var laterMsg = diagram.Edges.Single(e =>
+            Convert.ToInt32(e.Metadata["sequence:messageIndex"],
+                System.Globalization.CultureInfo.InvariantCulture) == 2);
+
+        double msgY = Convert.ToDouble(laterMsg.Metadata["sequence:messageY"],
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.True(msgY > noteGroup.Y,
+            $"Later message Y ({msgY}) should be below note Y ({noteGroup.Y})");
+    }
+
+    [Fact]
+    public void Layout_SequenceNote_RightOf_LastParticipant_ExtendsCanvasWidth()
+    {
+        var diagram = BuildSequenceDiagramWithNote("rightOf", "B");
+        _engine.Layout(diagram, _theme);
+
+        var noteGroup = diagram.Groups.Single(g => g.Metadata.ContainsKey("sequence:noteGroup"));
+        double canvasWidth = Convert.ToDouble(diagram.Metadata["sequence:canvasWidth"],
+            System.Globalization.CultureInfo.InvariantCulture);
+
+        Assert.True(canvasWidth >= noteGroup.X + noteGroup.Width,
+            $"Canvas width ({canvasWidth}) must accommodate note right edge ({noteGroup.X + noteGroup.Width})");
+    }
 }
 

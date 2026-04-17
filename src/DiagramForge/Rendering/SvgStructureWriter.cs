@@ -517,6 +517,11 @@ internal static class SvgStructureWriter
             return;
         }
 
+        // Sequence notes are rendered in a dedicated pass via AppendSequenceNotes (after
+        // lifelines) so they appear on top of the dashed lifeline strokes.
+        if (group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) && isNoteObj is true)
+            return;
+
         string baseFill = group.FillColor ?? theme.GroupFillColor;
         string baseStroke = group.StrokeColor ?? theme.GroupStrokeColor;
         SvgRenderSupport.AppendGradientDefs(sb, "  ", $"group-{groupIndex}", baseFill, baseStroke, theme, out string fill, out string stroke);
@@ -684,6 +689,78 @@ internal static class SvgStructureWriter
         while (angle > Tau)
             angle -= Tau;
         return angle;
+    }
+
+    /// <summary>
+    /// Renders all sequence-diagram note boxes that have been laid out.
+    /// Notes are rendered after lifelines so that the note boxes visually sit on
+    /// top of the dashed lifeline strokes.
+    /// </summary>
+    internal static void AppendSequenceNotes(StringBuilder sb, Diagram diagram, Theme theme)
+    {
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
+                continue;
+
+            // Skip groups that the layout engine did not position (e.g., missing participant).
+            if (!group.Metadata.ContainsKey("sequence:noteY"))
+                continue;
+
+            AppendSequenceNote(sb, group, theme);
+        }
+    }
+
+    /// <summary>
+    /// Renders a single sequence-diagram note box as a filled rectangle with
+    /// optional multi-line text.
+    /// </summary>
+    private static void AppendSequenceNote(StringBuilder sb, Group group, Theme theme)
+    {
+        double x = group.X;
+        double y = group.Y;
+        double w = group.Width;
+        double h = group.Height;
+
+        // Derive note colours from the theme accent colour so notes stay on-theme
+        // across every built-in theme.
+        string accentColor   = theme.AccentColor;
+        string noteFill      = SvgRenderSupport.Escape(ColorUtils.Blend(accentColor, theme.BackgroundColor,
+            ColorUtils.IsLight(theme.BackgroundColor) ? 0.15 : 0.25));
+        string noteStroke    = SvgRenderSupport.Escape(accentColor);
+        string noteTextColor = SvgRenderSupport.Escape(
+            SvgRenderSupport.ResolveNodeTextColor(noteFill, theme));
+
+        sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(x)}" y="{SvgRenderSupport.F(y)}" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" rx="4" ry="4" fill="{noteFill}" stroke="{noteStroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"/>""");
+
+        string noteText = group.Label.Text;
+        if (string.IsNullOrEmpty(noteText))
+            return;
+
+        double fontSize   = theme.FontSize * 0.85;
+        double lineHeight = fontSize * 1.3;
+        string[] lines    = noteText.Split('\n');
+        double textX      = x + w / 2;
+        // Vertically center the text block within the box.
+        double blockHeight = lines.Length * lineHeight;
+        double textStartY  = y + (h - blockHeight) / 2 + fontSize * 0.85;
+
+        string fontFamily = SvgRenderSupport.Escape(theme.FontFamily);
+
+        if (lines.Length == 1)
+        {
+            sb.AppendLine($"""  <text x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(textStartY)}" text-anchor="middle" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{noteTextColor}">{SvgRenderSupport.Escape(noteText)}</text>""");
+        }
+        else
+        {
+            sb.Append($"""  <text text-anchor="middle" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(fontSize)}" fill="{noteTextColor}">""");
+            for (int i = 0; i < lines.Length; i++)
+            {
+                double lineY = textStartY + i * lineHeight;
+                sb.Append($"""<tspan x="{SvgRenderSupport.F(textX)}" y="{SvgRenderSupport.F(lineY)}">{SvgRenderSupport.Escape(lines[i])}</tspan>""");
+            }
+            sb.AppendLine("</text>");
+        }
     }
 
     internal static void AppendLifelines(StringBuilder sb, Diagram diagram, Theme theme, double canvasHeight)

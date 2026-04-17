@@ -568,4 +568,120 @@ public class MermaidSequenceParserTests
 
         Assert.Equal(2, diagram.Edges.Count);
     }
+
+    // ── Note directives ───────────────────────────────────────────────────────
+
+    [Theory]
+    [InlineData("Note right of A: hello", "rightOf", "A", null, "hello")]
+    [InlineData("Note left of B: world", "leftOf", "B", null, "world")]
+    [InlineData("Note over A: text", "over", "A", null, "text")]
+    [InlineData("NOTE RIGHT OF A: caps", "rightOf", "A", null, "caps")]
+    public void Parse_Note_SingleParticipant_CreatesGroupWithCorrectMetadata(
+        string noteLine, string expectedPos, string expectedP1, string? expectedP2, string expectedText)
+    {
+        var diagram = _parser.Parse($"sequenceDiagram\n    participant A\n    participant B\n    {noteLine}");
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.True(noteGroup.Metadata.TryGetValue("sequence:noteGroup", out var isNote) && isNote is true);
+        Assert.Equal(expectedPos, noteGroup.Metadata["sequence:notePosition"]);
+        Assert.Equal(expectedP1, noteGroup.Metadata["sequence:noteParticipant"]);
+        Assert.Equal(expectedText, noteGroup.Label.Text);
+
+        if (expectedP2 is null)
+            Assert.False(noteGroup.Metadata.ContainsKey("sequence:noteParticipant2"));
+        else
+            Assert.Equal(expectedP2, noteGroup.Metadata["sequence:noteParticipant2"]);
+    }
+
+    [Fact]
+    public void Parse_NoteOver_TwoParticipants_StoresBothParticipants()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    Note over A,B: spanning");
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal("over", noteGroup.Metadata["sequence:notePosition"]);
+        Assert.Equal("A", noteGroup.Metadata["sequence:noteParticipant"]);
+        Assert.Equal("B", noteGroup.Metadata["sequence:noteParticipant2"]);
+        Assert.Equal("spanning", noteGroup.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_Note_AutoCreatesParticipant()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    Note right of Alice: hi");
+
+        Assert.True(diagram.Nodes.ContainsKey("Alice"));
+    }
+
+    [Fact]
+    public void Parse_Note_SequenceIndexIncremented()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: msg
+                Note right of A: note
+                A->>B: after
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // The note occupies sequence index 1; the "after" message occupies index 2.
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal(1, Convert.ToInt32(noteGroup.Metadata["sequence:noteSequenceIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+
+        var afterEdge = diagram.Edges.Single(e => e.Label?.Text == "after");
+        Assert.Equal(2, Convert.ToInt32(afterEdge.Metadata["sequence:messageIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_Note_DoesNotCreateExtraEdges()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>B: msg\n    Note right of A: hi");
+
+        Assert.Single(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_MultilineNote_ContinuationAppended()
+    {
+        const string text = "sequenceDiagram\n    Note right of A: first line\n        second line";
+
+        var diagram = _parser.Parse(text);
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal("first line\nsecond line", noteGroup.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_MultilineNote_ContinuationEndsAtNextKeyword()
+    {
+        const string text = """
+            sequenceDiagram
+                Note right of A: first
+                    continuation
+                A->>B: msg
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal("first\ncontinuation", noteGroup.Label.Text);
+        Assert.Single(diagram.Edges);
+    }
+
+    [Fact]
+    public void Parse_MultipleNotes_CreateMultipleGroups()
+    {
+        const string text = """
+            sequenceDiagram
+                Note right of A: note1
+                Note left of B: note2
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count);
+    }
 }

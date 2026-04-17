@@ -1,0 +1,16 @@
+---
+theme: default
+---
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    participant C as Carol
+    Note right of A: Request starts here
+    A->>B: sendRequest()
+    Note over A,B: Handshake phase
+    B->>C: forward(data)
+    Note left of C: Data arrives
+        second line
+    C-->>B: ack
+    B-->>A: response
+    Note over B: Processing complete

@@ -19,6 +19,17 @@ public sealed partial class DefaultLayoutEngine
     // filter region extends beyond the node boundary.
     private const double SequenceAutonumberShadowClearanceMultiplier = 2.0;
 
+    // Horizontal gap between a note box and the adjacent lifeline.
+    private const double NoteLifelineGap = 6;
+
+    // Horizontal and vertical padding inside a note box between the box border and text.
+    private const double NoteHPad = 8;
+    private const double NoteVPad = 5;
+
+    // Minimum note box width and height.
+    private const double NoteMinWidth  = 60;
+    private const double NoteMinHeight = 28;
+
     private static void LayoutSequenceDiagram(
         Diagram diagram,
         Theme theme,
@@ -64,30 +75,57 @@ public sealed partial class DefaultLayoutEngine
         if (hasAutonumber)
             diagram.Metadata["sequence:autonumberBadgeX"] = pad + autonumberExtraLeft / 2;
 
-        // Self-messages (source == target) need 2× the normal row height to
-        // accommodate a loopback arc. Walk edges in message-index order so that
-        // the running-Y accumulates correctly regardless of storage order.
-        var orderedEdges = diagram.Edges
-            .OrderBy(e => TryGetMetadataInt(e.Metadata, "sequence:messageIndex", out var idx) ? idx : 0)
-            .ToList();
+        // Build a combined ordered sequence of messages (edges) and notes (note-type groups).
+        // Both share a unified sequence index so they interleave correctly.
+        var sequenceItems = new List<(int SequenceIdx, bool IsSelf, Edge? Edge, Group? NoteGroup)>();
 
-        double runY = firstMessageY;
-        foreach (var edge in orderedEdges)
+        foreach (var edge in diagram.Edges)
         {
+            if (!TryGetMetadataInt(edge.Metadata, "sequence:messageIndex", out var msgIdx))
+                continue;
             bool isSelf = string.Equals(edge.SourceId, edge.TargetId, StringComparison.Ordinal);
-            edge.Metadata["sequence:messageY"] = runY;
-            if (isSelf)
+            sequenceItems.Add((msgIdx, isSelf, edge, null));
+        }
+
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
+                continue;
+            if (!TryGetMetadataInt(group.Metadata, "sequence:noteSequenceIndex", out var noteIdx))
+                continue;
+            sequenceItems.Add((noteIdx, false, null, group));
+        }
+
+        sequenceItems.Sort((a, b) => a.SequenceIdx.CompareTo(b.SequenceIdx));
+
+        // Assign Y coordinates to each item in sequence order.
+        // orderedEdges collects only edges for the canvas-width and rect-band passes below.
+        var orderedEdges = new List<Edge>(diagram.Edges.Count);
+        double runY = firstMessageY;
+        foreach (var (_, isSelf, edge, noteGroup) in sequenceItems)
+        {
+            if (edge != null)
             {
-                edge.Metadata["sequence:selfMessage"] = true;
-                edge.Metadata["sequence:selfMessageHeight"] = messageRowHeight;
-                // Store the loop width on the edge so the renderer reads the same
-                // value that the canvas-width calculation uses — no separate constant
-                // to keep in sync between layout and rendering.
-                edge.Metadata["sequence:selfMessageLoopWidth"] = SelfMessageLoopWidth;
-                runY += messageRowHeight * 2;
+                edge.Metadata["sequence:messageY"] = runY;
+                if (isSelf)
+                {
+                    edge.Metadata["sequence:selfMessage"] = true;
+                    edge.Metadata["sequence:selfMessageHeight"] = messageRowHeight;
+                    // Store the loop width on the edge so the renderer reads the same
+                    // value that the canvas-width calculation uses — no separate constant
+                    // to keep in sync between layout and rendering.
+                    edge.Metadata["sequence:selfMessageLoopWidth"] = SelfMessageLoopWidth;
+                    runY += messageRowHeight * 2;
+                }
+                else
+                {
+                    runY += messageRowHeight;
+                }
+                orderedEdges.Add(edge);
             }
-            else
+            else if (noteGroup != null)
             {
+                noteGroup.Metadata["sequence:noteY"] = runY;
                 runY += messageRowHeight;
             }
         }
@@ -121,6 +159,10 @@ public sealed partial class DefaultLayoutEngine
                 extraRight = contentRight - maxNodeRight;
         }
         double canvasWidth = maxNodeRight + extraRight + pad;
+
+        // Position note groups now that participant positions and sequence Y values are final.
+        LayoutSequenceNotes(diagram, ordered, canvasWidth, messageRowHeight, theme, ref canvasWidth);
+
         diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
 
         // Position rect-band groups now that message Y coordinates are final.
@@ -167,6 +209,105 @@ public sealed partial class DefaultLayoutEngine
             group.Y      = bandTop    - halfRow;
             group.Width  = canvasWidth;
             group.Height = bandBottom - bandTop + halfRow;
+        }
+    }
+
+    /// <summary>
+    /// Computes the position (X, Y, Width, Height) of each sequence note group and
+    /// extends <paramref name="canvasWidth"/> when right-of or left-of notes fall
+    /// outside the existing canvas bounds.
+    /// </summary>
+    private static void LayoutSequenceNotes(
+        Diagram diagram,
+        IReadOnlyList<Node> orderedParticipants,
+        double currentCanvasWidth,
+        double messageRowHeight,
+        Theme theme,
+        ref double canvasWidth)
+    {
+        double noteFontSize = theme.FontSize * 0.85;
+        double lineHeight   = noteFontSize * 1.3;
+
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) || isNoteObj is not true)
+                continue;
+
+            if (!group.Metadata.TryGetValue("sequence:noteY", out var noteYObj))
+                continue;
+
+            if (!group.Metadata.TryGetValue("sequence:noteParticipant", out var p1Obj)
+                || p1Obj is not string p1)
+                continue;
+
+            if (!diagram.Nodes.TryGetValue(p1, out var p1Node))
+                continue;
+
+            double noteY = Convert.ToDouble(noteYObj, System.Globalization.CultureInfo.InvariantCulture);
+            string notePos = group.Metadata.TryGetValue("sequence:notePosition", out var posObj)
+                && posObj is string ps ? ps : "over";
+
+            string noteText = group.Label.Text;
+            string[] noteLines = noteText.Split('\n');
+            double textWidth = noteLines.Max(l => EstimateTextWidth(l, noteFontSize));
+            double noteWidth  = Math.Max(NoteMinWidth, textWidth + 2 * NoteHPad);
+            double noteHeight = Math.Max(NoteMinHeight, noteLines.Length * lineHeight + 2 * NoteVPad);
+
+            // Vertically center the note box within its sequence row.
+            double vOffset = Math.Max(0, (messageRowHeight - noteHeight) / 2);
+            double boxY = noteY + vOffset;
+
+            double noteX;
+            switch (notePos)
+            {
+                case "rightOf":
+                {
+                    double lifelineX = p1Node.X + p1Node.Width / 2;
+                    noteX = lifelineX + NoteLifelineGap;
+                    // Extend canvas if the note box reaches past the current right boundary.
+                    double noteRight = noteX + noteWidth;
+                    if (noteRight + theme.DiagramPadding > canvasWidth)
+                        canvasWidth = noteRight + theme.DiagramPadding;
+                    break;
+                }
+                case "leftOf":
+                {
+                    double lifelineX = p1Node.X + p1Node.Width / 2;
+                    noteX = lifelineX - noteWidth - NoteLifelineGap;
+                    break;
+                }
+                case "over":
+                default:
+                {
+                    bool hasTwoParticipants =
+                        group.Metadata.TryGetValue("sequence:noteParticipant2", out var p2Obj)
+                        && p2Obj is string p2
+                        && !string.IsNullOrEmpty(p2)
+                        && diagram.Nodes.TryGetValue(p2, out var p2Node)
+                        && p2Node is not null;
+
+                    if (hasTwoParticipants)
+                    {
+                        diagram.Nodes.TryGetValue((string)group.Metadata["sequence:noteParticipant2"]!, out var p2NodeRef);
+                        double left  = Math.Min(p1Node.X, p2NodeRef!.X);
+                        double right = Math.Max(p1Node.X + p1Node.Width, p2NodeRef.X + p2NodeRef.Width);
+                        noteX     = left;
+                        noteWidth = Math.Max(noteWidth, right - left);
+                    }
+                    else
+                    {
+                        // Single participant: align left edge with the participant box.
+                        noteX     = p1Node.X;
+                        noteWidth = Math.Max(noteWidth, p1Node.Width);
+                    }
+                    break;
+                }
+            }
+
+            group.X      = noteX;
+            group.Y      = boxY;
+            group.Width  = noteWidth;
+            group.Height = noteHeight;
         }
     }
 }
