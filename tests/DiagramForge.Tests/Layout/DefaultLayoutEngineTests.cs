@@ -1959,8 +1959,6 @@ public class DefaultLayoutEngineTests
 
         _engine.Layout(diagram, _theme);
 
-        // Even without special handling, subtitle-only should not crash, and nodes should be positioned
-        double subtitleBaseline = _theme.DiagramPadding - 4 + _theme.TitleFontSize + 4;
         foreach (var node in diagram.Nodes.Values)
             Assert.True(node.Y > 0, "Node Y must be positive");
     }

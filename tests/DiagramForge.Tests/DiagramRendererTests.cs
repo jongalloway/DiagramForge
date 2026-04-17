@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text.RegularExpressions;
 using DiagramForge.Abstractions;
 using DiagramForge.Models;
 
@@ -79,7 +80,7 @@ public class DiagramRendererTests
         Assert.Contains("My Sub", svg);
 
         // Extract all node group translate Y values from the SVG; they must all be > subtitleY
-        var translateMatches = System.Text.RegularExpressions.Regex.Matches(
+        var translateMatches = Regex.Matches(
             svg, @"transform=""translate\([^,]+,\s*([\d.]+)\)""");
         Assert.NotEmpty(translateMatches);
 
@@ -87,9 +88,9 @@ public class DiagramRendererTests
         // For default theme (DiagramPadding=24, TitleFontSize=15, FontSize=13):
         // subtitleY ≈ 39, subtitleTextTop ≈ 39 - 13*0.85 ≈ 28.
         // With heading offset, node Y must start at ≥ 24 + (15+8) + (13+4) = 64.
-        foreach (System.Text.RegularExpressions.Match m in translateMatches)
+        foreach (Match m in translateMatches)
         {
-            double nodeY = double.Parse(m.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+            double nodeY = double.Parse(m.Groups[1].Value, CultureInfo.InvariantCulture);
             Assert.True(nodeY > 39,
                 $"Node at Y={nodeY} must be below subtitle (Y≈39) to avoid overlap");
         }
@@ -123,10 +124,10 @@ public class DiagramRendererTests
 
     private static double ExtractSvgHeight(string svg)
     {
-        var match = System.Text.RegularExpressions.Regex.Match(
+        var match = Regex.Match(
             svg, @"<svg[^>]*\bheight=""([\d.]+)""");
         Assert.True(match.Success, "Could not extract SVG height attribute");
-        return double.Parse(match.Groups[1].Value, System.Globalization.CultureInfo.InvariantCulture);
+        return double.Parse(match.Groups[1].Value, CultureInfo.InvariantCulture);
     }
 
     [Fact]
