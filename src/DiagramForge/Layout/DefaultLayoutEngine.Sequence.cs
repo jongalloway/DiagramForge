@@ -72,7 +72,7 @@ public sealed partial class DefaultLayoutEngine
         diagram.Metadata["sequence:canvasHeight"] = canvasHeight;
 
         // Compute canvas width, extending it when any participant has a self-message
-        // so the loopback arc is not clipped at the canvas boundary.
+        // so the loopback arc and its label are not clipped at the canvas boundary.
         double maxNodeRight = ordered.Count > 0
             ? ordered.Max(n => n.X + n.Width)
             : 0;
@@ -83,9 +83,18 @@ public sealed partial class DefaultLayoutEngine
                 continue;
             if (!diagram.Nodes.TryGetValue(edge.SourceId, out var selfNode))
                 continue;
-            double arcRight = selfNode.X + selfNode.Width + SelfMessageLoopWidth;
-            if (arcRight > maxNodeRight + extraRight)
-                extraRight = arcRight - maxNodeRight;
+            // The arc is anchored at the lifeline (center X), matching AppendLifelines.
+            double lifelineX = selfNode.X + selfNode.Width / 2;
+            double arcRight = lifelineX + SelfMessageLoopWidth;
+            // With text-anchor="middle" the label is centered at arcRight+6; right
+            // edge = arcRight + 6 + labelWidth/2.  Use the same font-size multiple
+            // (0.85×) that the renderer applies to edge labels.
+            double labelWidth = edge.Label is not null
+                ? EstimateTextWidth(edge.Label.Text, theme.FontSize * 0.85)
+                : 0;
+            double contentRight = arcRight + 6 + labelWidth / 2;
+            if (contentRight > maxNodeRight + extraRight)
+                extraRight = contentRight - maxNodeRight;
         }
         diagram.Metadata["sequence:canvasWidth"] = maxNodeRight + extraRight + pad;
     }

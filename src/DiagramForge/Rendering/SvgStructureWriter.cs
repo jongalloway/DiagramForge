@@ -199,9 +199,11 @@ internal static class SvgStructureWriter
             // Read the loop width that the layout engine stored on this edge so that
             // the canvas-width calculation and the arc path use the same value.
             double loopWidth = TryGetMetadataDouble(edge.Metadata, "sequence:selfMessageLoopWidth", out var lw) ? lw : 40;
-            double rightEdge = source.X + source.Width;
-            pathData = BuildSelfMessageLoopPath(rightEdge, y1, loopWidth, selfMessageArcHeight, SelfMessageLoopCornerRadius);
-            labelX = rightEdge + loopWidth + 6;
+            // Anchor the loop to the lifeline (x1 == sourceCenterX) so the arc starts
+            // and ends at the same x as the dashed lifeline drawn by AppendLifelines.
+            double lifelineX = x1;
+            pathData = BuildSelfMessageLoopPath(lifelineX, y1, loopWidth, selfMessageArcHeight, SelfMessageLoopCornerRadius);
+            labelX = lifelineX + loopWidth + 6;
             labelY = y1 + selfMessageArcHeight / 2 + 4;
         }
 
