@@ -30,10 +30,14 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         bool autonumber = false;
         int autonumberIndex = 1;
 
-        // Stack for open rect blocks: each entry holds (group, startMessageIndex).
-        var openRects = new Stack<(Group Group, int StartIndex)>();
-        int rectIndex = 0;
+        // Unified stack for open blocks (rect and control-flow); each entry holds (group, startMessageIndex).
+        var openBlocks = new Stack<(Group Group, int StartIndex)>();
+        int blockIndex = 0;
         int noteIndex = 0;
+
+        // Per-participant stack of open activation bars: each entry holds (group, startMessageIndex).
+        var openActivations = new Dictionary<string, Stack<(Group Group, int StartIndex)>>(StringComparer.Ordinal);
+        int activationIndex = 0;
 
         // Tracks the most recently parsed note group so that subsequent indented
         // lines can be appended as continuation text (multi-line notes).
@@ -49,6 +53,36 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 builder.AddNode(node);
             }
             return node;
+        }
+
+        void ActivateParticipant(string id, int startIdx)
+        {
+            GetOrCreateParticipant(id);
+            if (!openActivations.TryGetValue(id, out var stack))
+            {
+                stack = new Stack<(Group, int)>();
+                openActivations[id] = stack;
+            }
+            int level = stack.Count;
+            var groupId = $"sequence:activation:{activationIndex++:D4}";
+            var group = new Group(groupId, string.Empty);
+            group.Metadata["sequence:activationGroup"] = true;
+            group.Metadata["sequence:activationParticipant"] = id;
+            group.Metadata["sequence:activationLevel"] = level;
+            stack.Push((group, startIdx));
+        }
+
+        void DeactivateParticipant(string id, int endIdx)
+        {
+            if (!openActivations.TryGetValue(id, out var stack) || stack.Count == 0)
+                return;
+            var (group, startIdx) = stack.Pop();
+            if (endIdx >= startIdx)
+            {
+                group.Metadata["sequence:activationStartIndex"] = startIdx;
+                group.Metadata["sequence:activationEndIndex"] = endIdx;
+                builder.AddGroup(group);
+            }
         }
 
         for (int i = 1; i < document.Lines.Length; i++)
@@ -159,43 +193,99 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 continue;
             }
 
+            // activate X  — explicit activation bar start
+            if (line.StartsWith("activate ", StringComparison.OrdinalIgnoreCase))
+            {
+                var id = line["activate ".Length..].Trim();
+                if (!string.IsNullOrEmpty(id))
+                    ActivateParticipant(id, messageIndex);
+                continue;
+            }
+
+            // deactivate X  — explicit activation bar end
+            if (line.StartsWith("deactivate ", StringComparison.OrdinalIgnoreCase))
+            {
+                var id = line["deactivate ".Length..].Trim();
+                if (!string.IsNullOrEmpty(id))
+                    DeactivateParticipant(id, messageIndex - 1);
+                continue;
+            }
+
             // rect rgb(...) / rect rgba(...)  — colored background band
             if (line.StartsWith("rect ", StringComparison.OrdinalIgnoreCase))
             {
                 var colorSpec = line["rect ".Length..].Trim();
                 if (TryParseRectColor(colorSpec, out var normalizedColor))
                 {
-                    var groupId = $"sequence:rect:{rectIndex++:D4}";
+                    var groupId = $"sequence:rect:{blockIndex++:D4}";
                     var group = new Group(groupId, string.Empty);
                     group.FillColor = normalizedColor;
                     group.Metadata["sequence:rectGroup"] = true;
-                    openRects.Push((group, messageIndex));
+                    openBlocks.Push((group, messageIndex));
                 }
                 continue;
             }
 
-            // end  — closes the innermost open rect block
-            if (string.Equals(line, "end", StringComparison.OrdinalIgnoreCase) && openRects.Count > 0)
+            // Control-flow blocks: loop/alt/par/critical/break <label>
+            if (TryParseCfKeyword(line, out var cfKind, out var cfLabel))
             {
-                var (group, startIdx) = openRects.Pop();
+                var groupId = $"sequence:cf:{blockIndex++:D4}";
+                var group = new Group(groupId, cfLabel ?? string.Empty);
+                group.Metadata["sequence:cfGroup"] = true;
+                group.Metadata["sequence:cfKind"] = cfKind!;
+                openBlocks.Push((group, messageIndex));
+                continue;
+            }
+
+            // Separator keywords inside control-flow blocks (else/and/option); skip without closing.
+            if (IsCfSeparator(line))
+                continue;
+
+            // end  — closes the innermost open block (rect or control-flow)
+            if (string.Equals(line, "end", StringComparison.OrdinalIgnoreCase) && openBlocks.Count > 0)
+            {
+                var (group, startIdx) = openBlocks.Pop();
                 int endIdx = messageIndex - 1;
                 if (endIdx >= startIdx)
                 {
-                    group.Metadata["sequence:rectStartIndex"] = startIdx;
-                    group.Metadata["sequence:rectEndIndex"] = endIdx;
+                    bool isRect = group.Metadata.TryGetValue("sequence:rectGroup", out var rObj) && rObj is true;
+                    if (isRect)
+                    {
+                        group.Metadata["sequence:rectStartIndex"] = startIdx;
+                        group.Metadata["sequence:rectEndIndex"] = endIdx;
+                    }
+                    else
+                    {
+                        group.Metadata["sequence:cfStartIndex"] = startIdx;
+                        group.Metadata["sequence:cfEndIndex"] = endIdx;
+                    }
                     builder.AddGroup(group);
                 }
                 continue;
             }
 
             // Message line:  SourceId->>TargetId: label text
+            // Targets may carry a leading '+' (activate target) or '-' (deactivate source).
             if (TryParseMessage(line, out var srcId, out var tgtId, out var msgLabel,
                                 out var lineStyle, out var arrowHead))
             {
-                GetOrCreateParticipant(srcId!);
-                GetOrCreateParticipant(tgtId!);
+                char activationMod = '\0';
+                if (tgtId!.Length > 1 && tgtId[0] == '+')
+                {
+                    activationMod = '+';
+                    tgtId = tgtId[1..];
+                }
+                else if (tgtId!.Length > 1 && tgtId[0] == '-')
+                {
+                    activationMod = '-';
+                    tgtId = tgtId[1..];
+                }
 
-                var edge = new Edge(srcId!, tgtId!)
+                GetOrCreateParticipant(srcId!);
+                GetOrCreateParticipant(tgtId);
+
+                int currentMsgIdx = messageIndex;
+                var edge = new Edge(srcId!, tgtId)
                 {
                     LineStyle = lineStyle,
                     ArrowHead = arrowHead,
@@ -209,6 +299,29 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                     edge.Label = new Label(msgLabel!);
 
                 builder.AddEdge(edge);
+
+                // Handle activation shorthand after edge is registered.
+                if (activationMod == '+')
+                    ActivateParticipant(tgtId, currentMsgIdx);
+                else if (activationMod == '-')
+                    DeactivateParticipant(srcId!, currentMsgIdx);
+            }
+        }
+
+        // Auto-close any activation bars that were opened but never explicitly deactivated.
+        // This mirrors Mermaid's behaviour: an unclosed activate extends to the end of the diagram.
+        int lastMsgIdx = messageIndex - 1;
+        foreach (var stack in openActivations.Values)
+        {
+            while (stack.Count > 0)
+            {
+                var (group, startIdx) = stack.Pop();
+                if (lastMsgIdx >= startIdx)
+                {
+                    group.Metadata["sequence:activationStartIndex"] = startIdx;
+                    group.Metadata["sequence:activationEndIndex"] = lastMsgIdx;
+                    builder.AddGroup(group);
+                }
             }
         }
 
@@ -228,11 +341,63 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         return line.StartsWith("participant ", StringComparison.OrdinalIgnoreCase)
             || line.StartsWith("Note ", StringComparison.OrdinalIgnoreCase)
             || line.StartsWith("rect ", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("activate ", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("deactivate ", StringComparison.OrdinalIgnoreCase)
             || line.StartsWith("title:", StringComparison.OrdinalIgnoreCase)
             || line.StartsWith("subtitle:", StringComparison.OrdinalIgnoreCase)
             || line.Equals("autonumber", StringComparison.OrdinalIgnoreCase)
             || line.Equals("end", StringComparison.OrdinalIgnoreCase)
+            || IsCfSeparator(line)
+            || TryParseCfKeyword(line, out _, out _)
             || TryParseMessage(line, out _, out _, out _, out _, out _);
+    }
+
+    /// <summary>
+    /// Returns <see langword="true"/> when <paramref name="line"/> is a control-flow
+    /// separator keyword (<c>else</c>, <c>and</c>, or <c>option</c>), optionally
+    /// followed by a label.  These keywords delimit sections inside a combined
+    /// fragment but do not open or close a block.
+    /// </summary>
+    private static bool IsCfSeparator(string line)
+    {
+        return line.Equals("else",   StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("else ",   StringComparison.OrdinalIgnoreCase)
+            || line.Equals("and",    StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("and ",    StringComparison.OrdinalIgnoreCase)
+            || line.Equals("option", StringComparison.OrdinalIgnoreCase)
+            || line.StartsWith("option ", StringComparison.OrdinalIgnoreCase);
+    }
+
+    /// <summary>
+    /// Tries to parse a control-flow block keyword (<c>loop</c>, <c>alt</c>,
+    /// <c>par</c>, <c>critical</c>, or <c>break</c>) with an optional label.
+    /// Returns <see langword="true"/> and sets <paramref name="kind"/> and
+    /// <paramref name="label"/> on success.
+    /// </summary>
+    private static bool TryParseCfKeyword(string line, out string? kind, out string? label)
+    {
+        kind = label = null;
+
+        ReadOnlySpan<string> keywords = ["loop", "alt", "par", "critical", "break"];
+
+        foreach (var kw in keywords)
+        {
+            if (line.Equals(kw, StringComparison.OrdinalIgnoreCase))
+            {
+                kind = kw;
+                label = string.Empty;
+                return true;
+            }
+
+            if (line.StartsWith(kw + " ", StringComparison.OrdinalIgnoreCase))
+            {
+                kind = kw;
+                label = line[(kw.Length + 1)..].Trim();
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /// <summary>

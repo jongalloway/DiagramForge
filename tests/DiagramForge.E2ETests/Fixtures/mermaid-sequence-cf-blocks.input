@@ -1,0 +1,23 @@
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    participant C as Carol
+    A->>B: Login
+    loop Retry up to 3 times
+        B->>C: Validate credentials
+        C-->>B: Validation result
+    end
+    alt User found
+        B-->>A: Welcome
+    else User not found
+        B-->>A: Access denied
+    end
+    par Notify services
+        A->>B: Log event
+    and
+        A->>C: Send email
+    end
+    break On exception
+        B-->>A: Error
+    end
+    A->>B: Done

@@ -1,0 +1,12 @@
+sequenceDiagram
+    participant A as Alice
+    participant B as Bob
+    participant C as Charlie
+    A->>+B: Request
+    B->>+C: Sub-request
+    C-->>-B: Sub-response
+    B-->>-A: Response
+    A->>+B: Another call
+    activate B
+    B-->>A: Partial reply
+    deactivate B
