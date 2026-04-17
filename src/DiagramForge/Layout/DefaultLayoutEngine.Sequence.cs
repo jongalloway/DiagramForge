@@ -115,6 +115,7 @@ public sealed partial class DefaultLayoutEngine
             int startIdx = Convert.ToInt32(startIdxObj, System.Globalization.CultureInfo.InvariantCulture);
             int endIdx   = Convert.ToInt32(endIdxObj,   System.Globalization.CultureInfo.InvariantCulture);
 
+            double halfRow    = messageRowHeight / 2;
             double bandTop    = double.MaxValue;
             double bandBottom = double.MinValue;
 
@@ -134,14 +135,13 @@ public sealed partial class DefaultLayoutEngine
                 if (y < bandTop)    bandTop    = y;
                 // Use y + rowH - halfRow so consecutive bands meet at a shared
                 // midpoint rather than overlapping.
-                double rowBottom = y + rowH - messageRowHeight / 2;
+                double rowBottom = y + rowH - halfRow;
                 if (rowBottom > bandBottom) bandBottom = rowBottom;
             }
 
             if (bandTop == double.MaxValue)
                 continue; // no enclosed messages found
 
-            double halfRow = messageRowHeight / 2;
             group.X      = 0;
             group.Y      = bandTop    - halfRow;
             group.Width  = canvasWidth;

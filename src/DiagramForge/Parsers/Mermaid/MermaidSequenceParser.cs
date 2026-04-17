@@ -150,6 +150,8 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
     /// Validates and normalises a rect color specification of the form
     /// <c>rgb(R,G,B)</c> or <c>rgba(R,G,B,A)</c>.
     /// Returns <see langword="false"/> when the input does not match either form.
+    /// Only the structural prefix (<c>rgb(</c> / <c>rgba(</c>) and closing
+    /// parenthesis are validated; individual component values are passed through as-is.
     /// </summary>
     private static bool TryParseRectColor(string colorSpec, out string normalizedColor)
     {

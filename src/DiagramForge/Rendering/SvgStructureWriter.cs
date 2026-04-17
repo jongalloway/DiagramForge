@@ -553,7 +553,7 @@ internal static class SvgStructureWriter
 
         // For rgb() (no embedded alpha) add a fill-opacity so the band is
         // semi-transparent.  For rgba() the caller-supplied alpha takes effect
-        // automatically via the browser's CSS colour parsing.
+        // automatically via the browser's CSS color parsing.
         bool hasEmbeddedAlpha = colorSpec.StartsWith("rgba(", StringComparison.OrdinalIgnoreCase);
         string opacityAttr = hasEmbeddedAlpha ? string.Empty : " fill-opacity=\"0.2\"";
 
