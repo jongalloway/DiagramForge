@@ -517,6 +517,21 @@ internal static class SvgStructureWriter
             return;
         }
 
+        // Sequence control-flow blocks are rendered as labeled bordered regions (UML combined
+        // fragments).  They span the full diagram width like rect bands, but include a border
+        // and a type-label tab in the top-left corner.
+        if (group.Metadata.TryGetValue("sequence:cfGroup", out var isCfObj) && isCfObj is true)
+        {
+            if (group.Width > 0 && group.Height > 0)
+                AppendSequenceCfBlock(sb, group, theme);
+            return;
+        }
+
+        // Sequence activation bars are rendered in a dedicated pass (AppendActivationBars)
+        // after lifelines, so they appear on top of the dashed lifeline strokes.
+        if (group.Metadata.TryGetValue("sequence:activationGroup", out var isActObj) && isActObj is true)
+            return;
+
         // Sequence notes are rendered in a dedicated pass via AppendSequenceNotes (after
         // lifelines) so they appear on top of the dashed lifeline strokes.
         if (group.Metadata.TryGetValue("sequence:noteGroup", out var isNoteObj) && isNoteObj is true)
@@ -563,6 +578,73 @@ internal static class SvgStructureWriter
         string opacityAttr = hasEmbeddedAlpha ? string.Empty : " fill-opacity=\"0.2\"";
 
         sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(group.X)}" y="{SvgRenderSupport.F(group.Y)}" width="{SvgRenderSupport.F(group.Width)}" height="{SvgRenderSupport.F(group.Height)}" fill="{fill}"{opacityAttr}/>""");
+    }
+
+    /// <summary>
+    /// Renders a sequence-diagram control-flow block (UML combined fragment) as a
+    /// bordered rectangle with a small keyword tab in the top-left corner.
+    /// </summary>
+    private static void AppendSequenceCfBlock(StringBuilder sb, Group group, Theme theme)
+    {
+        if (!group.Metadata.TryGetValue("sequence:cfKind", out var cfKindObj) || cfKindObj is not string cfKind)
+            return;
+
+        double x = group.X;
+        double y = group.Y;
+        double w = group.Width;
+        double h = group.Height;
+
+        string edgeColor = SvgRenderSupport.Escape(theme.EdgeColor);
+        // Very light fill so content (lifelines, messages) remains legible.
+        string fillColor = SvgRenderSupport.Escape(
+            ColorUtils.Blend(theme.GroupFillColor, theme.BackgroundColor,
+                ColorUtils.IsLight(theme.BackgroundColor) ? 0.65 : 0.75));
+
+        // Main bordered region — dashed border, very light fill.
+        sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(x)}" y="{SvgRenderSupport.F(y)}" width="{SvgRenderSupport.F(w)}" height="{SvgRenderSupport.F(h)}" fill="{fillColor}" fill-opacity="0.35" stroke="{edgeColor}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}" stroke-dasharray="5,3"/>""");
+
+        // Keyword + optional label displayed in a small solid-filled tab.
+        string labelText = cfKind;
+        if (!string.IsNullOrEmpty(group.Label.Text))
+            labelText = cfKind + " [" + group.Label.Text + "]";
+
+        double tabFontSize = theme.FontSize * 0.80;
+        double tabWidth    = SvgRenderSupport.EstimateTextWidth(labelText, tabFontSize) + 16;
+        double tabHeight   = tabFontSize + 10;
+
+        string tabFill = SvgRenderSupport.Escape(
+            ColorUtils.Blend(theme.EdgeColor, theme.BackgroundColor,
+                ColorUtils.IsLight(theme.BackgroundColor) ? 0.75 : 0.65));
+        string tabTextColor = SvgRenderSupport.Escape(
+            SvgRenderSupport.ResolveNodeTextColor(tabFill, theme));
+        string fontFamily = SvgRenderSupport.Escape(theme.FontFamily);
+
+        sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(x)}" y="{SvgRenderSupport.F(y)}" width="{SvgRenderSupport.F(tabWidth)}" height="{SvgRenderSupport.F(tabHeight)}" rx="0" ry="0" fill="{tabFill}" stroke="{edgeColor}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth * 0.8)}"/>""");
+        sb.AppendLine($"""  <text x="{SvgRenderSupport.F(x + 8)}" y="{SvgRenderSupport.F(y + tabHeight * 0.70)}" font-family="{fontFamily}" font-size="{SvgRenderSupport.F(tabFontSize)}" font-weight="bold" fill="{tabTextColor}">{SvgRenderSupport.Escape(labelText)}</text>""");
+    }
+
+    /// <summary>
+    /// Renders all sequence-diagram activation bars that have been laid out.
+    /// Activation bars are narrow filled rectangles drawn on top of participant lifelines,
+    /// rendered after the lifelines so they visually overlay the dashed line strokes.
+    /// </summary>
+    internal static void AppendActivationBars(StringBuilder sb, Diagram diagram, Theme theme)
+    {
+        foreach (var group in diagram.Groups.OrderBy(g => g.Id, StringComparer.Ordinal))
+        {
+            if (!group.Metadata.TryGetValue("sequence:activationGroup", out var isActObj) || isActObj is not true)
+                continue;
+
+            if (group.Width <= 0 || group.Height <= 0)
+                continue;
+
+            string fill   = SvgRenderSupport.Escape(
+                ColorUtils.Blend(theme.BackgroundColor, theme.EdgeColor,
+                    ColorUtils.IsLight(theme.BackgroundColor) ? 0.20 : 0.30));
+            string stroke = SvgRenderSupport.Escape(theme.EdgeColor);
+
+            sb.AppendLine($"""  <rect x="{SvgRenderSupport.F(group.X)}" y="{SvgRenderSupport.F(group.Y)}" width="{SvgRenderSupport.F(group.Width)}" height="{SvgRenderSupport.F(group.Height)}" rx="2" ry="2" fill="{fill}" stroke="{stroke}" stroke-width="{SvgRenderSupport.F(theme.StrokeWidth)}"/>""");
+        }
     }
 
     private static bool TryBuildCycleArcPath(Edge edge, Node source, Node target, out string pathData, out double labelX, out double labelY)

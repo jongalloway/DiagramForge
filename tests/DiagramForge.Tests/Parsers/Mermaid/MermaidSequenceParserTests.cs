@@ -672,6 +672,19 @@ public class MermaidSequenceParserTests
     }
 
     [Fact]
+    public void Parse_MultilineNote_CfWordsInContinuationArePreserved()
+    {
+        // "else", "and", "loop" etc. appearing as indented continuation lines must NOT
+        // be swallowed by the CF keyword / separator logic — they are just note text.
+        const string text = "sequenceDiagram\n    Note right of A: if true\n        else false\n        and more";
+
+        var diagram = _parser.Parse(text);
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal("if true\nelse false\nand more", noteGroup.Label.Text);
+    }
+
+    [Fact]
     public void Parse_MultipleNotes_CreateMultipleGroups()
     {
         const string text = """
@@ -820,5 +833,422 @@ public class MermaidSequenceParserTests
             """);
 
         Assert.Equal("heroicons:server", diagram.Nodes["A"].IconRef);
+    }
+
+    // ── Activate / deactivate (standalone) ───────────────────────────────────
+
+    [Fact]
+    public void Parse_Activate_CreatesActivationGroup()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: call
+                activate B
+                B-->>A: reply
+                deactivate B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var activation = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+        Assert.Equal("B", activation.Metadata["sequence:activationParticipant"]);
+    }
+
+    [Fact]
+    public void Parse_Activate_StartAndEndIndexSet()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: call
+                activate B
+                B-->>A: reply
+                deactivate B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var act = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+
+        // "activate B" fires after message index 0 (call), so startIndex=1.
+        // "deactivate B" fires after message index 1 (reply), so endIndex=1.
+        Assert.Equal(1, Convert.ToInt32(act.Metadata["sequence:activationStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(act.Metadata["sequence:activationEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_Activate_ActivationGroupMetadataKeySet()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>B: msg\n    activate B\n    B-->>A: reply\n    deactivate B");
+
+        var act = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+        Assert.True(act.Metadata.TryGetValue("sequence:activationGroup", out var val) && val is true);
+    }
+
+    [Fact]
+    public void Parse_ActivateWithoutMessages_GroupNotAdded()
+    {
+        // activate/deactivate with no messages in the range produces no group.
+        const string text = """
+            sequenceDiagram
+                activate B
+                deactivate B
+                A->>B: msg
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.DoesNotContain(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+    }
+
+    [Fact]
+    public void Parse_NestedActivations_LevelsAssigned()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: call
+                activate B
+                B->>B: self
+                activate B
+                B-->>B: done
+                deactivate B
+                B-->>A: reply
+                deactivate B
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var activations = diagram.Groups
+            .Where(g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true)
+            .OrderBy(g => Convert.ToInt32(g.Metadata["sequence:activationLevel"],
+                System.Globalization.CultureInfo.InvariantCulture))
+            .ToList();
+
+        Assert.Equal(2, activations.Count);
+        Assert.Equal(0, Convert.ToInt32(activations[0].Metadata["sequence:activationLevel"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(activations[1].Metadata["sequence:activationLevel"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    // ── Activation shorthand (+/-) ────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_ActivationShorthandPlus_ActivatesTarget()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>+B: call\n    B-->>A: reply");
+
+        var act = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+        Assert.Equal("B", act.Metadata["sequence:activationParticipant"]);
+    }
+
+    [Fact]
+    public void Parse_ActivationShorthandPlus_StripsModifierFromTargetId()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>+B: call\n    B-->>A: reply");
+
+        // Edge target must be "B", not "+B".
+        var edge = diagram.Edges.Single(e => e.Label?.Text == "call");
+        Assert.Equal("B", edge.TargetId);
+        Assert.True(diagram.Nodes.ContainsKey("B"));
+    }
+
+    [Fact]
+    public void Parse_ActivationShorthandMinus_DeactivatesSource()
+    {
+        // A->>+B activates B; B-->>-A means deactivate the source (B).
+        const string text = """
+            sequenceDiagram
+                A->>+B: call
+                B-->>-A: reply
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var act = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+        // B was activated; the deactivation ends B's bar.
+        Assert.Equal("B", act.Metadata["sequence:activationParticipant"]);
+    }
+
+    [Fact]
+    public void Parse_ActivationShorthandMinus_StripsModifierFromTargetId()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    A->>+B: call\n    B-->>-A: reply");
+
+        // Edge target in the reply must be "A", not "-A".
+        var edge = diagram.Edges.Single(e => e.Label?.Text == "reply");
+        Assert.Equal("A", edge.TargetId);
+    }
+
+    [Fact]
+    public void Parse_ActivationShorthandPlusMinus_ActivationBarSpansMessages()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>+B: call
+                B-->>-A: reply
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var act = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:activationGroup", out var v) && v is true);
+
+        // startIndex = 0 (call), endIndex = 1 (reply).
+        Assert.Equal(0, Convert.ToInt32(act.Metadata["sequence:activationStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(act.Metadata["sequence:activationEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    // ── Control-flow blocks (loop / alt / par / critical / break) ─────────────
+
+    [Fact]
+    public void Parse_LoopBlock_CreatesGroup()
+    {
+        const string text = """
+            sequenceDiagram
+                loop retry
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+    }
+
+    [Theory]
+    [InlineData("loop", "loop")]
+    [InlineData("alt",  "alt")]
+    [InlineData("par",  "par")]
+    [InlineData("critical", "critical")]
+    [InlineData("break", "break")]
+    public void Parse_CfBlock_KindMetadataSet(string keyword, string expectedKind)
+    {
+        var text = $"sequenceDiagram\n    {keyword} condition\n        A->>B: msg\n    end";
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal(expectedKind, group.Metadata["sequence:cfKind"]);
+    }
+
+    [Fact]
+    public void Parse_LoopBlock_LabelStoredAsGroupLabel()
+    {
+        const string text = """
+            sequenceDiagram
+                loop i < 10
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal("i < 10", group.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_LoopBlockNoLabel_EmptyGroupLabel()
+    {
+        const string text = """
+            sequenceDiagram
+                loop
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal(string.Empty, group.Label.Text);
+    }
+
+    [Fact]
+    public void Parse_CfBlock_StartAndEndIndexSet()
+    {
+        const string text = """
+            sequenceDiagram
+                A->>B: before
+                loop condition
+                    A->>B: inside
+                end
+                A->>B: after
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        // "inside" is at message index 1.
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:cfStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:cfEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_CfBlockWithNoMessages_GroupNotAdded()
+    {
+        const string text = """
+            sequenceDiagram
+                loop condition
+                end
+                A->>B: msg
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.DoesNotContain(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+    }
+
+    [Fact]
+    public void Parse_AltBlock_ElseSeparatorIsIgnored()
+    {
+        // The "else" keyword is a section separator and must not close the block.
+        const string text = """
+            sequenceDiagram
+                alt user found
+                    A->>B: get
+                else user not found
+                    A->>B: create
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        // One CF group that contains both messages.
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal(2, diagram.Edges.Count);
+        Assert.Equal(0, Convert.ToInt32(group.Metadata["sequence:cfStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:cfEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_ParBlock_AndSeparatorIsIgnored()
+    {
+        const string text = """
+            sequenceDiagram
+                par process 1
+                    A->>B: msg1
+                and process 2
+                    A->>C: msg2
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal(2, diagram.Edges.Count);
+        Assert.Equal(0, Convert.ToInt32(group.Metadata["sequence:cfStartIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+        Assert.Equal(1, Convert.ToInt32(group.Metadata["sequence:cfEndIndex"],
+            System.Globalization.CultureInfo.InvariantCulture));
+    }
+
+    [Fact]
+    public void Parse_CriticalBlock_OptionSeparatorIsIgnored()
+    {
+        const string text = """
+            sequenceDiagram
+                critical Establish a connection
+                    A->>B: connect
+                option Network timeout
+                    A->>B: retry
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal("critical", group.Metadata["sequence:cfKind"]);
+        Assert.Equal(2, diagram.Edges.Count);
+    }
+
+    [Fact]
+    public void Parse_TwoCfBlocks_CreatesTwoGroups()
+    {
+        const string text = """
+            sequenceDiagram
+                loop first
+                    A->>B: msg1
+                end
+                loop second
+                    A->>B: msg2
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Groups.Count(g =>
+            g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true));
+    }
+
+    [Fact]
+    public void Parse_CfBlock_MessagesStillParsed()
+    {
+        const string text = """
+            sequenceDiagram
+                loop cond
+                    A->>B: Hello
+                    B-->>A: Hi
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Edges.Count);
+    }
+
+    [Fact]
+    public void Parse_CfBlock_DoesNotCreateExtraParticipants()
+    {
+        const string text = """
+            sequenceDiagram
+                participant A
+                participant B
+                loop cond
+                    A->>B: msg
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal(2, diagram.Nodes.Count);
+    }
+
+    [Fact]
+    public void Parse_BreakBlock_KindIsBreak()
+    {
+        const string text = """
+            sequenceDiagram
+                break on exception
+                    A->>B: abort
+                end
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        var group = Assert.Single(diagram.Groups,
+            g => g.Metadata.TryGetValue("sequence:cfGroup", out var v) && v is true);
+        Assert.Equal("break", group.Metadata["sequence:cfKind"]);
     }
 }

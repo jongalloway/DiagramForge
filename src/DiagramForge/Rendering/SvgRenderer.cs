@@ -129,6 +129,11 @@ public sealed class SvgRenderer : ISvgRenderer
         if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
             SvgStructureWriter.AppendLifelines(sb, diagram, theme, height);
 
+        // Sequence-diagram activation bars: narrow rectangles drawn on lifelines.
+        // Rendered after lifelines so they appear on top of the dashed strokes.
+        if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))
+            SvgStructureWriter.AppendActivationBars(sb, diagram, theme);
+
         // Sequence-diagram notes: styled annotation boxes positioned at their sequence Y.
         // Rendered after lifelines so the note fill sits on top of the dashed strokes.
         if (diagram.Metadata.ContainsKey("sequence:canvasHeight"))

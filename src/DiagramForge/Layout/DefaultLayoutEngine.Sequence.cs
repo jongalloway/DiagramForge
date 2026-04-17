@@ -30,6 +30,12 @@ public sealed partial class DefaultLayoutEngine
     private const double NoteMinWidth  = 60;
     private const double NoteMinHeight = 28;
 
+    // Width of a single activation bar drawn on a lifeline.
+    private const double ActivationBarWidth = 8;
+
+    // Horizontal offset per nesting level so overlapping activation bars remain visible.
+    private const double ActivationBarLevelOffset = 4;
+
     private static void LayoutSequenceDiagram(
         Diagram diagram,
         Theme theme,
@@ -166,16 +172,22 @@ public sealed partial class DefaultLayoutEngine
         // Position note groups now that participant positions and sequence Y values are final.
         LayoutSequenceNotes(diagram, messageRowHeight, theme, ref canvasWidth);
 
-        diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
-
-        // Position rect-band groups now that message Y coordinates are final.
+        // Position rect-band and CF-block groups now that message Y coordinates are final.
+        // Both kinds share the same index-range → Y-range logic.
+        // CF groups also determine the minimum canvas width needed for their keyword tab.
+        double cfTabFontSize = theme.FontSize * 0.80;
         foreach (var group in diagram.Groups)
         {
-            if (!group.Metadata.TryGetValue("sequence:rectGroup", out var isRectObj) || isRectObj is not true)
+            bool isRect = group.Metadata.TryGetValue("sequence:rectGroup", out var isRectObj) && isRectObj is true;
+            bool isCf   = group.Metadata.TryGetValue("sequence:cfGroup",   out var isCfObj)   && isCfObj   is true;
+            if (!isRect && !isCf)
                 continue;
 
-            if (!group.Metadata.TryGetValue("sequence:rectStartIndex", out var startIdxObj)
-                || !group.Metadata.TryGetValue("sequence:rectEndIndex", out var endIdxObj))
+            string startKey = isRect ? "sequence:rectStartIndex" : "sequence:cfStartIndex";
+            string endKey   = isRect ? "sequence:rectEndIndex"   : "sequence:cfEndIndex";
+
+            if (!group.Metadata.TryGetValue(startKey, out var startIdxObj)
+                || !group.Metadata.TryGetValue(endKey, out var endIdxObj))
                 continue;
 
             int startIdx = Convert.ToInt32(startIdxObj, System.Globalization.CultureInfo.InvariantCulture);
@@ -210,7 +222,100 @@ public sealed partial class DefaultLayoutEngine
 
             group.X      = 0;
             group.Y      = bandTop    - halfRow;
+            // Width is set to canvasWidth; a second pass below widens both the canvas and the
+            // group Width together if a CF tab overflows.
             group.Width  = canvasWidth;
+            group.Height = bandBottom - bandTop + halfRow;
+
+            // For CF blocks: make sure the tab label fits within the canvas.
+            if (isCf && group.Metadata.TryGetValue("sequence:cfKind", out var cfKindObj)
+                && cfKindObj is string cfKind)
+            {
+                string tabText = string.IsNullOrEmpty(group.Label.Text)
+                    ? cfKind
+                    : cfKind + " [" + group.Label.Text + "]";
+                double tabWidth = EstimateTextWidth(tabText, cfTabFontSize) + 16;
+                if (tabWidth + pad > canvasWidth)
+                    canvasWidth = tabWidth + pad;
+            }
+        }
+
+        // Back-fill any CF/rect group widths that were set to a narrower canvasWidth
+        // before a long tab label expanded it.
+        foreach (var group in diagram.Groups)
+        {
+            bool isRect = group.Metadata.TryGetValue("sequence:rectGroup", out var rObj) && rObj is true;
+            bool isCf   = group.Metadata.TryGetValue("sequence:cfGroup",   out var cObj) && cObj is true;
+            if (isRect || isCf)
+                group.Width = canvasWidth;
+        }
+
+        diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
+
+        // Position activation-bar groups now that message Y coordinates are final.
+        LayoutSequenceActivationBars(diagram, orderedEdges, messageRowHeight);
+    }
+
+    /// <summary>
+    /// Computes the position (X, Y, Width, Height) of each activation bar group.
+    /// Activation bars are narrow vertical rectangles drawn on top of a participant's
+    /// lifeline, spanning the message range during which the participant is active.
+    /// </summary>
+    private static void LayoutSequenceActivationBars(
+        Diagram diagram,
+        List<Edge> orderedEdges,
+        double messageRowHeight)
+    {
+        foreach (var group in diagram.Groups)
+        {
+            if (!group.Metadata.TryGetValue("sequence:activationGroup", out var isActObj) || isActObj is not true)
+                continue;
+
+            if (!group.Metadata.TryGetValue("sequence:activationParticipant", out var pObj)
+                || pObj is not string participantId)
+                continue;
+
+            if (!diagram.Nodes.TryGetValue(participantId, out var participantNode))
+                continue;
+
+            if (!TryGetMetadataInt(group.Metadata, "sequence:activationStartIndex", out var startIdx)
+                || !TryGetMetadataInt(group.Metadata, "sequence:activationEndIndex",   out var endIdx))
+                continue;
+
+            double halfRow    = messageRowHeight / 2;
+            double bandTop    = double.MaxValue;
+            double bandBottom = double.MinValue;
+
+            foreach (var e in orderedEdges)
+            {
+                if (!TryGetMetadataInt(e.Metadata, "sequence:messageIndex", out var msgIdx))
+                    continue;
+                if (msgIdx < startIdx || msgIdx > endIdx)
+                    continue;
+                if (!e.Metadata.TryGetValue("sequence:messageY", out var yObj))
+                    continue;
+
+                double y = Convert.ToDouble(yObj, System.Globalization.CultureInfo.InvariantCulture);
+                bool isSelf = e.Metadata.ContainsKey("sequence:selfMessage");
+                double rowH = isSelf ? messageRowHeight * 2 : messageRowHeight;
+
+                if (y < bandTop)    bandTop    = y;
+                double rowBottom = y + rowH - halfRow;
+                if (rowBottom > bandBottom) bandBottom = rowBottom;
+            }
+
+            if (bandTop == double.MaxValue)
+                continue; // no enclosed messages found
+
+            // Determine the nesting level so overlapping bars are offset to the right.
+            int level = TryGetMetadataInt(group.Metadata, "sequence:activationLevel", out var lvl) ? lvl : 0;
+
+            double lifelineX = participantNode.X + participantNode.Width / 2;
+            double barX = lifelineX - ActivationBarWidth / 2 + level * ActivationBarLevelOffset;
+
+            group.X      = barX;
+            group.Y      = bandTop    - halfRow;
+            group.Width  = ActivationBarWidth;
             group.Height = bandBottom - bandTop + halfRow;
         }
     }
