@@ -568,4 +568,117 @@ public class MermaidSequenceParserTests
 
         Assert.Equal(2, diagram.Edges.Count);
     }
+
+    // ── Participant icon syntax ───────────────────────────────────────────────
+
+    [Fact]
+    public void Parse_ParticipantWithIconBlock_SetsIconRef()
+    {
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ icon: 'heroicons:computer-desktop' }
+            """);
+
+        Assert.Equal("heroicons:computer-desktop", diagram.Nodes["A"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithIconBlockDoubleQuotes_SetsIconRef()
+    {
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ icon: "heroicons:server" }
+            """);
+
+        Assert.Equal("heroicons:server", diagram.Nodes["A"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithAliasAndIconBlock_SetsLabelAndIconRef()
+    {
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant C as Computer @{ icon: 'heroicons:computer-desktop' }
+            """);
+
+        Assert.Equal("Computer", diagram.Nodes["C"].Label.Text);
+        Assert.Equal("heroicons:computer-desktop", diagram.Nodes["C"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithIconBlock_IdIsCorrect()
+    {
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant S@{ icon: 'heroicons:server' }
+            """);
+
+        Assert.True(diagram.Nodes.ContainsKey("S"));
+        Assert.Equal("S", diagram.Nodes["S"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithoutIconBlock_IconRefIsNull()
+    {
+        var diagram = _parser.Parse("sequenceDiagram\n    participant A as Alice");
+
+        Assert.Null(diagram.Nodes["A"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithMalformedIconBlock_IconRefIsNull()
+    {
+        // Block has no icon: key
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ label: 'something' }
+            """);
+
+        Assert.Null(diagram.Nodes["A"].IconRef);
+    }
+
+    [Fact]
+    public void Parse_MultipleParticipantsWithIcons_AllIconRefsSet()
+    {
+        const string text = """
+            sequenceDiagram
+                participant C as Client @{ icon: 'heroicons:computer-desktop' }
+                participant S as Server @{ icon: 'heroicons:server' }
+                C->>S: request
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("heroicons:computer-desktop", diagram.Nodes["C"].IconRef);
+        Assert.Equal("heroicons:server", diagram.Nodes["S"].IconRef);
+        Assert.Equal("Client", diagram.Nodes["C"].Label.Text);
+        Assert.Equal("Server", diagram.Nodes["S"].Label.Text);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithIconBlock_ShapeIsRectangle()
+    {
+        var diagram = _parser.Parse("""
+            sequenceDiagram
+                participant A@{ icon: 'heroicons:server' }
+            """);
+
+        Assert.Equal(Shape.Rectangle, diagram.Nodes["A"].Shape);
+    }
+
+    [Fact]
+    public void Parse_ParticipantWithIconBlock_SomeParticipantsWithoutIcon()
+    {
+        const string text = """
+            sequenceDiagram
+                participant A@{ icon: 'heroicons:server' }
+                participant B as Bob
+                A->>B: Hello
+            """;
+
+        var diagram = _parser.Parse(text);
+
+        Assert.Equal("heroicons:server", diagram.Nodes["A"].IconRef);
+        Assert.Null(diagram.Nodes["B"].IconRef);
+    }
 }

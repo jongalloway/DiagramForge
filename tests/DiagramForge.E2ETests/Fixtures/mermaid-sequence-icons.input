@@ -1,0 +1,8 @@
+sequenceDiagram
+    participant C as Client @{ icon: 'heroicons:computer-desktop' }
+    participant S as Server @{ icon: 'heroicons:server' }
+    participant D as Database @{ icon: 'heroicons:circle-stack' }
+    C->>S: HTTP request
+    S->>D: Query
+    D-->>S: Result
+    S-->>C: HTTP response
