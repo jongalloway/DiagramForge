@@ -172,10 +172,10 @@ public sealed partial class DefaultLayoutEngine
         // Position note groups now that participant positions and sequence Y values are final.
         LayoutSequenceNotes(diagram, messageRowHeight, theme, ref canvasWidth);
 
-        diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
-
         // Position rect-band and CF-block groups now that message Y coordinates are final.
         // Both kinds share the same index-range → Y-range logic.
+        // CF groups also determine the minimum canvas width needed for their keyword tab.
+        double cfTabFontSize = theme.FontSize * 0.80;
         foreach (var group in diagram.Groups)
         {
             bool isRect = group.Metadata.TryGetValue("sequence:rectGroup", out var isRectObj) && isRectObj is true;
@@ -222,9 +222,35 @@ public sealed partial class DefaultLayoutEngine
 
             group.X      = 0;
             group.Y      = bandTop    - halfRow;
+            // Width is set to canvasWidth; a second pass below widens both the canvas and the
+            // group Width together if a CF tab overflows.
             group.Width  = canvasWidth;
             group.Height = bandBottom - bandTop + halfRow;
+
+            // For CF blocks: make sure the tab label fits within the canvas.
+            if (isCf && group.Metadata.TryGetValue("sequence:cfKind", out var cfKindObj)
+                && cfKindObj is string cfKind)
+            {
+                string tabText = string.IsNullOrEmpty(group.Label.Text)
+                    ? cfKind
+                    : cfKind + " [" + group.Label.Text + "]";
+                double tabWidth = EstimateTextWidth(tabText, cfTabFontSize) + 16;
+                if (tabWidth + pad > canvasWidth)
+                    canvasWidth = tabWidth + pad;
+            }
         }
+
+        // Back-fill any CF/rect group widths that were set to a narrower canvasWidth
+        // before a long tab label expanded it.
+        foreach (var group in diagram.Groups)
+        {
+            bool isRect = group.Metadata.TryGetValue("sequence:rectGroup", out var rObj) && rObj is true;
+            bool isCf   = group.Metadata.TryGetValue("sequence:cfGroup",   out var cObj) && cObj is true;
+            if (isRect || isCf)
+                group.Width = canvasWidth;
+        }
+
+        diagram.Metadata["sequence:canvasWidth"] = canvasWidth;
 
         // Position activation-bar groups now that message Y coordinates are final.
         LayoutSequenceActivationBars(diagram, orderedEdges, messageRowHeight);

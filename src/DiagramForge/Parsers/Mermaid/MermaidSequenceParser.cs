@@ -14,6 +14,9 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
         ("->",   EdgeLineStyle.Solid,  ArrowHeadStyle.None),
     ];
 
+    // Control-flow block keywords (order: longest first is not required here but kept for clarity).
+    private static readonly string[] CfKeywords = ["loop", "alt", "par", "critical", "break"];
+
     public bool CanParse(MermaidDiagramKind kind) => kind == MermaidDiagramKind.SequenceDiagram;
 
     public Diagram Parse(MermaidDocument document)
@@ -347,8 +350,6 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
             || line.StartsWith("subtitle:", StringComparison.OrdinalIgnoreCase)
             || line.Equals("autonumber", StringComparison.OrdinalIgnoreCase)
             || line.Equals("end", StringComparison.OrdinalIgnoreCase)
-            || IsCfSeparator(line)
-            || TryParseCfKeyword(line, out _, out _)
             || TryParseMessage(line, out _, out _, out _, out _, out _);
     }
 
@@ -378,9 +379,7 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
     {
         kind = label = null;
 
-        ReadOnlySpan<string> keywords = ["loop", "alt", "par", "critical", "break"];
-
-        foreach (var kw in keywords)
+        foreach (var kw in CfKeywords)
         {
             if (line.Equals(kw, StringComparison.OrdinalIgnoreCase))
             {

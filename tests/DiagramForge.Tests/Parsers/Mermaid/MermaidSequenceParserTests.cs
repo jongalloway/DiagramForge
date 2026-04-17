@@ -672,6 +672,19 @@ public class MermaidSequenceParserTests
     }
 
     [Fact]
+    public void Parse_MultilineNote_CfWordsInContinuationArePreserved()
+    {
+        // "else", "and", "loop" etc. appearing as indented continuation lines must NOT
+        // be swallowed by the CF keyword / separator logic — they are just note text.
+        const string text = "sequenceDiagram\n    Note right of A: if true\n        else false\n        and more";
+
+        var diagram = _parser.Parse(text);
+
+        var noteGroup = Assert.Single(diagram.Groups);
+        Assert.Equal("if true\nelse false\nand more", noteGroup.Label.Text);
+    }
+
+    [Fact]
     public void Parse_MultipleNotes_CreateMultipleGroups()
     {
         const string text = """
