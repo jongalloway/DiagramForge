@@ -99,7 +99,7 @@ internal sealed class MermaidSequenceParser : IMermaidDiagramParser
                 var colorSpec = line["rect ".Length..].Trim();
                 if (TryParseRectColor(colorSpec, out var normalizedColor))
                 {
-                    var groupId = $"sequence:rect:{rectIndex++}";
+                    var groupId = $"sequence:rect:{rectIndex++:D4}";
                     var group = new Group(groupId, string.Empty);
                     group.FillColor = normalizedColor;
                     group.Metadata["sequence:rectGroup"] = true;
