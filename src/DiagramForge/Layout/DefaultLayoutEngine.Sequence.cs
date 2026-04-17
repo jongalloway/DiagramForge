@@ -13,6 +13,12 @@ public sealed partial class DefaultLayoutEngine
     // the numbered circle badge fits between the canvas edge and the first lifeline.
     private const double SequenceAutonumberBadgeExtraLeft = 36;
 
+    // Multiplier applied to ShadowBlur when deriving additional autonumber left clearance.
+    // A Gaussian blur of stdDeviation σ is visually significant within ~2σ from the source
+    // edge, so multiplying ShadowBlur by 2 gives a conservative estimate of how far the
+    // filter region extends beyond the node boundary.
+    private const double SequenceAutonumberShadowClearanceMultiplier = 2.0;
+
     private static void LayoutSequenceDiagram(
         Diagram diagram,
         Theme theme,
@@ -36,8 +42,12 @@ public sealed partial class DefaultLayoutEngine
         double headingOffset = ComputeHeadingOffset(diagram, theme);
 
         // Reserve horizontal space for autonumber badges to the left of participants.
+        // When node shadows are active the SVG filter extends beyond the node boundary,
+        // which can visually encroach on the badge. Add clearance proportional to
+        // ShadowBlur so the badge remains visible across all shadow themes.
         bool hasAutonumber = diagram.Metadata.ContainsKey("sequence:autonumber");
-        double autonumberExtraLeft = hasAutonumber ? SequenceAutonumberBadgeExtraLeft : 0;
+        double shadowExtra = theme.UseNodeShadows ? SequenceAutonumberShadowClearanceMultiplier * theme.ShadowBlur : 0.0;
+        double autonumberExtraLeft = hasAutonumber ? SequenceAutonumberBadgeExtraLeft + shadowExtra : 0;
 
         double runX = pad + autonumberExtraLeft;
         double participantStripHeight = ordered.Max(node => node.Height);
