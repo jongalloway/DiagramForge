@@ -48,10 +48,10 @@ jobs:
 
       - name: Test
         run: >
-          dotnet test DiagramForge.slnx
+          dotnet test --solution DiagramForge.slnx
           --no-build
           --configuration Release
-          --logger "trx;LogFilePrefix=results"
+          --report-xunit-trx
           --results-directory TestResults
 
       # Gate the "Real SVG" claim: every rendered fixture must pass through

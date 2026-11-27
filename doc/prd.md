@@ -311,10 +311,9 @@ The test project (`tests/DiagramForge.Tests`) uses:
 - **xUnit v3** (`xunit.v3`, Apache‑2.0) — the test framework.  
   xUnit v3 test projects compile to a **self‑contained executable** (`<OutputType>Exe</OutputType>`),
   embedding the test runner directly in the output binary.
-- **Microsoft Testing Platform (MTP)** — enabled via  
-  `<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>`.  
-  This routes `dotnet test` through the MTP host instead of the legacy VSTest adapter.
-- **coverlet** (`coverlet.collector`, MIT) — code‑coverage data collection.
+- **Microsoft Testing Platform (MTP)** — selected as the `dotnet test` runner in `global.json`,
+  routing `dotnet test` through the MTP host instead of the legacy VSTest adapter.
+- **coverlet** (`coverlet.MTP`, MIT) — code‑coverage data collection.
 
 Running tests:
 

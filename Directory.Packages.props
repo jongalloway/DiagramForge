@@ -7,15 +7,15 @@
 
   <!-- Versioning -->
   <ItemGroup>
-    <PackageVersion Include="MinVer" Version="7.0.0" />
+    <PackageVersion Include="MinVer" Version="8.0.0" />
   </ItemGroup>
 
   <!-- Test project packages -->
   <ItemGroup>
     <PackageVersion Include="BenchmarkDotNet" Version="0.15.8" />
     <!-- xUnit v3 (Apache-2.0) — includes Microsoft Testing Platform (MTP) runner -->
-    <PackageVersion Include="xunit.v3" Version="3.2.2" />
+    <PackageVersion Include="xunit.v3" Version="4.0.3" />
     <!-- Code coverage (MIT) -->
-    <PackageVersion Include="coverlet.collector" Version="10.0.1" />
+    <PackageVersion Include="coverlet.MTP" Version="10.1.1" />
   </ItemGroup>
 </Project>

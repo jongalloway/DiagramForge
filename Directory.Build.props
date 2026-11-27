@@ -5,10 +5,5 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
     <MinVerTagPrefix>v</MinVerTagPrefix>
-    <!--
-      Suppress the MTP0001 informational warning that fires when TestingPlatformDotnetTestSupport
-      is enabled but legacy VSTest properties (injected by the SDK) are also present.
-    -->
-    <NoWarn>$(NoWarn);MTP0001</NoWarn>
   </PropertyGroup>
 </Project>
