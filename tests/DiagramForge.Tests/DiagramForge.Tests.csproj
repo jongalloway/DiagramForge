@@ -10,11 +10,6 @@
       This is required for xUnit v3 and for Microsoft Testing Platform (MTP) support.
     -->
     <OutputType>Exe</OutputType>
-    <!--
-      Route `dotnet test` through the Microsoft Testing Platform (MTP) host
-      instead of the legacy VSTest adapter.
-    -->
-    <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
   </PropertyGroup>
 
   <!-- Versions are managed centrally in Directory.Packages.props (CPM). -->
@@ -22,10 +17,7 @@
     <!-- xUnit v3 (Apache-2.0) — includes the embedded MTP runner -->
     <PackageReference Include="xunit.v3" />
     <!-- Code coverage via coverlet (MIT) -->
-    <PackageReference Include="coverlet.collector">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
+    <PackageReference Include="coverlet.MTP" PrivateAssets="all" />
   </ItemGroup>
 
   <!-- Global usings for test projects -->

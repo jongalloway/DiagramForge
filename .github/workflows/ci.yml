@@ -51,7 +51,7 @@ jobs:
           dotnet test DiagramForge.slnx
           --no-build
           --configuration Release
-          --logger "trx;LogFilePrefix=results"
+          --report-xunit-trx
           --results-directory TestResults
 
       # Gate the "Real SVG" claim: every rendered fixture must pass through

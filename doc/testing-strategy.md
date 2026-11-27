@@ -157,7 +157,7 @@ are:
 Run coverage locally:
 
 ```bash
-dotnet test --collect:"XPlat Code Coverage"
+dotnet test --coverlet
 ```
 
 ---

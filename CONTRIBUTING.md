@@ -34,7 +34,7 @@ Runs both test projects:
 | `tests/DiagramForge.Tests`    | Unit tests — parsers, layout engine, SVG renderer, models.                   |
 | `tests/DiagramForge.E2ETests` | End-to-end snapshot tests — full `text → SVG` pipeline against golden files. |
 
-Both use **xUnit v3** with **Microsoft Testing Platform (MTP)**. Test projects compile to self-contained executables (`<OutputType>Exe</OutputType>`); `dotnet test` routes through MTP via `<TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>`. No VSTest adapter, no `xunit.runner.visualstudio`.
+Both use **xUnit v3** with **Microsoft Testing Platform (MTP)**. Test projects compile to self-contained executables (`<OutputType>Exe</OutputType>`); `global.json` selects the native MTP runner for `dotnet test`. No VSTest adapter, no `xunit.runner.visualstudio`.
 
 ### Snapshot tests
 
