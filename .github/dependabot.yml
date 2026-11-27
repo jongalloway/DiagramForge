@@ -5,8 +5,7 @@ version: 2
 updates:
 
   # NuGet packages — Central Package Management means Directory.Packages.props at
-  # the repo root is the single source of truth. One PR per bump, grouped by minor/patch
-  # so the Tuesday update is one PR not seven.
+  # the repo root is the single source of truth. Group all updates into one PR.
   - package-ecosystem: nuget
     directory: /
     schedule:
@@ -14,8 +13,9 @@ updates:
       day: tuesday
     open-pull-requests-limit: 5
     groups:
-      minor-and-patch:
-        update-types: [minor, patch]
+      all-nuget-updates:
+        patterns: ["*"]
+        update-types: [major, minor, patch]
     commit-message:
       prefix: deps
     labels: [dependencies, nuget]
@@ -27,6 +27,9 @@ updates:
     schedule:
       interval: weekly
       day: tuesday
+    groups:
+      all-github-actions:
+        patterns: ["*"]
     commit-message:
       prefix: ci
     labels: [dependencies, ci]
