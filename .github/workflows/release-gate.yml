@@ -51,7 +51,7 @@ jobs:
       # as a side effect before any assertions fire.
       - name: Render fixtures
         run: >
-          dotnet test tests/DiagramForge.E2ETests
+          dotnet test --project tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj
           --no-build
           --configuration Release
         continue-on-error: true   # snapshot diff failures are ci.yml's problem, not this workflow's

@@ -46,10 +46,10 @@ Every run also writes `artifacts/test-results/snapshots/*.actual.svg` — pass o
 
 ```sh
 # PowerShell
-$env:UPDATE_SNAPSHOTS = '1'; dotnet test tests/DiagramForge.E2ETests; Remove-Item Env:UPDATE_SNAPSHOTS
+$env:UPDATE_SNAPSHOTS = '1'; dotnet test --project tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj; Remove-Item Env:UPDATE_SNAPSHOTS
 
 # bash
-UPDATE_SNAPSHOTS=1 dotnet test tests/DiagramForge.E2ETests
+UPDATE_SNAPSHOTS=1 dotnet test --project tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj
 ```
 
 This writes new `.expected.svg` files directly into the **source** `Fixtures/` directory (the test locates the repo root by walking up to the `.slnx`). Review the diff and commit the baselines alongside the code change that caused them.

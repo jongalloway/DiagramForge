@@ -48,7 +48,7 @@ jobs:
 
       - name: Test
         run: >
-          dotnet test DiagramForge.slnx
+          dotnet test --solution DiagramForge.slnx
           --no-build
           --configuration Release
           --report-xunit-trx

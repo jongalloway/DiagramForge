@@ -110,12 +110,12 @@ When a code change intentionally alters rendering output:
 
 ```powershell
 # PowerShell
-$env:UPDATE_SNAPSHOTS = '1'; dotnet test tests/DiagramForge.E2ETests; Remove-Item Env:UPDATE_SNAPSHOTS
+$env:UPDATE_SNAPSHOTS = '1'; dotnet test --project tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj; Remove-Item Env:UPDATE_SNAPSHOTS
 ```
 
 ```bash
 # bash
-UPDATE_SNAPSHOTS=1 dotnet test tests/DiagramForge.E2ETests
+UPDATE_SNAPSHOTS=1 dotnet test --project tests/DiagramForge.E2ETests/DiagramForge.E2ETests.csproj
 ```
 
 This writes new `.expected.svg` files into the **source** fixtures directory.
